@@ -3,6 +3,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { NAV_LINKS, type NavLinkItem } from "../../../constants/header";
 import logo from "../../../assets/images/final logo.png";
 import "./Header.css";
+import Button from "../../ui/Button/Button";
 
 const Header: React.FC = () => {
     return (
@@ -35,19 +36,18 @@ const Header: React.FC = () => {
 
                 {/* Actions */}
                 <div className="header-actions">
-                    <Link to="/login" className="btn-primary">
+                    <Button to="/login" variant="primary">
                         اطلب الآن
-                    </Link>
+                    </Button>
 
-                    <Link
+                    <Button
                         to="/register"
-                        className="btn-outline inline-flex items-center gap-1.5"
+                        variant="outline"
+                        icon={<IoIosArrowDown size={16} />}
                     >
-                        <span>تسجيل الدخول</span>
-                        <IoIosArrowDown size={16} aria-hidden="true" />
-                    </Link>
+                        تسجيل الدخول
+                    </Button>
                 </div>
-
             </nav>
         </header>
     );
