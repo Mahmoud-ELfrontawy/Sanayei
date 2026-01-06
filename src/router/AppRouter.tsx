@@ -1,8 +1,17 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MainLayout from "../layouts/MainLayout";
+import Home from "../pages/Home/Home";
 
-function AppRouter() {
+const AppRouter: React.FC = () => {
     return (
-        <div>AppRouter</div>
-    )
-}
+        <BrowserRouter>
+            <Routes>
+                <Route element={<MainLayout />}>
+                    <Route path="/" element={<Home />} />
+                </Route>
+            </Routes>
+        </BrowserRouter>
+    );
+};
 
-export default AppRouter
+export default AppRouter;
