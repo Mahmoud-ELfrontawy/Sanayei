@@ -1,0 +1,73 @@
+:root {
+    /* ============================= */
+    /* Primary Brand Colors */
+    /* ============================= */
+
+    /* اللون الأساسي للبراند (أزرار – لينكات – أيقونات) */
+    --color-primary: #5FA8D3;
+
+    /* Hover / Active للـ primary */
+    --color-primary-hover: #5598C0;
+
+    /* ============================= */
+    /* Dark & Text Colors */
+    /* ============================= */
+
+    /* لون النص الأساسي + Footer */
+    --color-text-main: #1B1B1B;
+
+    /* لون نصوص ثانوية وعناوين فرعية */
+    --color-text-secondary: #3E5871;
+
+    /* لون نصوص إضافية / خطوط مميزة */
+    --color-text-accent: #0B1E33;
+
+    /* لون النصوص الصغيرة جدًا (p – descriptions) */
+    --color-text-muted: #2E3A46;
+
+    /* ============================= */
+    /* Background Colors */
+    /* ============================= */
+
+    /* خلفية عامة للموقع */
+    --color-bg-main: #FFFFFF;
+
+    /* خلفيات سكاشن */
+    --color-bg-section: #F5F7FA;
+
+    /* خلفية داكنة (Footer / Overlays) */
+    --color-bg-dark: #1B1B1B;
+
+    /* ============================= */
+    /* UI Utility Colors */
+    /* ============================= */
+
+    --color-border: #E0E6ED;
+    --color-divider: #D6DDE5;
+
+    --color-success: #4CAF50;
+    --color-warning: #FFC107;
+    --color-error: #F44336;
+
+    /* ============================= */
+    /* Radius & Transitions */
+    /* ============================= */
+
+        /* للأزرار و Inputs */
+        --radius-btn: 4px;
+
+        /* لعناصر صغيرة (badges, icons bg) */
+        --radius-sm: 6px;
+
+        /* للكروت الصغيرة */
+        --radius-card-sm: 12px;
+
+        /* للكروت الرئيسية / sections */
+        --radius-card: 16px;
+
+        /* مودال / drawers */
+        --radius-lg: 20px;
+
+        --transition-fast: 0.2s ease;
+        --transition-main: 0.3s ease;
+    }

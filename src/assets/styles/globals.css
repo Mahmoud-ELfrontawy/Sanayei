@@ -1,0 +1,9 @@
+body {
+    font-family: "Cairo", sans-serif;
+    background-color: var(--color-dark);
+    color: var(--color-dark);
+}
+
+button {
+    cursor: pointer;
+}
