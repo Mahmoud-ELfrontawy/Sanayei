@@ -1,19 +1,76 @@
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import bg from "../../../../assets/images/bggg1.jpg";
-import { createServiceRequest } from "../../../../Api/serviceRequests.api";
+
+import { createServiceRequest } 
+from "../../../../Api/serviceRequest/serviceRequests.api";
+
+import { getServices, type Service } 
+from "../../../../Api/serviceRequest/service.api";
+
+
+import {
+    getGovernorates,
+    type Governorate,
+} from "../../../../Api/serviceRequest/governorates.api";
+
+import {
+    getSanaei,
+    type Sanaei,
+} from "../../../../Api/serviceRequest/sanaei.api";
+
 import type { ServiceRequestPayload } from "../../../../constants/serviceRequest";
 
 import "./RequestServiceSection.css";
 
 const RequestServiceSection: React.FC = () => {
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: { errors, isSubmitting },
-    } = useForm<ServiceRequestPayload>();
+    const { register, handleSubmit, reset } =
+        useForm<ServiceRequestPayload>();
+
+    const [governorates, setGovernorates] = useState<Governorate[]>([]);
+    const [services, setServices] = useState<Service[]>([]);
+    const [sanaei, setSanaei] = useState<Sanaei[]>([]);
+
+    useEffect(() => {
+        /* المحافظات */
+        const fetchGovernorates = async () => {
+            try {
+                const data = await getGovernorates();
+                setGovernorates(Array.isArray(data) ? data : []);
+            } catch (err) {
+                console.error("Governorates error", err);
+                setGovernorates([]);
+            }
+        };
+
+        /* الخدمات (من /api/services) */
+        const fetchServices = async () => {
+            try {
+                const data = await getServices();
+                setServices(Array.isArray(data) ? data : []);
+            } catch (err) {
+                console.error("Services error", err);
+                setServices([]);
+            }
+        };
+
+        /* الصنايعية */
+        const fetchSanaei = async () => {
+            try {
+                const data = await getSanaei();
+                setSanaei(Array.isArray(data) ? data : []);
+            } catch (err) {
+                console.error("Sanaei error", err);
+                setSanaei([]);
+            }
+        };
+
+        fetchGovernorates();
+        fetchServices();
+        fetchSanaei();
+    }, []);
 
     const onSubmit = async (data: ServiceRequestPayload) => {
         try {
@@ -33,57 +90,39 @@ const RequestServiceSection: React.FC = () => {
                     style={{ backgroundImage: `url(${bg})` }}
                 >
                     <form className="req-card" onSubmit={handleSubmit(onSubmit)}>
-                        <h3 className="req-card-title">اطلب خدمتك الآن</h3>
 
                         {/* الاسم */}
                         <input
-                            className={`req-input ${isSubmitting ? "loading" : ""}`}
+                            className="req-input"
                             placeholder="الاسم بالكامل"
-                            disabled={isSubmitting}
-                            {...register("name", { required: "الاسم مطلوب" })}
+                            {...register("name", { required: true })}
                         />
-                        {errors.name && (
-                            <span className="form-error">{errors.name.message}</span>
-                        )}
 
                         {/* البريد */}
                         <input
-                            className={`req-input ${isSubmitting ? "loading" : ""}`}
+                            className="req-input"
                             placeholder="البريد الإلكتروني"
-                            disabled={isSubmitting}
-                            {...register("email", {
-                                required: "البريد مطلوب",
-                                pattern: {
-                                    value: /^\S+@\S+$/i,
-                                    message: "بريد غير صالح",
-                                },
-                            })}
+                            {...register("email", { required: true })}
                         />
-                        {errors.email && (
-                            <span className="form-error">{errors.email.message}</span>
-                        )}
 
                         {/* المحافظة + العنوان */}
                         <div className="req-row">
                             <select
-                                className={`req-input ${isSubmitting ? "loading" : ""}`}
-                                disabled={isSubmitting}
-                                {...register("province", {
-                                    required: "اختر المحافظة",
-                                })}
+                                className="req-input"
+                                {...register("province", { required: true })}
                             >
                                 <option value="">المحافظة</option>
-                                <option value="cairo">القاهرة</option>
-                                <option value="giza">الجيزة</option>
+                                {governorates.map(g => (
+                                    <option key={g.id} value={g.name}>
+                                        {g.name}
+                                    </option>
+                                ))}
                             </select>
 
                             <input
-                                className={`req-input ${isSubmitting ? "loading" : ""}`}
-                                placeholder="العنوان بالتفصيل"
-                                disabled={isSubmitting}
-                                {...register("address", {
-                                    required: "العنوان مطلوب",
-                                })}
+                                className="req-input"
+                                placeholder="العنوان"
+                                {...register("address", { required: true })}
                             />
                         </div>
 
@@ -91,51 +130,52 @@ const RequestServiceSection: React.FC = () => {
                         <div className="req-row">
                             <input
                                 type="date"
-                                className={`req-input ${isSubmitting ? "loading" : ""}`}
-                                disabled={isSubmitting}
+                                className="req-input"
                                 {...register("date", { required: true })}
                             />
-
                             <input
                                 type="time"
-                                className={`req-input ${isSubmitting ? "loading" : ""}`}
-                                disabled={isSubmitting}
+                                className="req-input"
                                 {...register("time", { required: true })}
                             />
                         </div>
 
-                        {/* نوع الخدمة */}
+                        {/* الخدمات (عربي + slug للباك) */}
                         <select
-                            className={`req-input ${isSubmitting ? "loading" : ""}`}
-                            disabled={isSubmitting}
+                            className="req-input"
                             {...register("service_type", { required: true })}
                         >
                             <option value="">اختر خدمتك</option>
-                            <option value="electric">كهرباء</option>
-                            <option value="plumbing">سباكة</option>
-                            <option value="carpentry">نجارة</option>
+                            {services.map(service => (
+                                <option key={service.id} value={service.slug}>
+                                    {service.name}
+                                </option>
+                            ))}
                         </select>
 
-                        {/* الصنايعي */}
+                        {/* الصنايعية */}
                         <select
-                            className={`req-input ${isSubmitting ? "loading" : ""}`}
-                            disabled={isSubmitting}
+                            className="req-input"
+                            disabled={sanaei.length === 0}
                             {...register("industrial_type", { required: true })}
                         >
-                            <option value="">اختر صنايعي</option>
-                            <option value="1">صنايعي 1</option>
-                            <option value="2">صنايعي 2</option>
+                            <option value="">
+                                {sanaei.length === 0
+                                    ? "لا يوجد صنايعية حاليًا"
+                                    : "اختر صنايعي"}
+                            </option>
+
+                            {sanaei.map(worker => (
+                                <option key={worker.id} value={worker.id}>
+                                    {worker.al_sanaei_name} -{" "}
+                                    {worker.al_sanaei_sanaeaa_type}
+                                </option>
+                            ))}
                         </select>
 
                         {/* زر الإرسال */}
-                        <button
-                            type="submit"
-                            className="req-submit"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting
-                                ? "جارِ مراجعة الطلب..."
-                                : "تأكيد الحجز"}
+                        <button type="submit" className="req-submit">
+                            تأكيد الحجز
                         </button>
                     </form>
 
@@ -146,7 +186,7 @@ const RequestServiceSection: React.FC = () => {
                             <br />
                             هنتواصل معاك في أقرب وقت
                             <br />
-                            لتأكيد الميعاد وبدء الشغل
+                            علشان نحدد الميعاد ونبدأ الشغل
                         </p>
                     </aside>
                 </div>

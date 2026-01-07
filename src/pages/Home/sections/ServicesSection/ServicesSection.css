@@ -75,7 +75,7 @@
 }
 
 .service-card:hover .service-icon {
-    background: var(--color-primary);
+    background: rgba(95, 168, 211, 0.1);
     color: #fff;
 }
 

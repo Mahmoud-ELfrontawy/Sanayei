@@ -124,6 +124,7 @@
     color: var(--color-bg-main);
     font-size: 28px;
     line-height: 1.5;
+    text-align: center;
 }
 
 .form-error {

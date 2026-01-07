@@ -5,17 +5,13 @@ export interface Service {
     name: string;
     description: string;
     slug: string;
-    icon: string; // URL للصورة
+    icon: string;
 }
 
 export const getServices = async (): Promise<Service[]> => {
     const response = await axios.get(
         "https://sanay3i.net/api/services",
-        {
-            headers: {
-                Accept: "application/json",
-            },
-        }
+        { headers: { Accept: "application/json" } }
     );
 
     return Array.isArray(response.data.data)

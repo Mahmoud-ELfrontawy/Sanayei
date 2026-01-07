@@ -1,25 +1,12 @@
-import { useEffect, useState, type JSX } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-    FaPaintBrush,
-    FaBolt,
-    FaHammer,
-    FaWrench,
-    FaArrowRight,
-} from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
 
 import { getServices } from "../../../../Api/services.api";
-import type { Service, ServiceIcon } from "../../../../constants/service";
+import type { Service } from "../../../../Api/services.api";
+
 import ServicesSkeleton from "./ServicesSkeleton";
 import "./ServicesSection.css";
-
-const iconsMap: Record<ServiceIcon, JSX.Element> = {
-    paint: <FaPaintBrush />,
-    electric: <FaBolt />,
-    carpentry: <FaHammer />,
-    plumbing: <FaWrench />,
-};
-
 
 interface ServicesSectionProps {
     limit?: number;
@@ -32,21 +19,17 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ limit }) => {
 
     useEffect(() => {
         getServices()
-            .then(setServices)
+            .then((data) => setServices(data))
             .catch(() => setError(true))
             .finally(() => setLoading(false));
     }, []);
-
 
     const visibleServices = limit
         ? services.slice(0, limit)
         : services;
 
     return (
-        <section
-            className="services-section"
-            aria-labelledby="services-title"
-        >
+        <section className="services-section" aria-labelledby="services-title">
             <div className="services-container">
                 <p className="services-eyebrow">خدماتنا</p>
 
@@ -69,8 +52,17 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ limit }) => {
                     <div className="services-grid">
                         {visibleServices.map((service) => (
                             <article className="service-card" key={service.id}>
-                                <div className="service-icon" aria-hidden="true">
-                                    {iconsMap[service.icon] ?? <FaWrench />}
+                                {/* أيقونة الخدمة من الـ API */}
+                                <div className="service-icon">
+                                    <img
+                                        src={service.icon}
+                                        alt={service.name}
+                                        loading="lazy"
+                                        onError={(e) => {
+                                            (e.currentTarget as HTMLImageElement).src =
+                                                "/fallback-icon.png";
+                                        }}
+                                    />
                                 </div>
 
                                 <div className="service-body">
@@ -97,7 +89,10 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ limit }) => {
 
                 {limit && (
                     <div className="services-cta">
-                        <Link to="/services" className="btn-primary-service">
+                        <Link
+                            to="/services"
+                            className="btn-primary-service"
+                        >
                             عرض كل الخدمات
                         </Link>
                     </div>
