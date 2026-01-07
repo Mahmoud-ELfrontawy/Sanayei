@@ -7,7 +7,7 @@
 
 /* ===== Container ===== */
 .services-container {
-    width: min(1200px, 96%);
+    width: min(1380px, 96%);
     margin: 0 auto;
     text-align: center;
     direction: ltr;
@@ -187,11 +187,11 @@
 }
 
 /* Skelton */
-.skeleton {
+.skeleton-service {
     animation: pulse 1.5s infinite ease-in-out;
 }
 
-.skeleton-icon {
+.skeleton-icon-service {
     width: 75px;
     height: 75px;
     border-radius: 50%;
@@ -199,7 +199,7 @@
     margin-bottom: 20px;
 }
 
-.skeleton-line {
+.skeleton-line-service {
     height: 20px;
     width: 100%;
     background: #3E587133;
@@ -207,7 +207,7 @@
     margin-bottom: 10px;
 }
 
-.skeleton-line.short {
+.skeleton-line-service.short {
     width: 60%;
 }
 
