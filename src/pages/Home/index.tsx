@@ -1,7 +1,7 @@
 import AboutSection from "./sections/AboutSection/AboutSection";
 import CardsRow from "./sections/CardsRow/CardsRow";
 import HeroSection from "./sections/HeroSection/HeroSection";
-// import ServicesSection from "../../components/home/ServicesSection";
+import ServicesSection from "./sections/ServicesSection/ServicesSection";
 
 const Home: React.FC = () => {
     return (
@@ -9,7 +9,7 @@ const Home: React.FC = () => {
             <HeroSection />
             <CardsRow/>
             <AboutSection/>
-            {/* <ServicesSection /> */}
+            <ServicesSection limit={4}/>
         </>
     );
 };
