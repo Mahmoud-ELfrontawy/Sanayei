@@ -12,28 +12,32 @@ import {
     type Sanaei,
 } from "../../../../Api/serviceRequest/sanaei.api";
 
-export function useRequestServiceData() {
+export const useRequestServiceData = () => {
     const [services, setServices] = useState<Service[]>([]);
     const [governorates, setGovernorates] = useState<Governorate[]>([]);
     const [sanaei, setSanaei] = useState<Sanaei[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getServices()
-            .then(setServices)
-            .catch(() => setServices([]));
+        const loadData = async () => {
+            try {
+                const [s, g, sn] = await Promise.all([
+                    getServices(),
+                    getGovernorates(),
+                    getSanaei(),
+                ]);
 
-        getGovernorates()
-            .then(setGovernorates)
-            .catch(() => setGovernorates([]));
+                setServices(s);
+                setGovernorates(g);
+                setSanaei(sn);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-        getSanaei()
-            .then(setSanaei)
-            .catch(() => setSanaei([]));
+        loadData();
     }, []);
 
-    return {
-        services,
-        governorates,
-        sanaei,
-    };
-}
+    return { services, governorates, sanaei, loading };
+};
+

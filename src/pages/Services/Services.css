@@ -1,0 +1,168 @@
+/* =========================
+    Services Page Header
+========================= */
+
+.services-head {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.services-head__label {
+    color: var(--color-primary);
+    font-weight: 700;
+    font-size: 30px;
+}
+
+.services-head__title {
+    font-size: 50px;
+    font-weight: 800;
+    color: var(--color-text-main);
+    margin-bottom: 40px;
+}
+
+/* =========================
+    Filters Bar
+========================= */
+
+.services-filters {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 100px;
+    flex-wrap: wrap;
+}
+
+/* =========================
+    Search Input
+========================= */
+
+.services-search {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: var(--radius-card-sm);
+    padding: 6px 12px;
+    border: 1px solid var(--color-primary);
+    box-shadow: 0 6px 18px rgba(12, 14, 20, 0.04);
+    max-width: 220px;
+    width: 100%;
+}
+
+.services-search input {
+    border: none;
+    outline: none;
+    padding: 8px 10px;
+    font-size: 20px;
+    font-weight: bold;
+    direction: rtl;
+    width: 100%;
+    color: var(--color-primary);
+}
+
+/* =========================
+    Custom Select
+========================= */
+
+.services-select-wrapper {
+    position: relative;
+}
+
+.services-select {
+    appearance: none;
+    padding: 14px 16px 14px 16px;
+    border-radius: var(--radius-card-sm);
+    border: 1px solid var(--color-primary);
+    background-color: #fff;
+    font-size: 20px;
+    color: var(--color-primary);
+    cursor: pointer;
+    direction: rtl;
+    width: 250px;
+    height: 60px;
+    box-shadow: 0 6px 18px rgba(12, 14, 20, 0.04);
+}
+
+.services-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(95, 168, 211, 0.2);
+}
+
+.services-select option {
+    font-size: 20px;
+    color: var(--color-text-main);
+}
+
+/* أيقونة السهم */
+.select-arrow {
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--color-primary);
+}
+
+/* =========================
+    Buttons
+========================= */
+
+.services-search-btn {
+    background: var(--color-primary);
+    color: var(--color-primary);
+    border: none;
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.services-reset-btn {
+    background: transparent;
+    color: var(--color-bg-section);
+    background-color: var(--color-primary);
+    border: 1px solid var(--color-border);
+    padding: 12px 18px;
+    font-size: 20px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: var(--transition-main);
+}
+.services-reset-btn:hover{
+    background: var(--color-primary-hover);
+}
+/* =========================
+    Grid
+========================= */
+
+.services-grid {
+    display: grid;
+    gap: 22px;
+    grid-template-columns: repeat(1, 1fr);
+}
+
+@media (min-width: 640px) {
+    .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .services-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* =========================
+    Empty State
+========================= */
+
+.services-empty {
+    grid-column: 1 / -1;   
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
