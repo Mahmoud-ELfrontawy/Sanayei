@@ -1,10 +1,20 @@
-interface RequestServiceSkeletonProps {
+interface SubmitSkeletonProps {
     loading: boolean;
 }
 
-export function RequestServiceSkeleton({
+/* =========================
+   Input Skeleton
+========================= */
+export const RequestServiceInputSkeleton = () => {
+    return <div className="req-input skeleton-service" />;
+};
+
+/* =========================
+   Submit Button Skeleton
+========================= */
+export const RequestServiceSubmitSkeleton = ({
     loading,
-}: RequestServiceSkeletonProps) {
+}: SubmitSkeletonProps) => {
     if (loading) {
         return (
             <div className="req-submit skeleton-service">
@@ -18,4 +28,4 @@ export function RequestServiceSkeleton({
             تأكيد الحجز
         </button>
     );
-}
+};

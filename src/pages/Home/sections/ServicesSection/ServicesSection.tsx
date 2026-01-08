@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
 
 import { getServices } from "../../../../Api/services.api";
-import type { Service } from "../../../../Api/services.api";
+import type { Service } from "../../../../constants/service";
 
 import ServicesSkeleton from "./ServicesSkeleton";
 import "./ServicesSection.css";
