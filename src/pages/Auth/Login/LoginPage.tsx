@@ -5,7 +5,9 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import img1 from "../../../assets/images/cuate (2) 1.png";
-import { login } from "../../../Api/auth/login.api";
+import { loginUser } from "../../../Api/auth/loginUser.api";
+import { loginCraftsman } from "../../../Api/auth/loginCraftsman.api";
+import { loginCompany } from "../../../Api/auth/loginCompany.api";
 
 import "./Login.css";
 
@@ -25,26 +27,38 @@ const LoginPage: React.FC = () => {
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>();
 
-  const onSubmit = async (data: LoginFormValues) => {
-    console.log("Selected User Type:", data.userType);
+const onSubmit = async (data: LoginFormValues) => {
+  try {
+    let res;
 
-    try {
-      const res = await login(data);
+    switch (data.userType) {
+      case "craftsman":
+        res = await loginCraftsman(data);
+        break;
 
-      localStorage.setItem("token", res.token);
-      localStorage.setItem("userType", data.userType);
+      case "company":
+        res = await loginCompany(data);
+        break;
 
-      const userName = res.user?.name || "أهلاً بيك";
-      toast.success(`أهلاً بيك يا ${userName} 👋`);
-
-      navigate("/");
-    } catch (error: any) {
-      toast.error(
-        error?.response?.data?.message ||
-          "البريد الإلكتروني أو كلمة المرور غير صحيحة ❌"
-      );
+      default:
+        res = await loginUser(data);
     }
-  };
+
+    localStorage.setItem("token", res.token);
+    localStorage.setItem("userType", data.userType);
+
+    const userName = res.user?.name || "أهلاً بيك";
+    toast.success(`أهلاً بيك يا ${userName} 👋`);
+
+    navigate("/");
+  } catch (error: any) {
+    toast.error(
+      error?.response?.data?.message ||
+        "البريد الإلكتروني أو كلمة المرور غير صحيحة ❌"
+    );
+  }
+};
+
 
   return (
     <div className="auth-page-wrapper">
