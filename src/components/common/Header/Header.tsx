@@ -41,7 +41,7 @@ const Header: React.FC = () => {
                     </Button>
 
                     <Button
-                        to="/join"
+                        to="/login"
                         variant="outline"
                         icon={<IoIosArrowDown size={16} />}
                     >

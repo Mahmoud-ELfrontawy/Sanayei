@@ -24,7 +24,7 @@ const JoinPage: React.FC = () => {
                 {card.button}
               </Link>
             </div>
-          ))}g
+          ))}
         </div>
       </div>
     </section>
