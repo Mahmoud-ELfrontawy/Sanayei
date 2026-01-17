@@ -40,7 +40,6 @@
   color: var(--color-text-accent);
   margin-bottom: 32px;
   align-self: flex-start;
-  padding-right: 100px;
 }
 
 /* ===== Form ===== */
@@ -60,7 +59,7 @@
   padding: 0 16px;
   border-radius: var(--radius-btn);
   border: 1px solid var(--color-border);
-  font-size: 15px;
+  font-size: 17px;
   background: var(--color-bg-main);
   color: var(--color-text-main);
   transition: var(--transition-main);
@@ -127,7 +126,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 14px;
+  font-size: 17px;
   color: var(--color-text-muted);
 }
 
@@ -194,43 +193,13 @@
 }
 
 /* ===== Social ===== */
-.social-buttons-container {
-  display: flex;
-  gap: 15px;
-  width: 100%;
-  max-width: 520px;
-  margin-bottom: 20px;
-}
 
-.social-btn {
-  flex: 1;
-  height: 50px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-btn);
-  background: var(--color-bg-main);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  cursor: pointer;
-  transition: var(--transition-fast);
-}
-
-.social-btn:hover {
-  background: var(--color-bg-section);
-}
-
-.social-btn-text {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-text-main);
-}
 
 /* ===== Register ===== */
 .login-register {
-  font-size: 15px;
+  font-size: 17px;
   color: var(--color-text-muted);
-  margin: 15px 0;
+  margin: 17px 0;
 }
 
 .login-register a {
