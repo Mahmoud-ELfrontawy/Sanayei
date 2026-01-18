@@ -33,7 +33,6 @@ const ForgotPasswordPage: React.FC = () => {
         "تم إرسال رمز التحقق إلى بريدك الإلكتروني 📩"
       );
 
-      // ✅ التحويل التلقائي
       navigate("/reset-password", {
         state: { email: data.email },
       });

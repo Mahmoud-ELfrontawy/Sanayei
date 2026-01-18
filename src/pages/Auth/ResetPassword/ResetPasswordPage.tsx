@@ -1,50 +1,52 @@
-import { useForm } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useState } from "react";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import { useForm, useWatch } from "react-hook-form";
+import { useLocation, Link } from "react-router-dom";
+
+import type { ResetPasswordForm } from "./resetPassword.types";
+import { useResetPassword } from "./useResetPassword";
 
 import "./ResetPassword.css";
 
-interface ResetPasswordPayload {
-  otp: string;
-  password: string;
-  confirmPassword: string;
+interface LocationState {
+  email?: string;
 }
 
 const ResetPasswordPage = () => {
-  const navigate = useNavigate();
   const location = useLocation();
+  const { email } = (location.state as LocationState) || {};
 
-  const email = location.state?.email;
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors, isSubmitting },
-  } = useForm<ResetPasswordPayload>();
+  } = useForm<ResetPasswordForm>();
 
-  const onSubmit = async (data: ResetPasswordPayload) => {
-    if (data.password !== data.confirmPassword) {
-      toast.error("كلمتا المرور غير متطابقتين");
-      return;
-    }
+  const passwordValue = useWatch({
+    control,
+    name: "password",
+  });
 
-    // تجربة فقط
-    console.log({
-      email,
-      otp: data.otp,
-      password: data.password,
-    });
+  const { submit } = useResetPassword({ email: email || "" });
 
-    toast.success("تم تغيير كلمة المرور بنجاح ✅");
-
-    navigate("/login");
-  };
+  if (!email) {
+    return (
+      <div className="text-center mt-20" dir="rtl">
+        <p>عذراً، يجب إدخال البريد الإلكتروني أولاً.</p>
+        <Link to="/forgot-password" style={{ color: "orange" }}>
+          اضغط هنا للعودة
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="auth-page-wrapper">
-      <div className="auth-card-password">
-
+      <div className="auth-card-reset">
         <div className="auth-form">
 
           <h2 className="auth-title-password">
@@ -55,22 +57,16 @@ const ResetPasswordPage = () => {
             أدخل رمز التحقق المرسل إلى بريدك الإلكتروني
           </p>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(submit)}>
 
             {/* OTP */}
             <input
-              type="text"
-              placeholder="رمز التحقق (OTP)"
               className="login-input-password"
+              placeholder="رمز التحقق"
               {...register("otp", {
                 required: "رمز التحقق مطلوب",
-                minLength: {
-                  value: 4,
-                  message: "رمز غير صالح",
-                },
               })}
             />
-
             {errors.otp && (
               <span className="form-error">
                 {errors.otp.message}
@@ -78,18 +74,27 @@ const ResetPasswordPage = () => {
             )}
 
             {/* Password */}
-            <input
-              type="password"
-              placeholder="كلمة المرور الجديدة"
-              className="login-input-password"
-              {...register("password", {
-                required: "كلمة المرور مطلوبة",
-                minLength: {
-                  value: 6,
-                  message: "على الأقل 6 أحرف",
-                },
-              })}
-            />
+            <div className="password-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="login-input-password"
+                placeholder="كلمة المرور الجديدة"
+                {...register("password", {
+                  required: "كلمة المرور مطلوبة",
+                  minLength: {
+                    value: 6,
+                    message: "6 أحرف على الأقل",
+                  },
+                })}
+              />
+
+              <span
+                className="eye-icon"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </span>
+            </div>
 
             {errors.password && (
               <span className="form-error">
@@ -98,17 +103,27 @@ const ResetPasswordPage = () => {
             )}
 
             {/* Confirm Password */}
-            <input
-              type="password"
-              placeholder="تأكيد كلمة المرور"
-              className="login-input-password"
-              {...register("confirmPassword", {
-                required: "تأكيد كلمة المرور مطلوب",
-                validate: (value) =>
-                  value === watch("password") ||
-                  "كلمتا المرور غير متطابقتين",
-              })}
-            />
+            <div className="password-wrapper">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                className="login-input-password"
+                placeholder="تأكيد كلمة المرور"
+                {...register("confirmPassword", {
+                  validate: (value) =>
+                    value === passwordValue ||
+                    "كلمتا المرور غير متطابقتين",
+                })}
+              />
+
+              <span
+                className="eye-icon"
+                onClick={() =>
+                  setShowConfirmPassword((prev) => !prev)
+                }
+              >
+                {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+              </span>
+            </div>
 
             {errors.confirmPassword && (
               <span className="form-error">
@@ -117,7 +132,6 @@ const ResetPasswordPage = () => {
             )}
 
             <button
-              type="submit"
               className="login-btn"
               disabled={isSubmitting}
             >
@@ -125,6 +139,7 @@ const ResetPasswordPage = () => {
                 ? "جاري الحفظ..."
                 : "تغيير كلمة المرور"}
             </button>
+
           </form>
 
         </div>
@@ -134,3 +149,4 @@ const ResetPasswordPage = () => {
 };
 
 export default ResetPasswordPage;
+
