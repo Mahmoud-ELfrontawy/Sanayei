@@ -1,8 +1,14 @@
-import axios from 'axios';
-import type { ForgotPasswordPayload } from "../../pages/Auth/ForgotPassword/ForgotPasswordPage";
+import axios from "axios";
+
+export interface ForgotPasswordPayload {
+    email: string;
+}
 
 export const forgotPassword = async (data: ForgotPasswordPayload) => {
-    const res = await axios.post("/auth/forgot-password", data);
+    const response = await axios.post(
+        "https://sanay3i.net/api/auth/send-otp",
+        data,
+    );
 
-    return res.data;
+    return response.data;
 };
