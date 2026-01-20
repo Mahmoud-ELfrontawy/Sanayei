@@ -13,14 +13,14 @@ import ForgotPasswordPage from "../pages/Auth/ForgotPassword/ForgotPasswordPage"
 import ResetPasswordPage from "../pages/Auth/ResetPassword/ResetPasswordPage";
 import RegisterPage from "../pages/Auth/Register/RegisterPage";
 import GoogleCallback from "../pages/Auth/google-callback/GoogleCallback";
-
-
-
+import EditProfilePagee from "../pages/Profile/ProfileMe/ProfileMe";
+import ProfileMe from "../pages/Profile/ProfileMe/ProfileMe";
+import ProfileReviews from "../pages/Profile/Reviews/ProfileReviews";
+import EditProfileLayout from "../layouts/EditProfileLayout";
 const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-
         {/* صفحة استقبال Google Token */}
         <Route path="/google-callback" element={<GoogleCallback />} />
 
@@ -30,14 +30,20 @@ const AppRouter: React.FC = () => {
           <Route path="/join" element={<JoinPage />} />
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/profile" element={<EditProfilePagee />} />
 
           {/* ===== Auth Pages ===== */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/register" element={<RegisterPage />} />
-        </Route>
 
+          {/* ===== Profile Pages ===== */}
+          <Route path="/profile" element={<EditProfileLayout />}>
+            <Route index element={<ProfileMe />} />
+            <Route path="reviews" element={<ProfileReviews />} />
+          </Route>
+        </Route>
       </Routes>
     </BrowserRouter>
   );
