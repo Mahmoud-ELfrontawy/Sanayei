@@ -27,7 +27,7 @@ const RequestServiceForm: React.FC<Props> = ({
         register,
         formState: { errors, isSubmitting },
     } = form;
-    
+
     return (
         <>
             {/* الاسم */}
@@ -73,6 +73,30 @@ const RequestServiceForm: React.FC<Props> = ({
                     {errors.email && (
                         <span className="form-error">
                             {errors.email.message}
+                        </span>
+                    )}
+                </>
+            )}
+
+            {/* رقم التليفون */}
+            {isSubmitting ? (
+                <RequestServiceInputSkeleton />
+            ) : (
+                <>
+                    <input
+                        className="req-input"
+                        placeholder="رقم الهاتف"
+                        {...register("phone", {
+                            required: "رقم الهاتف مطلوب",
+                            pattern: {
+                                value: /^01[0-2,5][0-9]{8}$/,
+                                message: "رقم الهاتف غير صحيح",
+                            },
+                        })}
+                    />
+                    {errors.phone && (
+                        <span className="form-error">
+                            {errors.phone.message}
                         </span>
                     )}
                 </>
@@ -171,10 +195,11 @@ const RequestServiceForm: React.FC<Props> = ({
                     <option value="">اختر صنايعي</option>
                     {sanaei.map((worker) => (
                         <option key={worker.id} value={worker.id}>
-                            {worker.al_sanaei_name} -{" "}
-                            {worker.al_sanaei_sanaeaa_type}
+                            {worker.name} - {worker.craft_type}
                         </option>
                     ))}
+
+
                 </select>
             )}
 

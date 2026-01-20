@@ -13,6 +13,7 @@ import ForgotPasswordPage from "../pages/Auth/ForgotPassword/ForgotPasswordPage"
 import ResetPasswordPage from "../pages/Auth/ResetPassword/ResetPasswordPage";
 import RegisterPage from "../pages/Auth/Register/RegisterPage";
 import GoogleCallback from "../pages/Auth/google-callback/GoogleCallback";
+import ChooseSanayPage from "../pages/Technicians/ChooseSanayPage";
 
 
 
@@ -29,6 +30,7 @@ const AppRouter: React.FC = () => {
           <Route path="/" element={<Home />} />
           <Route path="/join" element={<JoinPage />} />
           <Route path="/services" element={<ServicesPage />} />
+          <Route path="/choose" element={<ChooseSanayPage />} />
           <Route path="/contact" element={<ContactPage />} />
 
           {/* ===== Auth Pages ===== */}

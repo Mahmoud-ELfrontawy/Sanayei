@@ -1,3 +1,5 @@
+// صفحه عرض المحافظات
+
 import axios from "axios";
 
 export interface Governorate {

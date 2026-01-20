@@ -57,6 +57,29 @@ const RegisterPage: React.FC = () => {
               <span className="form-error">{errors.email.message}</span>
             )}
 
+            {/* Phone */}
+            {isSubmitting ? (
+              <RequestServiceInputSkeleton />
+            ) : (
+              <input
+                type="tel"
+                inputMode="numeric"
+                className="login-input"
+                placeholder="رقم الهاتف"
+                {...register("phone", {
+                  required: "رقم الهاتف مطلوب",
+                  pattern: {
+                    value: /^01[0-2,5][0-9]{8}$/,
+                    message: "رقم الهاتف غير صحيح",
+                  },
+                })}
+              />
+            )}
+            {errors.phone && (
+              <span className="form-error">
+                {errors.phone.message}
+              </span>
+            )}
 
             {/* Password */}
             <div className="password-wrapper">

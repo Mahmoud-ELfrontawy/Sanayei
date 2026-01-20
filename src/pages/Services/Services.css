@@ -104,6 +104,7 @@
     transform: translateY(-50%);
     pointer-events: none;
     color: var(--color-primary);
+    z-index: 2;
 }
 
 /* =========================
