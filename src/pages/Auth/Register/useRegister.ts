@@ -9,6 +9,7 @@ import { register as registerApi } from "../../../Api/auth/register.api";
 export interface RegisterFormValues {
     name: string;
     email: string;
+    phone: string;
     password: string;
     password_confirmation: string;
 }
@@ -24,6 +25,7 @@ export const useRegister = () => {
             const res = await registerApi({
                 name: data.name,
                 email: data.email,
+                phone: data.phone,
                 password: data.password,
                 password_confirmation: data.password_confirmation,
             });

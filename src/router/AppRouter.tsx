@@ -17,6 +17,11 @@ import EditProfilePagee from "../pages/Profile/ProfileMe/ProfileMe";
 import ProfileMe from "../pages/Profile/ProfileMe/ProfileMe";
 import ProfileReviews from "../pages/Profile/Reviews/ProfileReviews";
 import EditProfileLayout from "../layouts/EditProfileLayout";
+import ChooseSanayPage from "../pages/Technicians/ChooseSanayPage";
+
+
+
+
 const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
@@ -29,6 +34,7 @@ const AppRouter: React.FC = () => {
           <Route path="/" element={<Home />} />
           <Route path="/join" element={<JoinPage />} />
           <Route path="/services" element={<ServicesPage />} />
+          <Route path="/choose" element={<ChooseSanayPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/profile" element={<EditProfilePagee />} />
 

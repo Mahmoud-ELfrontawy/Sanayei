@@ -1,0 +1,232 @@
+/* ==============================
+   Workers Section
+============================== */
+
+.workers-section {
+    padding: 80px 0;
+    background: #f9fafb;
+}
+
+.workers-container {
+    width: 90%;
+    max-width: 1300px;
+    margin: auto;
+    text-align: center;
+}
+
+/* ==============================
+   Headings
+============================== */
+
+/* ==============================
+   GRID
+============================== */
+
+.workers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+}
+
+/* ==============================
+   Technician Card
+============================== */
+
+.worker-card {
+    position: relative;
+    background: #fff;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.worker-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
+}
+
+/* ==============================
+   Favorite Heart
+============================== */
+
+.worker-fav {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 5;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    color: #dc2626;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    transition: transform .2s ease;
+}
+
+.worker-fav:hover {
+    transform: scale(1.1);
+}
+
+.worker-fav svg {
+    font-size: 25px;
+}
+
+/* ==============================
+   Image
+============================== */
+
+.worker-media {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.worker-media img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* ==============================
+   Body
+============================== */
+
+.worker-body {
+    padding: 18px 20px 22px;
+    text-align: right;
+}
+
+/* ==============================
+   Job tag
+============================== */
+
+.worker-tag {
+    display: inline-block;
+    background: var(--color-text-secondary);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+    padding: 5px 13px;
+    margin-bottom: 8px;
+}
+
+/* ==============================
+   Name
+============================== */
+.worker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.worker-name-sanay {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--color-text-muted);
+    margin: 6px 0;
+}
+
+.worker-location {
+    font-size: 18px;
+    color: var(--color-text-main);
+    display: block;
+    margin: 4px 0 6px;
+}
+
+
+/* ==============================
+   Bio
+============================== */
+
+.worker-bio {
+    font-size: 18px;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    margin-bottom: 12px;
+}
+
+/* ==============================
+   Rating
+============================== */
+
+.worker-meta {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.worker-stars {
+    list-style: none;
+    display: flex;
+    gap: 4px;
+    padding: 0;
+    margin: 0;
+}
+
+.worker-stars li {
+    color: #e5e7eb;
+    font-size: 18px;
+}
+
+.worker-stars li.on {
+    color: #fbbf24;
+}
+
+.worker-reviews {
+    font-size: 17px;
+    color: var(--color-text-secondary);
+}
+
+/* ==============================
+   Price
+============================== */
+
+.worker-price {
+    font-size: 17px;
+    font-weight: 700;
+    color: #16a34a;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+/* ==============================
+   CTA
+============================== */
+
+
+/* ==============================
+   Responsive
+============================== */
+
+@media (max-width: 1024px) {
+    .workers-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .workers-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .worker-media {
+        height: 170px;
+    }
+
+    .worker-name-sanay {
+        font-size: 18px;
+    }
+
+    .worker-bio {
+        font-size: 14px;
+    }
+}
