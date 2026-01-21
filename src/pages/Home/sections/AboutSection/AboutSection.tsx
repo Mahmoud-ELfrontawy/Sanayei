@@ -1,6 +1,5 @@
 // AboutSection.tsx
 import React from "react";
-import { Link } from "react-router-dom";
 import { FiCheckCircle, FiClock } from "react-icons/fi";
 import { FaArrowLeft } from "react-icons/fa6";
 
@@ -8,9 +7,28 @@ import bigImg from "../../../../assets/images/portfolio image 1.png";
 import smallImg from "../../../../assets/images/portfolio image 2.png";
 import mediaDot from "../../../../assets/images/dots.png";
 
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../../hooks/useAuth";
+import { toast } from "react-toastify";
+
+
 import "./AboutSection.css";
 
 const AboutSection: React.FC = () => {
+
+    const navigate = useNavigate();
+    const { isAuthenticated } = useAuth();
+
+    const handleRequestNow = () => {
+        if (!isAuthenticated) {
+            toast.info("من فضلك سجل دخولك أولًا 🔐");
+            navigate("/login");
+            return;
+        }
+
+        navigate("/choose");
+    };
+
     return (
         <section className="about-section" aria-labelledby="about-title">
             <div className="about-container">
@@ -56,7 +74,7 @@ const AboutSection: React.FC = () => {
                                 <h4>رؤيتنا</h4>
                                 <p>
                                     نكون المنصة الأولى لخدمات الصيانة والديكور
-                                    في الوطن العربي بجودة عالية وتجربة استخدام سهلة وآمنة. 
+                                    في الوطن العربي بجودة عالية وتجربة استخدام سهلة وآمنة.
                                 </p>
                             </div>
                         </li>
@@ -76,14 +94,15 @@ const AboutSection: React.FC = () => {
                     </ul>
 
                     <div className="about-cta mt-5">
-                        <Link
-                            to="/request-service"
-                            className="btn-about btn-primary-about
-                            inline-flex items-center justify-between gap-2"
+                        <button
+                            type="button"
+                            onClick={handleRequestNow}
+                            className="btn-about btn-primary-about"
                         >
                             اطلب الآن
                             <FaArrowLeft />
-                        </Link>
+                        </button>
+
                     </div>
                 </div>
 

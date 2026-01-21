@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
@@ -7,6 +6,7 @@ import { AxiosError } from "axios";
 import { loginUser } from "../../../Api/auth/loginUser.api";
 import { loginCraftsman } from "../../../Api/auth/loginCraftsman.api";
 import { loginCompany } from "../../../Api/auth/loginCompany.api";
+import { setToastAfterReload } from "../../../utils/toastAfterReload";
 
 export interface LoginFormValues {
     email: string;
@@ -16,7 +16,6 @@ export interface LoginFormValues {
 
 export const useLogin = () => {
     const [showPassword, setShowPassword] = useState(false);
-    const navigate = useNavigate();
 
     const form = useForm<LoginFormValues>({
         defaultValues: {
@@ -45,9 +44,8 @@ export const useLogin = () => {
             localStorage.setItem("userType", data.userType);
 
             const userName = response.user?.name || "أهلاً بيك";
-            toast.success(`أهلاً بيك يا ${userName} 👋`);
-
-            navigate("/");
+            setToastAfterReload(`أهلاً بيك يا ${userName} 👋`);
+            window.location.replace("/");
         } catch (error: unknown) {
             const axiosError = error as AxiosError<{ message: string }>;
             const message = axiosError?.response?.data?.message;

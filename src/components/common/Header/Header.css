@@ -6,7 +6,7 @@
 .header-nav {
     max-width: 1600px;
     margin: auto;
-    padding: 16px 24px;
+    padding: 16px 24px 8px 24px;
     min-height: 96px;
     display: flex;
     align-items: center;
@@ -69,4 +69,144 @@
     color: var(--color-primary);
     border-radius: var(--radius-btn);
     text-decoration: none;
+}
+
+/* ================= Header Avatar Area ================= */
+
+.avatar-wrapper-header {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+/* ================= Profile Image ================= */
+
+.avatar-wrapper-profile {
+    position: relative;
+    width: 50px;
+    height: 50px;
+}
+
+.avatar-wrapper-profile img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--color-accent);
+}
+
+/* 🟢 online dot */
+.online-dot {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 12px;
+    height: 12px;
+    background-color: #22c55e;
+    border-radius: 50%;
+    border: 2px solid #fff;
+}
+
+/* ================= Icons ================= */
+
+.icon-btn-login {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.icon-btn-login:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+/* ================= Dropdown ================= */
+
+.avatar-dropdown {
+    position: relative;
+}
+
+.profile-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+/* القائمة */
+.profile-dropdown {
+    position: absolute;
+    top: 62px;
+    left: 0;
+    width: 200px;
+
+    /* ✨ Glass effect */
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 14px;
+
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    z-index: 200;
+
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: 0.2s ease;
+}
+
+.profile-dropdown::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 15px;
+
+    width: 0;
+    height: 0;
+
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid rgba(0, 0, 0, 0.06);
+
+    filter: drop-shadow(0 -2px 2px rgba(0, 0, 0, 0.08));
+}
+
+
+/* لما تكون مفتوحة */
+.avatar-dropdown .profile-dropdown {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* ================= Dropdown Items ================= */
+
+.dropdown-item {
+    padding: 14px 18px;
+    display: block;
+    width: 100%;
+    background: transparent;
+    border: none;
+    font-size: 17px;
+    text-align: right;
+    cursor: pointer;
+    color: #111;
+    text-decoration: none;
+}
+
+.dropdown-item:hover {
+    background: #f6f6f6;
+}
+
+.dropdown-item.logout {
+    color: #dc2626;
+    border-top: 1px solid #eee;
 }

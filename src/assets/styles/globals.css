@@ -20,11 +20,9 @@ button {
 }
 
 .Toastify__toast--success {
-    background: var(--color-success);
-    color: #fff;
+    color: var(--color-success)
 }
 
 .Toastify__toast--error {
-    background: var(--color-error);
-    color: #fff;
+    color: var(--color-error);
 }

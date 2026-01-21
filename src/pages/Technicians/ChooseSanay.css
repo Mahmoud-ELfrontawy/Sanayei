@@ -82,16 +82,23 @@
 ============================== */
 
 .worker-media {
+    width: 100%;
+    height: 300px;
     display: flex;
     justify-content: center;
     align-items: center;
+    background: #f7f7f7;   /* 👈 يملأ الفراغ */
+    overflow: hidden;
+    border-radius: 12px;
 }
 
 .worker-media img {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;   /* 👈 الصورة كاملة */
 }
+
+
 
 /* ==============================
    Body

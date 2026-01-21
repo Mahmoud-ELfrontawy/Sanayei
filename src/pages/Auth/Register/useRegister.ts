@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 
 import { register as registerApi } from "../../../Api/auth/register.api";
+import { setToastAfterReload } from "../../../utils/toastAfterReload";
 
 export interface RegisterFormValues {
     name: string;
@@ -16,7 +16,6 @@ export interface RegisterFormValues {
 
 export const useRegister = () => {
     const [showPassword, setShowPassword] = useState(false);
-    const navigate = useNavigate();
 
     const form = useForm<RegisterFormValues>();
 
@@ -34,8 +33,8 @@ export const useRegister = () => {
                 localStorage.setItem("token", res.token);
             }
 
-            toast.success(`تم إنشاء الحساب بنجاح، أهلاً بيك يا ${data.name} 👋`);
-            navigate("/login");
+            setToastAfterReload("تم إنشاء الحساب بنجاح 🎉");
+            window.location.replace("/login");
         } catch (error: unknown) {
             const message =
                 error instanceof AxiosError

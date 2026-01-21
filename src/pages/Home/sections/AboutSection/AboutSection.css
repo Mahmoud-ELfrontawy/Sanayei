@@ -134,6 +134,9 @@
 
 /* Button */
 .btn-about {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     width: 250px;
     padding: 10px 30px;
     border-radius: var(--radius-btn);

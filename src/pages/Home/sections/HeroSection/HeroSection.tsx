@@ -1,8 +1,25 @@
 import imageHome from "../../../../assets/images/home.jpg";
-import Button from "../../../../components/ui/Button/Button";
 import "./HeroSection.css";
 
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../../hooks/useAuth";
+import { toast } from "react-toastify";
+
 const HeroSection: React.FC = () => {
+
+    const navigate = useNavigate();
+    const { isAuthenticated } = useAuth();
+
+    const handleRequestNow = () => {
+        if (!isAuthenticated) {
+            toast.info("من فضلك سجل دخولك أولًا 🔐");
+            navigate("/login");
+            return;
+        }
+
+        navigate("/choose");
+    };
+
     return (
         <section className="home">
             <div className="image-home">
@@ -28,16 +45,20 @@ const HeroSection: React.FC = () => {
 
                     {/* أزرار */}
                     <div className="flex gap-3">
-                        <Button to="/login" variant="primary">
+                        <button
+                            type="button"
+                            onClick={handleRequestNow}
+                            className="btn-hero"
+                        >
                             اطلب الآن
-                        </Button>
+                        </button>
 
-                        <Button
-                            to="/register"
-                            variant="outline"
+                        <button
+                            onClick={handleRequestNow}
+                            className="btn-outline-herosection"
                         >
                             اقرأ اكثر
-                        </Button>
+                        </button>
                     </div>
                 </div>
             </div>

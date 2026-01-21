@@ -8,6 +8,7 @@ import { getMyProfile, updateProfile } from "../../../Api/user/profile.api";
 
 import defaultAvatar from "../../../assets/images/avatar1.jfif";
 import "./ProfileMe.css";
+import { setToastAfterReload } from "../../../utils/toastAfterReload";
 
 interface UserState {
   name: string;
@@ -61,17 +62,24 @@ const ProfileMe = () => {
   const handleSave = async () => {
     try {
       setLoading(true);
+
       await updateProfile({
         ...user,
         profile_image: imageFile,
       });
-      toast.success("تم حفظ التعديلات بنجاح ✅");
+
+      setToastAfterReload("تم حفظ التعديلات بنجاح ✅");
+      window.location.replace("/profile");
+
     } catch {
-      toast.error("فشل حفظ التعديلات ❌");
+      setToastAfterReload("فشل حفظ التعديلات ❌", "error");
+      window.location.replace("/profile");
+
     } finally {
       setLoading(false);
     }
   };
+
 
   const imageSrc = imageFile
     ? URL.createObjectURL(imageFile)

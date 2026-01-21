@@ -54,6 +54,27 @@
     margin: 0 0 0 0;
 }
 
+.btn-hero{
+    font-size: 20px;
+    border-radius: var(--radius-btn);
+    background-color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    color: white;
+    padding: 8px 55px;
+}
+.btn-outline-herosection{
+    background-color: transparent;
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+    padding: 12px 58px;
+    font-size: 20px;
+    border-radius: var(--radius-btn);
+    transition: var(--transition-fast);
+}
+.btn-outline-herosection:hover{
+    background: var(--color-primary);
+    color: white;
+}
 
 /* ========== Responsive ========== */
 

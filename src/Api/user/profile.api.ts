@@ -13,13 +13,13 @@ export const getMyProfile = async () => {
   return res.data;
 };
 
-export const updateProfile = async (data: any) => {
+export const updateProfile = async (data: Record<string, unknown>) => {
   const token = localStorage.getItem("token");
   const formData = new FormData();
 
   Object.entries(data).forEach(([key, value]) => {
     if (value !== null && value !== undefined)
-      formData.append(key, value as any);
+      formData.append(key, value as string | Blob);
   });
 
   const res = await axios.post(

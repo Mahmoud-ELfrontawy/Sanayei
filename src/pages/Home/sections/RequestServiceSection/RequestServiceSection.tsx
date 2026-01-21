@@ -13,20 +13,43 @@ import { useRequestServiceData } from "./useRequestServiceData";
 import RequestServiceForm from "./RequestServiceForm";
 
 import "./RequestServiceSection.css";
+import { useAuth } from "../../../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const RequestServiceSection: React.FC = () => {
     const form = useForm<ServiceRequestPayload>();
     const { services, governorates, sanaei } = useRequestServiceData();
+    const { isAuthenticated } = useAuth();
+    const navigate = useNavigate();
+
 
     const onSubmit = async (data: ServiceRequestPayload) => {
+
+        // 🚫 مش مسجل دخول
+        if (!isAuthenticated) {
+            toast.info("من فضلك سجل دخولك أولًا لإرسال الطلب 🔐");
+
+            navigate("/login", {
+                state: {
+                    from: "request-service",
+                },
+            });
+
+            return;
+        }
+
+        // ✅ مسجل دخول
         try {
             await createServiceRequest(data);
+
             toast.success("تم إرسال الطلب بنجاح ✅");
             form.reset();
+
         } catch {
             toast.error("حدث خطأ أثناء إرسال الطلب ❌");
         }
     };
+
 
     return (
         <section className="request-section">
@@ -50,7 +73,7 @@ const RequestServiceSection: React.FC = () => {
                     <aside className="req-side">
                         <h2 className="req-title">اطلب خدمتك الآن</h2>
                         <p className="req-text">
-                            املأ البيانات المطلوبة، 
+                            املأ البيانات المطلوبة،
                             واحنا هنتواصل معاك في أقرب وقت علشان نحدد الميعاد ونبدأ الشغل.
                         </p>
                     </aside>
