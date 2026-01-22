@@ -1,0 +1,178 @@
+.orders-section {
+    background: var(--color-bg-main);
+    padding: 60px 16px;
+    direction: rtl;
+}
+
+.orders-container {
+    width: min(1100px, 100%);
+    margin: auto;
+}
+
+.orders-title {
+    font-size: 35px;
+    font-weight: 800;
+    color: var(--color-primary);
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--color-primary);
+    display: inline-block;
+    padding-bottom: 6px;
+}
+
+/* ================= CARD ================= */
+
+.order-card {
+    background: var(--color-bg-section);
+    border-radius: var(--radius-card);
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    border: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+/* ================= RIGHT ================= */
+
+.order-info {
+    flex: 1;
+}
+
+.order-service {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--color-text-accent);
+    margin-bottom: 18px;
+}
+.line{
+    width: 200px;
+    height: 2px;
+    background-color: var(--color-text-secondary);
+    margin-bottom: 40px;
+}
+.order-details{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.order-details .details{
+    display: flex;
+    align-items: center;
+    gap: 35px;
+    margin-bottom: 20px;
+}
+.order-details .details span{
+    font-size: 20px;
+}
+.order-details p {
+    font-size: 20px;
+    color: var(--color-text-muted);
+}
+
+/* ================= LEFT ================= */
+
+.order-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.order-status {
+    padding: 7px 55px;
+    border-radius: var(--radius-sm);
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.order-status.pending {
+    background: var(--color-primary);
+}
+
+.order-status.accepted {
+    background: var(--color-success);
+}
+
+.order-status.rejected {
+    background: var(--color-error);
+}
+
+/* ================= ACTION ================= */
+
+.cancel-btn {
+    background: transparent;
+    border: 1px solid var(--color-error);
+    color: var(--color-error);
+    padding: 7px 57px;
+    border-radius: var(--radius-btn);
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.cancel-btn:hover {
+    background: var(--color-error);
+    color: #fff;
+}
+
+/* ================= POPUP ================= */
+
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.confirm-box {
+    background: var(--color-bg-main);
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    width: 450px;
+    text-align: center;
+}
+
+.confirm-box h4 {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.confirm-box p {
+    font-size: 20px;
+    color: var(--color-text-muted);
+    margin-bottom: 30px;
+}
+
+.confirm-actions {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.btn-no {
+    background: #eee;
+    border: none;
+    padding: 10px 25px;
+    font-size: 18px;
+    border-radius: var(--radius-btn);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-yes {
+    background: var(--color-error);
+    color: #fff;
+    border: none;
+    font-size: 18px;
+    padding: 10px 25px;
+    border-radius: var(--radius-btn);
+    font-weight: 700;
+    cursor: pointer;
+}

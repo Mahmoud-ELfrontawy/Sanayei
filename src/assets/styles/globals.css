@@ -26,3 +26,17 @@ button {
 .Toastify__toast--error {
     color: var(--color-error);
 }
+.empty-wrapper {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* الحجم الحقيقي للـ Lottie */
+.empty-lottie {
+    width: 500px;
+    height: 500px;
+    max-width: 80vw;
+}
+

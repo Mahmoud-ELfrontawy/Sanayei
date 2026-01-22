@@ -1,8 +1,7 @@
 import Lottie from "lottie-react";
-import Empty from "../../assets/lottie/empty.json"
+import Empty from "../../assets/lottie/empty.json";
 
 interface LottiePlayerProps {
-    animationData: object;
     loop?: boolean;
     autoplay?: boolean;
     className?: string;
@@ -11,15 +10,17 @@ interface LottiePlayerProps {
 const LottiePlayerDataNotFound: React.FC<LottiePlayerProps> = ({
     loop = true,
     autoplay = true,
-    className = "w-100 h-100",
+    className = "empty-lottie",
 }) => {
     return (
-        <Lottie 
-            animationData={Empty}
-            loop={loop}
-            autoplay={autoplay}
-            className={className}
-        />
+        <div className="empty-wrapper">
+            <Lottie
+                animationData={Empty}
+                loop={loop}
+                autoplay={autoplay}
+                className={className}
+            />
+        </div>
     );
 };
 

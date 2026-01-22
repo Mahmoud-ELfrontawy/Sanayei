@@ -18,6 +18,7 @@ import ProfileMe from "../pages/Profile/ProfileMe/ProfileMe";
 import ProfileReviews from "../pages/Profile/Reviews/ProfileReviews";
 import EditProfileLayout from "../layouts/EditProfileLayout";
 import ChooseSanayPage from "../pages/Technicians/ChooseSanayPage";
+import MyOrdersPage from "../pages/Orders/MyOrdersPage";
 
 
 
@@ -35,6 +36,7 @@ const AppRouter: React.FC = () => {
           <Route path="/join" element={<JoinPage />} />
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/choose" element={<ChooseSanayPage />} />
+          <Route path="/orders" element={<MyOrdersPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/profile" element={<EditProfilePagee />} />
 

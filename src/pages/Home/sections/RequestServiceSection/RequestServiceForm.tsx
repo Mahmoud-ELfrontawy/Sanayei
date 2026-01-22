@@ -25,8 +25,10 @@ const RequestServiceForm: React.FC<Props> = ({
 }) => {
     const {
         register,
+        setValue,
         formState: { errors, isSubmitting },
     } = form;
+
 
     return (
         <>
@@ -171,16 +173,31 @@ const RequestServiceForm: React.FC<Props> = ({
                     className="req-input"
                     {...register("service_type", {
                         required: "اختر الخدمة",
+                        onChange: (e) => {
+                            const slug = e.target.value;
+
+                            const selectedService = services.find(
+                                (s) => s.slug === slug
+                            );
+
+                            setValue(
+                                "service_name",
+                                selectedService?.name || ""
+                            );
+                        },
                     })}
                 >
                     <option value="">اختر خدمتك</option>
+
                     {services.map((service) => (
                         <option key={service.id} value={service.slug}>
                             {service.name}
                         </option>
                     ))}
                 </select>
+
             )}
+            <input type="hidden" {...register("service_name")} />
 
             {/* الصنايعية */}
             {isSubmitting ? (
@@ -190,18 +207,31 @@ const RequestServiceForm: React.FC<Props> = ({
                     className="req-input"
                     {...register("industrial_type", {
                         required: "اختر صنايعي",
+                        onChange: (e) => {
+                            const workerId = e.target.value;
+
+                            const selectedWorker = sanaei.find(
+                                (w) => String(w.id) === workerId
+                            );
+
+                            setValue(
+                                "industrial_name",
+                                selectedWorker?.name || ""
+                            );
+                        },
                     })}
                 >
                     <option value="">اختر صنايعي</option>
+
                     {sanaei.map((worker) => (
                         <option key={worker.id} value={worker.id}>
                             {worker.name} - {worker.craft_type}
                         </option>
                     ))}
-
-
                 </select>
+
             )}
+            <input type="hidden" {...register("industrial_name")} />
 
             {/* زر الإرسال */}
             <RequestServiceSubmitSkeleton loading={isSubmitting} />

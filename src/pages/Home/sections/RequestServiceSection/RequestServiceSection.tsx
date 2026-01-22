@@ -12,6 +12,7 @@ import type { ServiceRequestPayload } from "../../../../constants/serviceRequest
 import { useRequestServiceData } from "./useRequestServiceData";
 import RequestServiceForm from "./RequestServiceForm";
 
+
 import "./RequestServiceSection.css";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -22,34 +23,42 @@ const RequestServiceSection: React.FC = () => {
     const { isAuthenticated } = useAuth();
     const navigate = useNavigate();
 
-
     const onSubmit = async (data: ServiceRequestPayload) => {
 
-        // 🚫 مش مسجل دخول
         if (!isAuthenticated) {
-            toast.info("من فضلك سجل دخولك أولًا لإرسال الطلب 🔐");
-
+            toast.info("من فضلك سجل دخولك أولًا 🔐");
             navigate("/login", {
-                state: {
-                    from: "request-service",
-                },
+                state: { from: "request-service" },
             });
-
             return;
         }
 
-        // ✅ مسجل دخول
         try {
             await createServiceRequest(data);
+            // 🔥 تخزين مؤقت
+            const old = JSON.parse(localStorage.getItem("myOrders") || "[]");
+            const newRequest = {
+                id: crypto.getRandomValues(new Uint32Array(1))[0],
+                ...data,
+                status: "pending",
+            };
+
+            localStorage.setItem(
+                "myOrders",
+                JSON.stringify([newRequest, ...old])
+            );
 
             toast.success("تم إرسال الطلب بنجاح ✅");
+
             form.reset();
+
+            // ✅ نروح صفحة الطلبات
+            navigate("/orders");
 
         } catch {
             toast.error("حدث خطأ أثناء إرسال الطلب ❌");
         }
     };
-
 
     return (
         <section className="request-section">
@@ -74,7 +83,7 @@ const RequestServiceSection: React.FC = () => {
                         <h2 className="req-title">اطلب خدمتك الآن</h2>
                         <p className="req-text">
                             املأ البيانات المطلوبة،
-                            واحنا هنتواصل معاك في أقرب وقت علشان نحدد الميعاد ونبدأ الشغل.
+                            وسنتواصل معك في أقرب وقت.
                         </p>
                     </aside>
                 </div>
@@ -82,5 +91,4 @@ const RequestServiceSection: React.FC = () => {
         </section>
     );
 };
-
 export default RequestServiceSection;
