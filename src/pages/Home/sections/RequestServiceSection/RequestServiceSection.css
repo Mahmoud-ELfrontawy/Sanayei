@@ -113,6 +113,17 @@
     text-align: center;
 }
 
+.req-price-label {
+    display: block;
+    padding-right: 8px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-primary);
+    letter-spacing: 0.2px;
+}
+
+
 .req-title {
     color: var(--color-bg-section);
     font-size: 55px;

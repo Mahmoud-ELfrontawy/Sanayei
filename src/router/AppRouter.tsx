@@ -19,6 +19,7 @@ import ProfileReviews from "../pages/Profile/Reviews/ProfileReviews";
 import EditProfileLayout from "../layouts/EditProfileLayout";
 import ChooseSanayPage from "../pages/Technicians/ChooseSanayPage";
 import MyOrdersPage from "../pages/Orders/MyOrdersPage";
+import RequestServiceSection from "../pages/Home/sections/RequestServiceSection/RequestServiceSection";
 
 
 
@@ -39,6 +40,10 @@ const AppRouter: React.FC = () => {
           <Route path="/orders" element={<MyOrdersPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/profile" element={<EditProfilePagee />} />
+          <Route
+            path="/request-service"
+            element={<RequestServiceSection />}
+          />
 
           {/* ===== Auth Pages ===== */}
           <Route path="/login" element={<LoginPage />} />

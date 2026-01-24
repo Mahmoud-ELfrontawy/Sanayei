@@ -94,6 +94,13 @@ const OrdersPage = () => {
                                     <span>رقم الطلب</span>
                                     <p>{order.id}</p>
                                 </div>
+                                <div className="details">
+                                    <span>السعر المتوقع</span>
+                                    <p>
+                                        {order.price ? `${order.price} جنيه` : "غير محدد"}
+                                    </p>
+
+                                </div>
 
                             </div>
 

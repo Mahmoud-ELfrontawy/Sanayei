@@ -11,5 +11,5 @@ export const NAV_LINKS: NavLinkItem[] = [
     { label: "طلب خدمة", path: "/services", hasDropdown: true },
     { label: "اختر صنايعي", path: "/choose" },
     { label: "متابعة الطلبات", path: "/orders" },
-    { label: "المزيد", path: "/more" ,  hasDropdown: true},
+    { label: "تواصل معنا", path: "/contact" },
 ];

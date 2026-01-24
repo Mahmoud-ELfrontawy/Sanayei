@@ -109,8 +109,19 @@ const TechnicianCard: React.FC<Props> = ({ technician }) => {
                 </div>
 
                 <Link
-                    to={`/technician/${technician.id}`}
                     className="service-link"
+                    to="/request-service"
+                    state={{
+                        industrial_type: technician.id.toString(),
+                        industrial_name: technician.name,
+
+                        service_type: technician.service?.id?.toString(),
+                        service_name: technician.service?.name,
+
+                        price: technician.price_range
+                            ? `من ${technician.price_range} جنيه`
+                            : "السعر غير محدد",
+                    }}
                 >
                     طلب خدمة
                     <FaArrowRight className="service-arrow" />

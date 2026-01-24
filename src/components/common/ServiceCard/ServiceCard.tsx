@@ -31,12 +31,18 @@ const ServiceCard: React.FC<Props> = ({ service }) => {
                 <p className="service-desc">{service.description}</p>
 
                 <Link
-                    to={`/services/${service.slug}`}
+                    to="/request-service"
                     className="service-link"
+                    state={{
+                        service_type: service.id.toString(),
+                        service_name: service.name,
+                    }}
                 >
                     طلب الخدمة
                     <FaArrowRight className="service-arrow" />
                 </Link>
+
+
             </div>
         </article>
     );

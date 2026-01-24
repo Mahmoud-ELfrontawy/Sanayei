@@ -16,17 +16,5 @@ export interface ServiceRequestPayload {
     industrial_name: string;
     
     status : string;
+    price?: string;
 }
-
-
-// export interface ServiceRequestPayload {
-//     id: number;
-//     service_type: string;   // slug
-//     service_name: string;   // العربي
-//     province: string;
-//     address: string;
-//     date: string;
-//     time: string;
-//     phone: string;
-//     status: string;
-// }
