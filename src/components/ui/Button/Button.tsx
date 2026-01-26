@@ -22,7 +22,7 @@ const Button: React.FC<ButtonProps> = ({
     return (
         <Link
             to={to}
-            className={`btn btn-${variant} inline-flex items-center gap-1.5 ${className}`}
+            className={`btn btn-${variant} items-center gap-1.5 ${className}`}
         >
             <span>{children}</span>
             {icon && <span aria-hidden="true">{icon}</span>}

@@ -51,9 +51,14 @@
 }
 
 /* Actions */
+.auto-login{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 .header-actions {
     display: flex;
-    gap: 12px;
+    gap: 20px;
 }
 
 .btn-primary {
@@ -191,7 +196,10 @@
 
 .dropdown-item {
     padding: 14px 18px;
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 10px;
     width: 100%;
     background: transparent;
     border: none;
@@ -209,4 +217,152 @@
 .dropdown-item.logout {
     color: #dc2626;
     border-top: 1px solid #eee;
+}
+
+/* ================= ENHANCED MOBILE UI ================= */
+
+/* إعدادات افتراضية (Mobile First approach) */
+.desktop-only { display: none; }
+.mobile-only { display: block; }
+
+/* ================= Mobile menu button ================= */
+.mobile-menu-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-accent);
+    transition: transform var(--transition-fast);
+}
+
+.mobile-menu-btn:hover {
+    transform: scale(1.1);
+}
+
+/* ================= Mobile menu container ================= */
+.mobile-menu {
+    width: 100%;
+    background: var(--color-bg-main);
+    border-top: 1px solid var(--color-divider);
+    padding: 22px 20px 26px;
+}
+
+/* ================= Mobile links ================= */
+.mobile-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-links li {
+    position: relative;
+}
+
+.mobile-links li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--color-divider);
+}
+
+.mobile-links a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 6px;
+    text-decoration: none;
+    font-size: 18px;
+    color: var(--color-text-main);
+    transition: var(--transition-main);
+}
+
+.mobile-links a:hover {
+    background: var(--color-bg-section);
+    color: var(--color-primary);
+    padding-right: 14px;
+}
+
+.mobile-links a.active {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+/* ================= Mobile auth ================= */
+.mobile-auth {
+    padding-top: 20px;
+    border-top: 1px dashed var(--color-divider);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.mobile-auth a,
+.mobile-auth button {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    padding: 12px;
+    border-radius: var(--radius-btn);
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    color: var(--color-text-main);
+    transition: var(--transition-main);
+}
+
+.mobile-auth a:hover,
+.mobile-auth button:hover {
+    background: var(--color-primary);
+    color: #fff;
+    border-color: var(--color-primary);
+}
+
+/* ================= RESPONSIVE LOGIC ================= */
+
+/* الأجهزة الكبيرة (Desktop) */
+@media (min-width: 992px) {
+    .desktop-only { display: flex; }
+    .mobile-only { display: none !important; }
+    
+    .header-links {
+        display: flex;
+        gap: 20px;
+    }
+    
+    .avatar-wrapper-header {
+        display: flex;
+    }
+    .auto-login{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+}
+
+/* الشاشات الكبيرة جداً */
+@media (min-width: 1200px) {
+    .header-links {
+        gap: 30px; /* زيادة المسافة للشاشات الأكبر */
+    }
+    .auto-login{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+}
+
+/* الهواتف الصغيرة جداً */
+@media (max-width: 576px) {
+    .mobile-menu {
+        padding: 18px 14px 22px;
+    }
+
+    .mobile-links a {
+        font-size: 17px;
+    }
+    .auto-login{
+    display: flex;
+    gap: 10px;
+}
 }

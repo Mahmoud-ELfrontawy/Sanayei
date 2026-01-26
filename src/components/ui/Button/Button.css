@@ -9,6 +9,7 @@
 /* Primary */
 .btn-primary {
     background-color: var(--color-primary);
+    text-align: center;
     color: #fff;
     padding: 8px 55px;
 }
