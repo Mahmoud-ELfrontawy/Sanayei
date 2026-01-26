@@ -354,6 +354,14 @@
 
 /* الهواتف الصغيرة جداً */
 @media (max-width: 576px) {
+    .avatar-wrapper-profile{
+        width: 40px;
+        height: 40px;
+    }
+    .avatar-wrapper-profile img{
+        width: 40px;
+        height: 40px;
+    }
     .mobile-menu {
         padding: 18px 14px 22px;
     }

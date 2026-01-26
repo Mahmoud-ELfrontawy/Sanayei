@@ -33,7 +33,7 @@ const Footer: React.FC = () => {
                                     key={label}
                                     href={href}
                                     aria-label={label}
-                                    className="social-btn"
+                                    className="social-btn-footer"
                                 >
                                     <Icon />
                                 </a>
