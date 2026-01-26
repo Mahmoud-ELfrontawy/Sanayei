@@ -14,6 +14,7 @@
     height: 100%;
     display: block;
 }
+
 /* Overlay */
 .image-home__overlay {
     position: absolute;
@@ -54,7 +55,7 @@
     margin: 0 0 0 0;
 }
 
-.btn-hero{
+.btn-hero {
     font-size: 20px;
     border-radius: var(--radius-btn);
     background-color: var(--color-primary);
@@ -62,7 +63,8 @@
     color: white;
     padding: 8px 55px;
 }
-.btn-outline-herosection{
+
+.btn-outline-herosection {
     background-color: transparent;
     border: 1px solid var(--color-primary);
     color: var(--color-primary);
@@ -71,62 +73,103 @@
     border-radius: var(--radius-btn);
     transition: var(--transition-fast);
 }
-.btn-outline-herosection:hover{
+
+.btn-outline-herosection:hover {
     background: var(--color-primary);
     color: white;
 }
 
-/* ========== Responsive ========== */
+/* ===========================
+   Responsive Design (Updated)
+   =========================== */
 
-@media (max-width: 768px) {
-    .image-home {
-        height: 60vh;
-    }
-
+@media (max-width: 992px) {
     .image-home__content {
-        right: 3%;
-        left: 3%;
-        max-width: none;
-        text-align: center;
-    }
-
-    .image-home__content h1 {
-        font-size: 1.5rem;
-    }
-}
-
-@media (max-width: 900px) {
-    .cards-row {
-        padding: 14px;
-    }
-
-    .card {
-        padding: 10px;
-    }
-
-    .card-title {
-        font-size: 16px;
-    }
-}
-
-@media (max-width: 640px) {
-    .cards-row-wrapper {
-        margin-top: 0;
-        padding: 0 10px;
-    }
-
-    .cards-row {
+        display: flex;
         flex-direction: column;
-        gap: 12px;
-        padding: 12px;
-    }
+        gap: 36px;
+        position: absolute;
 
-    .card {
-        gap: 12px;
+        /* السنترة الأفقية والرأسية */
+        top: 50%;
+        left: 50%;
+        right: auto;
+        transform: translate(-50%, -50%);
+        color: #fff;
+        z-index: 5;
+        max-width: 750px;
+        width: 100%;
+        padding:0 1rem 0 0.5rem;
+        text-align: center;
         align-items: center;
     }
 
-    .card-content {
-        text-align: center;
+    .image-home__overlay {
+        background: radial-gradient(circle,
+                var(--color-text-accent) 0%,
+                rgba(0, 0, 0, 0.8) 100%);
+    }
+
+    .image-home__content p {
+        max-width: 100%;
+        /* خط متجاوب للوصف */
+        font-size: clamp(16px, 2.2vw, 20px);
+    }
+
+    .image-home__content>div.flex {
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+/* موبايل (أقل من 768px) */
+@media (max-width: 768px) {
+    .image-home {
+        height: 90vh;
+        /* ارتفاع مريح للعين */
+    }
+
+    .image-home__content h1 {
+        /* خط متجاوب للعنوان الكبير */
+        font-size: clamp(24px, 6vw, 32px);
+        margin-bottom: 5px;
+    }
+
+    .image-home__content {
+        gap: 20px;
+    }
+}
+
+/* موبايل صغير جداً (أقل من 480px) */
+@media (max-width: 480px) {
+    .image-home {
+        height: 70vh;
+        /* ياخد الشاشة كاملة في الموبايل بيبقى شكله أفخم */
+    }
+
+    .image-home__content {
+        gap: 25px;
+    }
+
+    .image-home__content p:nth-of-type(1),
+    .image-home__content p:nth-of-type(2) {
+        font-size: 24px;
+        margin: 0 0 0 0;
+    }
+
+    /* الزراير تحت بعض وعريضة */
+    .image-home__content>div.flex {
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    .btn-hero,
+    .btn-outline-herosection {
+        width: 100%;
+        font-size: 18px;
+        padding: 14px 0;
+        /* تطويل الزرار شوية للضغط بسهولة */
     }
 }
