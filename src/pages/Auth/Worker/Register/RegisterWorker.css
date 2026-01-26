@@ -1,0 +1,71 @@
+.worker-card {
+  max-width: 1100px; /* أوسع شوية من اليوزر */
+  transform: none !important;
+  transition: none !important;
+    background: var(--color-bg-section);
+
+}
+.worker-card:hover{
+    box-shadow: none !important
+    border:none !important
+}
+/* ===== الصورة (أهم فرق) ===== */
+.worker-illustration {
+  width: 40%;
+  display: flex;
+  align-items: center; /* توسيط عمودي */
+  justify-content: center; /* توسيط أفقي */
+  background: #fafafa;
+  border-right: 1px solid var(--color-border);
+
+  /* 👇 مهم */
+  padding-bottom: 250px;
+  box-sizing: border-box;
+}
+
+.worker-illustration img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ===== Upload خاص بالصنايعي ===== */
+.worker-file-label {
+  height: 54px;
+  border-radius: var(--radius-btn);
+  border: 1px solid var(--color-border);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  cursor: pointer;
+}
+
+.worker-file-label.has-file {
+  border-color: var(--color-primary);
+  background: rgba(var(--color-primary-rgb), 0.05);
+}
+
+/* ===== الموافقات ===== */
+.worker-terms-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.worker-checkbox {
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.worker-checkbox input {
+  accent-color: var(--color-primary);
+}
+
+.worker-checkbox a {
+  color: var(--color-primary);
+  font-weight: 700;
+}

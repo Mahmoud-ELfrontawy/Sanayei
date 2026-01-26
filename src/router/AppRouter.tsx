@@ -20,9 +20,7 @@ import EditProfileLayout from "../layouts/EditProfileLayout";
 import ChooseSanayPage from "../pages/Technicians/ChooseSanayPage";
 import MyOrdersPage from "../pages/Orders/MyOrdersPage";
 import RequestServiceSection from "../pages/Home/sections/RequestServiceSection/RequestServiceSection";
-
-
-
+import RegisterWorkerPage from "../pages/Auth/Worker/Register/RegisterWorkerPage";
 
 const AppRouter: React.FC = () => {
   return (
@@ -40,16 +38,14 @@ const AppRouter: React.FC = () => {
           <Route path="/orders" element={<MyOrdersPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/profile" element={<EditProfilePagee />} />
-          <Route
-            path="/request-service"
-            element={<RequestServiceSection />}
-          />
+          <Route path="/request-service" element={<RequestServiceSection />} />
 
           {/* ===== Auth Pages ===== */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/register-worker" element={<RegisterWorkerPage />} />
 
           {/* ===== Profile Pages ===== */}
           <Route path="/profile" element={<EditProfileLayout />}>

@@ -15,7 +15,7 @@ export const JOIN_CARDS = [
     text: "انضم إلينا الآن واعرض خدماتك، وساعد عملاءك في الوصول إليك بسهولة وزيادة دخلك.",
     image: artisanImg,
     button: "سجل الآن حساب صنايعي",
-    link: "/register-artisan",
+    link: "/register-worker",
   },
   {
     title: "الشركات",
