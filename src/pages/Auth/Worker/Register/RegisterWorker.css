@@ -1,32 +1,35 @@
 .worker-card {
-  max-width: 1100px; /* أوسع شوية من اليوزر */
+  max-width: 1100px;
   transform: none !important;
   transition: none !important;
-    background: var(--color-bg-section);
+  background: var(--color-bg-section);
+}
 
+.worker-card:hover {
+  box-shadow: none !important;
+  border: none !important;
 }
-.worker-card:hover{
-    box-shadow: none !important
-    border:none !important
-}
-/* ===== الصورة (أهم فرق) ===== */
+
+/* ===== الصورة - من فوق وكاملة ===== */
 .worker-illustration {
   width: 40%;
   display: flex;
-  align-items: center; /* توسيط عمودي */
-  justify-content: center; /* توسيط أفقي */
+  align-items: flex-start; /* ✅ من فوق بدل center */
+  justify-content: center;
   background: #fafafa;
   border-right: 1px solid var(--color-border);
-
-  /* 👇 مهم */
-  padding-bottom: 250px;
+  padding: 30px 20px 40px; /* ✅ padding أقل من فوق */
   box-sizing: border-box;
+  overflow: visible;
 }
 
 .worker-illustration img {
-  max-width: 100%;
+  width: 100%;
   height: auto;
+  max-width: 100%; /* ✅ العرض الكامل */
   display: block;
+  object-fit: contain;
+  margin-top: 0; /* ✅ من فوق مباشرة */
 }
 
 /* ===== Upload خاص بالصنايعي ===== */
@@ -40,6 +43,11 @@
   justify-content: space-between;
   padding: 0 16px;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.worker-file-label:hover {
+  border-color: var(--color-primary);
 }
 
 .worker-file-label.has-file {
@@ -52,6 +60,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  margin-top: 8px;
 }
 
 .worker-checkbox {
@@ -59,13 +68,72 @@
   gap: 10px;
   font-size: 14px;
   color: var(--color-text-secondary);
+  align-items: flex-start;
 }
 
 .worker-checkbox input {
   accent-color: var(--color-primary);
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.worker-checkbox span {
+  flex: 1;
+  line-height: 1.5;
 }
 
 .worker-checkbox a {
   color: var(--color-primary);
-  font-weight: 700;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.worker-checkbox a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/* ===== رسائل الخطأ ===== */
+.form-error {
+  display: block;
+  color: #dc3545;
+  font-size: 13px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 968px) {
+  .worker-card {
+    flex-direction: column;
+  }
+
+  .worker-illustration {
+    width: 100%;
+    padding: 30px 20px;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+    align-items: center; /* ✅ في الوسط على الموبايل */
+  }
+
+  .worker-illustration img {
+    max-width: 350px;
+  }
+}
+
+@media (max-width: 768px) {
+  .worker-illustration img {
+    max-width: 280px;
+  }
+}
+
+@media (max-width: 480px) {
+  .worker-illustration {
+    padding: 20px 15px;
+  }
+
+  .worker-illustration img {
+    max-width: 240px;
+  }
 }
