@@ -30,7 +30,7 @@
 .header-links {
     list-style: none;
     display: flex;
-    gap: 32px;
+    gap: 45px;
 }
 
 .nav-link {
@@ -43,9 +43,12 @@
     text-decoration: none;
     transition: color var(--transition-fast);
 }
-
-.nav-link:hover,
-.nav-link.active {
+.nav-link span{
+    transition: color var(--transition-fast);
+}
+.nav-link:hover span,
+.nav-link:hover svg,
+.nav-link.active span{
     color: var(--color-primary);
     font-weight: 600;
 }
@@ -115,7 +118,6 @@
 /* ================= Icons ================= */
 
 .icon-btn-login {
-    width: 42px;
     height: 42px;
     border-radius: 50%;
     background: transparent;
@@ -219,11 +221,6 @@
     border-top: 1px solid #eee;
 }
 
-/* ================= ENHANCED MOBILE UI ================= */
-
-/* إعدادات افتراضية (Mobile First approach) */
-.desktop-only { display: none; }
-.mobile-only { display: block; }
 
 /* ================= Mobile menu button ================= */
 .mobile-menu-btn {
@@ -288,6 +285,9 @@
     color: var(--color-primary);
     font-weight: 600;
 }
+.mobile-only{
+    display: none;
+}
 
 /* ================= Mobile auth ================= */
 .mobile-auth {
@@ -318,59 +318,117 @@
     border-color: var(--color-primary);
 }
 
+.mobile-quick-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+.mobile-icon-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 12px;
+    border-radius: var(--radius-btn);
+    border: 1px solid var(--color-border);
+    background: transparent;
+
+    font-size: 15px;
+    cursor: pointer;
+    color: var(--color-text-main);
+    transition: var(--transition-main);
+}
+
+.mobile-icon-btn:hover {
+    background: var(--color-primary);
+    color: #fff;
+    border-color: var(--color-primary);
+}
 /* ================= RESPONSIVE LOGIC ================= */
 
-/* الأجهزة الكبيرة (Desktop) */
-@media (min-width: 992px) {
-    .desktop-only { display: flex; }
-    .mobile-only { display: none !important; }
-    
-    .header-links {
-        display: flex;
-        gap: 20px;
-    }
-    
-    .avatar-wrapper-header {
+/* ================= TABLET ================= */
+@media (max-width: 1023px) {
+
+    .desktop-only{
         display: flex;
     }
-    .auto-login{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-}
 
-/* الشاشات الكبيرة جداً */
-@media (min-width: 1200px) {
+    .header-nav {
+        padding: 16px 32px;
+    }
+
     .header-links {
-        gap: 30px; /* زيادة المسافة للشاشات الأكبر */
+        gap: 24px;
     }
-    .auto-login{
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-}
-}
 
-/* الهواتف الصغيرة جداً */
-@media (max-width: 576px) {
-    .avatar-wrapper-profile{
-        width: 40px;
-        height: 40px;
+    .nav-link {
+        font-size: 17px;
     }
-    .avatar-wrapper-profile img{
-        width: 40px;
-        height: 40px;
+
+    .auto-login {
+        flex-direction: column;
+        gap: 12px;
     }
-    .mobile-menu {
-        padding: 18px 14px 22px;
+
+    .header-logo img {
+        width: 110px;
+        height: 75px;
+    }
+    .mobile-only{
+    display: block;
+}
+}
+/* ================= MOBILE ================= */
+@media (max-width: 767px) {
+
+    .desktop-only {
+        display: none ;
+    }
+
+    .mobile-only {
+        display: block;
+    }
+
+    .header-nav {
+        padding: 12px 16px;
+        min-height: 70px;
+    }
+
+    .header-logo img {
+        width: 90px;
+        height: 60px;
+    }
+
+    .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+    }
+
+    .mobile-menu,
+    .mobile-overlay {
+        display: block;
     }
 
     .mobile-links a {
-        font-size: 17px;
+        font-size: 16px;
+        padding: 14px 16px;
     }
-    .auto-login{
-    display: flex;
-    gap: 10px;
-}
+
+    .mobile-auth a,
+    .mobile-auth button {
+        padding: 12px;
+        font-size: 15px;
+    }
+
+    .avatar-wrapper-profile {
+        width: 40px;
+        height: 40px;
+    }
+
+    .avatar-wrapper-profile img {
+        width: 40px;
+        height: 40px;
+    }
 }

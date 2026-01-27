@@ -2,7 +2,7 @@ import { NavLink, Link } from "react-router-dom";
 import { IoIosArrowDown, IoMdNotificationsOutline } from "react-icons/io";
 import { FiMessageCircle, FiMenu, FiX } from "react-icons/fi";
 import { useEffect, useRef, useState } from "react";
-import {User, LogOut} from 'lucide-react'; 
+import { User, LogOut } from "lucide-react";
 
 import { NAV_LINKS, type NavLinkItem } from "../../../constants/header";
 import logo from "../../../assets/images/final logo.png";
@@ -21,8 +21,6 @@ const Header: React.FC = () => {
     const { user, isAuthenticated, logout } = useAuth();
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
-
-    // ✅ NEW: mobile menu state
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
     const dropdownRef = useRef<DropdownRef>(null);
@@ -30,10 +28,9 @@ const Header: React.FC = () => {
     /* ================= HANDLERS ================= */
 
     const toggleDropdown = () => {
-        setIsOpen((prev) => !prev);
+        setIsOpen(prev => !prev);
     };
 
-    // ✅ NEW
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(prev => !prev);
     };
@@ -58,7 +55,6 @@ const Header: React.FC = () => {
 
     useEffect(() => {
         document.addEventListener("mousedown", handleClickOutside);
-
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
@@ -95,14 +91,13 @@ const Header: React.FC = () => {
                 {/* ================= ACTIONS ================= */}
                 <div className="header-actions">
 
-                    {/* Desktop Auth */}
                     {!isAuthenticated ? (
-                        <div className="auto-login">
+                        <div className="auto-login desktop-only">
                             <Button to="/login" variant="primary">اطلب الآن</Button>
                             <Button to="/login" variant="outline">تسجيل الدخول</Button>
                         </div>
                     ) : (
-                        <div className="avatar-wrapper-header">
+                        <div className="avatar-wrapper-header desktop-only">
 
                             <button className="icon-btn-login">
                                 <IoMdNotificationsOutline size={24} />
@@ -121,31 +116,26 @@ const Header: React.FC = () => {
                                         <img
                                             src={user?.profile_image_url || "/avatar.png"}
                                             alt="profile"
-                                            className="profile-img"
                                         />
                                         <span className="online-dot" />
                                     </div>
                                 </button>
 
                                 {isOpen && (
-                                <div className="profile-dropdown">
-                                    <Link to="/profile" className="dropdown-item">
-                                        <span className="icon-wrapper">
+                                    <div className="profile-dropdown">
+                                        <Link to="/profile" className="dropdown-item">
                                             <User size={20} />
-                                        </span>
-                                        <span className="item-text">الملف الشخصي</span>
-                                    </Link>
+                                            <span>الملف الشخصي</span>
+                                        </Link>
 
-                                    <button
-                                        className="dropdown-item logout"
-                                        onClick={handleLogout}
-                                    >
-                                        <span className="icon-wrapper">
+                                        <button
+                                            className="dropdown-item logout"
+                                            onClick={handleLogout}
+                                        >
                                             <LogOut size={20} />
-                                        </span>
-                                        <span className="item-text">تسجيل الخروج</span>
-                                    </button>
-                                </div>
+                                            <span>تسجيل الخروج</span>
+                                        </button>
+                                    </div>
                                 )}
                             </div>
                         </div>
@@ -166,6 +156,22 @@ const Header: React.FC = () => {
             {isMobileMenuOpen && (
                 <div className="mobile-menu">
 
+                    {/* Quick actions */}
+                    {isAuthenticated && (
+                        <div className="mobile-quick-actions">
+                            <button className="mobile-icon-btn">
+                                <IoMdNotificationsOutline size={24} />
+                                <span>الإشعارات</span>
+                            </button>
+
+                            <button className="mobile-icon-btn">
+                                <FiMessageCircle size={24} />
+                                <span>الرسائل</span>
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Links */}
                     <ul className="mobile-links">
                         {NAV_LINKS.map(link => (
                             <li key={link.path}>
@@ -179,6 +185,7 @@ const Header: React.FC = () => {
                         ))}
                     </ul>
 
+                    {/* Auth */}
                     {!isAuthenticated ? (
                         <div className="mobile-auth">
                             <Button to="/login" variant="primary">اطلب الآن</Button>
@@ -186,27 +193,22 @@ const Header: React.FC = () => {
                         </div>
                     ) : (
                         <div className="mobile-auth">
-                                    <Link to="/profile" className="dropdown-item">
-                                        <span className="icon-wrapper">
-                                            <User size={20} />
-                                        </span>
-                                        <span className="item-text">الملف الشخصي</span>
-                                    </Link>
+                            <Link to="/profile" className="dropdown-item">
+                                <User size={20} />
+                                <span>الملف الشخصي</span>
+                            </Link>
 
-                                    <button
-                                        className="dropdown-item logout"
-                                        onClick={handleLogout}
-                                    >
-                                        <span className="icon-wrapper">
-                                            <LogOut size={20} />
-                                        </span>
-                                        <span className="item-text">تسجيل الخروج</span>
-                                    </button>
-                                </div>
+                            <button
+                                className="dropdown-item logout"
+                                onClick={handleLogout}
+                            >
+                                <LogOut size={20} />
+                                <span>تسجيل الخروج</span>
+                            </button>
+                        </div>
                     )}
                 </div>
             )}
-
         </header>
     );
 };

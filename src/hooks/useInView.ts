@@ -8,7 +8,7 @@ export const useFramerInView = (options?: {
     const ref = useRef<HTMLDivElement | null>(null);
 
     const isVisible = useInView(ref, {
-        amount: options?.amount ?? 0.6,
+        amount: options?.amount ?? 0.5,
         once: options?.once ?? true,
     });
 

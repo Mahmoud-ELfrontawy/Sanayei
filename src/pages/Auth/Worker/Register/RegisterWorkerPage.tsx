@@ -85,6 +85,7 @@ const RegisterWorkerPage: React.FC = () => {
             </div>
 
             {/* المهنة - ✅ نستخدم service_id */}
+            <div className="req-row">
             <div>
               <select
                 className="login-input"
@@ -125,8 +126,10 @@ const RegisterWorkerPage: React.FC = () => {
                 <span className="form-error">{errors.city.message}</span>
               )}
             </div>
+            </div>
 
             {/* بطاقة أمام */}
+            <div className="req-row">
             <div>
               <label
                 className={`worker-file-label ${frontFile?.length ? "has-file" : ""}`}
@@ -213,8 +216,10 @@ const RegisterWorkerPage: React.FC = () => {
                 </span>
               )}
             </div>
+            </div>
 
             {/* Password */}
+            <div className="req-row">
             <div>
               <div className="password-wrapper">
                 <input
@@ -262,6 +267,7 @@ const RegisterWorkerPage: React.FC = () => {
                   {errors.password_confirmation.message}
                 </span>
               )}
+            </div>
             </div>
 
             {/* Terms */}

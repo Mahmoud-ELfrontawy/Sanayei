@@ -13,7 +13,7 @@
     align-items: center;
     opacity: 0;
     transform: translateY(50px);
-    transition: all 0.8s ease;
+    transition: all 0.6s ease;
 }
 
 .why-container.show {
@@ -102,22 +102,267 @@
 
 
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 900px) {
-    .why-container {
-        grid-template-columns: 1fr;
-        gap: 32px;
+/* ========================================
+   🎨 RESPONSIVE - LARGE TABLET (900px - 1024px)
+   ======================================== */
+@media (max-width: 1024px) {
+    .why-section {
+        padding: 70px 20px;
     }
 
-    .why-divider {
-        display: none;
+    .why-container {
+        gap: 35px;
     }
 
     .why-stats {
-        grid-template-columns: 1fr;
+        column-gap: 60px;
+        row-gap: 35px;
+    }
+
+    .why-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+
+    .why-value {
+        font-size: 23px;
+    }
+
+    .why-title {
+        font-size: 18px;
+    }
+
+    .why-desc {
+        font-size: 16px;
+    }
+
+    .why-heading {
+        font-size: 40px;
+        margin-bottom: 14px;
+    }
+
+    .why-text p {
+        font-size: 25px;
+        line-height: 1.8;
+    }
+}
+
+/* ========================================
+   📊 RESPONSIVE - TABLET (768px - 900px)
+   ======================================== */
+@media (max-width: 900px) {
+    .why-section {
+        padding: 60px 20px;
+    }
+
+    .why-container {
+        grid-template-columns: 1fr; /* ✅ عمود واحد */
+        gap: 40px;
+    }
+
+    .why-divider {
+        display: none; /* ✅ إخفاء الخط الفاصل */
+    }
+
+    .why-stats {
+        grid-template-columns: 1fr 1fr; /* ✅ عمودين */
+        column-gap: 40px;
+        row-gap: 30px;
+        order: 2; /* ✅ الإحصائيات في الأسفل */
     }
 
     .why-text {
-        text-align: center;
+        text-align: center; /* ✅ توسيط النص */
+        order: 1; /* ✅ النص في الأعلى */
+    }
+
+    .why-heading {
+        font-size: 36px;
+        margin-bottom: 12px;
+    }
+
+    .why-text p {
+        font-size: 22px;
+        line-height: 1.7;
+    }
+
+    .why-icon {
+        width: 46px;
+        height: 46px;
+        font-size: 20px;
+    }
+
+    .why-value {
+        font-size: 22px;
+    }
+
+    .why-title {
+        font-size: 17px;
+    }
+
+    .why-desc {
+        font-size: 15px;
+    }
+}
+
+/* ========================================
+   📱 RESPONSIVE - MOBILE (MAX 768px)
+   ======================================== */
+@media (max-width: 768px) {
+    .why-section {
+        padding: 50px 16px;
+    }
+
+    .why-container {
+        gap: 35px;
+    }
+
+    .why-stats {
+        grid-template-columns: 1fr; /* ✅ عمود واحد على الموبايل */
+        gap: 25px;
+    }
+
+    .why-card {
+        gap: 8px;
+    }
+
+    .why-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 18px;
+    }
+
+    .why-value {
+        font-size: 20px;
+    }
+
+    .why-title {
+        font-size: 16px;
+        margin: 3px 0;
+    }
+
+    .why-desc {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .why-heading {
+        font-size: 30px;
+        margin-bottom: 12px;
+    }
+
+    .why-text p {
+        font-size: 19px;
+        line-height: 1.6;
+    }
+}
+
+/* ========================================
+   📱 RESPONSIVE - SMALL MOBILE (MAX 480px)
+   ======================================== */
+@media (max-width: 480px) {
+    .why-section {
+        padding: 40px 12px;
+    }
+
+    .why-container {
+        gap: 30px;
+    }
+
+    .why-stats {
+        gap: 20px;
+    }
+
+    .why-card {
+        gap: 6px;
+    }
+
+    .why-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 17px;
+    }
+
+    .why-value {
+        font-size: 19px;
+    }
+
+    .why-title {
+        font-size: 15px;
+    }
+
+    .why-desc {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    .why-heading {
+        font-size: 26px;
+        margin-bottom: 10px;
+    }
+
+    .why-text p {
+        font-size: 17px;
+        line-height: 1.5;
+    }
+}
+
+/* ========================================
+   📱 EXTRA SMALL MOBILE (MAX 360px)
+   ======================================== */
+@media (max-width: 360px) {
+    .why-section {
+        padding: 35px 10px;
+    }
+
+    .why-container {
+        gap: 25px;
+    }
+
+    .why-stats {
+        gap: 18px;
+    }
+
+    .why-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .why-value {
+        font-size: 18px;
+    }
+
+    .why-title {
+        font-size: 14px;
+    }
+
+    .why-desc {
+        font-size: 12px;
+    }
+
+    .why-heading {
+        font-size: 24px;
+        margin-bottom: 8px;
+    }
+
+    .why-text p {
+        font-size: 16px;
+        line-height: 1.4;
+    }
+}
+
+/* ========================================
+   🖥️ LARGE SCREENS (1400px+)
+   ======================================== */
+@media (min-width: 1400px) {
+    .why-section {
+        padding: 100px 20px;
+    }
+
+    .why-stats {
+        column-gap: 120px;
+        row-gap: 50px;
     }
 }
