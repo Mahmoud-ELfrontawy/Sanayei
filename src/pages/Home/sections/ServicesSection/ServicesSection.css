@@ -24,3 +24,147 @@
 .btn-primary-service:hover {
     background: var(--color-primary-hover);
 }
+
+/* ========================================
+   🎨 RESPONSIVE - TABLET (768px - 1024px)
+   ======================================== */
+@media (max-width: 1024px) {
+    .services-section {
+        padding: 60px 20px;
+    }
+
+    /* Titles */
+    .services-eyebrow {
+        font-size: 20px;
+    }
+
+    .services-title {
+        font-size: 30px;
+        margin-bottom: 40px;
+    }
+
+    /* Grid */
+    .services-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    /* Button */
+    .services-cta {
+        margin-top: 50px;
+    }
+
+    .btn-primary-service {
+        width: 220px;
+        height: 54px;
+        font-size: 20px;
+    }
+}
+
+/* ========================================
+   📱 RESPONSIVE - MOBILE (MAX 768px)
+   ======================================== */
+@media (max-width: 768px) {
+    .services-section {
+        padding: 50px 16px;
+    }
+
+    /* Titles */
+    .services-eyebrow {
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+
+    .services-title {
+        font-size: 26px;
+        margin-bottom: 35px;
+        line-height: 1.3;
+    }
+
+    /* Grid - 2 columns على الموبايل */
+    .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        margin-top: 25px;
+    }
+
+    /* Error */
+    .services-error {
+        font-size: 16px;
+        padding: 30px 15px;
+    }
+     .service-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+        border-radius: 50%;
+    }
+    .service-icon img{
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+    }
+
+    /* Button */
+    .services-cta {
+        margin-top: 40px;
+    }
+
+    .btn-primary-service {
+        width: 100%;
+        max-width: 280px;
+        height: 50px;
+        font-size: 18px;
+    }
+}
+
+/* ========================================
+   📱 RESPONSIVE - SMALL MOBILE (MAX 480px)
+   ======================================== */
+@media (max-width: 480px) {
+    .services-section {
+        padding: 40px 12px;
+    }
+
+    /* Titles */
+    .services-eyebrow {
+        font-size: 16px;
+    }
+
+    .services-title {
+        font-size: 22px;
+        margin-bottom: 30px;
+    }
+
+    /* Grid - 1 column على الشاشات الصغيرة جداً */
+    .services-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        margin-top: 20px;
+    }
+    .service-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        border-radius: 50%;
+    }
+    .service-icon img{
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+    }
+
+    /* Button */
+    .services-cta {
+        margin-top: 35px;
+    }
+
+    .btn-primary-service {
+        width: 100%;
+        max-width: 100%;
+        height: 48px;
+        font-size: 17px;
+    }
+}
+
