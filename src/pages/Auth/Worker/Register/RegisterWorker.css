@@ -1,14 +1,10 @@
-.worker-card {
+.worker-card2 {
   max-width: 1100px;
   transform: none !important;
   transition: none !important;
   background: var(--color-bg-section);
 }
 
-.worker-card:hover {
-  box-shadow: none !important;
-  border: none !important;
-}
 
 /* ===== الصورة - من فوق وكاملة ===== */
 .worker-illustration {

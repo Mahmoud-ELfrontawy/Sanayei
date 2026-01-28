@@ -17,7 +17,7 @@ const RegisterWorkerPage: React.FC = () => {
     setShowPassword,
     onSubmit,
     governorates,
-    services, // ✅ استقبال services بدل professions
+    services, 
     isLoadingData,
   } = useRegisterWorker();
 
@@ -26,7 +26,7 @@ const RegisterWorkerPage: React.FC = () => {
 
   return (
     <div className="auth-page-wrapper worker-page">
-      <div className="auth-card auth-card--split worker-card">
+      <div className="auth-card auth-card--split worker-card2">
         <div className="auth-form">
           <h2 className="auth-title">انضم كصنايعي محترف</h2>
 
@@ -86,188 +86,190 @@ const RegisterWorkerPage: React.FC = () => {
 
             {/* المهنة - ✅ نستخدم service_id */}
             <div className="req-row">
-            <div>
-              <select
-                className="login-input"
-                {...register("service_id", { required: "اختر المهنة" })}
-                disabled={isLoadingData}
-              >
-                <option value="">
-                  {isLoadingData ? "جاري التحميل..." : "اختر المهنة"}
-                </option>
-                {services.map((service) => (
-                  <option key={service.id} value={service.id}>
-                    {service.name}
+              <div>
+                <select
+                  className="login-input"
+                  {...register("service_id", { required: "اختر المهنة" })}
+                  disabled={isLoadingData}
+                >
+                  <option value="">
+                    {isLoadingData ? "جاري التحميل..." : "اختر المهنة"}
                   </option>
-                ))}
-              </select>
-              {errors.service_id && (
-                <span className="form-error">{errors.service_id.message}</span>
-              )}
-            </div>
+                  {services.map((service) => (
+                    <option key={service.id} value={service.id}>
+                      {service.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.service_id && (
+                  <span className="form-error">{errors.service_id.message}</span>
+                )}
+              </div>
 
-            {/* المحافظة */}
-            <div>
-              <select
-                className="login-input"
-                {...register("city", { required: "اختر المحافظة" })}
-                disabled={isLoadingData}
-              >
-                <option value="">
-                  {isLoadingData ? "جاري التحميل..." : "اختر المحافظة"}
-                </option>
-                {governorates.map((gov) => (
-                  <option key={gov.id} value={gov.slug || gov.name}>
-                    {gov.name}
+              {/* المحافظة */}
+              <div>
+                <select
+                  className="login-input"
+                  {...register("governorate_id", { required: "اختر المحافظة" })}
+                  disabled={isLoadingData}
+                >
+                  <option value="">
+                    {isLoadingData ? "جاري التحميل..." : "اختر المحافظة"}
                   </option>
-                ))}
-              </select>
-              {errors.city && (
-                <span className="form-error">{errors.city.message}</span>
-              )}
-            </div>
+
+                  {governorates.map((gov) => (
+                    <option key={gov.id} value={gov.id}>
+                      {gov.name}
+                    </option>
+                  ))}
+                </select>
+
+                {errors.governorate_id && (
+                  <span className="form-error">{errors.governorate_id.message}</span>
+                )}
+              </div>
             </div>
 
             {/* بطاقة أمام */}
             <div className="req-row">
-            <div>
-              <label
-                className={`worker-file-label ${frontFile?.length ? "has-file" : ""}`}
-              >
-                <span>
-                  {frontFile?.length
-                    ? frontFile[0].name
-                    : "صورة البطاقة (أمام)"}
-                </span>
-                <FiUpload />
-                <input
-                  type="file"
-                  hidden
-                  accept="image/jpeg,image/jpg,image/png,image/webp"
-                  {...register("front_identity_photo", {
-                    required: "صورة البطاقة (أمام) مطلوبة",
-                    validate: {
-                      fileSize: (files: FileList) => {
-                        if (!files || files.length === 0) return true;
-                        const maxSize = 5 * 1024 * 1024;
-                        return (
-                          files[0].size <= maxSize ||
-                          "حجم الصورة يجب أن يكون أقل من 5 ميجا"
-                        );
+              <div>
+                <label
+                  className={`worker-file-label ${frontFile?.length ? "has-file" : ""}`}
+                >
+                  <span>
+                    {frontFile?.length
+                      ? frontFile[0].name
+                      : "صورة البطاقة (أمام)"}
+                  </span>
+                  <FiUpload />
+                  <input
+                    type="file"
+                    hidden
+                    accept="image/jpeg,image/jpg,image/png,image/webp"
+                    {...register("front_identity_photo", {
+                      required: "صورة البطاقة (أمام) مطلوبة",
+                      validate: {
+                        fileSize: (files: FileList) => {
+                          if (!files || files.length === 0) return true;
+                          const maxSize = 5 * 1024 * 1024;
+                          return (
+                            files[0].size <= maxSize ||
+                            "حجم الصورة يجب أن يكون أقل من 5 ميجا"
+                          );
+                        },
+                        fileType: (files: FileList) => {
+                          if (!files || files.length === 0) return true;
+                          const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+                          return (
+                            validTypes.includes(files[0].type) ||
+                            "نوع الملف غير مدعوم (استخدم jpg, png, webp)"
+                          );
+                        },
                       },
-                      fileType: (files: FileList) => {
-                        if (!files || files.length === 0) return true;
-                        const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-                        return (
-                          validTypes.includes(files[0].type) ||
-                          "نوع الملف غير مدعوم (استخدم jpg, png, webp)"
-                        );
-                      },
-                    },
-                  })}
-                />
-              </label>
-              {errors.front_identity_photo && (
-                <span className="form-error">
-                  {errors.front_identity_photo.message}
-                </span>
-              )}
-            </div>
+                    })}
+                  />
+                </label>
+                {errors.front_identity_photo && (
+                  <span className="form-error">
+                    {errors.front_identity_photo.message}
+                  </span>
+                )}
+              </div>
 
-            {/* بطاقة خلف */}
-            <div>
-              <label
-                className={`worker-file-label ${backFile?.length ? "has-file" : ""}`}
-              >
-                <span>
-                  {backFile?.length ? backFile[0].name : "صورة البطاقة (خلف)"}
-                </span>
-                <FiUpload />
-                <input
-                  type="file"
-                  hidden
-                  accept="image/jpeg,image/jpg,image/png,image/webp"
-                  {...register("back_identity_photo", {
-                    required: "صورة البطاقة (خلف) مطلوبة",
-                    validate: {
-                      fileSize: (files: FileList) => {
-                        if (!files || files.length === 0) return true;
-                        const maxSize = 5 * 1024 * 1024;
-                        return (
-                          files[0].size <= maxSize ||
-                          "حجم الصورة يجب أن يكون أقل من 5 ميجا"
-                        );
+              {/* بطاقة خلف */}
+              <div>
+                <label
+                  className={`worker-file-label ${backFile?.length ? "has-file" : ""}`}
+                >
+                  <span>
+                    {backFile?.length ? backFile[0].name : "صورة البطاقة (خلف)"}
+                  </span>
+                  <FiUpload />
+                  <input
+                    type="file"
+                    hidden
+                    accept="image/jpeg,image/jpg,image/png,image/webp"
+                    {...register("back_identity_photo", {
+                      required: "صورة البطاقة (خلف) مطلوبة",
+                      validate: {
+                        fileSize: (files: FileList) => {
+                          if (!files || files.length === 0) return true;
+                          const maxSize = 5 * 1024 * 1024;
+                          return (
+                            files[0].size <= maxSize ||
+                            "حجم الصورة يجب أن يكون أقل من 5 ميجا"
+                          );
+                        },
+                        fileType: (files: FileList) => {
+                          if (!files || files.length === 0) return true;
+                          const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+                          return (
+                            validTypes.includes(files[0].type) ||
+                            "نوع الملف غير مدعوم (استخدم jpg, png, webp)"
+                          );
+                        },
                       },
-                      fileType: (files: FileList) => {
-                        if (!files || files.length === 0) return true;
-                        const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-                        return (
-                          validTypes.includes(files[0].type) ||
-                          "نوع الملف غير مدعوم (استخدم jpg, png, webp)"
-                        );
-                      },
-                    },
-                  })}
-                />
-              </label>
-              {errors.back_identity_photo && (
-                <span className="form-error">
-                  {errors.back_identity_photo.message}
-                </span>
-              )}
-            </div>
+                    })}
+                  />
+                </label>
+                {errors.back_identity_photo && (
+                  <span className="form-error">
+                    {errors.back_identity_photo.message}
+                  </span>
+                )}
+              </div>
             </div>
 
             {/* Password */}
             <div className="req-row">
-            <div>
-              <div className="password-wrapper">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  className="login-input"
-                  placeholder="كلمة المرور"
-                  {...register("password", {
-                    required: "كلمة المرور مطلوبة",
-                    minLength: {
-                      value: 8,
-                      message: "كلمة المرور يجب أن تكون 8 أحرف على الأقل",
-                    },
-                  })}
-                />
-                <button
-                  type="button"
-                  className="password-toggle"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
-                >
-                  {showPassword ? <FiEye /> : <FiEyeOff />}
-                </button>
+              <div>
+                <div className="password-wrapper">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    className="login-input"
+                    placeholder="كلمة المرور"
+                    {...register("password", {
+                      required: "كلمة المرور مطلوبة",
+                      minLength: {
+                        value: 8,
+                        message: "كلمة المرور يجب أن تكون 8 أحرف على الأقل",
+                      },
+                    })}
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
+                  >
+                    {showPassword ? <FiEye /> : <FiEyeOff />}
+                  </button>
+                </div>
+                {errors.password && (
+                  <span className="form-error">{errors.password.message}</span>
+                )}
               </div>
-              {errors.password && (
-                <span className="form-error">{errors.password.message}</span>
-              )}
-            </div>
 
-            {/* Confirm Password */}
-            <div>
-              <div className="password-wrapper">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  className="login-input"
-                  placeholder="تأكيد كلمة المرور"
-                  {...register("password_confirmation", {
-                    required: "تأكيد كلمة المرور مطلوب",
-                    validate: (value) =>
-                      value === watch("password") || "كلمة المرور غير متطابقة",
-                  })}
-                />
+              {/* Confirm Password */}
+              <div>
+                <div className="password-wrapper">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    className="login-input"
+                    placeholder="تأكيد كلمة المرور"
+                    {...register("password_confirmation", {
+                      required: "تأكيد كلمة المرور مطلوب",
+                      validate: (value) =>
+                        value === watch("password") || "كلمة المرور غير متطابقة",
+                    })}
+                  />
+                </div>
+                {errors.password_confirmation && (
+                  <span className="form-error">
+                    {errors.password_confirmation.message}
+                  </span>
+                )}
               </div>
-              {errors.password_confirmation && (
-                <span className="form-error">
-                  {errors.password_confirmation.message}
-                </span>
-              )}
-            </div>
             </div>
 
             {/* Terms */}

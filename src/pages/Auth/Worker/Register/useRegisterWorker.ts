@@ -6,15 +6,15 @@ import { useNavigate } from "react-router-dom";
 
 import { registerWorker } from "../../../../Api/auth/Worker/registerWorker.api";
 import { useRequestServiceData } from
-"../../../../pages/Home/sections/RequestServiceSection/useRequestServiceData"; 
+"../../../../pages/Home/sections/RequestServiceSection/useRequestServiceData";
 
 
 export interface RegisterWorkerFormValues {
   name: string;
   email: string;
   phone: string;
-  service_id: string; // ✅ بدلنا profession بـ service_id (string لأن select بيرجع string)
-  city: string;
+  service_id: string;
+  governorate_id: string; 
   front_identity_photo: FileList;
   back_identity_photo: FileList;
   password: string;
@@ -31,21 +31,29 @@ interface ErrorResponse {
 export const useRegisterWorker = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
   const form = useForm<RegisterWorkerFormValues>();
 
-  const { services, governorates, loading: isLoadingData } = useRequestServiceData();
+  const {
+    services,
+    governorates,
+    loading: isLoadingData,
+  } = useRequestServiceData();
 
   const onSubmit = async (data: RegisterWorkerFormValues) => {
+    // ✅ تحقق من الصور
     if (!data.front_identity_photo?.[0] || !data.back_identity_photo?.[0]) {
       toast.error("يرجى رفع صور البطاقة (الأمام والخلف)");
       return;
     }
 
     const maxSize = 5 * 1024 * 1024;
+
     if (data.front_identity_photo[0].size > maxSize) {
       toast.error("حجم صورة البطاقة (أمام) يجب أن يكون أقل من 5 ميجا");
       return;
     }
+
     if (data.back_identity_photo[0].size > maxSize) {
       toast.error("حجم صورة البطاقة (خلف) يجب أن يكون أقل من 5 ميجا");
       return;
@@ -56,10 +64,13 @@ export const useRegisterWorker = () => {
         name: data.name,
         email: data.email,
         phone: data.phone,
-        service_id: parseInt(data.service_id), // ✅ تحويل الـ string لـ number
-        city: data.city,
+
+        service_id: Number(data.service_id),
+        governorate_id: Number(data.governorate_id),
+
         password: data.password,
         password_confirmation: data.password_confirmation,
+
         front_identity_photo: data.front_identity_photo[0],
         back_identity_photo: data.back_identity_photo[0],
       });
@@ -73,6 +84,7 @@ export const useRegisterWorker = () => {
       }
     } catch (error: unknown) {
       const err = error as AxiosError<ErrorResponse>;
+
       console.error("Register Error:", err.response);
 
       if (err.response?.status === 422 && err.response?.data?.errors) {
@@ -92,7 +104,7 @@ export const useRegisterWorker = () => {
     setShowPassword,
     onSubmit,
     governorates,
-    services, // ✅ نرجع services بدل professions
+    services,
     isLoadingData,
   };
 };
