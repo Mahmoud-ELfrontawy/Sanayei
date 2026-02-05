@@ -36,14 +36,15 @@ const RequestServiceForm: React.FC<Props> = ({
 
     const autoSelectedRef = useRef(false);
 
+
     /* ===============================
-        Loading State
+        Loading (صح)
     ================================ */
 
     const isLoading =
-        !services.length ||
-        !governorates.length ||
-        !sanaei.length;
+        !Array.isArray(services) ||
+        !Array.isArray(governorates) ||
+        !Array.isArray(sanaei);
 
     const showSkeleton = isLoading || isSubmitting;
 
@@ -70,10 +71,15 @@ const RequestServiceForm: React.FC<Props> = ({
     const filteredSanaei = useMemo(() => {
         if (!serviceId) return sanaei;
 
-        return sanaei.filter(
-            (w) => String(w.service_id) === String(serviceId)
-        );
+        return sanaei.filter((w) => {
+            const workerServiceId =
+                w.service_id ??
+                w.service?.id;
+
+            return String(workerServiceId) === String(serviceId);
+        });
     }, [serviceId, sanaei]);
+
 
     /* ===============================
         Auto select لو واحد فقط
@@ -116,7 +122,7 @@ const RequestServiceForm: React.FC<Props> = ({
     }, [serviceId, setValue]);
 
     /* ===============================
-        عند اختيار صنايعي يدوي
+        اختيار صنايعي يدوي
     ================================ */
 
     useEffect(() => {
@@ -214,8 +220,16 @@ const RequestServiceForm: React.FC<Props> = ({
                 </>
             ) : (
                 <div className="req-row">
-                    <input type="date" className="req-input" {...register("date")} />
-                    <input type="time" className="req-input" {...register("time")} />
+                    <input
+                        type="date"
+                        className="req-input"
+                        {...register("date")}
+                    />
+                    <input
+                        type="time"
+                        className="req-input"
+                        {...register("time")}
+                    />
                 </div>
             )}
 
@@ -285,7 +299,7 @@ const RequestServiceForm: React.FC<Props> = ({
                 </div>
             )}
 
-            <RequestServiceSubmitSkeleton loading={isSubmitting} />
+            <RequestServiceSubmitSkeleton isloading={isSubmitting} />
         </>
     );
 };

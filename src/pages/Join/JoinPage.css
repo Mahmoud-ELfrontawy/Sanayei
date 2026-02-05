@@ -32,27 +32,28 @@
 }
 
 .join-title {
-  font-size: 22px;
+  font-size: 25px;
   color: var(--color-text-accent);
   margin-bottom: 20px;
 }
 
 .join-image {
-  width: 160px;
+  height: 180px;
+  width: 180px;
   margin: 0 auto 20px;
 }
 
 .join-text {
-  font-size: 15px;
+  font-size: 18px;
   color: var(--color-text-muted);
   line-height: 1.8;
   margin-bottom: 24px;
 }
 
 .join-btn {
-  margin-top: auto; /* 👈 السحر هنا */
-
+  margin-top: auto; 
   display: inline-block;
+  font-size: 20px;
   padding: 10px 24px;
   background: var(--color-primary);
   color: #fff;

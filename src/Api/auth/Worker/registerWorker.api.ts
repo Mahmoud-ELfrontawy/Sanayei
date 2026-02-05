@@ -1,4 +1,5 @@
 import axios from "axios";
+import { loginCraftsman } from "./loginWorker.api";
 
 export interface RegisterWorkerPayload {
   name: string;
@@ -8,6 +9,8 @@ export interface RegisterWorkerPayload {
   service_id: number;
   governorate_id: number;
 
+  price_range: string;
+
   password: string;
   password_confirmation: string;
 
@@ -15,26 +18,19 @@ export interface RegisterWorkerPayload {
   back_identity_photo: File;
 }
 
-interface RegisterWorkerResponse {
-  status: boolean;
-  message: string;
-  data?: unknown;
-}
-
 export const registerWorker = async (
-  payload: RegisterWorkerPayload,
-): Promise<RegisterWorkerResponse> => {
+  payload: RegisterWorkerPayload
+) => {
   const formData = new FormData();
 
   formData.append("name", payload.name);
   formData.append("email", payload.email);
   formData.append("phone", payload.phone);
 
-  // ✅ نبعـت الاتنين عشان الباك إند متلخبط
   formData.append("service_id", payload.service_id.toString());
-  formData.append("service_id", payload.service_id.toString());
-
   formData.append("governorate_id", payload.governorate_id.toString());
+
+  formData.append("price_range", payload.price_range);
 
   formData.append("password", payload.password);
   formData.append("password_confirmation", payload.password_confirmation);
@@ -42,15 +38,26 @@ export const registerWorker = async (
   formData.append("front_identity_photo", payload.front_identity_photo);
   formData.append("back_identity_photo", payload.back_identity_photo);
 
-  const response = await axios.post<RegisterWorkerResponse>(
-    "https://sanay3i.net/api/v1/craftsmen",
+  await axios.post(
+    "https://sanay3i.net/api/craftsmen/register",
     formData,
     {
       headers: {
         Accept: "application/json",
+        "Content-Type": "multipart/form-data",
       },
-    },
+    }
   );
 
-  return response.data;
+  // ✅ AUTO LOGIN
+  const loginRes = await loginCraftsman({
+    email: payload.email,
+    password: payload.password,
+  });
+
+  // ✅ تخزين صحيح
+  localStorage.setItem("token", loginRes.token);
+  localStorage.setItem("userType", "craftsman");
+
+  return loginRes;
 };

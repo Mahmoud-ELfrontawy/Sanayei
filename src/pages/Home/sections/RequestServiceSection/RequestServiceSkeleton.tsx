@@ -1,5 +1,5 @@
 interface SubmitSkeletonProps {
-    loading: boolean;
+    isloading: boolean;
 }
 
 /* =========================
@@ -13,9 +13,9 @@ export const RequestServiceInputSkeleton = () => {
    Submit Button Skeleton
 ========================= */
 export const RequestServiceSubmitSkeleton = ({
-    loading,
+    isloading,
 }: SubmitSkeletonProps) => {
-    if (loading) {
+    if (isloading) {
         return (
             <div className="req-submit skeleton-service">
                 <div className="skeleton-line-service" />

@@ -17,7 +17,7 @@ const RegisterWorkerPage: React.FC = () => {
     setShowPassword,
     onSubmit,
     governorates,
-    services, 
+    services,
     isLoadingData,
   } = useRegisterWorker();
 
@@ -65,6 +65,7 @@ const RegisterWorkerPage: React.FC = () => {
               )}
             </div>
 
+
             {/* الهاتف */}
             <div>
               <input
@@ -83,6 +84,34 @@ const RegisterWorkerPage: React.FC = () => {
                 <span className="form-error">{errors.phone.message}</span>
               )}
             </div>
+            {/* نطاق الأسعار */}
+            <div>
+              <input
+                className="login-input"
+                placeholder="نطاق الأسعار (مثال: 1000-3000)"
+                {...register("price_range", {
+                  required: "نطاق الأسعار مطلوب",
+                  pattern: {
+                    value: /^\d+\s*-\s*\d+$/,
+                    message: "اكتب السعر بالشكل: 1000-3000",
+                  },
+                  validate: (value) => {
+                    const [min, max] = value.split("-").map(Number);
+                    if (min >= max) {
+                      return "السعر الأول يجب أن يكون أقل من الثاني";
+                    }
+                    return true;
+                  },
+                })}
+              />
+
+              {errors.price_range && (
+                <span className="form-error">
+                  {errors.price_range.message}
+                </span>
+              )}
+            </div>
+
 
             {/* المهنة - ✅ نستخدم service_id */}
             <div className="req-row">

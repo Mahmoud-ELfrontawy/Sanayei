@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 
-import { register as registerApi } from "../../../Api/auth/register.api";
+import { register as registerApi } from "../../../Api/user/register.api";
 import { setToastAfterReload } from "../../../utils/toastAfterReload";
 
 export interface RegisterFormValues {

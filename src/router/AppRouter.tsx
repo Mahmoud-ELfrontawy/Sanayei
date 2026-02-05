@@ -13,8 +13,9 @@ import ForgotPasswordPage from "../pages/Auth/ForgotPassword/ForgotPasswordPage"
 import ResetPasswordPage from "../pages/Auth/ResetPassword/ResetPasswordPage";
 import RegisterPage from "../pages/Auth/Register/RegisterPage";
 import GoogleCallback from "../pages/Auth/google-callback/GoogleCallback";
-import EditProfilePagee from "../pages/Profile/ProfileMe/ProfileMe";
-import ProfileMe from "../pages/Profile/ProfileMe/ProfileMe";
+import EditProfilePagee from "../pages/Profile/ProfileUser/ProfileMe";
+import ProfileMe from "../pages/Profile/ProfileUser/ProfileMe";
+import ProfileWorker from "../pages/Profile/ProfileWorker/Dashboard/ProfileWorker";
 import ProfileReviews from "../pages/Profile/Reviews/ProfileReviews";
 import EditProfileLayout from "../layouts/EditProfileLayout";
 import ChooseSanayPage from "../pages/Technicians/ChooseSanayPage";
@@ -47,11 +48,20 @@ const AppRouter: React.FC = () => {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/register-worker" element={<RegisterWorkerPage />} />
 
-          {/* ===== Profile Pages ===== */}
-          <Route path="/profile" element={<EditProfileLayout />}>
+          {/* ===== User Profile ===== */}
+          <Route path="/user/profile" element={<EditProfileLayout />}>
             <Route index element={<ProfileMe />} />
             <Route path="reviews" element={<ProfileReviews />} />
           </Route>
+
+          {/* ===== Craftsman Profile ===== */}
+          {/* ===== Craftsman Profile ===== */}
+          <Route path="/craftsman/profile" element={<EditProfileLayout />}>
+            <Route index element={<ProfileWorker />} />
+            <Route path="reviews" element={<ProfileReviews />} />
+          </Route>
+
+
         </Route>
       </Routes>
     </BrowserRouter>

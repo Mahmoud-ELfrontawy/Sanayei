@@ -1,4 +1,5 @@
 export interface Technician {
+    [x: string]: string;
     id: number;
     name: string;
     description?: string;
@@ -8,7 +9,7 @@ export interface Technician {
     rating?: number;
     reviews_count?: number;
 
-    work_photos?: string;
+    profile_photo?: string;
 
     service?: {
         id: number;

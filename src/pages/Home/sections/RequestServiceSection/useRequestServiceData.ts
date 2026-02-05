@@ -1,12 +1,12 @@
-// (hook مسؤول عن جلب الداتا فقط)
-
 import { useEffect, useState } from "react";
 import { getServices } from "../../../../Api/services.api";
 import type { Service } from "../../../../constants/service";
+
 import {
     getGovernorates,
     type Governorate,
 } from "../../../../Api/serviceRequest/governorates.api";
+
 import {
     getSanaei,
     type Sanaei,
@@ -21,15 +21,15 @@ export const useRequestServiceData = () => {
     useEffect(() => {
         const loadData = async () => {
             try {
-                const [s, g, sn] = await Promise.all([
+                const [servicesRes, govRes, sanaeiRes] = await Promise.all([
                     getServices(),
                     getGovernorates(),
                     getSanaei(),
                 ]);
 
-                setServices(s);
-                setGovernorates(g);
-                setSanaei(sn);
+                setServices(Array.isArray(servicesRes) ? servicesRes : []);
+                setGovernorates(Array.isArray(govRes) ? govRes : []);
+                setSanaei(Array.isArray(sanaeiRes) ? sanaeiRes : []);
             } finally {
                 setLoading(false);
             }
@@ -38,6 +38,10 @@ export const useRequestServiceData = () => {
         loadData();
     }, []);
 
-    return { services, governorates, sanaei, loading };
+    return {
+        services,
+        governorates,
+        sanaei,
+        loading,
+    };
 };
-

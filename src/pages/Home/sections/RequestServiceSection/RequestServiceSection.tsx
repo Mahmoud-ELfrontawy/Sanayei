@@ -16,16 +16,9 @@ import { useAuth } from "../../../../hooks/useAuth";
 type PrefilledFormState = Partial<ServiceRequestPayload>;
 
 const RequestServiceSection: React.FC = () => {
-    // ✅ الفورم دايمًا موجود
-    const form = useForm<ServiceRequestPayload>();
-
-    const {
-        services,
-        governorates,
-        sanaei,
-        loading,
-    } = useRequestServiceData();
-
+    /* ===============================
+        Auth + Router
+    ================================ */
     const { isAuthenticated } = useAuth();
     const navigate = useNavigate();
 
@@ -33,22 +26,56 @@ const RequestServiceSection: React.FC = () => {
         state: PrefilledFormState | null;
     };
 
-    // ✅ تعبئة تلقائية بعد تحميل الداتا
+    /* ===============================
+        Form
+    ================================ */
+    const form = useForm<ServiceRequestPayload>({
+        defaultValues: {
+            name: "",
+            email: "",
+            phone: "",
+            province: "",
+            address: "",
+            service_type: "",
+            service_name: "",
+            industrial_type: "",
+            industrial_name: "",
+            price: "",
+            date: "",
+            time: "",
+        },
+        mode: "onSubmit",
+    });
+
+    /* ===============================
+        Data
+    ================================ */
+    const {
+        services,
+        governorates,
+        sanaei,
+        loading,
+    } = useRequestServiceData();
+
+    /* ===============================
+        Prefill From Navigation
+    ================================ */
     useEffect(() => {
         if (loading || !location.state) return;
 
-        Object.entries(location.state).forEach(
-            ([key, value]) => {
-                if (value !== undefined) {
-                    form.setValue(
-                        key as keyof ServiceRequestPayload,
-                        value as ServiceRequestPayload[keyof ServiceRequestPayload]
-                    );
-                }
+        Object.entries(location.state).forEach(([key, value]) => {
+            if (value !== undefined) {
+                form.setValue(
+                    key as keyof ServiceRequestPayload,
+                    value as ServiceRequestPayload[keyof ServiceRequestPayload]
+                );
             }
-        );
+        });
     }, [loading, location.state, form]);
 
+    /* ===============================
+        Submit
+    ================================ */
     const onSubmit = async (data: ServiceRequestPayload) => {
         if (!isAuthenticated) {
             toast.info("من فضلك سجل دخولك أولًا 🔐");
@@ -61,22 +88,26 @@ const RequestServiceSection: React.FC = () => {
         try {
             await createServiceRequest(data);
 
-            const old = JSON.parse(
+            const oldOrders = JSON.parse(
                 localStorage.getItem("myOrders") || "[]"
             );
 
-            const newRequest = {
+            const newOrder = {
                 ...data,
                 id: crypto.getRandomValues(new Uint32Array(1))[0],
                 status: "pending",
+                createdAt: new Date().toISOString(),
             };
 
             localStorage.setItem(
                 "myOrders",
-                JSON.stringify([newRequest, ...old])
+                JSON.stringify([newOrder, ...oldOrders])
             );
 
-            toast.info("تم إرسال طلب الخدمة بنجاح جاري مراجعته الآن وسيتم التواصل معك قريبًا");
+            toast.success(
+                "تم إرسال طلب الخدمة بنجاح ✅ سيتم التواصل معك قريبًا"
+            );
+
             form.reset();
             navigate("/orders");
         } catch {
@@ -84,7 +115,9 @@ const RequestServiceSection: React.FC = () => {
         }
     };
 
-    // ⛔ لا ترندر الفورم إلا بعد تحميل الداتا
+    /* ===============================
+        Loading State
+    ================================ */
     if (loading) {
         return null; // أو Skeleton
     }
@@ -96,6 +129,7 @@ const RequestServiceSection: React.FC = () => {
                     className="request-wrap"
                     style={{ backgroundImage: `url(${bg})` }}
                 >
+                    {/* ===== Form ===== */}
                     <form
                         className="req-card"
                         onSubmit={form.handleSubmit(onSubmit)}
@@ -108,13 +142,14 @@ const RequestServiceSection: React.FC = () => {
                         />
                     </form>
 
+                    {/* ===== Side ===== */}
                     <aside className="req-side">
                         <h2 className="req-title">
                             اطلب خدمتك الآن
                         </h2>
                         <p className="req-text">
-                            املأ البيانات المطلوبة،
-                            وسنتواصل معك في أقرب وقت.
+                            املأ البيانات المطلوبة، وسنتواصل
+                            معك في أقرب وقت.
                         </p>
                     </aside>
                 </div>

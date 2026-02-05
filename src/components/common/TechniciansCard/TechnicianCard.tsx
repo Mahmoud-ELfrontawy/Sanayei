@@ -2,6 +2,7 @@ import { FaStar, FaHeart, FaRegHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa6";
 import { useEffect, useState } from "react";
+import { getFullImageUrl } from "../../../utils/imageUrl";
 import type { Technician } from "../../../constants/technician";
 
 interface Props {
@@ -55,8 +56,9 @@ const TechnicianCard: React.FC<Props> = ({ technician }) => {
 
             <div className="worker-media">
                 <img
-                    src={technician.work_photos || "/placeholder.jpg"}
+                    src={getFullImageUrl(technician.profile_photo) || "/placeholder.jpg"}
                     alt={technician.name}
+                    className="worker-profile-image"
                     loading="lazy"
                 />
             </div>

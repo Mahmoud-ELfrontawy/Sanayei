@@ -11,7 +11,7 @@ export const FOOTER_LINKS = [
         ],
     },
     {
-        title: "مسارات التعلم",
+        title: "روابط مهمة",
         links: [
             { label: "سجل الطلبات", to: "/orders" },
             { label: "اطلب خدمة", to: "/request-service" },

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 import { registerWorker } from "../../../../Api/auth/Worker/registerWorker.api";
 import { useRequestServiceData } from
-"../../../../pages/Home/sections/RequestServiceSection/useRequestServiceData";
+  "../../../../pages/Home/sections/RequestServiceSection/useRequestServiceData";
 
 
 export interface RegisterWorkerFormValues {
@@ -14,9 +14,10 @@ export interface RegisterWorkerFormValues {
   email: string;
   phone: string;
   service_id: string;
-  governorate_id: string; 
+  governorate_id: string;
   front_identity_photo: FileList;
   back_identity_photo: FileList;
+  price_range: string;
   password: string;
   password_confirmation: string;
   terms: boolean;
@@ -68,6 +69,8 @@ export const useRegisterWorker = () => {
         service_id: Number(data.service_id),
         governorate_id: Number(data.governorate_id),
 
+        price_range: data.price_range,
+
         password: data.password,
         password_confirmation: data.password_confirmation,
 
@@ -75,17 +78,39 @@ export const useRegisterWorker = () => {
         back_identity_photo: data.back_identity_photo[0],
       });
 
-      if (response.status === true || response.status) {
+      if (response.status === true || response.status === 1) {
         toast.success("تم تسجيل الصنايعي بنجاح 🎉");
         form.reset();
         navigate("/login");
-      } else {
-        toast.error(response.message || "حدث خطأ غير متوقع");
+        return;
       }
+
+      /* 🔵 حساب قيد المراجعة */
+      if (
+        response.message?.includes("قيد المراجعة") ||
+        response.message?.includes("معلق")
+      ) {
+        toast.info(
+          "حسابك قيد المراجعة وسيتم تفعيله خلال 24 ساعة ⏳"
+        );
+        return;
+      }
+
+      /* ❌ أي خطأ عادي */
+      toast.error(response.message || "حدث خطأ غير متوقع");
+
     } catch (error: unknown) {
       const err = error as AxiosError<ErrorResponse>;
 
       console.error("Register Error:", err.response);
+
+      if (err.response?.status === 403) {
+        toast.info(
+          err.response?.data?.message ||
+          "حسابك قيد المراجعة وسيتم تفعيله خلال 24 ساعة ⏳"
+        );
+        return;
+      }
 
       if (err.response?.status === 422 && err.response?.data?.errors) {
         const errors = err.response.data.errors;

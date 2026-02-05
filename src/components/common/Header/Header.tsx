@@ -25,14 +25,23 @@ const Header: React.FC = () => {
 
     const dropdownRef = useRef<DropdownRef>(null);
 
+    /* ================= Helpers ================= */
+
+    const userType = localStorage.getItem("userType");
+
+    const profilePath =
+        userType === "craftsman"
+            ? "/craftsman/profile"
+            : "/user/profile";
+
     /* ================= HANDLERS ================= */
 
     const toggleDropdown = () => {
-        setIsOpen(prev => !prev);
+        setIsOpen((prev) => !prev);
     };
 
     const toggleMobileMenu = () => {
-        setIsMobileMenuOpen(prev => !prev);
+        setIsMobileMenuOpen((prev) => !prev);
     };
 
     const handleLogout = () => {
@@ -67,7 +76,7 @@ const Header: React.FC = () => {
             <nav className="header-nav">
 
                 {/* Logo */}
-                <Link to="/profile" className="header-logo">
+                <Link to="/" className="header-logo">
                     <img src={logo} alt="Sanayei Logo" />
                 </Link>
 
@@ -114,7 +123,7 @@ const Header: React.FC = () => {
                                 >
                                     <div className="avatar-wrapper-profile">
                                         <img
-                                            src={user?.profile_image_url || "/avatar.png"}
+                                            src={user?.avatar || "/avatar.png"}
                                             alt="profile"
                                         />
                                         <span className="online-dot" />
@@ -123,7 +132,7 @@ const Header: React.FC = () => {
 
                                 {isOpen && (
                                     <div className="profile-dropdown">
-                                        <Link to="/profile" className="dropdown-item">
+                                        <Link to={profilePath} className="dropdown-item">
                                             <User size={20} />
                                             <span>الملف الشخصي</span>
                                         </Link>
@@ -138,6 +147,7 @@ const Header: React.FC = () => {
                                     </div>
                                 )}
                             </div>
+
                         </div>
                     )}
 
@@ -173,7 +183,7 @@ const Header: React.FC = () => {
 
                     {/* Links */}
                     <ul className="mobile-links">
-                        {NAV_LINKS.map(link => (
+                        {NAV_LINKS.map((link) => (
                             <li key={link.path}>
                                 <NavLink
                                     to={link.path}
@@ -193,7 +203,11 @@ const Header: React.FC = () => {
                         </div>
                     ) : (
                         <div className="mobile-auth">
-                            <Link to="/profile" className="dropdown-item">
+                            <Link
+                                to={profilePath}
+                                className="dropdown-item"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                            >
                                 <User size={20} />
                                 <span>الملف الشخصي</span>
                             </Link>

@@ -56,7 +56,7 @@
 /* Actions */
 .auto-login{
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
     gap: 10px;
 }
 .header-actions {
@@ -349,6 +349,25 @@
 /* ================= RESPONSIVE LOGIC ================= */
 
 /* ================= TABLET ================= */
+@media (max-width: 1144px){
+    .header-logo img{
+        width: 100px;
+        height: 80px;
+    }
+    .header-links{
+        gap: 25px;
+    }
+    .nav-link{
+        font-size: 17px;
+    }
+    .btn-primary{
+        padding: 10px 30px !important;
+    }
+    .btn{
+        font-size: 15px !important;
+    }
+}
+
 @media (max-width: 1023px) {
 
     .desktop-only{
@@ -364,7 +383,7 @@
     }
 
     .nav-link {
-        font-size: 17px;
+        font-size: 15px;
     }
 
     .auto-login {

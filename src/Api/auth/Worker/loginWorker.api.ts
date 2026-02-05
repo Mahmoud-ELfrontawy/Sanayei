@@ -1,16 +1,22 @@
 import axios from "axios";
+
 export interface LoginPayload {
-  email: string;
+  email?: string;
+  phone?: string;
   password: string;
 }
+
 export const loginCraftsman = async (data: LoginPayload) => {
   const res = await axios.post(
-    "https://sanay3i.net/api/auth/craftsman/login",
+    "https://sanay3i.net/api/craftsmen/login",
     data,
     {
-      headers: { Accept: "application/json" },
+      headers: {
+        Accept: "application/json",
+      },
     }
   );
 
+  // ✅ رجّع data كاملة
   return res.data;
 };

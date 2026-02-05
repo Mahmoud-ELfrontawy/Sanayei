@@ -35,7 +35,7 @@ export interface Sanaei {
 
 export const getSanaei = async (): Promise<Sanaei[]> => {
     const response = await axios.get(
-        "https://sanay3i.net/api/v1/craftsmen",
+        "https://sanay3i.net/api/craftsmen",
         {
             headers: {
                 Accept: "application/json",
@@ -43,5 +43,14 @@ export const getSanaei = async (): Promise<Sanaei[]> => {
         }
     );
 
-    return response.data.data;
+    // ✅ Handle both direct array and nested data property
+    if (Array.isArray(response.data)) {
+        return response.data;
+    }
+
+    if (Array.isArray(response.data?.data)) {
+        return response.data.data;
+    }
+
+    return [];
 };
