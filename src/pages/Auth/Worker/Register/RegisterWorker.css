@@ -100,36 +100,66 @@
 }
 
 /* ===== Responsive ===== */
+@media (max-width: 1150px) {
+  .worker-card2 {
+    max-width: 900px;
+    padding: 30px 40px;
+  }
+}
+
 @media (max-width: 968px) {
-  .worker-card {
+  .auth-card--split.worker-card2 {
     flex-direction: column;
+    padding: 40px 30px;
+    max-width: 650px;
   }
 
   .worker-illustration {
     width: 100%;
-    padding: 30px 20px;
+    order: -1;
+    padding: 20px;
     border-right: none;
     border-bottom: 1px solid var(--color-border);
-    align-items: center; /* ✅ في الوسط على الموبايل */
+    align-items: center;
+    justify-content: center;
   }
 
   .worker-illustration img {
-    max-width: 350px;
+    max-width: 300px;
+  }
+
+  .auth-title {
+    text-align: center;
+    font-size: 24px;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
+  .req-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .auth-card--split.worker-card2 {
+    padding: 30px 20px;
+  }
+
   .worker-illustration img {
-    max-width: 280px;
+    display: none;
+  }
+
+  .social-buttons-container {
+    flex-direction: column;
   }
 }
 
 @media (max-width: 480px) {
-  .worker-illustration {
-    padding: 20px 15px;
+  .worker-file-label {
+    font-size: 13px;
+    padding: 0 12px;
   }
 
-  .worker-illustration img {
-    max-width: 240px;
+  .worker-checkbox {
+    font-size: 13px;
   }
 }

@@ -120,9 +120,9 @@
 
 .social-btn {
   flex: 1;
-  height: 54px; /* نفس زر إنشاء حساب */
-  background: #d4d9d0; /* مطابق للتصميم */
-  color: var(--color-text-main);
+  height: 54px; 
+  background: var(--color-primary); 
+  color: white;
   border: none;
   border-radius: 8px;
   display: flex;
@@ -135,7 +135,7 @@
 }
 
 .social-btn:hover {
-  background-color: #c5cbc0;
+  background-color: var(--color-primary-hover);
   transform: translateY(-1px);
 }
 
@@ -180,13 +180,80 @@
 
 /* ===== Illustration ===== */
 .auth-illustration {
-  /* flex: 1; */
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  overflow: hidden;
 }
 
 .auth-illustration img {
+    max-width: 280px;
+    transform: translateX(-30px);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+  .auth-card--split {
+    padding: 40px;
+    gap: 30px;
+  }
+
+  .auth-illustration img {
+    max-width: 220px;
+    transform: translateX(-15px);
+  }
+}
+
+@media (max-width: 900px) {
+  .auth-card--split {
+    flex-direction: column;
+    padding: 40px 30px;
+    max-width: 550px;
+  }
+
+  .auth-illustration {
+    order: -1;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+
+  .auth-illustration img {
     max-width: 200px;
-    transform: translateX(-70px) translateY(0px);
+    transform: none;
+  }
+
+  .auth-title {
+    text-align: center;
+    font-size: 24px;
+  }
+
+  .login-form {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 500px) {
+  .auth-page-wrapper {
+    padding: 20px 15px;
+  }
+  .auth-illustration img{
+    display: none;
+  }
+
+  .auth-card--split {
+    padding: 30px 20px;
+  }
+
+  .social-buttons-container {
+    flex-direction: column;
+  }
+
+  .social-btn {
+    width: 100%;
+    padding: 5px 0;
+  }
+
+  .login-btn {
+    font-size: 16px;
+  }
 }
