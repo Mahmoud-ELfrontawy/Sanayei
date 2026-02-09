@@ -1,0 +1,66 @@
+.icon-btn-login, .mobile-icon-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+/* Vibrant Glow for unread items */
+.icon-btn-login.has-unread svg, 
+.mobile-icon-btn.has-unread svg,
+.nav-link.has-unread .link-icon svg {
+    filter: drop-shadow(0 0 5px rgba(79, 70, 229, 0.6));
+    animation: bounce-vibrant 2s infinite ease-in-out;
+    color: #4f46e5 !important;
+}
+
+/* Shake on arrival (used when count increases) */
+.has-unread.new-arrival svg {
+    animation: shake-vibrant 0.5s ease-in-out both;
+}
+
+.notification-badge-header {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 14px;
+    height: 14px;
+    background-color: #ef4444;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+    animation: pulse-vibrant 1.5s infinite;
+}
+
+@keyframes pulse-vibrant {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+    70% { transform: scale(1.2); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+@keyframes bounce-vibrant {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes shake-vibrant {
+    0%, 100% { transform: rotate(0deg) scale(1.1); }
+    10%, 30%, 50%, 70%, 90% { transform: rotate(-12deg) scale(1.1); }
+    20%, 40%, 60%, 80% { transform: rotate(12deg) scale(1.1); }
+}
+
+/* Badge arrival bump */
+.notification-badge-header {
+    animation: pulse-vibrant 1.5s infinite, badge-arrival 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes badge-arrival {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+}
+
+.mobile-icon-btn .notification-badge-header {
+    top: -4px;
+    right: 5px;
+}

@@ -4,9 +4,6 @@ import {
   FaEyeSlash,
   FaGoogle,
   FaFacebookF,
-  FaUser,
-  FaHammer,
-  FaBuilding,
 } from "react-icons/fa";
 
 import img1 from "../../../assets/images/cuate (2) 1.png";
@@ -19,8 +16,6 @@ const LoginPage: React.FC = () => {
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
     formState: { errors, isSubmitting },
     showPassword,
     setShowPassword,
@@ -36,35 +31,17 @@ const LoginPage: React.FC = () => {
 
           <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
 
-            {/* نوع الحساب */}
-            <div className="member-type-selector">
-              {[
-                { id: "user" as const, label: "مستخدم", icon: <FaUser /> },
-                { id: "craftsman" as const, label: "صنايعي", icon: <FaHammer /> },
-                { id: "company" as const, label: "شركة", icon: <FaBuilding /> },
-              ].map((type) => (
-                <button
-                  key={type.id}
-                  type="button"
-                  className={`type-card ${watch("userType") === type.id ? "active" : ""}`}
-                  onClick={() => setValue("userType", type.id)}
-                >
-                  <div className="type-icon">{type.icon}</div>
-                  <span className="type-label">{type.label}</span>
-                </button>
-              ))}
-            </div>
 
-            {/* Email */}
+            {/* Phone Number or Email */}
             {isSubmitting ? (
               <RequestServiceInputSkeleton />
             ) : (
               <input
-                type="email"
-                placeholder="البريد الإلكتروني"
+                type="text"
+                placeholder="رقم الهاتف أو البريد الإلكتروني"
                 className="login-input"
                 {...register("email", {
-                  required: "البريد الإلكتروني مطلوب",
+                  required: "رقم الهاتف أو البريد الإلكتروني مطلوب"
                 })}
               />
             )}

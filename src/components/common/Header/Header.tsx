@@ -2,14 +2,19 @@ import { NavLink, Link } from "react-router-dom";
 import { IoIosArrowDown, IoMdNotificationsOutline } from "react-icons/io";
 import { FiMessageCircle, FiMenu, FiX } from "react-icons/fi";
 import { useEffect, useRef, useState } from "react";
-import { User, LogOut } from "lucide-react";
+import { User, LogOut, LayoutDashboard } from "lucide-react";
 
 import { NAV_LINKS, type NavLinkItem } from "../../../constants/header";
 import logo from "../../../assets/images/final logo.png";
 import "./Header.css";
+import "./Header_Notifications.css";
 
 import Button from "../../ui/Button/Button";
 import { useAuth } from "../../../hooks/useAuth";
+import { useNotifications } from "../../../context/NotificationContext";
+import { useUserChat } from "../../../context/UserChatProvider";
+import { useCraftsmanChat } from "../../../context/CraftsmanChatProvider";
+
 import { setToastAfterReload } from "../../../utils/toastAfterReload";
 
 /* ================= TYPES ================= */
@@ -19,15 +24,27 @@ type DropdownRef = HTMLDivElement | null;
 
 const Header: React.FC = () => {
     const { user, isAuthenticated, logout } = useAuth();
+    const { unreadCount } = useNotifications();
 
-    const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+    // ✅ تعريف واحد فقط
+    const userType = localStorage.getItem("userType");
+
+    // ✅ استدعاء الـ hooks بدون شروط (قواعد React)
+    const userChat = useUserChat();
+    const craftsmanChat = useCraftsmanChat();
+
+    // ✅ حساب unread بطريقة آمنة
+    const unreadTotal =
+        userType === "craftsman"
+            ? craftsmanChat.contacts.reduce((s, c) => s + c.unread_count, 0)
+            : userChat.contacts.reduce((s, c) => s + c.unread_count, 0);
+
+    const [isOpen, setIsOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const dropdownRef = useRef<DropdownRef>(null);
 
     /* ================= Helpers ================= */
-
-    const userType = localStorage.getItem("userType");
 
     const profilePath =
         userType === "craftsman"
@@ -36,13 +53,8 @@ const Header: React.FC = () => {
 
     /* ================= HANDLERS ================= */
 
-    const toggleDropdown = () => {
-        setIsOpen((prev) => !prev);
-    };
-
-    const toggleMobileMenu = () => {
-        setIsMobileMenuOpen((prev) => !prev);
-    };
+    const toggleDropdown = () => setIsOpen((prev) => !prev);
+    const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev);
 
     const handleLogout = () => {
         setIsOpen(false);
@@ -60,7 +72,18 @@ const Header: React.FC = () => {
         }
     };
 
+    const [isNewMessage, setIsNewMessage] = useState(false);
+    const prevUnreadTotal = useRef(unreadTotal);
+
     /* ================= EFFECTS ================= */
+
+    useEffect(() => {
+        if (unreadTotal > prevUnreadTotal.current) {
+            setIsNewMessage(true);
+            setTimeout(() => setIsNewMessage(false), 1000);
+        }
+        prevUnreadTotal.current = unreadTotal;
+    }, [unreadTotal]);
 
     useEffect(() => {
         document.addEventListener("mousedown", handleClickOutside);
@@ -108,39 +131,46 @@ const Header: React.FC = () => {
                     ) : (
                         <div className="avatar-wrapper-header desktop-only">
 
-                            <button className="icon-btn-login">
+                            {/* Notifications */}
+                            <Link
+                                to="/dashboard/notifications"
+                                className={`icon-btn-login ${unreadCount > 0 ? "has-unread" : ""}`}
+                            >
                                 <IoMdNotificationsOutline size={24} />
-                            </button>
+                                {unreadCount > 0 && <span className="notification-badge-header" />}
+                            </Link>
 
-                            <button className="icon-btn-login">
+                            {/* Messages */}
+                            <Link
+                                to="/dashboard/messages"
+                                className={`icon-btn-login ${unreadTotal > 0 ? "has-unread" : ""} ${isNewMessage ? "new-arrival" : ""}`}
+                            >
                                 <FiMessageCircle size={24} />
-                            </button>
+                                {unreadTotal > 0 && <span className="notification-badge-header" />}
+                            </Link>
 
+                            {/* Avatar Dropdown */}
                             <div className="avatar-dropdown" ref={dropdownRef}>
-                                <button
-                                    className="profile-btn"
-                                    onClick={toggleDropdown}
-                                >
+                                <button className="profile-btn" onClick={toggleDropdown}>
                                     <div className="avatar-wrapper-profile">
-                                        <img
-                                            src={user?.avatar || "/avatar.png"}
-                                            alt="profile"
-                                        />
+                                        <img src={user?.avatar || "/avatar.png"} alt="profile" />
                                         <span className="online-dot" />
                                     </div>
                                 </button>
 
                                 {isOpen && (
                                     <div className="profile-dropdown">
+                                        <Link to="/dashboard" className="dropdown-item">
+                                            <LayoutDashboard size={20} />
+                                            <span>لوحة التحكم</span>
+                                        </Link>
+
                                         <Link to={profilePath} className="dropdown-item">
                                             <User size={20} />
                                             <span>الملف الشخصي</span>
                                         </Link>
 
-                                        <button
-                                            className="dropdown-item logout"
-                                            onClick={handleLogout}
-                                        >
+                                        <button className="dropdown-item logout" onClick={handleLogout}>
                                             <LogOut size={20} />
                                             <span>تسجيل الخروج</span>
                                         </button>
@@ -152,10 +182,7 @@ const Header: React.FC = () => {
                     )}
 
                     {/* ================= MOBILE ICON ================= */}
-                    <button
-                        className="mobile-menu-btn mobile-only"
-                        onClick={toggleMobileMenu}
-                    >
+                    <button className="mobile-menu-btn mobile-only" onClick={toggleMobileMenu}>
                         {isMobileMenuOpen ? <FiX size={26} /> : <FiMenu size={26} />}
                     </button>
 
@@ -166,36 +193,40 @@ const Header: React.FC = () => {
             {isMobileMenuOpen && (
                 <div className="mobile-menu">
 
-                    {/* Quick actions */}
                     {isAuthenticated && (
                         <div className="mobile-quick-actions">
-                            <button className="mobile-icon-btn">
+                            <Link
+                                to="/dashboard/notifications"
+                                className={`mobile-icon-btn ${unreadCount > 0 ? "has-unread" : ""}`}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                            >
                                 <IoMdNotificationsOutline size={24} />
+                                {unreadCount > 0 && <span className="notification-badge-header" />}
                                 <span>الإشعارات</span>
-                            </button>
+                            </Link>
 
-                            <button className="mobile-icon-btn">
+                            <Link
+                                to="/dashboard/messages"
+                                className={`mobile-icon-btn ${unreadTotal > 0 ? "has-unread" : ""} ${isNewMessage ? "new-arrival" : ""}`}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                            >
                                 <FiMessageCircle size={24} />
+                                {unreadTotal > 0 && <span className="notification-badge-header" />}
                                 <span>الرسائل</span>
-                            </button>
+                            </Link>
                         </div>
                     )}
 
-                    {/* Links */}
                     <ul className="mobile-links">
                         {NAV_LINKS.map((link) => (
                             <li key={link.path}>
-                                <NavLink
-                                    to={link.path}
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                >
+                                <NavLink to={link.path} onClick={() => setIsMobileMenuOpen(false)}>
                                     {link.label}
                                 </NavLink>
                             </li>
                         ))}
                     </ul>
 
-                    {/* Auth */}
                     {!isAuthenticated ? (
                         <div className="mobile-auth">
                             <Button to="/login" variant="primary">اطلب الآن</Button>
@@ -203,19 +234,17 @@ const Header: React.FC = () => {
                         </div>
                     ) : (
                         <div className="mobile-auth">
-                            <Link
-                                to={profilePath}
-                                className="dropdown-item"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                            >
+                            <Link to="/dashboard" className="dropdown-item" onClick={() => setIsMobileMenuOpen(false)}>
+                                <LayoutDashboard size={20} />
+                                <span>لوحة التحكم</span>
+                            </Link>
+
+                            <Link to={profilePath} className="dropdown-item" onClick={() => setIsMobileMenuOpen(false)}>
                                 <User size={20} />
                                 <span>الملف الشخصي</span>
                             </Link>
 
-                            <button
-                                className="dropdown-item logout"
-                                onClick={handleLogout}
-                            >
+                            <button className="dropdown-item logout" onClick={handleLogout}>
                                 <LogOut size={20} />
                                 <span>تسجيل الخروج</span>
                             </button>

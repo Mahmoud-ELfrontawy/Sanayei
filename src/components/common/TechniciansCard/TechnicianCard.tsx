@@ -1,8 +1,7 @@
 import { FaStar, FaHeart, FaRegHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { FaArrowRight } from "react-icons/fa6";
 import { useEffect, useState } from "react";
-import { getFullImageUrl } from "../../../utils/imageUrl";
+import { getAvatarUrl } from "../../../utils/imageUrl";
 import type { Technician } from "../../../constants/technician";
 
 interface Props {
@@ -56,7 +55,7 @@ const TechnicianCard: React.FC<Props> = ({ technician }) => {
 
             <div className="worker-media">
                 <img
-                    src={getFullImageUrl(technician.profile_photo) || "/placeholder.jpg"}
+                    src={getAvatarUrl(technician.profile_photo, technician.name)}
                     alt={technician.name}
                     className="worker-profile-image"
                     loading="lazy"
@@ -110,24 +109,38 @@ const TechnicianCard: React.FC<Props> = ({ technician }) => {
                     </span>
                 </div>
 
-                <Link
-                    className="service-link"
-                    to="/request-service"
-                    state={{
-                        industrial_type: technician.id.toString(),
-                        industrial_name: technician.name,
+                <div className="worker-actions">
+                    <Link
+                        className="service-link"
+                        to="/request-service"
+                        state={{
+                            industrial_type: technician.id.toString(),
+                            industrial_name: technician.name,
+                            service_type: technician.service?.id?.toString(),
+                            service_name: technician.service?.name,
+                            price: technician.price_range
+                                ? `من ${technician.price_range} جنيه`
+                                : "السعر غير محدد",
+                        }}
+                    >
+                        طلب خدمة
+                    </Link>
 
-                        service_type: technician.service?.id?.toString(),
-                        service_name: technician.service?.name,
-
-                        price: technician.price_range
-                            ? `من ${technician.price_range} جنيه`
-                            : "السعر غير محدد",
-                    }}
-                >
-                    طلب خدمة
-                    <FaArrowRight className="service-arrow" />
-                </Link>
+                    <Link
+                        className="chat-link"
+                        to="/dashboard/messages"
+                        state={{
+                            contact: {
+                                id: technician.id,
+                                name: technician.name,
+                                avatar: getAvatarUrl(technician.profile_photo, technician.name),
+                                type: "craftsman"
+                            }
+                        }}
+                    >
+                        تواصل الآن
+                    </Link>
+                </div>
 
             </div>
         </article>

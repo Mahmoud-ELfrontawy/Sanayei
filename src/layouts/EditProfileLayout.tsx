@@ -10,7 +10,7 @@ const EditProfileLayout = () => {
       : "/user/profile";
 
   return (
-    <div className="profile-content-container" dir="ltr">
+    <div className="profile-content-container" dir="rtl">
       <h1 className="main-title">تعديل بيانات الملف الشخصي</h1>
 
       <div className="tabs-wrapper">

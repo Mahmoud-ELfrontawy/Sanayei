@@ -21,7 +21,8 @@
 .workers-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 28px;
+    column-gap: 35px;
+    row-gap: 100px;
 }
 
 /* ==============================
@@ -199,6 +200,52 @@
     color: #16a34a;
     margin-top: 12px;
     margin-bottom: 12px;
+}
+
+/* ==============================
+   Worker Actions
+   ============================== */
+
+.worker-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.service-link, .chat-link {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.service-link {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.service-link:hover {
+    background-color: #1a5cad; 
+    transform: translateY(-2px);
+}
+
+.chat-link {
+    background-color: #f0f4f8;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+}
+
+.chat-link:hover {
+    background-color: var(--color-primary);
+    color: white;
+    transform: translateY(-2px);
 }
 
 /* ==============================

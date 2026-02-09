@@ -1,0 +1,207 @@
+.dashboard-sidebar {
+    width: 280px;
+    height: 100vh;
+    background-color: var(--color-bg-main);
+    border-left: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    right: 0;
+    z-index: 100;
+    transition: var(--transition-main);
+}
+
+.sidebar-header {
+    padding: 40px 20px;
+    text-align: center;
+    border-bottom: 1px solid var(--color-divider);
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.avatar-wrapper {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--color-bg-section);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-text-main);
+    margin: 0;
+}
+
+.user-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.user-role-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 12px;
+    border-radius: 100px;
+    background-color: var(--color-bg-section);
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+}
+
+.user-role-badge.craftsman {
+    background-color: rgba(95, 168, 211, 0.1);
+    color: var(--color-primary);
+    border-color: rgba(95, 168, 211, 0.2);
+}
+
+.user-role-badge.company {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: var(--color-success);
+    border-color: rgba(76, 175, 80, 0.2);
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 20px 0;
+    overflow-y: auto;
+}
+
+.nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 25px;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition-fast);
+    border-right: 4px solid transparent;
+}
+
+.nav-link:hover {
+    background-color: var(--color-bg-section);
+    color: var(--color-primary);
+}
+
+.nav-link.active {
+    background-color: rgba(95, 168, 211, 0.1);
+    color: var(--color-primary);
+    border-right-color: var(--color-primary);
+}
+
+.link-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    position: relative; /* ✅ Added for badge positioning */
+}
+
+/* 🔥 Pulse Animation for New Messages */
+@keyframes pulse-red {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(244, 67, 54, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244, 67, 54, 0); }
+}
+
+.nav-link.new-arrival .link-icon {
+    animation: pulse-red 1s infinite;
+}
+
+/* ✅ Enhanced Unread Badge */
+.link-icon .notification-badge-header {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 11px;
+    height: 11px;
+    background-color: #f44336;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 8px rgba(244, 67, 54, 0.6);
+    z-index: 10;
+}
+
+/* 🎯 Highlight Sidebar Link on Unread */
+.nav-link.has-unread {
+    background: rgba(244, 67, 54, 0.05);
+}
+
+.nav-link.has-unread .link-title {
+    font-weight: 700;
+    color: #f44336;
+}
+
+.sidebar-badge {
+    background-color: #ef4444;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-right: auto;
+    box-shadow: 0 0 5px rgba(239, 68, 68, 0.4);
+}
+
+.nav-link.has-unread .link-icon {
+    position: relative;
+}
+.logout-btn{
+    padding: 14px 18px;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    font-size: 17px;
+    text-align: right;
+    cursor: pointer;
+    text-decoration: none;
+    color: #dc2626;
+}
+
+/* RTL Support is inherent as Sanayei is RTL */
+
+@media (max-width: 992px) {
+    .dashboard-sidebar {
+        width: 80px;
+    }
+    .user-name, .link-title, .logout-btn span {
+        display: none;
+    }
+    .avatar-wrapper {
+        width: 50px;
+        height: 50px;
+    }
+    .nav-link {
+        justify-content: center;
+        padding: 15px;
+    }
+}

@@ -7,7 +7,7 @@ import {
     updateProfile,
     deleteUserAccount,
 } from "../../../Api/user/profile.api";
-
+import { toUiDate } from "../../../utils/dateApiHelper";
 import { useAuth } from "../../../hooks/useAuth";
 import { useEffect, useState } from "react";
 
@@ -57,25 +57,19 @@ const ProfileUser = () => {
                 const response = await getMyProfile();
                 const data = response.data; // Access the inner 'data' object
 
-                // Convert DD/MM/YYYY to YYYY-MM-DD for input
-                let formattedDate = "";
-                if (data.birth_date) {
-                    const [day, month, year] = data.birth_date.split("/");
-                    if (day && month && year) {
-                        formattedDate = `${year}-${month}-${day}`;
-                    }
-                }
+                // Match the simplified logic used for craftsmen - standardized via helper
+                const birthDate = toUiDate(data.birth_date);
 
                 setUser({
                     name: data.name ?? "",
                     email: data.email ?? "",
                     phone: data.phone ?? "",
-                    birth_date: formattedDate,
+                    birth_date: birthDate,
                     gender: data.gender ?? "male",
                     latitude: data.latitude ? Number(data.latitude) : 30.0444,
                     longitude: data.longitude ? Number(data.longitude) : 31.2357,
                     avatar: data.profile_image_url
-                        ? `${data.profile_image_url}?t=${Date.now()}`
+                        ? `${data.profile_image_url}?t = ${Date.now()} `
                         : undefined,
                 });
             } catch (error) {
@@ -145,7 +139,14 @@ const ProfileUser = () => {
     const handleDeleteAccount = async () => {
         try {
             await deleteUserAccount();
+
+            // ✅ حفظ الطلبات قبل مسح localStorage
+            const myOrders = localStorage.getItem("myOrders");
             localStorage.clear();
+            if (myOrders) {
+                localStorage.setItem("myOrders", myOrders);
+            }
+
             window.location.href = "/";
         } catch {
             toast.error("فشل حذف الحساب ❌");

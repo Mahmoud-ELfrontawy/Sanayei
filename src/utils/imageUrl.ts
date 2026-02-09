@@ -1,15 +1,30 @@
+const buildUiAvatar = (name?: string) => {
+    const safeName = name && name.trim().length ? name : "User";
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+        safeName
+    )}&background=FF8031&color=fff&bold=true`;
+};
+
 export const getFullImageUrl = (path?: string | null) => {
-    if (!path) return undefined;
-    
-    // If it's already a full URL, return it (but add timestamp if needed?)
-    // Usually full URLs are external (Google auth) or fully qualified S3/Storage URLs.
+    if (!path || path === "null" || path === "undefined") return undefined;
+
+    // If it's already a full URL, return it.
     if (path.startsWith("http")) return path;
 
-    const IMAGE_BASE_URL = "https://sanay3i.net/storage/app/public/";
-    
-    // Remove leading slash to prevent double slashes (though browsers handle it, it's cleaner)
-    const cleanPath = path.startsWith("/") ? path.substring(1) : path;
-    
-    // Add timestamp for cache busting
-    return `${IMAGE_BASE_URL}${cleanPath}?t=${Date.now()}`;
+    // Remove leading slash to prevent double slashes.
+    let cleanPath = path.startsWith("/") ? path.substring(1) : path;
+
+    // Normalize common Laravel storage prefixes.
+    if (cleanPath.startsWith("storage/app/public/")) {
+        cleanPath = cleanPath.substring("storage/app/public/".length);
+    } else if (cleanPath.startsWith("storage/")) {
+        cleanPath = cleanPath.substring("storage/".length);
+    }
+
+    const BASE_URL = "https://sanay3i.net/storage/app/public/";
+    return `${BASE_URL}${cleanPath}`;
+};
+
+export const getAvatarUrl = (path?: string | null, name?: string) => {
+    return getFullImageUrl(path) || buildUiAvatar(name);
 };

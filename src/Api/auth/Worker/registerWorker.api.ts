@@ -38,7 +38,7 @@ export const registerWorker = async (
   formData.append("front_identity_photo", payload.front_identity_photo);
   formData.append("back_identity_photo", payload.back_identity_photo);
 
-  await axios.post(
+  const registerResponse = await axios.post(
     "https://sanay3i.net/api/craftsmen/register",
     formData,
     {
@@ -49,7 +49,9 @@ export const registerWorker = async (
     }
   );
 
-  // ✅ AUTO LOGIN
+  console.log('✅ Registration Response:', registerResponse.data);
+
+  // ✅ AUTO LOGIN only if registration succeeded
   const loginRes = await loginCraftsman({
     email: payload.email,
     password: payload.password,
@@ -59,5 +61,5 @@ export const registerWorker = async (
   localStorage.setItem("token", loginRes.token);
   localStorage.setItem("userType", "craftsman");
 
-  return loginRes;
+  return { ...loginRes, registrationData: registerResponse.data };
 };

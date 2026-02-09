@@ -49,7 +49,7 @@ const ProfileFormBase = <T extends BaseProfileData>({
     };
 
     return (
-        <div dir="rtl">
+        <div>
             {/* Profile Image Section - Styled like the snippet */}
             <div
                 style={{
@@ -129,9 +129,11 @@ const ProfileFormBase = <T extends BaseProfileData>({
                 <ReadOnlyInput value={data.email} />
                 <Input value={data.birth_date || ""} placeholder="تاريخ الميلاد" type="date" onChange={v => setData({ ...data, birth_date: v })} />
                 {!isCraftsman && (
-                    <div className="gender-group">
-                        <button type="button" className={`gender-btn ${data.gender === "male" ? "active" : ""}`} onClick={() => setData({ ...data, gender: "male" })}>ذكر</button>
-                        <button type="button" className={`gender-btn ${data.gender === "female" ? "active" : ""}`} onClick={() => setData({ ...data, gender: "female" })}>أنثى</button>
+                    <div className="form-group">
+                        <div className="gender-group">
+                            <button type="button" className={`gender-btn ${data.gender === "male" ? "active" : ""}`} onClick={() => setData({ ...data, gender: "male" })}>ذكر</button>
+                            <button type="button" className={`gender-btn ${data.gender === "female" ? "active" : ""}`} onClick={() => setData({ ...data, gender: "female" })}>أنثى</button>
+                        </div>
                     </div>
                 )}
                 {/* <Input value={data.identity_number || ""} placeholder="رقم الهوية" onChange={v => setData({ ...data, identity_number: v })} /> */}

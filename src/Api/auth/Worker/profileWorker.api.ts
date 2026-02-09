@@ -1,6 +1,8 @@
 import axios from "axios";
+import { toApiDate } from "../../../utils/dateApiHelper";
 
 /* ================= Constants ================= */
+// ... existing constants ...
 
 const API_BASE_URL = "https://sanay3i.net/api";
 
@@ -145,9 +147,17 @@ export const updateCraftsmanProfile = async (
         "password_confirmation",
     ];
 
-    textFields.forEach((key) =>
-        appendIfExists(formData, data, key)
-    );
+    textFields.forEach((key) => {
+        if (key === "birth_date") {
+            const val = data[key];
+            if (val) {
+                const formatted = toApiDate(String(val));
+                if (formatted) formData.append("birth_date", formatted);
+            }
+        } else {
+            appendIfExists(formData, data, key);
+        }
+    });
 
     /* ===== Number fields ===== */
 

@@ -9,7 +9,8 @@ import {
 } from "../../../../Api/auth/Worker/profileWorker.api";
 
 import { useAuth } from "../../../../hooks/useAuth";
-import { getFullImageUrl } from "../../../../utils/imageUrl";
+import { getAvatarUrl } from "../../../../utils/imageUrl";
+import { toUiDate } from "../../../../utils/dateApiHelper";
 
 /* ================= Types ================= */
 
@@ -118,14 +119,14 @@ const ProfileWorker = () => {
                     email: d.email ?? "",
                     phone: d.phone ?? "",
 
-                    birth_date: d.birth_date ? String(d.birth_date).substring(0, 10) : undefined,
+                    birth_date: toUiDate(d.birth_date),
                     identity_number: d.identity_number ?? undefined,
 
                     address: d.address ?? undefined,
                     latitude: Number(d.latitude) || DEFAULT_LOCATION.latitude,
                     longitude: Number(d.longitude) || DEFAULT_LOCATION.longitude,
 
-                    avatar: d.profile_photo ? getFullImageUrl(d.profile_photo) : undefined,
+                    avatar: getAvatarUrl(d.profile_photo, d.name),
 
                     description: d.description ?? undefined,
                     experience_years: d.experience_years ? Number(d.experience_years) : undefined,
@@ -190,7 +191,14 @@ const ProfileWorker = () => {
     const handleDeleteAccount = async () => {
         try {
             await deleteCraftsmanAccount();
+
+            // ✅ حفظ الطلبات قبل مسح localStorage
+            const myOrders = localStorage.getItem("myOrders");
             localStorage.clear();
+            if (myOrders) {
+                localStorage.setItem("myOrders", myOrders);
+            }
+
             window.location.href = "/";
         } catch {
             toast.error("فشل حذف الحساب ❌");

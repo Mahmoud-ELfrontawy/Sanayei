@@ -32,7 +32,7 @@ const ServiceCard: React.FC<Props> = ({ service }) => {
 
                 <Link
                     to="/request-service"
-                    className="service-link"
+                    className="service-link-card"
                     state={{
                         service_type: service.id.toString(),
                         service_name: service.name,

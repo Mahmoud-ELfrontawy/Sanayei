@@ -1,10 +1,7 @@
-
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 import { getServices } from "../../../../Api/services.api";
-import type { Service } from "../../../../constants/service";
-
 import ServiceCard from "../../../../components/common/ServiceCard/ServiceCard";
 import ServicesSkeleton from "./ServicesSkeleton";
 
@@ -15,16 +12,14 @@ interface ServicesSectionProps {
 }
 
 const ServicesSection: React.FC<ServicesSectionProps> = ({ limit }) => {
-    const [services, setServices] = useState<Service[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
-
-    useEffect(() => {
-        getServices()
-            .then(setServices)
-            .catch(() => setError(true))
-            .finally(() => setLoading(false));
-    }, []);
+    const {
+        data: services = [],
+        isLoading: loading,
+        isError: error
+    } = useQuery({
+        queryKey: ['services'],
+        queryFn: getServices,
+    });
 
     const visibleServices = limit
         ? services.slice(0, limit)

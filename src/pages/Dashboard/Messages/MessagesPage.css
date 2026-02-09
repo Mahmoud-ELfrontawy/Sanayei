@@ -1,0 +1,30 @@
+.messages-page {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.messages-header {
+    margin-bottom: 30px;
+}
+
+.messages-header h1 {
+    font-size: 1.8rem;
+    color: var(--color-text-main);
+    margin-bottom: 8px;
+}
+
+.messages-header p {
+    color: var(--color-text-secondary);
+}
+
+.messages-content {
+    flex: 1;
+    min-height: 0; /* Important for flex child to be able to shrink and show scrollbars */
+}
+
+/* Ensure chat container fits nicely in the page */
+.messages-page .chat-container {
+    height: calc(100vh - 250px);
+    max-height: 800px;
+}

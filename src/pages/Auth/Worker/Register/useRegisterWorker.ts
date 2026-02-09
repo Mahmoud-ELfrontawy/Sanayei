@@ -78,26 +78,31 @@ export const useRegisterWorker = () => {
         back_identity_photo: data.back_identity_photo[0],
       });
 
-      if (response.status === true || response.status === 1) {
-        toast.success("تم تسجيل الصنايعي بنجاح 🎉");
+      console.log('✅ Registration completed:', response);
+
+      // Check if registration was successful
+      if (response.token) {
+        toast.success("تم تسجيل الصنايعي بنجاح وتم تسجيل الدخول 🎉");
         form.reset();
-        navigate("/login");
+        navigate("/craftsman/profile");
         return;
       }
 
-      /* 🔵 حساب قيد المراجعة */
+      // Check registration data for pending status
       if (
-        response.message?.includes("قيد المراجعة") ||
-        response.message?.includes("معلق")
+        response.registrationData?.message?.includes("قيد المراجعة") ||
+        response.registrationData?.message?.includes("معلق") ||
+        response.registrationData?.status === "pending"
       ) {
         toast.info(
           "حسابك قيد المراجعة وسيتم تفعيله خلال 24 ساعة ⏳"
         );
+        navigate("/login");
         return;
       }
 
       /* ❌ أي خطأ عادي */
-      toast.error(response.message || "حدث خطأ غير متوقع");
+      toast.error(response.registrationData?.message || response.message || "حدث خطأ غير متوقع");
 
     } catch (error: unknown) {
       const err = error as AxiosError<ErrorResponse>;

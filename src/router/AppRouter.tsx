@@ -18,10 +18,18 @@ import ProfileMe from "../pages/Profile/ProfileUser/ProfileMe";
 import ProfileWorker from "../pages/Profile/ProfileWorker/Dashboard/ProfileWorker";
 import ProfileReviews from "../pages/Profile/Reviews/ProfileReviews";
 import EditProfileLayout from "../layouts/EditProfileLayout";
+import DashboardLayout from "../layouts/DashboardLayout";
 import ChooseSanayPage from "../pages/Technicians/ChooseSanayPage";
 import MyOrdersPage from "../pages/Orders/MyOrdersPage";
 import RequestServiceSection from "../pages/Home/sections/RequestServiceSection/RequestServiceSection";
 import RegisterWorkerPage from "../pages/Auth/Worker/Register/RegisterWorkerPage";
+
+// Dashboards
+import UserDashboard from "../pages/Dashboard/User/UserDashboard";
+import CraftsmanDashboard from "../pages/Dashboard/Craftsman/CraftsmanDashboard";
+import CompanyDashboard from "../pages/Dashboard/Company/CompanyDashboard";
+import MessagesPage from "../pages/Dashboard/Messages/MessagesPage";
+import NotificationsPage from "../pages/Dashboard/Notifications/NotificationsPage";
 
 const AppRouter: React.FC = () => {
   return (
@@ -61,6 +69,14 @@ const AppRouter: React.FC = () => {
             <Route path="reviews" element={<ProfileReviews />} />
           </Route>
 
+          {/* ===== Dashboards ===== */}
+          <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route index element={<UserDashboard />} /> {/* Fallback or User */}
+            <Route path="craftsman" element={<CraftsmanDashboard />} />
+            <Route path="company" element={<CompanyDashboard />} />
+            <Route path="messages" element={<MessagesPage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
+          </Route>
 
         </Route>
       </Routes>

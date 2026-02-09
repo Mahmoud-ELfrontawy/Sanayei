@@ -43,11 +43,10 @@ export const getSanaei = async (): Promise<Sanaei[]> => {
         }
     );
 
-    // ✅ Handle both direct array and nested data property
     if (Array.isArray(response.data)) {
         return response.data;
-    }
-
+    } 
+    
     if (Array.isArray(response.data?.data)) {
         return response.data.data;
     }

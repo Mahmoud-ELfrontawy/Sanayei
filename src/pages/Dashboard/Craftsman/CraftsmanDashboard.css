@@ -1,0 +1,118 @@
+.incoming-requests-section {
+    margin-top: 40px;
+}
+
+.section-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--color-text-main);
+}
+
+.requests-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.request-item-card {
+    background: var(--color-bg-main);
+    padding: 20px;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.request-main-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.request-icon-box {
+    background: rgba(95, 168, 211, 0.1);
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    color: var(--color-primary);
+}
+
+.request-text-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 1.1rem;
+    color: var(--color-text-main);
+}
+
+.request-text-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+
+.request-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.action-btn.accept {
+    background-color: var(--color-success);
+    color: white;
+}
+
+.action-btn.accept:hover {
+    background-color: #388e3c;
+}
+
+.action-btn.reject {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: var(--color-error);
+}
+
+.action-btn.reject:hover {
+    background-color: rgba(244, 67, 54, 0.2);
+}
+
+.request-status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.request-status.pending {
+    background-color: rgba(255, 152, 0, 0.1);
+    color: #f57c00;
+}
+
+.request-status.accepted {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #388e3c;
+}
+
+.request-status.rejected {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: #d32f2f;
+}
+
+.empty-requests {
+    text-align: center;
+    padding: 40px;
+    background: var(--color-bg-main);
+    border-radius: var(--radius-card);
+    border: 1px dashed var(--color-border);
+    color: var(--color-text-secondary);
+}

@@ -10,11 +10,23 @@ export interface ServiceRequestPayload {
     time: string;
 
     service_type: string;
-    service_name: string; 
+    service_name?: string; 
 
-    industrial_type: string;
-    industrial_name: string;
+    craftsman_id?: string | number;
+    industrial_type?: string;
+    industrial_name?: string;
     
     status : string;
     price?: string;
+    user_id?: number | string;
+    // Relation objects (from 'with' in Laravel)
+    craftsman?: {
+        id: number;
+        name: string;
+        phone: string;
+    };
+    service?: {
+        id: number;
+        name: string;
+    };
 }

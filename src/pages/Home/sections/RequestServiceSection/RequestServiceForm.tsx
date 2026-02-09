@@ -147,45 +147,27 @@ const RequestServiceForm: React.FC<Props> = ({
 
     return (
         <>
-            {/* الاسم */}
+            {/* المستخدم (معطل - يعرض اليوزر المسجل دخوله) */}
             {showSkeleton ? (
                 <RequestServiceInputSkeleton />
             ) : (
-                <>
-                    <input
-                        className="req-input"
-                        placeholder="الاسم بالكامل"
-                        {...register("name", { required: "الاسم مطلوب" })}
-                    />
-                    {errors.name && (
-                        <span className="form-error">
-                            {errors.name.message}
-                        </span>
-                    )}
-                </>
+                <select
+                    className="req-input"
+                    disabled
+                    style={{
+                        backgroundColor: '#f5f5f5',
+                        cursor: 'not-allowed',
+                        color: '#666'
+                    }}
+                >
+                    <option>
+                        {watch("name") || "جاري التحميل..."}
+                    </option>
+                </select>
             )}
 
-            {/* البريد */}
-            {showSkeleton ? (
-                <RequestServiceInputSkeleton />
-            ) : (
-                <input
-                    className="req-input"
-                    placeholder="البريد الإلكتروني"
-                    {...register("email", { required: "البريد مطلوب" })}
-                />
-            )}
+            {/* حقول name, email, phone تم إزالتها - تُملأ تلقائياً من بيانات المستخدم */}
 
-            {/* الهاتف */}
-            {showSkeleton ? (
-                <RequestServiceInputSkeleton />
-            ) : (
-                <input
-                    className="req-input"
-                    placeholder="رقم الهاتف"
-                    {...register("phone", { required: "رقم الهاتف مطلوب" })}
-                />
-            )}
 
             {/* المحافظة + العنوان */}
             {showSkeleton ? (

@@ -15,14 +15,14 @@ const GoogleCallback: React.FC = () => {
             return;
         }
 
-        // تخزين التوكن
-        localStorage.setItem("auth_token", token);
+        // تخزين التوكن - توحيد المفاتيح
+        localStorage.setItem("token", token);
         localStorage.setItem("userType", "user");
 
-        toast.success(`تم إنشاء الحساب بنجاح 👋`);
+        toast.success(`أهلاً بيك يا بطل 👋`);
 
-        // تحويل المستخدم للصفحة الرئيسية بعد 500ms
-        setTimeout(() => navigate("/"));
+        // تحويل المستخدم للصفحة الرئيسية
+        navigate("/");
     }, [navigate, searchParams]);
 
     return (

@@ -84,22 +84,9 @@
 
 
 import axios from "axios";
+import { toApiDate } from "../../utils/dateApiHelper";
 
 const API_BASE_URL = "https://sanay3i.net/api";
-
-/* ================= Helpers ================= */
-/* ================= Helpers ================= */
-// Input: YYYY-MM-DD (from HTML date input)
-// Output: DD/MM/YYYY (for Backend)
-const formatDateToDDMMYYYY = (date?: string) => {
-  if (!date) return undefined;
-
-  const parts = date.split("-");
-  if (parts.length !== 3) return undefined;
-
-  const [year, month, day] = parts;
-  return `${day}/${month}/${year}`;
-};
 
 /* ================= Interfaces ================= */
 export interface UserProfile {
@@ -154,13 +141,11 @@ export const updateProfile = async (data: {
   Object.entries(data).forEach(([key, value]) => {
     if (value === undefined || value === null || value === "") return;
 
-    // 🟢 تحويل التاريخ قبل الإرسال
-    if (key === "birth_date" && typeof value === "string") {
-      const formattedDate = formatDateToDDMMYYYY(value);
-      if (formattedDate) {
-        formData.append("birth_date", formattedDate);
-      }
-      return;
+    // 🟢 تحويل التاريخ قبل الإرسال للسيرفر
+    if (key === "birth_date") {
+        const formatted = toApiDate(String(value));
+        if (formatted) formData.append("birth_date", formatted);
+        return;
     }
 
     if (value instanceof File) {

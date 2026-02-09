@@ -96,7 +96,7 @@
 }
 
 /* ===== Service Link ===== */
-.service-link {
+.service-link-card {
     width: 100%;
     color: var(--color-primary);
     font-weight: 600;
@@ -111,7 +111,7 @@
     direction: rtl;
 }
 
-.service-link:hover {
+.service-link-card:hover {
     color: var(--color-primary-hover);
 }
 
