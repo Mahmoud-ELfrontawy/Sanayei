@@ -69,7 +69,7 @@ const ProfileUser = () => {
           latitude: data.latitude ? Number(data.latitude) : 30.0444,
           longitude: data.longitude ? Number(data.longitude) : 31.2357,
           avatar: data.profile_image_url
-            ? `${data.profile_image_url}?t=${Date.now()}`
+            ? `${data.profile_image_url}?t = ${Date.now()} `
             : undefined,
         });
       } catch (error) {
@@ -109,6 +109,13 @@ const ProfileUser = () => {
         longitude: user.longitude || undefined,
 
         profile_image: imageFile,
+      });
+
+      // 👇 اطبع الداتا الجديدة بعد الحفظ
+      console.log("✅ Profile updated successfully");
+      console.log("📦 Updated User Data:", {
+        ...user,
+        profile_image: imageFile ? imageFile.name : "No new image",
       });
 
       await refreshUser();

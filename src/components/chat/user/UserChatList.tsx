@@ -27,10 +27,6 @@ const UserChatList: React.FC = () => {
 
                         <div className="contact-info">
                             <div className="contact-name">{c.name}</div>
-
-                            {c.last_message && (
-                                <div className="last-msg">{c.last_message}</div>
-                            )}
                         </div>
 
                         {c.unread_count > 0 && (

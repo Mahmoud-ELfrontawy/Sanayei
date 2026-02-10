@@ -164,9 +164,9 @@ export const useLogin = () => {
 
             toast.success(`أهلاً بيك يا ${userName} 👋`);
 
-            if (userType === "user") navigate("/profile");
-            else if (userType === "craftsman") navigate("/craftsman/profile");
-            else navigate("/company/profile");
+            if (userType === "user") navigate("/");
+            else if (userType === "craftsman") navigate("/");
+            else navigate("/");
         } catch (err) {
             const error = err as ApiError;
 
