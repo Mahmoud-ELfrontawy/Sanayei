@@ -111,6 +111,13 @@ const ProfileUser = () => {
                 profile_image: imageFile,
             });
 
+            // 👇 اطبع الداتا الجديدة بعد الحفظ
+            console.log("✅ Profile updated successfully");
+            console.log("📦 Updated User Data:", {
+                ...user,
+                profile_image: imageFile ? imageFile.name : "No new image",
+            });
+
             await refreshUser();
             await refreshUser();
             setImageFile(null);
