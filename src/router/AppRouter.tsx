@@ -30,6 +30,7 @@ import CraftsmanDashboard from "../pages/Dashboard/Craftsman/CraftsmanDashboard"
 import CompanyDashboard from "../pages/Dashboard/Company/CompanyDashboard";
 import MessagesPage from "../pages/Dashboard/Messages/MessagesPage";
 import NotificationsPage from "../pages/Dashboard/Notifications/NotificationsPage";
+import CraftsmanProfilePage from "../pages/CraftsmanProfile/CraftsmanProfilePage";
 
 const AppRouter: React.FC = () => {
   return (
@@ -48,6 +49,7 @@ const AppRouter: React.FC = () => {
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/profile" element={<EditProfilePagee />} />
           <Route path="/request-service" element={<RequestServiceSection />} />
+          <Route path="/craftsman/:id" element={<CraftsmanProfilePage />} />
 
           {/* ===== Auth Pages ===== */}
           <Route path="/login" element={<LoginPage />} />
@@ -77,7 +79,6 @@ const AppRouter: React.FC = () => {
             <Route path="messages" element={<MessagesPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
           </Route>
-
         </Route>
       </Routes>
     </BrowserRouter>
