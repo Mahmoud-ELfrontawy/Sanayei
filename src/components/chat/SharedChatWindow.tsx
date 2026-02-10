@@ -1,10 +1,10 @@
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import {
     HiPhotograph,
-    HiPaperClip,
-    // HiEmojiHappy,
 } from "react-icons/hi";
 import { FaMicrophone, FaPaperPlane } from "react-icons/fa";
+import { BsEmojiSmile } from "react-icons/bs";
+import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
 import { getFullImageUrl } from "../../utils/imageUrl";
 import "./Chat.css";
 
@@ -53,12 +53,14 @@ const SharedChatWindow: React.FC<Props> = ({
 }) => {
     const [text, setText] = useState("");
     const [isRecording, setIsRecording] = useState(false);
-    // const [showEmojis, setShowEmojis] = useState(false);
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
     const bottomRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const audioChunksRef = useRef<Blob[]>([]);
+    const emojiPickerRef = useRef<HTMLDivElement>(null);
+    const messagesContainerRef = useRef<HTMLDivElement>(null);
 
     /* ===== ترتيب الرسائل ===== */
     const sortedMessages = useMemo(() => {
@@ -69,10 +71,33 @@ const SharedChatWindow: React.FC<Props> = ({
         );
     }, [messages]);
 
-    /* ===== Auto Scroll ===== */
+    /* ===== Auto Scroll (داخل الشات فقط) ===== */
     useEffect(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+        if (messagesContainerRef.current) {
+            messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+        }
     }, [sortedMessages]);
+
+    /* ===== Close emoji picker when clicking outside ===== */
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                emojiPickerRef.current &&
+                !emojiPickerRef.current.contains(event.target as Node) &&
+                !(event.target as HTMLElement).closest('.icon-btn')
+            ) {
+                setShowEmojiPicker(false);
+            }
+        };
+
+        if (showEmojiPicker) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showEmojiPicker]);
 
     /* ===== إرسال نص ===== */
     const handleSendText = async () => {
@@ -128,6 +153,11 @@ const SharedChatWindow: React.FC<Props> = ({
         setIsRecording(false);
     };
 
+    /* ===== Emoji Handler ===== */
+    const handleEmojiClick = (emojiData: EmojiClickData) => {
+        setText((prev) => prev + emojiData.emoji);
+    };
+
     /* ===== بدون محادثة ===== */
     if (!activeChat) {
         return (
@@ -155,7 +185,7 @@ const SharedChatWindow: React.FC<Props> = ({
             </header>
 
             {/* ===== Messages ===== */}
-            <div className="messages-container">
+            <div className="messages-container" ref={messagesContainerRef}>
                 {sortedMessages.map((msg) => {
                     const isMine = msg.sender_id !== activeChat.id;
 
@@ -203,8 +233,12 @@ const SharedChatWindow: React.FC<Props> = ({
                         <HiPhotograph />
                     </button>
 
-                    <button className="icon-btn" title="إرسال ملف">
-                        <HiPaperClip />
+                    <button
+                        onClick={() => setShowEmojiPicker((prev) => !prev)}
+                        className="icon-btn"
+                        title="إيموجي"
+                    >
+                        <BsEmojiSmile />
                     </button>
 
                     <button
@@ -227,6 +261,17 @@ const SharedChatWindow: React.FC<Props> = ({
                     accept="image/*"
                     className="hidden"
                 />
+
+                {/* Emoji Picker */}
+                {showEmojiPicker && (
+                    <div className="emoji-picker-wrapper" ref={emojiPickerRef}>
+                        <EmojiPicker
+                            onEmojiClick={handleEmojiClick}
+                            width={320}
+                            height={400}
+                        />
+                    </div>
+                )}
 
                 {/* النص */}
                 <div className="chat-input-wrapper">

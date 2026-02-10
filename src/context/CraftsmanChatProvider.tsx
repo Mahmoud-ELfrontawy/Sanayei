@@ -250,6 +250,14 @@ export const CraftsmanChatProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
+};
 
-  
+/* ===================================================== */
+/* ==================== CRAFTSMAN HOOK ================= */
+/* ===================================================== */
+
+export const useCraftsmanChat = () => {
+  const ctx = useContext(Context);
+  if (!ctx) throw new Error("useCraftsmanChat must be used inside CraftsmanChatProvider");
+  return ctx;
 };

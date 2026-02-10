@@ -13,6 +13,16 @@ const getHeaders = () => {
     };
 };
 
+// For FormData uploads, we only need Authorization
+// Axios will automatically set Content-Type with boundary
+const getFormDataHeaders = () => {
+    const token = localStorage.getItem("token");
+
+    return {
+        Authorization: `Bearer ${token}`,
+    };
+};
+
 /* ================= Types ================= */
 
 export interface ChatMessage {
@@ -99,7 +109,7 @@ export const sendChatImage = async (
     formData.append("image", file);
 
     const response = await axios.post(`${BASE_URL}/messages/send-image`, formData, {
-        headers: getHeaders(),
+        headers: getFormDataHeaders(),
     });
 
 
@@ -123,7 +133,7 @@ export const sendChatAudio = async (
     formData.append("audio", blob, "record.webm");
 
     const response = await axios.post(`${BASE_URL}/messages/send-audio`, formData, {
-        headers: getHeaders(),
+        headers: getFormDataHeaders(),
     });
 
     return response.data;
