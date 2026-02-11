@@ -32,41 +32,43 @@
 
 /* ================= TABS ================= */
 
+/* Tabs Container */
 .tabs-container2 {
     display: flex;
-    gap: 15px;
-    margin-bottom: 40px;
-    padding: 8px;
-    background: #f1f5f9;
-    border-radius: 16px;
-    width: fit-content;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 2rem;
+    padding: 5px;
+    flex-wrap: wrap;
+    width: 100%;
 }
 
 .tab-btn {
-    padding: 12px 28px;
-    border-radius: 12px;
-    font-size: 18px;
-    font-weight: 700;
+    min-width: 100px;
+    text-align: center;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 500;
     color: #64748b;
-    background: transparent;
-    border: none;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
 }
 
 .tab-btn:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
     color: #334155;
 }
 
 .tab-btn.active {
-    background: #fff;
-    color: var(--color-primary);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-color: var(--color-primary);
+    font-weight: 600;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.tab-btn.active.pending { color: #f59e0b; }
-.tab-btn.active.accepted { color: #10b981; }
-.tab-btn.active.rejected { color: #ef4444; }
 
 /* ================= CARD ================= */
 

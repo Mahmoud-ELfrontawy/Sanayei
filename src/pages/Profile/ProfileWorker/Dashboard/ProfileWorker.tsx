@@ -6,11 +6,13 @@ import {
     getCraftsmanProfile,
     updateCraftsmanProfile,
     deleteCraftsmanAccount,
+    deleteWorkPhoto,
 } from "../../../../Api/auth/Worker/profileWorker.api";
 
 import { useAuth } from "../../../../hooks/useAuth";
 import { getAvatarUrl } from "../../../../utils/imageUrl";
 import { toUiDate } from "../../../../utils/dateApiHelper";
+import FormSkeleton from "../../base/FormSkeleton";
 
 /* ================= Types ================= */
 
@@ -31,6 +33,7 @@ interface CraftsmanApiResponse {
     experience_years?: number | string;
     price_range?: string;
     work_days?: string[];
+    work_photos?: string[];
     rating?: number;
     reviews_count?: number;
     is_verified?: boolean;
@@ -61,6 +64,9 @@ interface CraftsmanState {
     price_range?: string;
     work_days?: string[];
     work_hours?: string;
+    work_photos?: (string | File)[];
+    new_work_photos?: File[];
+    delete_work_photos?: string[];
 
     // عرض فقط
     rating?: number;
@@ -81,6 +87,7 @@ const ProfileWorker = () => {
     const { refreshUser } = useAuth();
 
     const [loading, setLoading] = useState(false);
+    const [fetching, setFetching] = useState(true);
     const [imageFile, setImageFile] = useState<File | null>(null);
 
     const [craftsman, setCraftsman] = useState<CraftsmanState>({
@@ -133,13 +140,16 @@ const ProfileWorker = () => {
 
                     price_range: d.price_range ?? undefined,
                     work_days: d.work_days ?? [],
+                    work_photos: d.work_photos ?? [],
 
                     rating: d.rating,
                     reviews_count: d.reviews_count,
                     is_verified: d.is_verified,
                 });
+                setFetching(false);
             } catch {
                 toast.error("فشل تحميل بيانات الصنايعي ❌");
+                setFetching(false);
             }
         };
 
@@ -170,7 +180,17 @@ const ProfileWorker = () => {
                 work_days: craftsman.work_days,
 
                 profile_photo: imageFile,
+                work_photos: craftsman.new_work_photos,
+                delete_work_photos: craftsman.delete_work_photos,
             });
+
+            // ✅ الخطوة الحيوية: حذف الصور يدوياً عبر الـ API لضمان الحذف من السيرفر
+            if (craftsman.delete_work_photos && craftsman.delete_work_photos.length > 0) {
+                console.log("🗑️ Deleting photos via API:", craftsman.delete_work_photos);
+                await Promise.all(
+                    craftsman.delete_work_photos.map(path => deleteWorkPhoto(path))
+                );
+            }
 
             await refreshUser();
             setImageFile(null);
@@ -206,6 +226,10 @@ const ProfileWorker = () => {
     };
 
     /* ================= Render ================= */
+
+    if (fetching) {
+        return <FormSkeleton />;
+    }
 
     return (
         <ProfileFormBase

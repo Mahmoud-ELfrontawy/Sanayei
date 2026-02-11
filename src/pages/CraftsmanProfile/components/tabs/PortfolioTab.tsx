@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import type { PortfolioItem } from "../../craftsmanData"; // ✅
+import type { PortfolioItem } from "../../../../types/craftsman";
 
 interface Props {
   portfolio: PortfolioItem[];
@@ -73,7 +73,12 @@ const PortfolioTab: React.FC<Props> = ({ portfolio }) => {
         ))}
       </div>
 
-      {totalPages > 1 && (
+      {/* زر عرض كل الأعمال */}
+      <div className="view-all-container">
+        <button className="view-all-btn">عرض كل الأعمال</button>
+      </div>
+
+      {portfolio.length > itemsPerPage && (
         <div className="pagination-container">
           {Array.from({ length: totalPages }).map((_, index) => (
             <button

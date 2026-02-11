@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getFullImageUrl } from "../../../utils/imageUrl";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import defaultAvatar from "../../../assets/images/avatar1.jfif";
@@ -19,11 +20,15 @@ export interface BaseProfileData {
 }
 
 export interface CraftsmanExtraData {
+    address?: string;
     description?: string;
     experience_years?: string | number;
     price_range?: string;
     work_days?: string[];
     work_hours?: string;
+    work_photos?: (string | File)[];
+    new_work_photos?: File[];
+    delete_work_photos?: string[];
 }
 
 interface Props<T extends BaseProfileData> {
@@ -136,14 +141,14 @@ const ProfileFormBase = <T extends BaseProfileData>({
                         </div>
                     </div>
                 )}
-                {/* <Input value={data.identity_number || ""} placeholder="رقم الهوية" onChange={v => setData({ ...data, identity_number: v })} /> */}
             </div>
 
             {isCraftsman && (
                 <>
-                    <h3 className="section-title2">بيانات الشغل</h3>
+                    <h3 className="section-title2">بيانات الشغل والموقع</h3>
                     <div className="form-grid">
                         <Input value={data.identity_number || ""} placeholder="رقم الهوية" onChange={v => setData({ ...data, identity_number: v })} />
+                        <Input value={data.address || ""} placeholder="العنوان بالتفصيل" onChange={v => setData({ ...data, address: v })} />
                         <Input value={data.description || ""} placeholder="نبذة عنك" onChange={v => setData({ ...data, description: v })} />
                         <Input value={String(data.experience_years || "")} placeholder="سنوات الخبرة" onChange={v => setData({ ...data, experience_years: v })} />
                         <Input value={data.price_range || ""} placeholder="نطاق الأسعار" onChange={v => setData({ ...data, price_range: v })} />
@@ -164,6 +169,70 @@ const ProfileFormBase = <T extends BaseProfileData>({
                             </div>
                         </div>
 
+                        {/* مدير صور الأعمال */}
+                        <div className="work-photos-manager" style={{ gridColumn: "1 / -1" }}>
+                            <h4 className="work-days-title">معرض صور أعمالك (احترافي)</h4>
+                            <div className="photos-grid">
+                                {/* الصور الموجودة فعلياً */}
+                                {data.work_photos?.map((photo, index) => (
+                                    <div key={`existing-${index}`} className="photo-item">
+                                        <img src={getFullImageUrl(String(photo))} alt="Work" />
+                                        <div
+                                            className="photo-delete-overlay"
+                                            onClick={() => {
+                                                const existing = data.work_photos || [];
+                                                const deleted = data.delete_work_photos || [];
+                                                setData({
+                                                    ...data,
+                                                    work_photos: existing.filter((_, i) => i !== index),
+                                                    delete_work_photos: [...deleted, String(photo)]
+                                                });
+                                            }}
+                                        >
+                                            <span style={{ fontWeight: 'bold' }}>حذف</span>
+                                        </div>
+                                    </div>
+                                ))}
+
+                                {/* الصور الجديدة التي سيتم رفعها */}
+                                {data.new_work_photos?.map((file, index) => (
+                                    <div key={`new-${index}`} className="photo-item">
+                                        <img src={URL.createObjectURL(file)} alt="New Work" />
+                                        <div
+                                            className="photo-delete-overlay"
+                                            onClick={() => {
+                                                const newPhotos = data.new_work_photos || [];
+                                                setData({
+                                                    ...data,
+                                                    new_work_photos: newPhotos.filter((_, i) => i !== index)
+                                                });
+                                            }}
+                                        >
+                                            <span style={{ fontWeight: 'bold' }}>إزالة</span>
+                                        </div>
+                                    </div>
+                                ))}
+
+                                {/* زر الرفع */}
+                                <label className="photo-upload-btn">
+                                    <input
+                                        type="file"
+                                        multiple
+                                        hidden
+                                        accept="image/*"
+                                        onChange={(e) => {
+                                            if (e.target.files) {
+                                                const files = Array.from(e.target.files);
+                                                const current = data.new_work_photos || [];
+                                                setData({ ...data, new_work_photos: [...current, ...files] });
+                                            }
+                                        }}
+                                    />
+                                    <FaCamera size={24} />
+                                    <span>أضف صور</span>
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </>
             )}

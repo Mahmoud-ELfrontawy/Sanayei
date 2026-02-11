@@ -122,10 +122,10 @@ const Header: React.FC = () => {
         <div className="header-actions">
           {!isAuthenticated ? (
             <div className="auto-login desktop-only">
-              <Button to="/login" variant="primary">
+              <Button to="/login" variant="primary" className="header-btn">
                 اطلب الآن
               </Button>
-              <Button to="/login" variant="outline">
+              <Button to="/login" variant="outline" className="header-btn">
                 تسجيل الدخول
               </Button>
             </div>
@@ -136,11 +136,11 @@ const Header: React.FC = () => {
                 to="/dashboard/messages"
                 className={`icon-btn-login ${unreadTotal > 0 ? "has-unread" : ""} ${isNewMessage ? "new-arrival" : ""}`}
               >
-                <FiMessageCircle size={24} />
-                <span>الرسائل</span>
                 {unreadTotal > 0 && (
                   <span className="notification-badge-header" />
                 )}
+                <FiMessageCircle size={24} />
+                <span>الرسائل</span>
               </Link>
 
               {/* Notifications */}
@@ -148,11 +148,11 @@ const Header: React.FC = () => {
                 to="/dashboard/notifications"
                 className={`icon-btn-login ${unreadCount > 0 ? "has-unread" : ""}`}
               >
-                <IoMdNotificationsOutline size={24} />
-                <span>الإشعارات</span>
                 {unreadCount > 0 && (
                   <span className="notification-badge-header" />
                 )}
+                <IoMdNotificationsOutline size={24} />
+                <span>الإشعارات</span>
               </Link>
 
               {/* Avatar Dropdown */}
@@ -245,10 +245,10 @@ const Header: React.FC = () => {
 
           {!isAuthenticated ? (
             <div className="mobile-auth">
-              <Button to="/login" variant="primary">
+              <Button to="/login" variant="primary" className="header-btn">
                 اطلب الآن
               </Button>
-              <Button to="/login" variant="outline">
+              <Button to="/login" variant="outline" className="header-btn">
                 تسجيل الدخول
               </Button>
             </div>

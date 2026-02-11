@@ -60,7 +60,7 @@ const Footer: React.FC = () => {
                         <h4>تواصل معنا</h4>
                         <ul>
                             {CONTACT_NUMBERS.map((num) => (
-                                <li key={num} className="contact-item">
+                                <li key={num} className="contact-item-footer">
                                     {num}
                                 </li>
                             ))}

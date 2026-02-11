@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { FaStar } from "react-icons/fa6";
-import type { Review } from "../../craftsmanData"; // ✅
+
 import defaultUserImg from "../../../../assets/images/image5.png"; // تأكد من المسار
+
+
+import type { Review } from "../../../../types/craftsman";
 
 interface Props {
   reviews: Review[];
@@ -87,7 +90,7 @@ const ReviewsTab: React.FC<Props> = ({ reviews }) => {
                   {Array.from({ length: 5 }).map((_, i) => (
                     <FaStar
                       key={i}
-                      color={i < review.rating ? "#FFC107" : "#ddd"}
+                      color={i < review.rating ? "#FF8031" : "#ddd"}
                     />
                   ))}
                 </div>

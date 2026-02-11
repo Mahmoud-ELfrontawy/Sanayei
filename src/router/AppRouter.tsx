@@ -28,9 +28,11 @@ import RegisterWorkerPage from "../pages/Auth/Worker/Register/RegisterWorkerPage
 import UserDashboard from "../pages/Dashboard/User/UserDashboard";
 import CraftsmanDashboard from "../pages/Dashboard/Craftsman/CraftsmanDashboard";
 import CompanyDashboard from "../pages/Dashboard/Company/CompanyDashboard";
+import DashboardIndex from "../pages/Dashboard/DashboardIndex";
 import MessagesPage from "../pages/Dashboard/Messages/MessagesPage";
 import NotificationsPage from "../pages/Dashboard/Notifications/NotificationsPage";
 import CraftsmanProfilePage from "../pages/CraftsmanProfile/CraftsmanProfilePage";
+import UserProfilePage from "../pages/UserProfile/UserProfilePage";
 
 const AppRouter: React.FC = () => {
   return (
@@ -50,6 +52,7 @@ const AppRouter: React.FC = () => {
           <Route path="/profile" element={<EditProfilePagee />} />
           <Route path="/request-service" element={<RequestServiceSection />} />
           <Route path="/craftsman/:id" element={<CraftsmanProfilePage />} />
+          <Route path="/user/:id" element={<UserProfilePage />} />
 
           {/* ===== Auth Pages ===== */}
           <Route path="/login" element={<LoginPage />} />
@@ -59,21 +62,26 @@ const AppRouter: React.FC = () => {
           <Route path="/register-worker" element={<RegisterWorkerPage />} />
 
           {/* ===== User Profile ===== */}
-          <Route path="/user/profile" element={<EditProfileLayout />}>
-            <Route index element={<ProfileMe />} />
-            <Route path="reviews" element={<ProfileReviews />} />
+          <Route path="/user/profile">
+            <Route index element={<UserProfilePage />} />
+            <Route element={<EditProfileLayout />}>
+              <Route path="edit" element={<ProfileMe />} />
+              <Route path="reviews" element={<ProfileReviews />} />
+            </Route>
           </Route>
 
           {/* ===== Craftsman Profile ===== */}
-          {/* ===== Craftsman Profile ===== */}
-          <Route path="/craftsman/profile" element={<EditProfileLayout />}>
-            <Route index element={<ProfileWorker />} />
-            <Route path="reviews" element={<ProfileReviews />} />
+          <Route path="/craftsman/profile">
+            <Route index element={<CraftsmanProfilePage />} />
+            <Route element={<EditProfileLayout />}>
+              <Route path="edit" element={<ProfileWorker />} />
+              <Route path="reviews" element={<ProfileReviews />} />
+            </Route>
           </Route>
 
           {/* ===== Dashboards ===== */}
           <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<UserDashboard />} /> {/* Fallback or User */}
+            <Route index element={<DashboardIndex />} />
             <Route path="craftsman" element={<CraftsmanDashboard />} />
             <Route path="company" element={<CompanyDashboard />} />
             <Route path="messages" element={<MessagesPage />} />

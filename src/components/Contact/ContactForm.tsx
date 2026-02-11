@@ -4,6 +4,7 @@ import type { ContactPayload } from "../../constants/contact";
 import { sendContactMessage } from "../../Api/contact.api";
 import { RequestServiceInputSkeleton } from
     "../../pages/Home/sections/RequestServiceSection/RequestServiceSkeleton";
+import Button from "../ui/Button/Button";
 import "./ContactForm.css";
 
 const ContactForm: React.FC = () => {
@@ -39,7 +40,7 @@ const ContactForm: React.FC = () => {
                             className="contact-input"
                             placeholder="اسمك *"
                             {...register("name", { required: "الاسم مطلوب" })}
-                            
+
                         />
                     )}
                     {errors.name && <p className="form-error">{errors.name.message}</p>}
@@ -86,12 +87,13 @@ const ContactForm: React.FC = () => {
             </div>
 
             <div className="btn-Contact text-start">
-                <button
+                <Button
                     type="submit"
-                    className="btn-primary"
+                    variant="primary"
+                    disabled={isSubmitting}
                 >
-                    إرسال
-                </button>
+                    {isSubmitting ? "جارٍ الإرسال..." : "إرسال"}
+                </Button>
             </div>
         </form>
     );

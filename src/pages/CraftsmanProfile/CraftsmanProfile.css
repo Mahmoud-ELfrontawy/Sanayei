@@ -13,29 +13,38 @@
 /* صورة الغلاف */
 .profile-cover {
   width: 100%;
-  height: 320px;
-  background: linear-gradient(
-    135deg,
-    var(--color-text-accent),
-    var(--color-text-secondary)
-  );
+  height: 250px;
   background-size: cover;
   background-position: center;
   position: relative;
   transition: height 0.3s ease;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  background-color: #4A5D6E; /* Fallback */
+}
+
+.profile-cover::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 /* الحاوية الرئيسية */
 .profile-container {
-  max-width: 90%;
+  max-width: 1200px;
   width: 100%;
   margin: 0 auto;
   padding: 0 20px;
   display: flex;
   gap: 30px;
   position: relative;
-  margin-top: -100px;
-  /* ✅ هام: المحاذاة في البداية للديسك توب */
+  margin-top: -120px;
   align-items: flex-start;
 }
 
@@ -43,76 +52,68 @@
    2. القائمة الجانبية (Sidebar)
    ========================================= */
 .profile-sidebar {
-  width: 340px;
+  width: 320px;
   flex-shrink: 0;
 }
 
 .craftsman-card {
-  background: var(--color-bg-main);
-  border-radius: 22px;
-  padding: 40px 25px;
+  background: #ffffff;
+  border-radius: 25px;
+  padding: 30px 20px;
   text-align: center;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 100px;
   z-index: 10;
-  backdrop-filter: blur(5px);
 }
 
 .craftsman-img-wrapper {
-  width: 160px;
-  height: 160px;
+  width: 180px;
+  height: 180px;
   margin: 0 auto 20px;
   border-radius: 50%;
-  border: 5px solid var(--color-bg-main);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  padding: 5px;
+  border: 3px solid #5FA8D3;
+  background-color: #fff;
   overflow: hidden;
-  background-color: var(--color-bg-section);
+  position: relative;
 }
 
 .craftsman-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: var(--transition-main);
-}
-
-.craftsman-card:hover .craftsman-img {
-  transform: scale(1.08);
+  border-radius: 50%;
+  border: 4px solid #fff;
 }
 
 .craftsman-name {
   font-size: 26px;
-  font-weight: 800;
-  color: var(--color-text-main);
-  margin-bottom: 6px;
+  font-weight: 800; /* Bolder */
+  color: #1a1a1a;  /* Sharper black */
+  margin-bottom: 5px;
 }
 
 .craftsman-job {
   font-size: 17px;
   color: var(--color-text-secondary);
-  margin-bottom: 12px;
-  font-weight: 500;
+  margin-bottom: 10px;
+  font-weight: 600;
 }
 
 .craftsman-rating {
   display: flex;
   justify-content: center;
-  gap: 4px;
-  color: var(--color-warning);
+  gap: 6px;
+  color: #FF8031;
   margin-bottom: 12px;
-  font-size: 14px;
+  font-size: 18px;
 }
 
 .craftsman-exp {
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  margin-bottom: 30px;
-  background: var(--color-bg-section);
-  display: inline-block;
-  padding: 6px 16px;
-  border-radius: 30px;
+  font-size: 17px;
+  color: var(--color-text-muted);
+  margin-bottom: 25px;
   font-weight: 600;
 }
 
@@ -120,64 +121,39 @@
 .card-actions {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 15px;
+  padding: 0 10px;
 }
 
-.btn-primary {
-  background: var(--color-primary);
-  color: #fff;
-  border: none;
-  height: 50px;
-  border-radius: var(--radius-btn);
-  font-weight: 700;
-  font-size: 16px;
-  cursor: pointer;
-  transition: var(--transition-fast);
-  box-shadow: 0 4px 15px rgba(var(--color-primary-rgb), 0.2);
-}
-
-.btn-primary:hover {
-  background-color: var(--color-primary-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(var(--color-primary-rgb), 0.3);
-}
-
-.btn-outline {
-  background: transparent;
-  color: var(--color-primary);
-  border: 2px solid var(--color-primary);
-  height: 50px;
-  border-radius: var(--radius-btn);
-  font-weight: 700;
-  font-size: 16px;
-  cursor: pointer;
-  transition: var(--transition-fast);
-}
-
-.btn-outline:hover {
-  background: var(--color-primary);
-}
+/* أزرار الكارت مستمدة من المكون العام */
 
 /* =========================================
    3. منطقة المحتوى (Content Area)
    ========================================= */
 .profile-content-area {
   flex: 1;
-  background: var(--color-bg-main);
-  border-radius: 22px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
-  margin-top: 100px;
+  background: #ffffff;
+  border-radius: 25px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.04);
   padding: 40px;
   min-height: 600px;
-  border: 1px solid var(--color-border);
+  border: 1px solid #e0e0e0; /* Slightly darker border */
+}
+
+.info-text-val {
+  font-size: 17px;
+  color: #1a1a1a; /* Sharper */
+  font-weight: 700;
 }
 
 /* التبويبات (Tabs) */
 .profile-tabs {
   display: flex;
+  justify-content: flex-start;
   gap: 40px;
-  border-bottom: 2px solid var(--color-bg-section);
+  border-bottom: 2px solid #f5f5f5;
   margin-bottom: 40px;
+  padding-bottom: 0;
 }
 
 .tab-btn {
@@ -185,22 +161,15 @@
   border: none;
   font-size: 18px;
   font-weight: 600;
-  color: var(--color-text-secondary);
-  padding-bottom: 16px;
+  color: #888;
+  padding: 0 0 15px;
   cursor: pointer;
   position: relative;
-  transition: var(--transition-fast);
-  font-family: inherit;
-  white-space: nowrap;
-}
-
-.tab-btn:hover {
-  color: var(--color-primary);
+  transition: 0.3s;
 }
 
 .tab-btn.active {
-  color: var(--color-primary);
-  font-weight: 800;
+  color: #5FA8D3;
 }
 
 .tab-btn.active::after {
@@ -210,47 +179,86 @@
   left: 0;
   width: 100%;
   height: 3px;
-  background: var(--color-primary);
-  border-radius: 10px 10px 0 0;
+  background: #5FA8D3;
+  border-radius: 5px;
 }
 
 /* =========================================
    4. المحتوى الداخلي
    ========================================= */
 .info-section {
-  margin-bottom: 35px;
+  margin-bottom: 40px;
 }
 
 .info-title {
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--color-primary);
-  margin-bottom: 18px;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+}
+
+.info-title svg {
+  color: #5FA8D3;
+  font-size: 22px;
 }
 
 .info-list {
   list-style: none;
   padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
 }
 
 .info-list li {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 14px;
-  font-size: 16px;
-  color: var(--color-text-muted);
-  line-height: 1.7;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  color: #2c3e50; /* Sharper secondary color */
+  background: #f8f9fa;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: 700; /* Bolder text labels */
 }
 
-.icon-check {
-  color: var(--color-primary);
-  font-size: 20px;
-  margin-top: 4px;
-  flex-shrink: 0;
+.description-text {
+  color: var(--color-text-muted);
+  line-height: 1.8;
+  font-size: 17px;
+  background: #fdfdfd;
+  padding: 24px;
+  border-radius: 15px;
+  border: 1px dashed var(--color-divider);
+}
+
+.info-grid-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.info-section.half {
+  flex: 1;
+  min-width: 250px;
+  background: #fcfcfc;
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px solid #f0f0f0;
+}
+
+.info-text-val {
+  font-size: 17px;
+  color: var(--color-text-main);
+  font-weight: 600;
+}
+
+.ltr-text {
+  direction: ltr;
+  text-align: right;
 }
 
 /* =========================================
@@ -423,6 +431,28 @@
   }
 }
 
+.view-all-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.view-all-btn {
+  background: #5FA8D3;
+  color: #fff;
+  border: none;
+  padding: 10px 40px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.view-all-btn:hover {
+  background-color: #4d94bd;
+}
+
 /* =========================================
    9. التجاوب (Mobile Fixes)
    ========================================= */
@@ -489,5 +519,11 @@
   }
   .tab-btn{
     font-size:16px
+  }
+  .header-links{
+      gap: 25px;
+  }
+  .nav-link{
+      font-size: 17px;
   }
 }

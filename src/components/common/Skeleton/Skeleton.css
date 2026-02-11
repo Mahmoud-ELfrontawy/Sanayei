@@ -1,0 +1,36 @@
+.skeleton-loader {
+    background: linear-gradient(
+        110deg,
+        #ececec 30%,
+        #f5f5f5 50%,
+        #ececec 70%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+    pointer-events: none;
+    display: inline-block;
+    width: 100%;
+}
+
+.skeleton-loader.text {
+    height: 1em;
+    margin-bottom: 0.5em;
+    border-radius: 4px;
+}
+
+.skeleton-loader.circular {
+    aspect-ratio: 1 / 1;
+}
+
+.skeleton-loader.rectangular {
+    border-radius: 8px;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}

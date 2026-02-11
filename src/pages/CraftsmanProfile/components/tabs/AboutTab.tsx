@@ -1,6 +1,6 @@
 import React from "react";
-import { FiCheck, FiMapPin, FiCreditCard } from "react-icons/fi";
-import type { CraftsmanProfileData } from "../../craftsmanData"; // ✅
+import { FiCheck, FiMapPin, FiCreditCard, FiPhone } from "react-icons/fi";
+import type { CraftsmanProfileData } from "../../../../types/craftsman";
 
 interface Props {
   data: CraftsmanProfileData;
@@ -15,6 +15,7 @@ const AboutTab: React.FC<Props> = ({ data }) => {
           <FiCheck /> التخصص المهني
         </h3>
         <ul className="info-list">
+          <li>• {data.jobTitle}</li>
           {data.specialization &&
             data.specialization.map((spec, idx) => <li key={idx}>• {spec}</li>)}
         </ul>
@@ -25,15 +26,47 @@ const AboutTab: React.FC<Props> = ({ data }) => {
         <h3 className="info-title">
           <FiCheck /> نبذة عن الصنايعي
         </h3>
-        <p style={{ color: "#555", lineHeight: "1.6" }}>{data.about}</p>
+        <p className="description-text">{data.about}</p>
       </div>
 
-      {/* العنوان */}
-      <div className="info-section">
-        <h3 className="info-title">
-          <FiMapPin /> العنوان
-        </h3>
-        <p style={{ color: "#555" }}>{data.address}</p>
+      <div className="info-grid-row">
+        {/* العنوان */}
+        <div className="info-section half">
+          <h3 className="info-title">
+            <FiMapPin /> العنوان بالتفصيل
+          </h3>
+          <p className="info-text-val">{data.address}</p>
+        </div>
+
+        {/* رقم الهاتف */}
+        <div className="info-section half">
+          <h3 className="info-title">
+            <FiPhone /> رقم الهاتف
+          </h3>
+          <p className="info-text-val ltr-text">{data.phone || "غير متاح"}</p>
+        </div>
+      </div>
+
+      <div className="info-grid-row">
+        {/* نطاق الأسعار */}
+        <div className="info-section half">
+          <h3 className="info-title">
+            <FiCreditCard /> نطاق الأسعار
+          </h3>
+          <p className="info-text-val">{data.priceRange || "حسب الاتفاق"}</p>
+        </div>
+
+        {/* أيام العمل */}
+        <div className="info-section half">
+          <h3 className="info-title">
+            <FiCheck /> أيام العمل
+          </h3>
+          <p className="info-text-val">
+            {data.workDays && data.workDays.length > 0
+              ? data.workDays.join(" - ")
+              : "طوال أيام الأسبوع"}
+          </p>
+        </div>
       </div>
 
       {/* الدفع */}

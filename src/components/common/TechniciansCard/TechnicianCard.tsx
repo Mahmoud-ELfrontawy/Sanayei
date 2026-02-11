@@ -1,8 +1,8 @@
 import { FaStar, FaHeart, FaRegHeart } from "react-icons/fa";
-import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getAvatarUrl } from "../../../utils/imageUrl";
 import type { Technician } from "../../../constants/technician";
+import Button from "../../ui/Button/Button";
 
 interface Props {
     technician: Technician;
@@ -110,9 +110,9 @@ const TechnicianCard: React.FC<Props> = ({ technician }) => {
                 </div>
 
                 <div className="worker-actions">
-                    <Link
-                        className="service-link"
+                    <Button
                         to="/request-service"
+                        variant="primary"
                         state={{
                             industrial_type: technician.id.toString(),
                             industrial_name: technician.name,
@@ -124,22 +124,14 @@ const TechnicianCard: React.FC<Props> = ({ technician }) => {
                         }}
                     >
                         طلب خدمة
-                    </Link>
+                    </Button>
 
-                    <Link
-                        className="chat-link"
-                        to="/dashboard/messages"
-                        state={{
-                            contact: {
-                                id: technician.id,
-                                name: technician.name,
-                                avatar: getAvatarUrl(technician.profile_photo, technician.name),
-                                type: "craftsman"
-                            }
-                        }}
+                    <Button
+                        to={`/craftsman/${technician.id}`}
+                        variant="outline"
                     >
-                        تواصل الآن
-                    </Link>
+                        الملف الشخصي
+                    </Button>
                 </div>
 
             </div>

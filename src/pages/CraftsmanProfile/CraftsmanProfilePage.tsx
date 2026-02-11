@@ -12,23 +12,14 @@ import PortfolioTab from "./components/tabs/PortfolioTab";
 // Styles
 import "./CraftsmanProfile.css";
 
+import ProfileSkeleton from "./components/ProfileSkeleton";
+
 const CraftsmanProfilePage: React.FC = () => {
-  const { craftsman, loading, error, activeTab, setActiveTab } =
+  const { craftsman, loading, error, activeTab, setActiveTab, isOwnProfile } =
     useCraftsmanProfile();
 
   if (loading) {
-    return (
-      <div
-        className="profile-page-wrapper"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        جاري التحميل...
-      </div>
-    );
+    return <ProfileSkeleton />;
   }
 
   if (error || !craftsman) {
@@ -60,18 +51,19 @@ const CraftsmanProfilePage: React.FC = () => {
 
   return (
     <div className="profile-page-wrapper">
-      {/* 1. صورة الغلاف */}
       <div
         className="profile-cover"
         style={{
-          backgroundImage: `url(${craftsman.coverUrl})`,
+          backgroundColor: "var(--color-primary)",
+          opacity: 0.8,
+          background: "linear-gradient(45deg, #4A5D6E, #5FA8D3)"
         }}
       ></div>
 
       <div className="profile-container">
         {/* 2. الكارت الجانبي */}
         <aside className="profile-sidebar">
-          <ProfileCard craftsman={craftsman} />
+          <ProfileCard craftsman={craftsman} isOwnProfile={isOwnProfile} />
         </aside>
 
         {/* 3. منطقة المحتوى */}

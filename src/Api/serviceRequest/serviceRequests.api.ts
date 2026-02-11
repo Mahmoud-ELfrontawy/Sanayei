@@ -74,7 +74,7 @@ export const getIncomingServiceRequests = async () => {
  */
 export const updateServiceRequestStatus = async (
     requestId: number,
-    status: "accepted" | "rejected"
+    status: "accepted" | "rejected" | "completed"
 ) => {
     try {
         const response = await axios.post(

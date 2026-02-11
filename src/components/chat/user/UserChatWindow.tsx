@@ -11,6 +11,7 @@ const UserChatWindow = () => {
             sendMessage={sendMessage}
             sendImage={sendImage}
             sendAudio={sendAudio}
+            profileLink={activeChat ? `/craftsman/${activeChat.id}` : undefined}
         />
     );
 };

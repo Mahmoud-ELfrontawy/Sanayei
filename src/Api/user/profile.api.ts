@@ -170,6 +170,20 @@ export const updateProfile = async (data: {
   return res.data;
 };
 
+/* ================= Get User Profile by ID (Public) ================= */
+export const getUserProfileById = async (id: string | number) => {
+  const token = localStorage.getItem("token");
+
+  const res = await axios.get(`${API_BASE_URL}/user/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+  return res.data;
+};
+
 /* ================= Delete Account ================= */
 export const deleteUserAccount = async () => {
   const token = localStorage.getItem("token");

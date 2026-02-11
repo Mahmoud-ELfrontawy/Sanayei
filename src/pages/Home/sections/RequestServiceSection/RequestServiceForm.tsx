@@ -203,14 +203,26 @@ const RequestServiceForm: React.FC<Props> = ({
             ) : (
                 <div className="req-row">
                     <input
-                        type="date"
+                        type="text"
                         className="req-input"
-                        {...register("date")}
+                        placeholder="تاريخ الخدمة المطلوب"
+                        onFocus={(e) => (e.target.type = "date")}
+                        {...register("date", {
+                            onBlur: (e) => {
+                                if (!e.target.value) e.target.type = "text";
+                            },
+                        })}
                     />
                     <input
-                        type="time"
+                        type="text"
                         className="req-input"
-                        {...register("time")}
+                        placeholder="وقت الخدمة المطلوب"
+                        onFocus={(e) => (e.target.type = "time")}
+                        {...register("time", {
+                            onBlur: (e) => {
+                                if (!e.target.value) e.target.type = "text";
+                            },
+                        })}
                     />
                 </div>
             )}

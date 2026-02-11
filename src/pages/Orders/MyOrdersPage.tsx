@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import ReviewModal from "../../components/ui/ReviewModal/ReviewModal";
 import { useNavigate } from "react-router-dom";
 import {
     getMyServiceRequests,
@@ -55,6 +56,8 @@ function MyOrdersPage() {
     const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState("all");
     const [orderToDelete, setOrderToDelete] = useState<number | null>(null);
+    const [showReviewModal, setShowReviewModal] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState<any>(null);
 
 
     useEffect(() => {
@@ -96,11 +99,14 @@ function MyOrdersPage() {
         fetchOrders();
     }, [user, isCraftsman, authLoading]);
 
-    const handleStatusUpdate = async (orderId: number, newStatus: "accepted" | "rejected") => {
+    const handleStatusUpdate = async (orderId: number, newStatus: "accepted" | "rejected" | "completed") => {
         const order = orders.find(o => o.id === orderId);
         const serviceName = order?.service?.name || order?.service_name || "خدمة صيانة";
 
-        const confirmMsg = newStatus === "accepted" ? "هل أنت متأكد من قبول الطلب؟" : "هل أنت متأكد من رفض الطلب؟";
+        const confirmMsg =
+            newStatus === "accepted" ? "هل أنت متأكد من قبول الطلب؟" :
+                newStatus === "completed" ? "هل تم إتمام المهمة بالفعل؟" :
+                    "هل أنت متأكد من رفض الطلب؟";
         if (!window.confirm(confirmMsg)) return;
 
         try {
@@ -108,17 +114,25 @@ function MyOrdersPage() {
 
             // Trigger Notification for the User
             addNotification({
-                title: newStatus === "accepted" ? "تم قبول طلبك ✅" : "تم رفض الطلب ❌",
-                message: newStatus === "accepted"
-                    ? `تم قبول طلبك لخدمة ${serviceName} بنجاح.`
-                    : `نعتذر، تم رفض طلبك لخدمة ${serviceName}.`,
+                title:
+                    newStatus === "accepted" ? "تم قبول طلبك ✅" :
+                        newStatus === "completed" ? "اكتملت الخدمة ✨" :
+                            "تم رفض الطلب ❌",
+                message:
+                    newStatus === "accepted" ? `تم قبول طلبك لخدمة ${serviceName} بنجاح.` :
+                        newStatus === "completed" ? `تم إتمام خدمة ${serviceName}، يمكنك الآن تقييم الصنايعي.` :
+                            `نعتذر، تم رفض طلبك لخدمة ${serviceName}.`,
                 recipientId: order.user_id,
                 recipientType: "user",
                 type: "order_status",
                 orderId: orderId,
             });
 
-            toast.success(newStatus === "accepted" ? "تم قبول الطلب بنجاح ✅" : "تم رفض الطلب ❌");
+            toast.success(
+                newStatus === "accepted" ? "تم قبول الطلب بنجاح ✅" :
+                    newStatus === "completed" ? "تم إتمام المهمة بنجاح ✨" :
+                        "تم رفض الطلب ❌"
+            );
 
             setOrders((prev) =>
                 prev.map((order) =>
@@ -172,6 +186,7 @@ function MyOrdersPage() {
             all: orders.length,
             pending: orders.filter((o) => o.status === "pending").length,
             accepted: orders.filter((o) => o.status === "accepted").length,
+            completed: orders.filter((o) => o.status === "completed").length,
             rejected: orders.filter((o) => o.status === "rejected").length,
         }),
         [orders]
@@ -182,6 +197,7 @@ function MyOrdersPage() {
         const statusConfig: any = {
             pending: { label: "قيد الانتظار", className: "pending" },
             accepted: { label: "تم القبول", className: "accepted" },
+            completed: { label: "مكتملة ✨", className: "completed" },
             rejected: { label: "تم الرفض", className: "rejected" },
         };
         const config = statusConfig[order.status] || statusConfig.pending;
@@ -218,7 +234,7 @@ function MyOrdersPage() {
                         <div className="info-item">
                             <span className="info-label"><FaClock /> التوقيت المطلوب</span>
                             <span className="info-value">
-                                {order.day || "اليوم"} ، الساعة {order.time || "غير محدد"}
+                                {order.date || "اليوم"} ، الساعة {order.time || "غير محدد"}
                             </span>
                         </div>
                         <div className="info-item">
@@ -228,16 +244,38 @@ function MyOrdersPage() {
                             </span>
                         </div>
                         <div className="info-item">
+                            <span className="info-label"><FaWallet /> التكلفة المتوقعة</span>
+                            <span className="info-value">
+                                {order.price
+                                    ? `${order.price} جنيه`
+                                    : (order.craftsman?.price_range
+                                        ? `${order.craftsman.price_range} جنيه`
+                                        : (order.craftsman?.price ? `${order.craftsman.price} جنيه` : "غير محدد")
+                                    )
+                                }
+                            </span>
+                        </div>
+                        <div className="info-item">
                             <span className="info-label"><FaWallet /> طريقة الدفع</span>
                             <span className="info-value">كاش</span>
                         </div>
                         <div className="info-item">
                             <span className="info-label"><FaPhone /> رقم التواصل</span>
                             <div className="phone-container">
-                                <a href={`tel:${order.phone}`} className="phone-link">
-                                    <span className="phone-icon"><FaPhone /></span>
-                                    {order.phone || "غير متاح"}
-                                </a>
+                                {(() => {
+                                    // If user is Craftsman -> Show Client Phone (order.phone)
+                                    // If user is Regular User -> Show Craftsman Phone (order.craftsman?.phone)
+                                    const phoneToShow = isCraftsman
+                                        ? order.phone
+                                        : (order.craftsman?.phone || order.phone);
+
+                                    return (
+                                        <a href={`tel:${phoneToShow}`} className="phone-link">
+                                            <span className="phone-icon"><FaPhone /></span>
+                                            {phoneToShow || "غير متاح"}
+                                        </a>
+                                    );
+                                })()}
                             </div>
                         </div>
                         <div className="info-item">
@@ -255,8 +293,36 @@ function MyOrdersPage() {
 
                         <div className="card-actions">
                             {order.status === "accepted" && (
-                                <button onClick={() => handleStartChat(order)} className="btn-premium btn-chat">
-                                    <FaEnvelope /> دردشة
+                                <div className="flex flex-col gap-2 w-full">
+                                    <button onClick={() => handleStartChat(order)} className="btn-premium btn-chat">
+                                        <FaEnvelope /> دردشة
+                                    </button>
+                                    {isCraftsman && (
+                                        <button
+                                            onClick={() => handleStatusUpdate(order.id, "completed")}
+                                            className="btn-premium btn-accept"
+                                            style={{ background: "#22c55e" }}
+                                        >
+                                            إتمام المهمة
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+
+                            {!isCraftsman && order.status === "completed" && (
+                                <button
+                                    onClick={() => {
+                                        setSelectedOrder({
+                                            id: order.id,
+                                            craftsmanId: order.craftsman_id,
+                                            craftsmanName: order.craftsman?.name || "الصنايعي"
+                                        });
+                                        setShowReviewModal(true);
+                                    }}
+                                    className="btn-premium"
+                                    style={{ background: "#f97316" }}
+                                >
+                                    تقييم الخدمة
                                 </button>
                             )}
 
@@ -306,6 +372,12 @@ function MyOrdersPage() {
                         className={`tab-btn ${activeTab === "accepted" ? "active" : ""}`}
                     >
                         المقبولة ({stats.accepted})
+                    </button>
+                    <button
+                        onClick={() => setActiveTab("completed")}
+                        className={`tab-btn ${activeTab === "completed" ? "active" : ""}`}
+                    >
+                        المكتملة ({stats.completed})
                     </button>
                     <button
                         onClick={() => setActiveTab("rejected")}
@@ -360,6 +432,22 @@ function MyOrdersPage() {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {selectedOrder && (
+                <ReviewModal
+                    isOpen={showReviewModal}
+                    onClose={() => {
+                        setShowReviewModal(false);
+                        setSelectedOrder(null);
+                    }}
+                    orderId={selectedOrder.id}
+                    craftsmanId={selectedOrder.craftsmanId}
+                    craftsmanName={selectedOrder.craftsmanName}
+                    onSuccess={() => {
+                        setOrders(prev => prev.map(o => o.id === selectedOrder.id ? { ...o, status: 'completed' } : o));
+                    }}
+                />
             )}
         </section>
     );

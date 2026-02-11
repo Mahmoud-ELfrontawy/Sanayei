@@ -2,7 +2,8 @@ import React, { useState, useRef, useMemo, useEffect } from "react";
 import {
     HiPhotograph,
 } from "react-icons/hi";
-import { FaMicrophone, FaPaperPlane } from "react-icons/fa";
+import { FaMicrophone, FaPaperPlane, FaUserCircle } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import { BsEmojiSmile } from "react-icons/bs";
 import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
 import { getFullImageUrl } from "../../utils/imageUrl";
@@ -31,6 +32,7 @@ interface Props {
     sendMessage: (text: string) => Promise<void>;
     sendImage?: (file: File) => Promise<void>;
     sendAudio?: (file: Blob) => Promise<void>;
+    profileLink?: string;
 }
 
 /* ================= Helpers ================= */
@@ -50,6 +52,7 @@ const SharedChatWindow: React.FC<Props> = ({
     sendMessage,
     sendImage,
     sendAudio,
+    profileLink,
 }) => {
     const [text, setText] = useState("");
     const [isRecording, setIsRecording] = useState(false);
@@ -174,14 +177,37 @@ const SharedChatWindow: React.FC<Props> = ({
         <div className="chat-window">
             {/* ===== Header ===== */}
             <header className="chat-window-header">
-                <div className="avatar-wrapper-chat">
-                    <img
-                        src={avatarSrc}
-                        alt={activeChat.name}
-                        className="contact-avatar"
-                    />
-                </div>
-                <h4>{activeChat.name}</h4>
+                {profileLink ? (
+                    <Link to={profileLink} className="chat-header-link">
+                        <div className="avatar-wrapper-chat">
+                            <img
+                                src={avatarSrc}
+                                alt={activeChat.name}
+                                className="contact-avatar"
+                            />
+                        </div>
+                        <h4>{activeChat.name}</h4>
+                    </Link>
+                ) : (
+                    <>
+                        <div className="avatar-wrapper-chat">
+                            <img
+                                src={avatarSrc}
+                                alt={activeChat.name}
+                                className="contact-avatar"
+                            />
+                        </div>
+                        <h4>{activeChat.name}</h4>
+                    </>
+                )}
+
+                {/* Dedicated Profile Link Button */}
+                {profileLink && (
+                    <Link to={profileLink} className="view-profile-btn-header" title="عرض الملف الشخصي">
+                        <FaUserCircle size={22} />
+                        <span>الملف الشخصي</span>
+                    </Link>
+                )}
             </header>
 
             {/* ===== Messages ===== */}

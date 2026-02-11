@@ -17,3 +17,8 @@ export const getTechnicians = async (): Promise<Technician[]> => {
 
   return [];
 };
+
+export const getTechnicianById = async (id: string | number): Promise<any> => {
+    const res = await axios.get(`https://sanay3i.net/api/craftsmen/${id}`);
+    return res.data?.data || res.data;
+};

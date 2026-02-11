@@ -6,7 +6,8 @@ import {
     Mail,
     Bell,
     MapPin,
-    LogOut
+    LogOut,
+    Heart
 } from "lucide-react";
 
 import { useAuth } from "../../../hooks/useAuth";
@@ -59,8 +60,6 @@ const Sidebar: React.FC = () => {
         company: "شركة",
     };
 
-    const profilePath =
-        userType === "craftsman" ? "/craftsman/profile" : "/user/profile";
 
     const menuLinks = [
         {
@@ -70,8 +69,13 @@ const Sidebar: React.FC = () => {
         },
         {
             title: "الملف الشخصي",
-            path: profilePath,
+            path: "/user/profile",
             icon: <User size={20} />
+        },
+        {
+            title: "المحفظة",
+            path: "/dashboard/saved",
+            icon: <Heart size={20} />
         },
         {
             title: "الرسائل",

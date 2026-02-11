@@ -1,5 +1,4 @@
 import axios from "axios";
-import { toApiDate } from "../../../utils/dateApiHelper";
 
 /* ================= Constants ================= */
 // ... existing constants ...
@@ -151,8 +150,9 @@ export const updateCraftsmanProfile = async (
         if (key === "birth_date") {
             const val = data[key];
             if (val) {
-                const formatted = toApiDate(String(val));
-                if (formatted) formData.append("birth_date", formatted);
+                // Laravel typically expects YYYY-MM-DD for date fields.
+                // If val is already YYYY-MM-DD from UI, send it as is.
+                formData.append("birth_date", String(val));
             }
         } else {
             appendIfExists(formData, data, key);

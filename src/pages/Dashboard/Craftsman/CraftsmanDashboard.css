@@ -1,5 +1,177 @@
 .incoming-requests-section {
     margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+/* ================= Order Card Refinement ================= */
+.order-card-premium {
+    background: white;
+    border: 1px solid #f1f5f9;
+    border-radius: 24px;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    margin-bottom: 16px;
+    direction: rtl;
+}
+
+.order-card-premium:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+    border-color: #e2e8f0;
+    transform: translateY(-2px);
+}
+
+.order-info-area {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.order-icon-box {
+    width: 52px;
+    height: 52px;
+    background-color: #eff6ff;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3b82f6;
+    flex-shrink: 0;
+}
+
+.order-details {
+    text-align: right;
+}
+
+.order-details h4 {
+    font-size: 17px;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.order-details p {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+}
+
+.order-details p .client-label {
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.order-details p .location-divider {
+    margin: 0 8px;
+    color: #cbd5e1;
+}
+
+.order-actions-area {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Mini Status Badges */
+.status-badge-mini {
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-badge-mini.accepted {
+    background: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #dcfce7;
+}
+
+.status-badge-mini.completed {
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #dbeafe;
+}
+
+.status-badge-mini.pending {
+    background: #fff7ed;
+    color: #ea580c;
+    border: 1px solid #ffedd5;
+}
+
+/* Actions */
+.order-card-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-complete-task {
+    background: #10b981;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+}
+
+.btn-complete-task:hover {
+    background: #059669;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.2);
+}
+
+.btn-chat-mini {
+    width: 44px;
+    height: 44px;
+    background: #6366f1;
+    color: white;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+}
+
+.btn-chat-mini:hover {
+    background: #4f46e5;
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.2);
+}
+
+.btn-accept-mini {
+    background: #3b82f6;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-reject-mini {
+    background: #f1f5f9;
+    color: #64748b;
+    padding: 10px 20px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
 .section-title {

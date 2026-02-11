@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import DashboardSkeleton from "../DashboardSkeleton";
 import StatCardComp from "../../../components/dashboard/StatCard/StatCard";
 import {
     FaDollarSign,
@@ -11,6 +12,7 @@ import {
     FaArrowLeft,
     FaEnvelope,
 } from "react-icons/fa";
+import { User, MessageCircle } from "lucide-react";
 
 import { useAuth } from "../../../hooks/useAuth";
 import { useNotifications } from "../../../context/NotificationContext";
@@ -30,7 +32,7 @@ const CraftsmanDashboard: React.FC = () => {
     const navigate = useNavigate();
 
     // ✅ الشات الخاص بالصنايعي
-    const { setActiveChat } = useCraftsmanChat();
+    const { setActiveChat, contacts } = useCraftsmanChat();
 
     const { addNotification, markAllAsRead } = useNotifications();
 
@@ -74,7 +76,7 @@ const CraftsmanDashboard: React.FC = () => {
 
     /* ================= ACTIONS ================= */
 
-    const handleAction = async (orderId: number, status: "accepted" | "rejected") => {
+    const handleAction = async (orderId: number, status: "accepted" | "rejected" | "completed") => {
         try {
             await updateServiceRequestStatus(orderId, status);
 
@@ -82,14 +84,17 @@ const CraftsmanDashboard: React.FC = () => {
                 prev.map((o) => (o.id === orderId ? { ...o, status } : o))
             );
 
-            toast.success(status === "accepted" ? "تم قبول الطلب ✅" : "تم رفض الطلب ❌");
+            const statusText = status === "accepted" ? "تم قبول الطلب ✅" : status === "completed" ? "تم إتمام المهمة ✨" : "تم رفض الطلب ❌";
+            toast.success(statusText);
 
             addNotification({
-                title: status === "accepted" ? "تم قبول طلبك ✅" : "تم رفض الطلب ❌",
+                title: statusText,
                 message:
                     status === "accepted"
                         ? `لقد وافق الصنايعي ${user?.name || ""} على طلب الخدمة`
-                        : "نعتذر، تم رفض الطلب حالياً",
+                        : status === "completed"
+                            ? `لقد أتم الصنايعي ${user?.name || ""} الخدمة بنجاح`
+                            : "نعتذر، تم رفض الطلب حالياً",
                 type: "order_status",
                 orderId: orderId,
                 recipientId: 0,
@@ -117,23 +122,24 @@ const CraftsmanDashboard: React.FC = () => {
     return (
         <div className="dashboard-page bg-[#F8FAFC]">
             {/* Header */}
-            <header className="dashboard-header from-indigo-900 via-blue-900 to-slate-900 pt-12 pb-20 px-8 rounded-[40px] mb-8 relative overflow-hidden text-right" dir="rtl">
-                <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20">
-                    <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[80%] bg-blue-400 rounded-full blur-[120px]"></div>
-                    <div className="absolute bottom-[-20%] left-[-10%] w-[30%] h-[60%] bg-orange-400 rounded-full blur-[100px]"></div>
+            {/* Header */}
+            <header className="dashboard-header-premium" dir="rtl">
+                <div className="header-blobs">
+                    <div className="blob-1"></div>
+                    <div className="blob-2"></div>
                 </div>
 
-                <div className="relative z-10 text-white">
-                    <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full text-blue-200 text-sm font-bold mb-4 border border-white/10">
-                        <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                <div className="header-content">
+                    <div className="status-badge-premium">
+                        <span className="pulse-indicator">
+                            <span className="pulse-ring"></span>
+                            <span className="pulse-dot"></span>
                         </span>
                         لوحة إدارة أعمالك
                     </div>
 
-                    <h1 className="text-3xl font-black mb-2">لوحة تحكم الصنايعي</h1>
-                    <p className="text-blue-100/80 font-medium">
+                    <h1>لوحة تحكم الصنايعي</h1>
+                    <p>
                         أهلاً بك، {user?.name || "صنايعي"}! تابع إحصائيات عملك وطلباتك الجديدة.
                     </p>
                 </div>
@@ -145,98 +151,169 @@ const CraftsmanDashboard: React.FC = () => {
                 {/* Stats */}
                 <div className="stats-grid mb-12">
                     <StatCardComp title="إجمالي الأرباح" value="$8,670" change="24%" isPositive icon={<FaDollarSign size={20} />} />
-                    <StatCardComp title="الطلبات المكتملة" value="45" icon={<FaCheckCircle size={20} />} />
-                    <StatCardComp title="العملاء الجدد" value="12" change="5%" isPositive icon={<FaUsers size={20} />} />
+                    <StatCardComp
+                        title="الطلبات المكتملة"
+                        value={incomingRequests.filter(r => r.status === 'accepted').length.toString()}
+                        icon={<FaCheckCircle size={20} />}
+                    />
+                    <StatCardComp
+                        title="العملاء الجدد"
+                        value={new Set(incomingRequests.map(r => r.user_id)).size.toString()}
+                        change="5%"
+                        isPositive
+                        icon={<FaUsers size={20} />}
+                    />
+                    <StatCardComp
+                        title="إجمالي الرسائل"
+                        value={contacts.length.toString()}
+                        icon={<FaEnvelope size={20} />}
+                    />
                 </div>
 
                 {/* Requests */}
-                <section className="incoming-requests-section">
-                    <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-xl font-black text-gray-800">طلباتي الأخيرة</h3>
+                <section className="dashboard-section incoming-requests-section">
+                    <div className="section-header">
+                        <h2>طلباتي الأخيرة</h2>
                         <button
                             onClick={() => navigate("/orders")}
-                            className="flex items-center gap-2 text-indigo-600 font-bold hover:gap-3 transition-all"
+                            className="view-all"
                         >
                             عرض الكل <FaArrowLeft size={14} />
                         </button>
                     </div>
 
                     {loading ? (
-                        <div className="empty-requests py-12 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center">
-                            <div className="animate-pulse space-y-4 w-full px-6">
-                                <div className="h-20 bg-gray-50 rounded-2xl w-full"></div>
-                                <div className="h-20 bg-gray-50 rounded-2xl w-full"></div>
-                            </div>
-                        </div>
+                        <DashboardSkeleton withSidebar={false} />
                     ) : incomingRequests.length > 0 ? (
-                        <div className="requests-list space-y-4">
+                        <div className="requests-list">
                             {incomingRequests.map((req) => (
-                                <div
-                                    key={req.id}
-                                    className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row justify-between items-center gap-6"
-                                >
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600">
-                                            <FaClock size={20} />
+                                <div key={req.id} className="order-card-premium">
+                                    <div className="order-info-area">
+                                        <div className="order-icon-box">
+                                            <FaClock size={22} />
                                         </div>
 
-                                        <div className="text-right">
-                                            <h4 className="font-bold text-gray-800">
-                                                {req.service?.name || req.service_name || req.service_type || "خدمة"}
-                                            </h4>
-                                            <p className="text-sm text-gray-400">
-                                                العميل: {req.name || "مجهول"} | {req.province || "غير محدد"}
+                                        <div className="order-details">
+                                            <h4>{req.service?.name || req.service_name || req.service_type || "خدمة صيانة"}</h4>
+                                            <p dir="rtl">
+                                                <span className="client-label">العميل:</span> {req.name || "مجهول"}
+                                                <span className="location-divider">|</span>
+                                                {req.province || req.city || "غير محدد"}
                                             </p>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-3">
-                                        {req.status === "pending" ? (
-                                            <>
-                                                <button
-                                                    className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-xl font-bold flex items-center gap-2"
-                                                    onClick={() => handleAction(req.id, "accepted")}
-                                                >
-                                                    <FaCheck size={14} /> قبول
-                                                </button>
+                                    <div className="order-actions-area">
+                                        {/* Status Badge */}
+                                        <span className={`status-badge-mini ${req.status}`}>
+                                            {req.status === "pending" && "قيد الانتظار"}
+                                            {req.status === "accepted" && "مقبول ✅"}
+                                            {req.status === "completed" && "مكتملة ✨"}
+                                            {req.status === "rejected" && "مرفوض ❌"}
+                                        </span>
 
-                                                <button
-                                                    className="bg-red-50 hover:bg-red-100 text-red-600 px-6 py-2 rounded-xl font-bold flex items-center gap-2"
-                                                    onClick={() => handleAction(req.id, "rejected")}
-                                                >
-                                                    <FaTimes size={14} /> رفض
-                                                </button>
-                                            </>
-                                        ) : (
-                                            <div className="flex items-center gap-4">
-                                                <span
-                                                    className={`px-4 py-1.5 rounded-full text-xs font-bold ${req.status === "accepted"
-                                                        ? "bg-green-50 text-green-600"
-                                                        : "bg-red-50 text-red-600"
-                                                        }`}
-                                                >
-                                                    {req.status === "accepted" ? "مقبول ✅" : "مرفوض ❌"}
-                                                </span>
+                                        <div className="order-card-buttons">
+                                            {req.status === "pending" && (
+                                                <>
+                                                    <button
+                                                        className="btn-accept-mini"
+                                                        onClick={() => handleAction(req.id, "accepted")}
+                                                    >
+                                                        قـبول
+                                                    </button>
+                                                    <button
+                                                        className="btn-reject-mini"
+                                                        onClick={() => handleAction(req.id, "rejected")}
+                                                    >
+                                                        رفـض
+                                                    </button>
+                                                </>
+                                            )}
 
-                                                {req.status === "accepted" && (
+                                            {req.status === "accepted" && (
+                                                <>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleAction(req.id, "completed");
+                                                        }}
+                                                        className="btn-complete-task"
+                                                    >
+                                                        إتمام المهمة
+                                                    </button>
                                                     <button
                                                         onClick={() => handleStartChat(req)}
-                                                        className="w-10 h-10 bg-indigo-500 text-white rounded-xl flex items-center justify-center hover:scale-110 transition-all"
+                                                        className="btn-chat-mini"
                                                     >
-                                                        <FaEnvelope />
+                                                        <FaEnvelope size={18} />
                                                     </button>
-                                                )}
-                                            </div>
-                                        )}
+                                                </>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             ))}
                         </div>
                     ) : (
-                        <div className="bg-white rounded-[40px] p-12 text-center shadow-sm border border-gray-100">
-                            <p className="text-gray-400 text-lg">لا توجد طلبات جديدة حالياً</p>
+                        <div className="no-data-premium">
+                            <p>لا توجد طلبات جديدة حالياً</p>
                         </div>
                     )}
+                </section>
+
+                {/* Customers Interactions */}
+                <section className="dashboard-section recent-craftsmen mt-12 mb-12">
+                    <div className="section-header">
+                        <h2>مستخدمين تعاملت معهم</h2>
+                        <Link to="/dashboard/messages" className="view-all">
+                            عرض الكل <FaArrowLeft size={14} />
+                        </Link>
+                    </div>
+
+                    <div className="craftsmen-list">
+                        {(() => {
+                            const uniqueUsers = Array.from(new Set(incomingRequests.map(r => r.user_id)))
+                                .map(id => incomingRequests.find(r => r.user_id === id))
+                                .filter(Boolean)
+                                .slice(0, 3);
+
+                            return uniqueUsers.length > 0 ? (
+                                uniqueUsers.map((u, idx) => (
+                                    <div key={idx} className="craftsman-mini-card">
+                                        <div className="c-info">
+                                            <div className="c-avatar text-gray-400">
+                                                <User size={20} />
+                                            </div>
+                                            <div className="c-meta">
+                                                <h4>{u.name || "عميل"}</h4>
+                                                <div className="c-status-row">
+                                                    <span>{u.service_name || "طلب خدمة"}</span>
+                                                    <span className={`status-badge ${u.status}`}>
+                                                        {u.status === "pending" && "قيد الانتظار"}
+                                                        {u.status === "accepted" && "مقبول"}
+                                                        {u.status === "rejected" && "مرفوض"}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="c-actions">
+                                            <button
+                                                onClick={() => handleStartChat(u)}
+                                                className="chat-btn-mini"
+                                            >
+                                                <MessageCircle size={16} />
+                                                تواصل
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="no-data-premium">
+                                    <p>لم تتعامل مع عملاء بعد</p>
+                                </div>
+                            );
+                        })()}
+                    </div>
                 </section>
             </div>
         </div>
