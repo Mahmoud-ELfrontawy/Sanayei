@@ -38,6 +38,24 @@ export const useCraftsmanProfile = () => {
           return;
         }
 
+        // 🔍 DEBUG: Log the raw data to see what we're getting
+        console.log("🔍 Raw API Response:", data);
+        console.log("🔍 Reviews in response:", data.last_reviews);
+
+        // ✅ FIX: If reviews are missing in "me" endpoint, fetch them from public profile
+        if (isOwnProfile && data.id && (!data.last_reviews || data.last_reviews.length === 0)) {
+          try {
+            console.log("🔄 Attempting to fetch reviews from public profile...");
+            const publicProfile = await getTechnicianById(data.id);
+            if (publicProfile?.last_reviews?.length > 0) {
+              console.log("✅ Fetched reviews from public profile fallback");
+              data.last_reviews = publicProfile.last_reviews;
+            }
+          } catch (e) {
+            console.warn("⚠️ Failed to fetch public profile fallback", e);
+          }
+        }
+
         const avatar = getAvatarUrl(data.profile_photo, data.name);
         // Mapping API data to UI structure
         const mappedData: CraftsmanProfileData = {
@@ -70,6 +88,7 @@ export const useCraftsmanProfile = () => {
           })) || []
         };
 
+        console.log("🔍 Mapped reviews:", mappedData.reviews);
         setCraftsman(mappedData);
       } catch (err) {
         console.error(err);

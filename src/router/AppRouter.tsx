@@ -25,7 +25,8 @@ import RequestServiceSection from "../pages/Home/sections/RequestServiceSection/
 import RegisterWorkerPage from "../pages/Auth/Worker/Register/RegisterWorkerPage";
 
 // Dashboards
-import UserDashboard from "../pages/Dashboard/User/UserDashboard";
+import CraftsmanDashboardReviews from "../pages/Dashboard/Craftsman/CraftsmanDashboardReviews";
+// import UserDashboard from "../pages/Dashboard/User/UserDashboard";
 import CraftsmanDashboard from "../pages/Dashboard/Craftsman/CraftsmanDashboard";
 import CompanyDashboard from "../pages/Dashboard/Company/CompanyDashboard";
 import DashboardIndex from "../pages/Dashboard/DashboardIndex";
@@ -75,7 +76,7 @@ const AppRouter: React.FC = () => {
             <Route index element={<CraftsmanProfilePage />} />
             <Route element={<EditProfileLayout />}>
               <Route path="edit" element={<ProfileWorker />} />
-              <Route path="reviews" element={<ProfileReviews />} />
+              <Route path="reviews" element={<CraftsmanDashboardReviews />} />
             </Route>
           </Route>
 
