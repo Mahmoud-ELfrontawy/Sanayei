@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import * as chatApi from "../Api/chat.api";
 import { useAuth } from "../hooks/useAuth";
 import { getFullImageUrl } from "../utils/imageUrl";
+import { getEcho } from "../utils/echo";
 
 /* ================= Types ================= */
 
@@ -138,6 +139,38 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
             qc.invalidateQueries({ queryKey: ["user-chats", user.id] });
         });
     }, [activeChat, user?.id, qc]);
+
+    /* ================= Real-time Updates ================= */
+
+    useEffect(() => {
+        if (!user?.id || !activeChat?.id) return;
+
+        const echo = getEcho();
+        if (!echo) return;
+
+        // Listen on public channel: chat.{sender}.{receiver}
+        // We need to listen on both directions
+        const channel1 = echo.channel(`chat.${user.id}.${activeChat.id}`);
+        const channel2 = echo.channel(`chat.${activeChat.id}.${user.id}`);
+
+        const handleMessage = (event: any) => {
+            console.log('📨 New message received (User):', event);
+
+            // Refresh messages in current chat
+            qc.invalidateQueries({ queryKey: ["user-messages", activeChat.id, user.id] });
+
+            // Refresh chat list to update unread counts
+            qc.invalidateQueries({ queryKey: ["user-chats", user.id] });
+        };
+
+        channel1.listen('.message.sent', handleMessage);
+        channel2.listen('.message.sent', handleMessage);
+
+        return () => {
+            channel1.stopListening('.message.sent');
+            channel2.stopListening('.message.sent');
+        };
+    }, [user?.id, activeChat?.id, qc]);
 
     /* ================= Context Value ================= */
 

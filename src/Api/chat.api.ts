@@ -2,7 +2,7 @@ import axios, { AxiosError } from "axios";
 
 /* ================= Base Config ================= */
 
-const BASE_URL = "https://sanay3i.net/api";
+export const BASE_URL = "https://sanay3i.net/api";
 
 const getHeaders = () => {
     const token = localStorage.getItem("token");
@@ -28,10 +28,14 @@ const getFormDataHeaders = () => {
 export interface ChatMessage {
     id: number;
     sender_id: number;
+    sender_type: "user" | "worker";
     receiver_id: number;
+    receiver_type: "user" | "worker";
     message?: string;
     message_type?: "text" | "image" | "audio";
     media_path?: string | null;
+    duration?: number | null;
+    is_read?: boolean;
     created_at: string;
 }
 
@@ -40,7 +44,9 @@ export interface ChatContact {
     name: string;
     profile_photo?: string;
     profile_image?: string;
+    profile_image_url?: string;
     unread_count?: number;
+    updated_at?: string;
 }
 
 /* ================= Get Workers ================= */
@@ -99,7 +105,8 @@ export const sendChatImage = async (
     senderType: "user" | "worker",
     receiverId: number,
     receiverType: "user" | "worker",
-    file: File
+    file: File,
+    message?: string
 ) => {
     const formData = new FormData();
     formData.append("sender_id", String(senderId));
@@ -107,11 +114,14 @@ export const sendChatImage = async (
     formData.append("receiver_id", String(receiverId));
     formData.append("receiver_type", receiverType);
     formData.append("image", file);
+    
+    if (message) {
+        formData.append("message", message);
+    }
 
     const response = await axios.post(`${BASE_URL}/messages/send-image`, formData, {
         headers: getFormDataHeaders(),
     });
-
 
     return response.data;
 };
@@ -123,7 +133,8 @@ export const sendChatAudio = async (
     senderType: "user" | "worker",
     receiverId: number,
     receiverType: "user" | "worker",
-    blob: Blob
+    blob: Blob,
+    duration?: number
 ) => {
     const formData = new FormData();
     formData.append("sender_id", String(senderId));
@@ -131,6 +142,10 @@ export const sendChatAudio = async (
     formData.append("receiver_id", String(receiverId));
     formData.append("receiver_type", receiverType);
     formData.append("audio", blob, "record.webm");
+    
+    if (duration) {
+        formData.append("duration", String(duration));
+    }
 
     const response = await axios.post(`${BASE_URL}/messages/send-audio`, formData, {
         headers: getFormDataHeaders(),
@@ -154,7 +169,7 @@ export const getWorkerChats = async (workerId: number) => {
         const err = error as AxiosError;
 
         if (err.response?.status === 404) {
-            return { data: [] };
+            return { status: true, data: [] };
         }
 
         throw err;
@@ -176,7 +191,7 @@ export const getUserChats = async (userId: number) => {
         const err = error as AxiosError;
 
         if (err.response?.status === 404) {
-            return { data: [] };
+            return { status: true, data: [] };
         }
 
         throw err;
@@ -206,13 +221,17 @@ export const markMessagesAsRead = async (
 /* ================= Unread Count ================= */
 
 export const getUnreadMessagesCount = async (
-    params?: { user_id?: number; worker_id?: number }
+    id: number,
+    type: "user" | "worker"
 ) => {
-    const response = await axios.get(`${BASE_URL}/messages/unread-count`, {
-        params,
-        headers: getHeaders(),
-    });
+    const response = await axios.post(
+        `${BASE_URL}/messages/unread-count`,
+        {
+            id,
+            type,
+        },
+        { headers: getHeaders() }
+    );
 
     return response.data;
 };
-

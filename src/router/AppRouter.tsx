@@ -34,6 +34,8 @@ import MessagesPage from "../pages/Dashboard/Messages/MessagesPage";
 import NotificationsPage from "../pages/Dashboard/Notifications/NotificationsPage";
 import CraftsmanProfilePage from "../pages/CraftsmanProfile/CraftsmanProfilePage";
 import UserProfilePage from "../pages/UserProfile/UserProfilePage";
+import AdminLayout from "../layouts/AdminLayout";
+import AdminDashboard from "../pages/Admin/AdminDashboard";
 
 const AppRouter: React.FC = () => {
   return (
@@ -41,6 +43,13 @@ const AppRouter: React.FC = () => {
       <Routes>
         {/* صفحة استقبال Google Token */}
         <Route path="/google-callback" element={<GoogleCallback />} />
+
+        {/* ===== Admin Routes ===== */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
+          {/* Add more admin routes here later */}
+        </Route>
 
         {/* ===== Main Layout ===== */}
         <Route element={<MainLayout />}>

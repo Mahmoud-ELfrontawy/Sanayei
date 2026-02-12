@@ -1,0 +1,216 @@
+/* AdminDashboard.css */
+.admin-dashboard-container {
+  padding: 2.5rem;
+  background-color: var(--color-bg-section);
+  min-height: 100vh;
+  direction: rtl;
+  color: var(--color-text-main);
+}
+
+.dashboard-header {
+  margin-bottom: 2.5rem;
+}
+
+.dashboard-title {
+  font-size: 2.25rem;
+  color: var(--color-text-accent);
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  letter-spacing: -1px;
+}
+
+.dashboard-subtitle {
+  color: var(--color-text-secondary);
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3.5rem;
+}
+
+.stat-card {
+  background: var(--color-bg-main);
+  border-radius: var(--radius-card);
+  padding: 1.75rem;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+  transition: all var(--transition-main);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+  border-color: var(--color-primary);
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--color-text-accent);
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.stat-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-card-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  transition: all var(--transition-fast);
+}
+
+.stat-icon-wrapper.users { background-color: #e0f2fe; color: #0284c7; }
+.stat-icon-wrapper.craftsmen { background-color: #f0fdf4; color: #16a34a; }
+.stat-icon-wrapper.requests { background-color: #fff7ed; color: #ea580c; }
+.stat-icon-wrapper.revenue { background-color: #f5f3ff; color: #7c3aed; }
+
+/* Dashboard Sections */
+.dashboard-sections {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+
+@media (min-width: 1280px) {
+  .dashboard-sections {
+    grid-template-columns: 1.8fr 1fr;
+  }
+}
+
+.section-card {
+  background: var(--color-bg-main);
+  border-radius: var(--radius-card);
+  padding: 2rem;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--color-bg-section);
+  padding-bottom: 1.25rem;
+}
+
+.section-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-text-accent);
+}
+
+.view-all-btn {
+  color: var(--color-primary);
+  font-size: 0.95rem;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.view-all-btn:hover {
+  background-color: var(--color-bg-section);
+  color: var(--color-primary-hover);
+}
+
+/* Recent Activity List */
+.activity-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--color-bg-section);
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background-color: var(--color-bg-section);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  margin-left: 1.25rem;
+}
+
+.activity-details {
+  flex: 1;
+}
+
+.activity-text {
+  font-size: 1rem;
+  color: var(--color-text-main);
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+}
+
+.activity-time {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+/* Loading State */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid var(--color-divider);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Error State */
+.error-container {
+  background-color: #fef2f2;
+  color: var(--color-error);
+  padding: 1.25rem;
+  border-radius: var(--radius-card-sm);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 600;
+  border: 1px solid #fee2e2;
+}

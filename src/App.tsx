@@ -4,69 +4,70 @@ import AppRouter from "./router/AppRouter";
 import LogoLoader from "./components/ui/loaders/FullPageLoader";
 
 function App() {
-
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Simulate initial loading
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 1000);
+    }, 1000); // Simulate a 1-second loading time
 
     return () => clearTimeout(timer);
   }, []);
 
   // ✅ toast after reload
   useEffect(() => {
-  const toastData = localStorage.getItem("after_reload_toast");
+    const toastData = localStorage.getItem("after_reload_toast");
 
-  if (!toastData) return;
+    if (!toastData) return;
 
-  const { message, type } = JSON.parse(toastData);
+    try {
+      const { message, type } = JSON.parse(toastData);
 
-  const timer = setTimeout(() => {
-    switch (type) {
-      case "success":
-        toast.success(message);
-        break;
+      setTimeout(() => {
+        switch (type) {
+          case "success":
+            toast.success(message);
+            break;
+          case "error":
+            toast.error(message);
+            break;
+          case "info":
+            toast.info(message);
+            break;
+          default:
+            toast(message);
+        }
+      }, 500); // Delay toast display slightly to ensure UI is ready
 
-      case "error":
-        toast.error(message);
-        break;
-
-      case "info":
-        toast.info(message);
-        break;
-
-      default:
-        toast(message);
+      localStorage.removeItem("after_reload_toast");
+    } catch (e) {
+      console.error("Error parsing toast data", e);
+      localStorage.removeItem("after_reload_toast");
     }
+  }, []);
 
-    localStorage.removeItem("after_reload_toast");
-  }, 300); // 👈 تأخير بسيط جدًا
-
-  return () => clearTimeout(timer);
-}, []);
-
-
+  if (loading) {
+    return <LogoLoader />;
+  }
 
   return (
     <>
-      {/* loader فقط */}
-      {loading && <LogoLoader />}
-
-      {/* الموقع */}
-      {!loading && <AppRouter />}
-
-      {/* ✅ لازم يكون دايمًا موجود */}
+      <AppRouter />
       <ToastContainer
         position="top-right"
         autoClose={3000}
-        newestOnTop
-        rtl
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={true}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
       />
     </>
   );
 }
-
 
 export default App;

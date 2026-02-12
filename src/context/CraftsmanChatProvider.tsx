@@ -4,6 +4,7 @@ import * as chatApi from "../Api/chat.api";
 import { useAuth } from "../hooks/useAuth";
 import { getFullImageUrl } from "../utils/imageUrl";
 import { normalizeArray } from "../utils/normalizeResponse";
+import { getEcho } from "../utils/echo";
 
 /* ===================================================== */
 /* ======================= TYPES ======================= */
@@ -192,9 +193,9 @@ export const CraftsmanChatProvider: React.FC<{ children: React.ReactNode }> = ({
     enabled: !!activeChat && !!user?.id,
     queryFn: async (): Promise<ChatMessage[]> => {
       const res = await chatApi.getMessages(activeChat!.id, user!.id);
-      const raw = normalizeArray(res) as ChatMessage[];
+      const raw = res.data?.data ?? [];
 
-      return raw.map((m) => ({ ...m, is_mine: m.sender_id === user!.id }));
+      return raw.map((m: any) => ({ ...m, is_mine: m.sender_id === user!.id }));
     },
   });
 
@@ -238,6 +239,38 @@ export const CraftsmanChatProvider: React.FC<{ children: React.ReactNode }> = ({
       qc.invalidateQueries({ queryKey: ["worker-chats", user.id] });
     });
   }, [activeChat, user?.id, qc]);
+
+  /* ================= Real-time Updates ================= */
+
+  useEffect(() => {
+    if (!user?.id || !activeChat?.id) return;
+
+    const echo = getEcho();
+    if (!echo) return;
+
+    // Listen on public channel: chat.{sender}.{receiver}
+    // We need to listen on both directions
+    const channel1 = echo.channel(`chat.${user.id}.${activeChat.id}`);
+    const channel2 = echo.channel(`chat.${activeChat.id}.${user.id}`);
+
+    const handleMessage = (event: any) => {
+      console.log('📨 New message received (Worker):', event);
+
+      // Refresh messages in current chat
+      qc.invalidateQueries({ queryKey: ["worker-messages", activeChat.id, user.id] });
+
+      // Refresh chat list to update unread counts
+      qc.invalidateQueries({ queryKey: ["worker-chats", user.id] });
+    };
+
+    channel1.listen('.message.sent', handleMessage);
+    channel2.listen('.message.sent', handleMessage);
+
+    return () => {
+      channel1.stopListening('.message.sent');
+      channel2.stopListening('.message.sent');
+    };
+  }, [user?.id, activeChat?.id, qc]);
 
   const value: Ctx = {
     contacts: contactsQuery.data ?? [],
