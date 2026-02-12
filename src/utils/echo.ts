@@ -46,7 +46,6 @@ export const initializeEcho = (token: string) => {
         }
     });
 
-    console.log('✅ Echo initialized with custom authorizer');
 };
 
 export const disconnectEcho = () => {

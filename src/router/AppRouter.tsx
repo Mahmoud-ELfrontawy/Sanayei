@@ -36,6 +36,8 @@ import CraftsmanProfilePage from "../pages/CraftsmanProfile/CraftsmanProfilePage
 import UserProfilePage from "../pages/UserProfile/UserProfilePage";
 import AdminLayout from "../layouts/AdminLayout";
 import AdminDashboard from "../pages/Admin/AdminDashboard";
+import UsersPage from "../pages/Admin/Users/UsersPage";
+import CraftsmenPage from "../pages/Admin/Craftsmen/CraftsmenPage";
 
 const AppRouter: React.FC = () => {
   return (
@@ -48,6 +50,8 @@ const AppRouter: React.FC = () => {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="users" element={<UsersPage />} />
+          <Route path="craftsmen" element={<CraftsmenPage />} />
           {/* Add more admin routes here later */}
         </Route>
 
