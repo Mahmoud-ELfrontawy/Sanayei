@@ -1,8 +1,9 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import * as chatApi from "../Api/chat.api";
 import { useAuth } from "../hooks/useAuth";
 import { getFullImageUrl } from "../utils/imageUrl";
+import { useNotifications } from "./NotificationContext";
 
 /* ================= Types ================= */
 
@@ -58,6 +59,7 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
     const { user } = useAuth();
     const qc = useQueryClient();
     const [activeChat, setActiveChat] = useState<ChatContact | null>(null);
+    const prevTotalUnreadRef = useRef<number>(0);
 
     /* ================= Contacts ================= */
 
@@ -77,7 +79,35 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
         },
     });
 
-    /* ================= Messages ================= */
+    const { addNotification, markTypeAsRead } = useNotifications();
+
+    // Fallback: Watch for unread count changes in polling
+    useEffect(() => {
+        if (!contactsQuery.data) return;
+
+        const currentTotal = contactsQuery.data.reduce((sum, c) => sum + c.unread_count, 0);
+
+        if (currentTotal > prevTotalUnreadRef.current) {
+            console.log(`🕵️ Polling detected ${currentTotal - prevTotalUnreadRef.current} new message(s)`);
+
+            // Find which contact has new messages to get a better message
+            const diffContact = contactsQuery.data.find(c => {
+                // We know total increased, so any contact with unread_count > 0 is a candidate.
+                return c.unread_count > 0;
+            });
+
+            addNotification({
+                title: "رسالة جديدة",
+                message: diffContact ? `رسالة جديدة من ${diffContact.name}` : "لديك رسائل جديدة",
+                type: "chat",
+                orderId: diffContact?.id || 0,
+                recipientId: user!.id,
+                recipientType: "user",
+            });
+        }
+
+        prevTotalUnreadRef.current = currentTotal;
+    }, [contactsQuery.data, addNotification, user?.id]);
 
     const messagesQuery = useQuery({
         queryKey: ["user-messages", activeChat?.id, user?.id],
@@ -131,6 +161,9 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
     useEffect(() => {
         if (!activeChat || !user?.id) return;
 
+        // Clear chat notifications when a chat is opened
+        markTypeAsRead("chat");
+
         qc.setQueryData(["user-chats", user.id], (old: ChatContact[] | undefined) => {
             if (!old) return old;
             return old.map((c) =>
@@ -141,7 +174,7 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
         chatApi.markMessagesAsRead(user.id, activeChat.id, "user").catch(() => {
             qc.invalidateQueries({ queryKey: ["user-chats", user.id] });
         });
-    }, [activeChat, user?.id, qc]);
+    }, [activeChat, user?.id, qc, markTypeAsRead]);
 
     /* ================= Context Value ================= */
 

@@ -19,6 +19,7 @@ export interface Notification {
     orderId: number;
     recipientId: number;
     recipientType: "user" | "craftsman";
+    variant?: "info" | "success" | "warning" | "error";
 }
 
 interface NotificationContextType {
@@ -28,6 +29,7 @@ interface NotificationContextType {
     addNotification: (notification: Omit<Notification, "id" | "status" | "timestamp">) => void;
     markAsRead: (id: string) => void;
     markAllAsRead: () => void;
+    markTypeAsRead: (type: "chat" | "order_status" | "order_request") => void;
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
@@ -42,8 +44,8 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
 
     const prevRequestsRef = useRef<any[]>([]);
     const isFirstFetch = useRef(true);
-    const lastNotifiedId = useRef<string | null>(null);
     const addNotificationRef = useRef<any>(null);
+    const unreadChatCountRef = useRef(0);
 
     /* ================= LocalStorage Sync ================= */
 
@@ -118,11 +120,17 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
                             pending: "قيد الانتظار",
                         };
 
-                        let customMessage = `تم تغيير حالة طلبك رقم #${current.id} إلى ${statusMap[current.status] || current.status}`;
+                        let customMessage = `تم تحديث حالة طلب الخدمة الخاص بك إلى ${statusMap[current.status] || current.status} ✅`;
 
-                        if (current.status === "completed") {
-                            customMessage = `تم إتمام الخدمة بنجاح، يمكنك الآن تقييم الصنايعي.`;
+                        if (current.status === "accepted") {
+                            customMessage = `تم قبول طلبك للخدمة بنجاح ✅`;
+                        } else if (current.status === "rejected") {
+                            customMessage = `نعتذر، تم رفض طلب الخدمة الخاص بك ❌`;
+                        } else if (current.status === "completed") {
+                            customMessage = `تم إتمام الخدمة بنجاح ✨، يمكنك الآن تقييم الصنايعي.`;
                         }
+
+                        const variant = current.status === "rejected" ? "error" : "success";
 
                         addNotificationRef.current?.({
                             title: "تحديث طلب الخدمة",
@@ -131,6 +139,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
                             orderId: current.id,
                             recipientId: user.id,
                             recipientType: userType as any,
+                            variant,
                         });
                     }
                 }
@@ -171,6 +180,8 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
             return;
         }
 
+        console.log(`📢 Adding Notification [${notif.type}]: ${notif.title} - ${notif.message}`);
+
         const newNotif: Notification = {
             ...notif,
             id: Math.random().toString(36).substring(2, 9),
@@ -182,7 +193,25 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         playNotificationSound();
 
         // Show toast
-        if (notif.type === "order_request" && userType === "craftsman") {
+        if (notif.type === "chat") {
+            unreadChatCountRef.current += 1;
+            const count = unreadChatCountRef.current;
+            const toastId = "chat-notification-toast";
+
+            if (count > 1) {
+                toast.info(`لديك ${count} رسائل جديدة`, {
+                    toastId,
+                    position: "top-right",
+                    autoClose: 7000,
+                });
+            } else {
+                toast.info(`${notif.title}: ${notif.message}`, {
+                    toastId,
+                    position: "top-right",
+                    autoClose: 7000,
+                });
+            }
+        } else if (notif.type === "order_request" && userType === "craftsman") {
             toast(
                 ({ closeToast }) => (
                     <NotificationToast
@@ -199,9 +228,12 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
                     autoClose: 10000,
                 }
             );
-        } else if (notif.type !== "chat") {
-            // Standard toasts for non-chat, non-request notifications
-            toast.info(`${notif.title}: ${notif.message}`, {
+        } else {
+            // Standard toasts for other notifications (e.g. order_status)
+            const variant = notif.variant || "info";
+            const toastMethod = (toast as any)[variant] || toast.info;
+
+            toastMethod(`${notif.title}: ${notif.message}`, {
                 position: "top-right",
                 autoClose: 7000,
             });
@@ -255,7 +287,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         }
 
         const handleNewMessage = (event: any) => {
-            console.log('📨 Event Received: .new-message', event);
+            console.log('📨 [RealTime] Event Received: .new-message', event);
             addNotification({
                 title: "رسالة جديدة",
                 message: event.notification_text || (event.sender_name ? `رسالة جديدة من ${event.sender_name}` : "لديك رسالة جديدة"),
@@ -294,11 +326,17 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
             const status = event.new_status || event.status;
             const arabicStatus = event.new_status_arabic || statusMap[status] || status;
 
-            let customMessage = event.notification_text || `تم تحديث حالة طلبك إلى ${arabicStatus}`;
+            let customMessage = event.notification_text || `تم تحديث حالة طلبك إلى ${arabicStatus} ✅`;
 
-            if (status === "completed") {
-                customMessage = "تم إتمام الخدمة بنجاح، يمكنك الآن تقييم الصنايعي.";
+            if (status === "accepted") {
+                customMessage = `تم قبول طلبك للخدمة بنجاح ✅`;
+            } else if (status === "rejected") {
+                customMessage = `نعتذر، تم رفض طلب الخدمة الخاص بك ❌`;
+            } else if (status === "completed") {
+                customMessage = "تم إتمام الخدمة بنجاح ✨، يمكنك الآن تقييم الصنايعي.";
             }
+
+            const variant = status === "rejected" ? "error" : "success";
 
             addNotification({
                 title: "تحديث طلب الخدمة",
@@ -307,6 +345,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
                 orderId: event.request_id || event.id,
                 recipientId: user.id,
                 recipientType: userType as any,
+                variant,
             });
         };
 
@@ -397,42 +436,11 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     }, [allNotifications, user, userType]);
 
     // Track unread messages for toast notification
-    const [unreadMessagesSinceOpen, setUnreadMessagesSinceOpen] = useState(0);
+
 
     /* ================= Effects ================= */
+    // Chat toasts are now handled in addNotification for better reliability
 
-    useEffect(() => {
-        if (!userNotifications.length) return;
-
-        const newest = userNotifications[0];
-        if (newest.status === "unread" && newest.id !== lastNotifiedId.current) {
-            lastNotifiedId.current = newest.id;
-
-            // Group multiple message notifications
-            if (newest.title === "رسالة جديدة") {
-                playNotificationSound();
-                setUnreadMessagesSinceOpen(prev => {
-                    const next = prev + 1;
-                    const toastId = "chat-notification-toast";
-
-                    if (next > 1) {
-                        toast.info(`لديك ${next} رسائل جديدة`, {
-                            toastId,
-                            position: "top-right",
-                            autoClose: 7000,
-                        });
-                    } else {
-                        toast.info(`${newest.title}: ${newest.message}`, {
-                            toastId,
-                            position: "top-right",
-                            autoClose: 7000,
-                        });
-                    }
-                    return next;
-                });
-            }
-        }
-    }, [userNotifications, playNotificationSound]);
 
     const unreadCount = userNotifications.filter(n => n.status === "unread").length;
 
@@ -456,9 +464,38 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         );
     }, [user, userType]);
 
+    const markTypeAsRead = React.useCallback((type: "chat" | "order_status" | "order_request") => {
+        if (!user || !userType) return;
+        const checkType = (t: string) => (t === "company" ? "user" : t);
+
+        if (type === "chat") {
+            unreadChatCountRef.current = 0;
+            toast.dismiss("chat-notification-toast");
+        }
+
+        setAllNotifications(prev =>
+            prev.map(n =>
+                n.type === type &&
+                    String(n.recipientId) === String(user.id) &&
+                    checkType(n.recipientType) === checkType(userType) &&
+                    n.status === "unread"
+                    ? { ...n, status: "read" }
+                    : n
+            )
+        );
+    }, [user, userType]);
+
     const contextValue = React.useMemo(
-        () => ({ notifications: allNotifications, userNotifications, unreadCount, addNotification, markAsRead, markAllAsRead }),
-        [allNotifications, userNotifications, unreadCount, addNotification, markAsRead, markAllAsRead]
+        () => ({
+            notifications: allNotifications,
+            userNotifications,
+            unreadCount,
+            addNotification,
+            markAsRead,
+            markAllAsRead,
+            markTypeAsRead
+        }),
+        [allNotifications, userNotifications, unreadCount, addNotification, markAsRead, markAllAsRead, markTypeAsRead]
     );
 
     return <NotificationContext.Provider value={contextValue}>{children}</NotificationContext.Provider>;

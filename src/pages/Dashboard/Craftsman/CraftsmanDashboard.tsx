@@ -7,8 +7,6 @@ import {
     FaCheckCircle,
     FaUsers,
     FaClock,
-    FaCheck,
-    FaTimes,
     FaArrowLeft,
     FaEnvelope,
 } from "react-icons/fa";

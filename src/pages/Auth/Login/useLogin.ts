@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useAuth } from "../../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 /* ================= Types ================= */
 
@@ -14,19 +15,32 @@ export interface LoginFormValues {
 
 export const useLogin = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate();
 
     const form = useForm<LoginFormValues>();
     const { login } = useAuth(); // Use the unified login function
 
     const onSubmit = async (data: LoginFormValues) => {
         try {
-            const success = await login(data.email, data.password);
+            // Call login with shouldRedirect: false so we can show the toast and then navigate
+            const success = await login(data.email, data.password, false);
             
             if (success) {
-                toast.success("تم تسجيل الدخول بنجاح");
+                const name = localStorage.getItem('user_name') || "مرحباً";
+                toast.success(`تم تسجيل الدخول بنجاح، مرحباً ${name}`);
+                
+                // Navigate manually based on user role
+                setTimeout(() => {
+                    const role = localStorage.getItem('userType');
+                    const userId = localStorage.getItem('user_id');
+                    
+                    if (role === 'admin') navigate('/admin/dashboard');
+                    else if (role === 'craftsman') navigate(`/craftsman/${userId}`);
+                    else navigate('/');
+                }, 100);
                 
             } else {
-                // If login returns false without throwing (shouldn't happen with current implementation but for safety)
+                // If login returns false without throwing
                 toast.error("فشل تسجيل الدخول، يرجى التحقق من البيانات");
             }
         } catch (error) {

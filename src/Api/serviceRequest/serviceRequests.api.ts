@@ -93,10 +93,15 @@ export const updateServiceRequestStatus = async (
  */
 export const deleteServiceRequest = async (requestId: number) => {
     try {
-        const response = await axios.delete(
-            `${BASE_URL}/service-requests/${requestId}`,
-            { headers: getHeaders() }
-        );
+        const userType = localStorage.getItem("userType");
+        
+        // Craftsman uses the base endpoint as confirmed working.
+        // User/Company might use a singular resource name for individual deletion.
+        const url = userType === "craftsman"
+            ? `${BASE_URL}/service-requests/${requestId}`
+            : `${BASE_URL}/user/service-request/${requestId}`;
+
+        const response = await axios.delete(url, { headers: getHeaders() });
         return response.data;
     } catch (error) {
         throw handleError(error);

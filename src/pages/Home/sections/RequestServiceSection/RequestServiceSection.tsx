@@ -141,8 +141,8 @@ const RequestServiceSection: React.FC = () => {
 
             // 2. Notification for the User (Confirmation)
             addNotification({
-                title: "تم إرسال طلبك بنجاح ✅",
-                message: `تم إرسال طلبك لخدمة ${data.service_name} إلى ${data.industrial_name}.`,
+                title: "",
+                message: `تم إرسال طلبك بنجاح لخدمة ${data.service_name} إلى ${data.industrial_name}.`,
                 recipientId: payload.user_id!,
                 recipientType: "user",
                 type: "order_status",

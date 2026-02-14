@@ -3,6 +3,7 @@ import { IoIosArrowDown, IoMdNotificationsOutline } from "react-icons/io";
 import { FiMessageCircle, FiMenu, FiX } from "react-icons/fi";
 import { useEffect, useRef, useState } from "react";
 import { User, LogOut, LayoutDashboard, Package, Clock } from "lucide-react";
+import { toast } from "react-toastify";
 import { formatTimeAgo } from "../../../utils/timeAgo";
 
 import { NAV_LINKS, type NavLinkItem } from "../../../constants/header";
@@ -16,7 +17,6 @@ import { useNotifications } from "../../../context/NotificationContext";
 import { useUserChat } from "../../../context/UserChatProvider";
 import { useCraftsmanChat } from "../../../context/CraftsmanChatProvider";
 
-import { setToastAfterReload } from "../../../utils/toastAfterReload";
 
 /* ================= TYPES ================= */
 type DropdownRef = HTMLDivElement | null;
@@ -79,9 +79,12 @@ const Header: React.FC = () => {
 
   const handleLogout = () => {
     setIsOpen(false);
-    logout();
-    setToastAfterReload("تم تسجيل الخروج بنجاح");
-    window.location.replace("/login");
+    const name = user?.name || "";
+    logout(false);
+    toast.success(`تم تسجيل الخروج بنجاح، نراك قريباً ${name}`);
+    setTimeout(() => {
+      window.location.href = "/login";
+    }, 1000);
   };
 
   const handleClickOutside = (event: MouseEvent) => {

@@ -10,6 +10,7 @@ import {
     Heart
 } from "lucide-react";
 
+import { toast } from "react-toastify";
 import { useAuth } from "../../../hooks/useAuth";
 import { useNotifications } from "../../../context/NotificationContext";
 import { useUserChat } from "../../../context/UserChatProvider";
@@ -161,7 +162,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
             {/* ===== Footer ===== */}
             <div className="sidebar-footer">
-                <button onClick={() => { logout(); onClose?.(); }} className="logout-btn">
+                <button onClick={() => {
+                    const name = user?.name || "";
+                    logout(false);
+                    toast.success(`تم تسجيل الخروج بنجاح، نراك قريباً ${name}`);
+                    setTimeout(() => {
+                        window.location.href = "/login";
+                    }, 1000);
+                    onClose?.();
+                }} className="logout-btn">
                     <LogOut size={20} />
                     <span>تسجيل الخروج</span>
                 </button>

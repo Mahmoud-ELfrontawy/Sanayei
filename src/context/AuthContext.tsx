@@ -21,8 +21,8 @@ export interface AuthContextType {
     userType: string | null;
     isAuthenticated: boolean;
     loading: boolean;
-    login: (phoneOrEmail: string, password: string) => Promise<boolean>;
-    logout: () => void;
+    login: (phoneOrEmail: string, password: string, shouldRedirect?: boolean) => Promise<boolean>;
+    logout: (shouldRedirect?: boolean) => void;
     register: (userData: any) => Promise<void>;
     registerWorker: (workerData: FormData) => Promise<void>;
     refreshUser: () => Promise<void>;
@@ -117,6 +117,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             if (userData && userData.id) {
                 setUser(userData);
                 localStorage.setItem("user_id", userData.id.toString());
+                localStorage.setItem("user_name", userData.name);
 
                 // Initialize Echo for real-time messaging
                 const token = localStorage.getItem("token");
@@ -137,7 +138,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
 
-    const login = async (phoneOrEmail: string, password: string): Promise<boolean> => {
+    const login = async (phoneOrEmail: string, password: string, shouldRedirect: boolean = true): Promise<boolean> => {
         const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(phoneOrEmail);
         const normalizedPhone = phoneOrEmail.startsWith('0') ? phoneOrEmail.substring(1) : phoneOrEmail;
 
@@ -223,15 +224,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     };
 
                     setUser(finalUser);
+                    localStorage.setItem('user_name', finalUser.name);
                     setUserTypeState(userType as any);
                     initializeEcho(token);
 
-                    if (response.data.redirect) window.location.href = response.data.redirect;
-                    else {
-                        switch (role) {
-                            case 'admin': window.location.href = '/admin/dashboard'; break;
-                            case 'craftsman': window.location.href = `/craftsman/${userData.id}`; break;
-                            default: window.location.href = '/';
+                    if (shouldRedirect) {
+                        if (response.data.redirect) window.location.href = response.data.redirect;
+                        else {
+                            switch (role) {
+                                case 'admin': window.location.href = '/admin/dashboard'; break;
+                                case 'craftsman': window.location.href = `/craftsman/${userData.id}`; break;
+                                default: window.location.href = '/';
+                            }
                         }
                     }
                     return true;
@@ -277,7 +281,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         fetchUser();
     }, []);
 
-    const logout = () => {
+    const logout = (shouldRedirect: boolean = true) => {
         // ✅ Preserve important data before clearing
         const myOrders = localStorage.getItem("myOrders");
         const appNotifications = localStorage.getItem("app_notifications");
@@ -299,7 +303,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(null);
         setUserTypeState(null);
         // Page reload to clear any memory states
-        window.location.href = '/login';
+        if (shouldRedirect) {
+            window.location.href = '/login';
+        }
     };
 
     const register = async (_userData: any) => {

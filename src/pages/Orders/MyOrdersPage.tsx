@@ -102,11 +102,6 @@ function MyOrdersPage() {
         const order = orders.find(o => o.id === orderId);
         const serviceName = order?.service?.name || order?.service_name || "خدمة صيانة";
 
-        const confirmMsg =
-            newStatus === "accepted" ? "هل أنت متأكد من قبول الطلب؟" :
-                newStatus === "completed" ? "هل تم إتمام المهمة بالفعل؟" :
-                    "هل أنت متأكد من رفض الطلب؟";
-        if (!window.confirm(confirmMsg)) return;
 
         try {
             await updateServiceRequestStatus(orderId, newStatus);
@@ -125,6 +120,7 @@ function MyOrdersPage() {
                 recipientType: "user",
                 type: "order_status",
                 orderId: orderId,
+                variant: newStatus === "rejected" ? "error" : "success",
             });
 
             toast.success(
