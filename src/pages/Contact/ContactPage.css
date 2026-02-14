@@ -25,3 +25,32 @@
     max-width: 1000px;
     margin: auto;
 }
+
+/* =========================================
+   Responsive Adjustments
+   ========================================= */
+
+@media (max-width: 768px) {
+    .contact-page {
+        padding: 40px 16px;
+    }
+
+    .contact-title {
+        font-size: 32px;
+    }
+
+    .contact-desc {
+        font-size: 16px;
+        margin-bottom: 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-title {
+        font-size: 26px;
+    }
+
+    .contact-desc {
+        font-size: 15px;
+    }
+}

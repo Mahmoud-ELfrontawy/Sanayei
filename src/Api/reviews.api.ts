@@ -69,8 +69,6 @@ export const getUserReviews = async (): Promise<UserReview[]> => {
         
         return Array.isArray(data) ? data : [];
     } catch (error: any) {
-        console.error("Error fetching user reviews:", error);
-        
         if (error.response) {
             throw {
                 message: error.response.data.message || "حدث خطأ أثناء جلب التقييمات",

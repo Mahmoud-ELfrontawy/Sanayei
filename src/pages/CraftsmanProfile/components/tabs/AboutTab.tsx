@@ -33,9 +33,16 @@ const AboutTab: React.FC<Props> = ({ data }) => {
         {/* العنوان */}
         <div className="info-section half">
           <h3 className="info-title">
-            <FiMapPin /> العنوان بالتفصيل
+            <FiMapPin /> العنوان
           </h3>
-          <p className="info-text-val">{data.address}</p>
+          <p className="info-text-val">
+            {data.governorate && (
+              <span style={{ fontWeight: "bold", display: "block", marginBottom: "4px" }}>
+                المحافظة: {data.governorate}
+              </span>
+            )}
+            {data.address}
+          </p>
         </div>
 
         {/* رقم الهاتف */}

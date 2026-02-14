@@ -284,6 +284,52 @@
     transform: translateY(-3px);
 }
 
+@media (max-width: 480px) {
+    .craftsman-mini-card {
+        padding: 12px;
+        gap: 10px;
+        flex-wrap: wrap; /* Allow wrapping for very narrow screens */
+    }
+
+    .c-info {
+        width: 100%;
+    }
+
+    .c-avatar {
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+    }
+
+    .chat-btn-mini {
+        width: 100%;
+        justify-content: center;
+        margin-top: 5px;
+        padding: 8px;
+        font-size: 0.8rem;
+    }
+    
+    .section-header h2 {
+        font-size: 1.25rem;
+    }
+
+    .view-all {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+
+    .c-status-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+
+    .status-badge {
+        font-size: 0.75rem;
+        padding: 2px 8px;
+    }
+}
+
 .c-info {
     display: flex;
     align-items: center;
@@ -301,14 +347,29 @@
     justify-content: center;
 }
 
+.c-meta {
+    flex: 1;
+    min-width: 0;
+}
+
 .c-meta h4 {
     font-size: 1rem;
     color: var(--color-text-main);
-    margin: 0;
+    margin: 0 0 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.c-meta span {
-    font-size: 0.85rem;
+.c-status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.c-status-row span {
+    font-size: 0.8rem;
     color: var(--color-text-secondary);
 }
 

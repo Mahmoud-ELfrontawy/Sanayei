@@ -75,7 +75,6 @@ const ProfileUser = () => {
                         : undefined,
                 });
             } catch (error) {
-                console.error("Error fetching profile:", error);
                 toast.error("فشل تحميل البيانات ❌");
             } finally {
                 setFetching(false);
@@ -115,13 +114,6 @@ const ProfileUser = () => {
                 profile_image: imageFile,
             });
 
-            // 👇 اطبع الداتا الجديدة بعد الحفظ
-            console.log("✅ Profile updated successfully");
-            console.log("📦 Updated User Data:", {
-                ...user,
-                profile_image: imageFile ? imageFile.name : "No new image",
-            });
-
             await refreshUser();
             await refreshUser();
             setImageFile(null);
@@ -131,8 +123,6 @@ const ProfileUser = () => {
             window.location.reload();
         } catch (error: unknown) {
             const axiosError = error as AxiosError<ApiErrorResponse>;
-
-            console.error("UPDATE PROFILE ERROR:", axiosError.response?.data);
 
             toast.error(axiosError.response?.data?.message || "فشل حفظ التعديلات ❌");
         } finally {

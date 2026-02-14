@@ -22,9 +22,8 @@ const CraftsmanDashboardReviews: React.FC = () => {
     // Reuse the styles from CraftsmanProfile.css which ReviewsTab expects
     // We wrap it in a container that might need similar classes if they depend on parent
     return (
-        <div className="profile-content-area" style={{ border: 'none', boxShadow: 'none', padding: '0' }}>
-           <h2 className="text-2xl font-bold mb-6 text-gray-800">مراجعات العملاء</h2>
-           <ReviewsTab reviews={craftsman?.reviews || []} />
+        <div className="dashboard-reviews-container">
+            <ReviewsTab reviews={craftsman?.reviews || []} />
         </div>
     );
 };

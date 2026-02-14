@@ -9,7 +9,6 @@ import {
     FileText,
     Star,
     LogOut,
-    Menu,
     X,
     Bell
 } from 'lucide-react';
@@ -38,22 +37,17 @@ const AdminLayout = () => {
     ];
 
     return (
-        <div className="admin-layout" dir="rtl">
+        <div className="admin-root" dir="rtl">
             {/* Sidebar */}
-            <aside
-                className={`admin-sidebar ${isSidebarOpen ? 'open' : ''}`}
-            >
-                <div className="sidebar-header">
-                    <h1 className="sidebar-title">صنايعي - أدمن</h1>
-                    <button
-                        onClick={() => setIsSidebarOpen(false)}
-                        className="close-sidebar-btn md:hidden"
-                    >
+            <aside className={`admin-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+                <div className="admin-sidebar-header">
+                    <h1 className="admin-sidebar-title">صنايعي - أدمن</h1>
+                    <button onClick={() => setIsSidebarOpen(false)} className="admin-close-btn md:hidden">
                         <X size={24} />
                     </button>
                 </div>
 
-                <nav className="sidebar-nav">
+                <nav className="admin-sidebar-nav">
                     {menuItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = location.pathname === item.path;
@@ -61,7 +55,7 @@ const AdminLayout = () => {
                             <Link
                                 key={item.path}
                                 to={item.path}
-                                className={`nav-item ${isActive ? 'active' : ''}`}
+                                className={`admin-nav-item ${isActive ? 'active' : ''}`}
                                 onClick={() => setIsSidebarOpen(false)}
                             >
                                 <Icon size={20} />
@@ -71,56 +65,34 @@ const AdminLayout = () => {
                     })}
                 </nav>
 
-                <div className="sidebar-footer">
-                    <button
-                        onClick={handleLogout}
-                        className="logout-btn"
-                    >
+                <div className="admin-sidebar-footer">
+                    <button onClick={handleLogout} className="admin-logout-btn">
                         <LogOut size={20} />
                         <span>تسجيل الخروج</span>
                     </button>
                 </div>
             </aside>
 
-            {/* Main Content */}
-            <div className="main-wrapper">
-                {/* Header */}
+            {/* Main */}
+            <div className="admin-main-wrapper">
                 <header className="admin-header">
-                    <button
-                        onClick={() => setIsSidebarOpen(true)}
-                        className="mobile-menu-btn md:hidden"
-                    >
-                        <Menu size={24} />
-                    </button>
-
-                    <div className="header-actions">
-                        <button className="p-2 text-gray-400 hover:text-gray-500 transition-colors">
+                    <div className="admin-header-actions">
+                        <button className="admin-bell-btn">
                             <Bell size={20} />
                         </button>
-                        <div className="user-profile">
-                            <span className="text-sm font-medium text-gray-700 hidden sm:block">
-                                {user?.name || 'Admin'}
-                            </span>
-                            <div className="user-avatar">
-                                {user?.name?.[0]?.toUpperCase() || 'A'}
-                            </div>
+                        <div className="admin-user-profile">
+                            <span className="admin-username">{user?.name || 'Admin'}</span>
+                            <div className="admin-user-avatar">{user?.name?.[0]?.toUpperCase() || 'A'}</div>
                         </div>
                     </div>
                 </header>
 
-                {/* Page Content */}
-                <main className="page-content">
+                <main className="admin-page-content">
                     <Outlet />
                 </main>
             </div>
 
-            {/* Overlay for mobile sidebar */}
-            {isSidebarOpen && (
-                <div
-                    className="overlay md:hidden"
-                    onClick={() => setIsSidebarOpen(false)}
-                />
-            )}
+            {isSidebarOpen && <div className="admin-overlay md:hidden" onClick={() => setIsSidebarOpen(false)} />}
         </div>
     );
 };

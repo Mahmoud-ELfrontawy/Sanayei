@@ -34,14 +34,26 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
             return;
         }
 
+        if (!craftsmanId) {
+            toast.error("خطأ: لم يتم تحديد الصنايعي");
+            return;
+        }
+
+        if (!orderId) {
+            toast.error("خطأ: لم يتم تحديد رقم الطلب");
+            return;
+        }
+
+        const payload = {
+            craftsman_id: craftsmanId,
+            service_request_id: orderId,
+            rating,
+            comment,
+        };
+
         try {
             setSubmitting(true);
-            await submitReview({
-                craftsman_id: craftsmanId,
-                service_request_id: orderId,
-                rating,
-                comment,
-            });
+            await submitReview(payload);
             toast.success("تم إرسال تقييمك بنجاح! شكراً لك.");
             if (onSuccess) onSuccess();
             onClose();

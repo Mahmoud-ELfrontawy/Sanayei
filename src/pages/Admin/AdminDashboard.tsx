@@ -29,7 +29,6 @@ const AdminDashboard = () => {
                 });
                 setStats(response.data.stats);
             } catch (err) {
-                console.error("Failed to load dashboard stats", err);
                 setError("فشل تحميل الإحصائيات - جاري عرض بيانات تجريبية");
                 // Mock Data Fallback
                 setStats({

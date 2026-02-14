@@ -80,29 +80,20 @@ export const useRegisterWorker = () => {
 
       console.log('✅ Registration completed:', response);
 
-      // Check if registration was successful
-      if (response.token) {
-        toast.success("تم تسجيل الصنايعي بنجاح وتم تسجيل الدخول 🎉");
-        form.reset();
-        navigate("/craftsman/profile");
-        return;
-      }
-
-      // Check registration data for pending status
-      if (
-        response.registrationData?.message?.includes("قيد المراجعة") ||
-        response.registrationData?.message?.includes("معلق") ||
-        response.registrationData?.status === "pending"
-      ) {
-        toast.info(
-          "حسابك قيد المراجعة وسيتم تفعيله خلال 24 ساعة ⏳"
+      // Account needs admin approval — show success toast and go to login
+      if (response.pendingApproval || !response.token) {
+        toast.success(
+          response.message || "تم التسجيل بنجاح، في انتظار موافقة الإدارة ✅"
         );
+        form.reset();
         navigate("/login");
         return;
       }
 
-      /* ❌ أي خطأ عادي */
-      toast.error(response.registrationData?.message || response.message || "حدث خطأ غير متوقع");
+      // Auto-login succeeded — go to profile
+      toast.success("تم تسجيل الصنايعي بنجاح وتم تسجيل الدخول 🎉");
+      form.reset();
+      navigate("/craftsman/profile");
 
     } catch (error: unknown) {
       const err = error as AxiosError<ErrorResponse>;

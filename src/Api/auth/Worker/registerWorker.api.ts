@@ -49,17 +49,42 @@ export const registerWorker = async (
     }
   );
 
-  console.log('✅ Registration Response:', registerResponse.data);
+  const regData = registerResponse.data;
 
-  // ✅ AUTO LOGIN only if registration succeeded
-  const loginRes = await loginCraftsman({
-    email: payload.email,
-    password: payload.password,
-  });
+  // If account needs admin approval, do NOT auto-login — return early
+  if (
+    regData.message?.includes("انتظار") ||
+    regData.message?.includes("مراجعة") ||
+    regData.message?.includes("معلق") ||
+    regData.data?.status === "pending"
+  ) {
+    return {
+      token: null,
+      message: regData.message,
+      registrationData: regData,
+      pendingApproval: true,
+    };
+  }
 
-  // ✅ تخزين صحيح
-  localStorage.setItem("token", loginRes.token);
-  localStorage.setItem("userType", "craftsman");
+  // ✅ AUTO LOGIN only if registration succeeded and account is active
+  try {
+    const loginRes = await loginCraftsman({
+      login: payload.phone,
+      password: payload.password,
+    });
 
-  return { ...loginRes, registrationData: registerResponse.data };
+    // ✅ تخزين صحيح
+    localStorage.setItem("token", loginRes.token);
+    localStorage.setItem("userType", "craftsman");
+
+    return { ...loginRes, registrationData: regData, pendingApproval: false };
+  } catch {
+    // Login failed (account may need approval) — still return success
+    return {
+      token: null,
+      message: regData.message,
+      registrationData: regData,
+      pendingApproval: true,
+    };
+  }
 };

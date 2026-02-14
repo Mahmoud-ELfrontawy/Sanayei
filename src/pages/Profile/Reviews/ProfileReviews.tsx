@@ -15,10 +15,8 @@ const ProfileReviews: React.FC = () => {
       try {
         setLoading(true);
         const data = await getUserReviews();
-        console.log("✅ Reviews fetched successfully:", data);
         setReviews(data);
       } catch (err: any) {
-        console.error("❌ Error fetching reviews:", err);
         const errorMsg = err.message || "فشل في جلب التقييمات";
         setError(errorMsg);
         toast.error(errorMsg);
@@ -73,28 +71,30 @@ const ProfileReviews: React.FC = () => {
 
       <div className="reviews-grid">
         {reviews.map((review) => (
-          <div key={review.id} className="review-card">
+          <div key={review.id} className="review-card user-review-card">
             <div className="review-header">
-              <img
-                src={getAvatarUrl(review.craftsman?.profile_photo, review.craftsman?.name)}
-                alt={review.craftsman?.name || "صنايعي"}
-                className="craftsman-avatar"
-                onError={(e) => {
-                  e.currentTarget.src = getAvatarUrl(null, review.craftsman?.name);
-                }}
-              />
+              <div className="craftsman-avatar-wrapper">
+                <img
+                  src={getAvatarUrl(review.craftsman?.profile_photo, review.craftsman?.name)}
+                  alt={review.craftsman?.name || "صنايعي"}
+                  className="craftsman-avatar"
+                  onError={(e) => {
+                    e.currentTarget.src = getAvatarUrl(null, review.craftsman?.name);
+                  }}
+                />
+              </div>
               <div className="craftsman-info">
-                <h3>{review.craftsman?.name || "غير محدد"}</h3>
+                <h3 className="craftsman-name-link">{review.craftsman?.name || "غير محدد"}</h3>
                 <div className="rating-stars">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <FaStar
                       key={i}
-                      size={16}
-                      color={i < review.rating ? "#FF8031" : "#ddd"}
+                      size={14}
+                      color={i < review.rating ? "#FF8031" : "#e4e5e9"}
                     />
                   ))}
                 </div>
-                <div className="review-date">
+                <div className="review-date-label">
                   {new Date(review.created_at).toLocaleDateString("ar-EG", {
                     year: "numeric",
                     month: "short",
@@ -105,7 +105,7 @@ const ProfileReviews: React.FC = () => {
             </div>
 
             {review.comment && (
-              <div className="review-comment">
+              <div className="review-comment-body">
                 <p>{review.comment}</p>
               </div>
             )}

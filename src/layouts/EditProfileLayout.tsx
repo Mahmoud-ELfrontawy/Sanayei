@@ -38,7 +38,8 @@ const EditProfileLayout = () => {
 
           {/* تعديل الملف الشخصي */}
           <NavLink
-            to={userType === "craftsman" ? `${basePath}/edit` : basePath}
+            end
+            to={`${basePath}/edit`}
             className={({ isActive }) =>
               `tab-item ${isActive ? "active" : ""}`
             }

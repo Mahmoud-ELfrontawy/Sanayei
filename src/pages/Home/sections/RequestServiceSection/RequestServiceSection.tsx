@@ -98,8 +98,6 @@ const RequestServiceSection: React.FC = () => {
         }
 
         try {
-            console.log("DEBUG: Starting Submission with data:", data);
-
             // ✅ Send service request with user_id & full info
             const payload = {
                 // 🔥 User Details
@@ -127,11 +125,7 @@ const RequestServiceSection: React.FC = () => {
                 }
             });
 
-            console.log("DEBUG: Final JSON Payload:", payload);
-
             const response = await createServiceRequest(payload);
-            console.log("DEBUG: Server Response:", response);
-            console.log("DEBUG: Auth Debug Info:", response.debug); // Check auth status
 
             const serverId = response.data?.id || response.id || Date.now();
 
@@ -169,11 +163,6 @@ const RequestServiceSection: React.FC = () => {
             form.reset();
             navigate("/orders");
         } catch (err: any) {
-            console.error("DEBUG: Submission failed ERROR:", err);
-            if (err.response) {
-                console.error("DEBUG: Response Data:", err.response.data);
-                console.error("DEBUG: Response Status:", err.response.status);
-            }
             toast.error("حدث خطأ أثناء إرسال الطلب ❌");
         }
     };

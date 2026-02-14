@@ -5,7 +5,7 @@ import {
     User,
     Mail,
     Bell,
-    MapPin,
+
     LogOut,
     Heart
 } from "lucide-react";
@@ -27,11 +27,16 @@ const buildAvatar = (avatar?: string | null, name?: string | null) => {
     )}&background=FF8031&color=fff&bold=true`;
 };
 
-const Sidebar: React.FC = () => {
-    const { user, logout } = useAuth();
+interface SidebarProps {
+    isOpen?: boolean;
+    onClose?: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
+    const { user, logout, userType } = useAuth();
     const { unreadCount } = useNotifications();
 
-    const userType = localStorage.getItem("userType");
+    // 🗑️ Removed localStorage.getItem("userType") to use context value
 
     // ✅ استدعاء الاثنين بدون شروط (قواعد React)
     const userChat = useUserChat();
@@ -69,7 +74,7 @@ const Sidebar: React.FC = () => {
         },
         {
             title: "الملف الشخصي",
-            path: "/user/profile",
+            path: userType === "craftsman" ? "/craftsman/profile" : (userType === "admin" ? "/admin/profile" : "/user/profile"),
             icon: <User size={20} />
         },
         {
@@ -91,15 +96,11 @@ const Sidebar: React.FC = () => {
             badge: unreadCount,
             hasUnread: unreadCount > 0
         },
-        {
-            title: "الموقع",
-            path: "/dashboard/location",
-            icon: <MapPin size={20} />
-        },
+
     ];
 
     return (
-        <aside className="dashboard-sidebar">
+        <aside className={`dashboard-sidebar ${isOpen ? "open" : ""}`}>
             {/* ===== Header ===== */}
             <div className="sidebar-header">
                 <div className="user-info">
@@ -131,6 +132,7 @@ const Sidebar: React.FC = () => {
                             <NavLink
                                 to={link.path}
                                 end={link.path === "/dashboard"}
+                                onClick={onClose}
                                 className={({ isActive }) =>
                                     `nav-link ${isActive ? "active" : ""} ${link.hasUnread ? "has-unread" : ""
                                     } ${link.path.includes("messages") && isNewMessage
@@ -159,7 +161,7 @@ const Sidebar: React.FC = () => {
 
             {/* ===== Footer ===== */}
             <div className="sidebar-footer">
-                <button onClick={logout} className="logout-btn">
+                <button onClick={() => { logout(); onClose?.(); }} className="logout-btn">
                     <LogOut size={20} />
                     <span>تسجيل الخروج</span>
                 </button>

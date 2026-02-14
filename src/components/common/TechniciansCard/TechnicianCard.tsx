@@ -73,9 +73,11 @@ const TechnicianCard: React.FC<Props> = ({ technician }) => {
                         {technician.name}
                     </h3>
 
-                    <span className="worker-location">
-                        ({technician.governorate?.name})
-                    </span>
+                    {technician.governorate?.name && (
+                        <span className="worker-location">
+                            ({technician.governorate.name})
+                        </span>
+                    )}
                 </div>
 
                 <p className="worker-bio">

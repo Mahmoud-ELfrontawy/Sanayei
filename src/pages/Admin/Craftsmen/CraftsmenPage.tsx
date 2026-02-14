@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import './CraftsmenPage.css';
+import { adminCraftsmenApi } from '../../../Api/admin/adminCraftsmen.api';
 
 interface CraftsmanData {
     id: string;
@@ -25,8 +26,9 @@ interface CraftsmanData {
     avatar?: string;
     specialty: string;
     sub_specialties?: string[];
-    governorate: string;
-    status: 'pending' | 'approved' | 'rejected';
+    governorate?: { id: number; name: string };
+    service?: { id: number; name: string };
+    status: 'pending' | 'approved' | 'rejected' | 'blocked';
     rating: number;
     reviews_count: number;
     completed_jobs: number;
@@ -36,99 +38,93 @@ interface CraftsmanData {
     is_verified: boolean;
     portfolio_url?: string;
     bio?: string;
-    completion_rate: number; // نسبة إكمال المهام
+    completion_rate: number;
 }
 
 const CraftsmenPage: React.FC = () => {
     const [craftsmen, setCraftsmen] = useState<CraftsmanData[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedStatus, setSelectedStatus] = useState('all');
-    const [selectedSpecialty, setSelectedSpecialty] = useState('all');
+    const [selectedStatus, setSelectedStatus] = useState<string>('all');
+    const [selectedSpecialty, setSelectedSpecialty] = useState<string>('all');
     const [selectedCraftsman, setSelectedCraftsman] = useState<CraftsmanData | null>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
+    const fetchCraftsmen = async () => {
+        setLoading(true);
+        try {
+            const params = {
+                page: currentPage,
+                search: searchTerm,
+                status: selectedStatus === 'all' ? undefined : selectedStatus
+            };
+            const response = await adminCraftsmenApi.getAllCraftsmen(params);
+            const paginationData = response.data;
+            const allCraftsmen = paginationData.data || [];
+
+            // Map to the interface
+            const mapped: CraftsmanData[] = allCraftsmen.map((u: any) => ({
+                id: u.id.toString(),
+                name: u.name,
+                email: u.email,
+                phone: u.phone,
+                avatar: u.avatar || u.profile_image_url,
+                specialty: u.service?.name || u.craft_type || 'غير محدد',
+                governorate: u.governorate,
+                service: u.service,
+                status: u.status,
+                rating: parseFloat(u.average_rating || u.rating || 0),
+                reviews_count: parseInt(u.reviews_count || 0),
+                completed_jobs: parseInt(u.completed_requests || u.completed_jobs || 0),
+                experience_years: parseInt(u.experience_years || 0),
+                price_range: u.price_range || 'غير محدد',
+                joined_date: u.created_at || u.joined_date,
+                is_verified: u.status === 'approved',
+                bio: u.bio || u.description,
+                completion_rate: parseInt(u.completion_rate || 0)
+            }));
+
+            setCraftsmen(mapped);
+            setTotalPages(paginationData.last_page || 1);
+            setError(null);
+        } catch (err: any) {
+            setError("فشل تحميل البيانات من السيرفر");
+            toast.error("فشل تحميل بيانات الصنايعية");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        // Simulation of fetching data
-        const timer = setTimeout(() => {
-            setCraftsmen([
-                {
-                    id: 'C001',
-                    name: 'محمد أحمد السباك',
-                    email: 'mohamed.p@example.com',
-                    phone: '01011223344',
-                    specialty: 'سباكة',
-                    sub_specialties: ['تصريف صحي', 'تركيب خلاطات'],
-                    governorate: 'القاهرة',
-                    status: 'approved',
-                    rating: 4.8,
-                    reviews_count: 156,
-                    completed_jobs: 210,
-                    experience_years: 12,
-                    price_range: 'متوسط',
-                    joined_date: '2023-01-15',
-                    is_verified: true,
-                    portfolio_url: 'https://images.com/portfolio1',
-                    bio: 'متخصص في كافة أعمال السباكة المنزلية والإنشاءات الجديدة.',
-                    completion_rate: 98
-                },
-                {
-                    id: 'C002',
-                    name: 'أحمد محمود كهربائي',
-                    email: 'ahmed.e@example.com',
-                    phone: '01122334455',
-                    specialty: 'كهرباء',
-                    sub_specialties: ['تأسيس كهرباء', 'صيانة أعطال'],
-                    governorate: 'الجيزة',
-                    status: 'pending',
-                    rating: 0,
-                    reviews_count: 0,
-                    completed_jobs: 0,
-                    experience_years: 8,
-                    price_range: 'اقتصادي',
-                    joined_date: '2024-02-10',
-                    is_verified: false,
-                    bio: 'فني كهرباء خبرة في التأسيس والصيانة.',
-                    completion_rate: 0
-                },
-                {
-                    id: 'C003',
-                    name: 'شركة النيل للتكييف',
-                    email: 'nile.air@company.com',
-                    phone: '01233445566',
-                    specialty: 'تكييف وتبريد',
-                    sub_specialties: ['شحن فريون', 'غسيل تكييفات'],
-                    governorate: 'الإسكندرية',
-                    status: 'rejected',
-                    rating: 3.2,
-                    reviews_count: 12,
-                    completed_jobs: 15,
-                    experience_years: 5,
-                    price_range: 'مرتفع',
-                    joined_date: '2023-11-20',
-                    is_verified: true,
-                    bio: 'مركز صيانة معتمد لجميع أنواع التكييفات.',
-                    completion_rate: 75
-                }
-            ]);
-            setLoading(false);
-        }, 800);
-        return () => clearTimeout(timer);
-    }, []);
+        fetchCraftsmen();
+    }, [currentPage, searchTerm, selectedStatus]);
 
-    const handleUpdateStatus = (id: string, newStatus: 'approved' | 'rejected') => {
-        const actionText = newStatus === 'approved' ? 'اعتماد' : 'رفض';
-        toast.info(`جاري ${actionText} الحساب...`);
+    const handleUpdateStatus = async (id: string, action: 'approve' | 'reject' | 'block') => {
+        const actionText = action === 'approve' ? 'تفعيل' : (action === 'reject' ? 'رفض' : 'حظر');
 
-        setCraftsmen(prev => prev.map(c =>
-            c.id === id ? { ...c, status: newStatus } : c
-        ));
+        try {
+            switch (action) {
+                case 'approve':
+                    await adminCraftsmenApi.verifyCraftsman(id);
+                    toast.success("تم اعتماد الصنايعي بنجاح");
+                    break;
+                case 'reject':
+                    await adminCraftsmenApi.rejectCraftsman(id);
+                    toast.success("تم رفض الطلب");
+                    break;
+                case 'block':
+                    await adminCraftsmenApi.toggleCraftsmanBlock(id);
+                    toast.success("تم تحديث حالة الحظر");
+                    break;
+            }
+            fetchCraftsmen(); // Refresh data to get updated states from backend
 
-        if (selectedCraftsman?.id === id) {
-            setSelectedCraftsman(prev => prev ? { ...prev, status: newStatus } : null);
+        } catch (err) {
+            toast.error(`فشل ${actionText} الحساب`);
         }
-
-        toast.success(`تم ${actionText} الحساب بنجاح`);
     };
 
     const openSidebar = (craftsman: CraftsmanData) => {
@@ -137,14 +133,28 @@ const CraftsmenPage: React.FC = () => {
     };
 
     const filteredCraftsmen = craftsmen.filter(c => {
-        const matchesSearch = c.name.includes(searchTerm) || c.email.includes(searchTerm) || c.phone.includes(searchTerm);
+        const matchesSearch =
+            c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            c.phone.includes(searchTerm);
+
         const matchesStatus = selectedStatus === 'all' || c.status === selectedStatus;
+
         const matchesSpecialty = selectedSpecialty === 'all' || c.specialty === selectedSpecialty;
         return matchesSearch && matchesStatus && matchesSpecialty;
     });
 
-    if (loading) {
+    if (loading && craftsmen.length === 0) {
         return <div className="loading-state">جاري تحميل بيانات الصنايعية...</div>;
+    }
+
+    if (error && craftsmen.length === 0) {
+        return (
+            <div className="error-state">
+                <p>{error}</p>
+                <button onClick={fetchCraftsmen}>إعادة المحاولة</button>
+            </div>
+        );
     }
 
     return (
@@ -226,7 +236,7 @@ const CraftsmenPage: React.FC = () => {
                                         {craftsman.specialty}
                                     </span>
                                 </td>
-                                <td>{craftsman.governorate}</td>
+                                <td>{craftsman.governorate?.name || 'غير محدد'}</td>
                                 <td>
                                     <div className="rating-mini">
                                         <Star size={14} fill="#f59e0b" color="#f59e0b" />
@@ -236,7 +246,8 @@ const CraftsmenPage: React.FC = () => {
                                 <td>
                                     <span className={`status-badge ${craftsman.status}`}>
                                         {craftsman.status === 'approved' ? 'معتمد' :
-                                            craftsman.status === 'rejected' ? 'مرفوض' : 'قيد المراجعة'}
+                                            craftsman.status === 'rejected' ? 'مرفوض' :
+                                                craftsman.status === 'blocked' ? 'محظور' : 'قيد المراجعة'}
                                     </span>
                                 </td>
                                 <td className="actions-cell">
@@ -245,10 +256,10 @@ const CraftsmenPage: React.FC = () => {
                                     </button>
                                     {craftsman.status === 'pending' && (
                                         <>
-                                            <button className="approve-btn" onClick={() => handleUpdateStatus(craftsman.id, 'approved')} title="اعتماد">
+                                            <button className="approve-btn" onClick={() => handleUpdateStatus(craftsman.id, 'approve')} title="اعتماد">
                                                 <CheckCircle size={18} />
                                             </button>
-                                            <button className="reject-btn" onClick={() => handleUpdateStatus(craftsman.id, 'rejected')} title="رفض">
+                                            <button className="reject-btn" onClick={() => handleUpdateStatus(craftsman.id, 'reject')} title="رفض">
                                                 <XCircle size={18} />
                                             </button>
                                         </>
@@ -260,8 +271,29 @@ const CraftsmenPage: React.FC = () => {
                 </table>
             </div>
 
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="pagination-container">
+                    <button
+                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage(prev => prev - 1)}
+                        className="pg-btn"
+                    >
+                        السابق
+                    </button>
+                    <span className="pg-info">صفحة {currentPage} من {totalPages}</span>
+                    <button
+                        disabled={currentPage === totalPages}
+                        onClick={() => setCurrentPage(prev => prev + 1)}
+                        className="pg-btn"
+                    >
+                        التالي
+                    </button>
+                </div>
+            )}
+
             {/* Artisan Detail Sidebar */}
-            {isSidebarOpen && selectedCraftsman && (
+            {isSidebarOpen && selectedCraftsman ? (
                 <>
                     <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>
                     <div className="artisan-sidebar">
@@ -276,7 +308,8 @@ const CraftsmenPage: React.FC = () => {
                                 <h4>{selectedCraftsman.name}</h4>
                                 <span className={`status-pill ${selectedCraftsman.status}`}>
                                     {selectedCraftsman.status === 'approved' ? 'حساب معتمد' :
-                                        selectedCraftsman.status === 'rejected' ? 'حساب مرفوض' : 'بانتظار التفعيل'}
+                                        selectedCraftsman.status === 'rejected' ? 'حساب مرفوض' :
+                                            selectedCraftsman.status === 'blocked' ? 'حساب محظور' : 'بانتظار التفعيل'}
                                 </span>
                             </div>
 
@@ -342,24 +375,26 @@ const CraftsmenPage: React.FC = () => {
                             <div className="sidebar-actions-sticky">
                                 {selectedCraftsman.status === 'pending' ? (
                                     <div className="approval-actions">
-                                        <button className="full-approve-btn" onClick={() => handleUpdateStatus(selectedCraftsman.id, 'approved')}>
+                                        <button className="full-approve-btn" onClick={() => handleUpdateStatus(selectedCraftsman.id, 'approve')}>
                                             <CheckCircle size={20} /> تفعيل الحساب فوراً
                                         </button>
-                                        <button className="full-reject-btn" onClick={() => handleUpdateStatus(selectedCraftsman.id, 'rejected')}>
+                                        <button className="full-reject-btn" onClick={() => handleUpdateStatus(selectedCraftsman.id, 'reject')}>
                                             <XCircle size={20} /> رفض الطلب
                                         </button>
                                     </div>
                                 ) : (
-                                    <button className="full-edit-btn">
-                                        <Edit size={20} /> تعديل بيانات الملف الفني
-                                    </button>
+                                    <div className="approval-actions">
+                                        <button className="full-reject-btn" onClick={() => handleUpdateStatus(selectedCraftsman.id, 'block')}>
+                                            <Edit size={20} /> {selectedCraftsman.status === 'blocked' ? 'إلغاء الحظر' : 'حظر الحساب'}
+                                        </button>
+                                    </div>
                                 )}
                             </div>
                         </div>
                     </div>
                 </>
-            )}
-        </div>
+            ) : null}
+        </div >
     );
 };
 

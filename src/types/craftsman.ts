@@ -22,6 +22,7 @@ export interface CraftsmanProfileData {
   rating: number;
   experienceYears: number;
   address: string;
+  governorate?: string;
   phone: string;
   about: string;
   priceRange?: string;

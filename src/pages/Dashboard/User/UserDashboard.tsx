@@ -35,7 +35,6 @@ const UserDashboard: React.FC = () => {
                 // ✅ Sync to localStorage for consistency
                 localStorage.setItem("myOrders", JSON.stringify(ordersArray));
             } catch (err) {
-                console.warn("Dashboard sync failed - using local data:", err);
                 const stored = localStorage.getItem("myOrders");
                 if (stored) setOrders(JSON.parse(stored));
             } finally {
@@ -135,7 +134,7 @@ const UserDashboard: React.FC = () => {
                                                     onClick={() => {
                                                         setSelectedOrder({
                                                             id: c.id,
-                                                            craftsmanId: c.craftsman_id,
+                                                            craftsmanId: c.craftsman_id || c.craftsman?.id,
                                                             craftsmanName: c.craftsman?.name || c.industrial_name
                                                         });
                                                         setShowReviewModal(true);

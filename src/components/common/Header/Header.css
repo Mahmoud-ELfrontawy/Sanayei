@@ -430,6 +430,10 @@
         height: 60px;
     }
 
+    .header-logo.is-dashboard {
+        display: none !important;
+    }
+
     .mobile-menu-btn {
         display: flex;
         align-items: center;

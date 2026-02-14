@@ -42,7 +42,6 @@ const UserProfilePage: React.FC = () => {
                 setUser(res.data || res);
                 setError(null);
             } catch (err) {
-                console.error("Error fetching user profile:", err);
                 setError("حدث خطأ أثناء تحميل بيانات المستخدم");
             } finally {
                 setLoading(false);

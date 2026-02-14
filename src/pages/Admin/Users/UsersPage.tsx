@@ -3,18 +3,17 @@ import { useState, useEffect } from 'react';
 import {
     Search,
     Edit,
+    Trash2,
     UserX,
-    Wallet,
-    MapPin,
     Eye,
-    ShieldCheck,
+    Plus,
     Mail,
     Phone,
     Calendar,
     RefreshCcw,
+    ShieldCheck,
     X,
     Download,
-    User,
     Users
 } from 'lucide-react';
 import { adminUsersApi } from '../../../Api/admin/adminUsers.api';
@@ -22,41 +21,21 @@ import { toast } from 'react-toastify';
 import './UsersPage.css';
 
 interface UserData {
-    // الأساسية (Basic)
-    id: string; // ID رقم المستخدم
-    name: string; // الاسم الكامل
-    email: string; // البريد الإلكتروني
-    phone: string; // رقم الهاتف
-    avatar?: string; // الصورة الشخصية
-    role: 'admin' | 'user' | 'craftsman' | 'company'; // نوع الحساب (user/company/craftsman)
-    status: 'active' | 'banned' | 'inactive'; // حالة الحساب (نشط/محظور/غير مفعل)
-    created_at: string; // تاريخ التسجيل
-    last_login: string; // آخر تسجيل دخول
-
-    // النشاط (Activity - Not in API yet)
-    total_requests?: number; // عدد طلبات الخدمة
-    completed_requests?: number; // عدد الطلبات المكتملة
-    cancelled_requests?: number; // عدد الطلبات الملغية
-    total_spent?: number; // إجمالي المبالغ المدفوعة
-    reviews_written?: number; // عدد التقييمات التي كتبها
-    reports_count?: number; // عدد البلاغات عليه
-
-    // الأمان (Security - Not in API yet)
-    email_verified: boolean; // حالة تأكيد الإيميل
-    phone_verified: boolean; // حالة تأكيد رقم الموبايل
-    ip_address?: string; // آخر IP تسجيل دخول
-    failed_logins?: number; // عدد محاولات تسجيل الدخول الفاشلة
-    is_suspected?: boolean; // هل الحساب مشتبه فيه
-    average_rating?: number; // متوسط التقييم (للصنايعية/الشركات)
-    last_activity_timeline?: { action: string; time: string; icon: string }[]; // سجل النشاط الأخير
-    active_last_24h?: boolean; // نشط خلال الـ 24 ساعة الماضية
-    birth_date?: string; // تاريخ الميلاد
-    gender?: 'male' | 'female'; // الجنس
-
-    // إضافية
-    governorate: string;
-    is_verified: boolean; // توثيق الهوية
-    wallet_balance?: number; // رصيد المحفظة حالياً (إضافي من الـ API)
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    avatar?: string;
+    role: 'admin' | 'user' | 'craftsman' | 'company';
+    is_active: boolean;
+    is_admin: boolean;
+    gender?: 'male' | 'female';
+    birth_date?: string;
+    created_at: string;
+    // ... other optional fields from controller
+    latitude?: number;
+    longitude?: number;
+    registered_via?: string;
 }
 
 const UsersPage = () => {
@@ -64,120 +43,57 @@ const UsersPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [statusFilter, setStatusFilter] = useState('all');
-    const [roleFilter, setRoleFilter] = useState('all'); // Filter by User/Company
-    const [sortBy, setSortBy] = useState('newest'); // Sorting: newest, most_requests, most_spent
+    const [isActiveFilter, setIsActiveFilter] = useState<boolean | 'all'>('all');
+    const [isAdminFilter, setIsAdminFilter] = useState<boolean | 'all'>('all');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [roleFilter, setRoleFilter] = useState('all');
 
     // Detailed View State
     const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
 
+    // Modal State (Create/Edit)
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        password: '',
+        gender: '' as 'male' | 'female' | '',
+        birth_date: '',
+        is_active: true,
+        is_admin: false,
+    });
+
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const response = await adminUsersApi.getAllUsers();
-            setUsers(response.data.users || response.data.data || []);
+            const params = {
+                page: currentPage,
+                search: searchQuery,
+                is_active: isActiveFilter === 'all' ? undefined : isActiveFilter,
+                is_admin: isAdminFilter === 'all' ? undefined : isAdminFilter
+            };
+            const response = await adminUsersApi.getAllUsers(params);
+
+            // The latest controller wraps the pagination object in a 'data' field
+            // response.data (axios) -> { status: true, data: { data: [...], last_page: X, ... } }
+            const paginationObj = response.data.data;
+            const usersList = paginationObj?.data || [];
+
+            setUsers(usersList);
+            setTotalPages(paginationObj?.last_page || 1);
             setError(null);
         } catch (err: any) {
-            console.error("Failed to fetch users", err);
-            setError("فشل الاتصال بالسيرفر - يتم عرض بيانات تجريبية كاملة (Production Demo)");
-            // بيانات تجريبية شاملة للمشروع (Comprehensive Mock Data)
-            setUsers([
-                {
-                    id: '101',
-                    name: 'أحمد محمد علي',
-                    email: 'ahmed@example.com',
-                    phone: '01012345678',
-                    role: 'user',
-                    status: 'active',
-                    created_at: '2023-11-10',
-                    last_login: '2024-02-12 10:30',
-                    total_requests: 15,
-                    completed_requests: 12,
-                    cancelled_requests: 2,
-                    total_spent: 4500.00,
-                    reviews_written: 8,
-                    reports_count: 0,
-                    email_verified: true,
-                    phone_verified: true,
-                    ip_address: '192.168.1.1',
-                    failed_logins: 0,
-                    is_suspected: false,
-                    governorate: 'القاهرة',
-                    is_verified: true,
-                    wallet_balance: 150.00,
-                    average_rating: 4.8,
-                    active_last_24h: true,
-                    birth_date: '1995-05-15',
-                    gender: 'male',
-                    last_activity_timeline: [
-                        { action: 'طلب خدمة تركيب سباكة', time: 'منذ ساعتين', icon: 'wrench' },
-                        { action: 'دفع فاتورة محفظة', time: 'منذ 5 ساعات', icon: 'wallet' },
-                        { action: 'تغيير كلمة المرور', time: 'أمس', icon: 'lock' }
-                    ]
-                },
-                {
-                    id: '102',
-                    name: 'شركة النور للمقاولات',
-                    email: 'alnoor@company.com',
-                    phone: '01155667788',
-                    role: 'company',
-                    status: 'inactive',
-                    created_at: '2024-01-05',
-                    last_login: '2024-02-10 15:45',
-                    total_requests: 45,
-                    completed_requests: 40,
-                    cancelled_requests: 1,
-                    total_spent: 12500.00,
-                    reviews_written: 0,
-                    reports_count: 2,
-                    email_verified: true,
-                    phone_verified: false,
-                    ip_address: '41.235.10.5',
-                    failed_logins: 3,
-                    is_suspected: true,
-                    governorate: 'الجيزة',
-                    is_verified: false,
-                    wallet_balance: 0,
-                    active_last_24h: false,
-                    birth_date: '2010-01-01',
-                    gender: 'male',
-                    last_activity_timeline: [
-                        { action: 'فشل تسجيل دخول', time: 'منذ يومين', icon: 'alert' },
-                        { action: 'تعديل بيانات الشركة', time: 'منذ أسبوع', icon: 'edit' }
-                    ]
-                },
-                {
-                    id: '103',
-                    name: 'ياسر إبراهيم',
-                    email: 'yasser@example.com',
-                    phone: '01299887766',
-                    role: 'user',
-                    status: 'banned',
-                    created_at: '2023-05-20',
-                    last_login: '2023-12-25 09:12',
-                    total_requests: 3,
-                    completed_requests: 0,
-                    cancelled_requests: 3,
-                    total_spent: 0,
-                    reviews_written: 1,
-                    reports_count: 10,
-                    email_verified: false,
-                    phone_verified: true,
-                    ip_address: '156.202.5.11',
-                    failed_logins: 12,
-                    is_suspected: true,
-                    governorate: 'الإسكندرية',
-                    is_verified: false,
-                    wallet_balance: 45.00,
-                    active_last_24h: false,
-                    birth_date: '1988-11-20',
-                    gender: 'male',
-                    last_activity_timeline: [
-                        { action: 'حظر الحساب من قبل النظام', time: 'ديسمبر 2023', icon: 'ban' }
-                    ]
-                }
-            ]);
+            if (err.response) {
+                setError(`خطأ من السيرفر: ${err.response.status} - ${err.response.data?.message || 'مشكلة داخلية'}`);
+            } else if (err.request) {
+                setError("فشل الاتصال: مشكلة في الشبكة أو CORS (يرجى التأكد من تشغيل الباك إيند)");
+            } else {
+                setError("حدث خطأ غير متوقع");
+            }
         } finally {
             setLoading(false);
         }
@@ -185,53 +101,100 @@ const UsersPage = () => {
 
     useEffect(() => {
         fetchUsers();
-    }, []);
+    }, [currentPage, searchQuery, isActiveFilter, isAdminFilter]);
 
     const filteredUsers = users
         .filter(user => {
-            const matchesSearch =
-                user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                user.phone.includes(searchQuery);
-            const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
+            // roleFilter (user/craftsman/company) still client-side if API doesn't support it
             const matchesRole = roleFilter === 'all' || user.role === roleFilter;
-            return matchesSearch && matchesStatus && matchesRole;
-        })
-        .sort((a, b) => {
-            if (sortBy === 'newest') return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-            if (sortBy === 'requests') return (b.total_requests || 0) - (a.total_requests || 0);
-            if (sortBy === 'spent') return (b.total_spent || 0) - (a.total_spent || 0);
-            return 0;
+            return matchesRole;
         });
 
 
-    const handleResetPassword = async (userId: string) => {
-        if (window.confirm("هل أنت متأكد من إعادة تعيين كلمة المرور لهذا المستخدم؟")) {
-            try {
-                await adminUsersApi.resetPassword(userId);
-                toast.success("تم إرسال رابط إعادة التعيين");
-            } catch (err) {
-                toast.error("فشل تنفيذ الطلب");
-            }
-        }
-    };
 
-    const handleUpdateWallet = async (userId: string) => {
-        const amountStr = window.prompt("أدخل المبلغ (استخدم سالباً للخصم):");
-        if (amountStr) {
-            const amount = parseFloat(amountStr);
-            if (isNaN(amount)) return toast.error("برجاء إدخال رقم صحيح");
-
-            const type = amount >= 0 ? 'add' : 'deduct';
+    const handleToggleBlock = async (userId: string, isActive: boolean) => {
+        const action = isActive ? 'حظر' : 'إلغاء حظر';
+        if (window.confirm(`هل أنت متأكد من ${action} هذا المستخدم؟`)) {
             try {
-                await adminUsersApi.updateWallet(userId, Math.abs(amount), type);
-                toast.success("تم تحديث المحفظة بنجاح");
+                await adminUsersApi.toggleBlockUser(userId);
+                toast.success(`تم ${action} المستخدم بنجاح`);
                 fetchUsers();
-            } catch (err) {
-                toast.error("فشل تحديث المحفظة");
+            } catch (err: any) {
+                const msg = err.response?.data?.message || `فشل ${action} المستخدم`;
+                toast.error(msg);
             }
         }
     };
+
+
+    const handleDeleteUser = async (userId: string) => {
+        if (window.confirm("⚠️ هل أنت متأكد من حذف هذا المستخدم نهائياً؟ لا يمكن التراجع عن هذا الإجراء.")) {
+            if (window.confirm("تأكيد أخير: هل أنت متأكد فعلاً؟")) {
+                try {
+                    await adminUsersApi.deleteUser(userId);
+                    toast.success("تم حذف المستخدم بنجاح");
+                    fetchUsers();
+                } catch (err: any) {
+                    const msg = err.response?.data?.message || "فشل حذف المستخدم";
+                    toast.error(msg);
+                }
+            }
+        }
+    };
+
+    const handleOpenCreateModal = () => {
+        setModalMode('create');
+        setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            password: '',
+            gender: '' as 'male' | 'female' | '',
+            birth_date: '',
+            is_active: true,
+            is_admin: false,
+        });
+        setIsModalOpen(true);
+    };
+
+    const handleOpenEditModal = (user: UserData) => {
+        setModalMode('edit');
+        setSelectedUser(user);
+        setFormData({
+            name: user.name,
+            email: user.email,
+            phone: user.phone || '',
+            password: '', // Keep empty for edit
+            gender: user.gender || '',
+            birth_date: user.birth_date || '',
+            is_active: user.is_active,
+            is_admin: user.is_admin,
+        });
+        setIsModalOpen(true);
+    };
+
+    const handleFormSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            if (modalMode === 'create') {
+                await adminUsersApi.createUser({ ...formData, registered_via: 'admin' });
+                toast.success("تم إنشاء المستخدم بنجاح");
+            } else if (selectedUser) {
+                // Remove password if empty during Edit
+                const updatePayload = { ...formData };
+                if (!updatePayload.password) delete (updatePayload as any).password;
+
+                await adminUsersApi.updateUser(selectedUser.id, updatePayload);
+                toast.success("تم تحديث بيانات المستخدم");
+            }
+            setIsModalOpen(false);
+            fetchUsers();
+        } catch (err: any) {
+            const msg = err.response?.data?.message || "حدث خطأ أثناء حفظ البيانات";
+            toast.error(msg);
+        }
+    };
+
 
     const formatDate = (dateString: string) => {
         if (!dateString) return '---';
@@ -247,13 +210,8 @@ const UsersPage = () => {
         }
     };
 
-    const getStatusLabel = (status: string) => {
-        switch (status) {
-            case 'active': return 'نشط';
-            case 'banned': return 'محظور';
-            case 'inactive': return 'غير مفعل';
-            default: return status;
-        }
+    const getStatusLabel = (isActive: boolean) => {
+        return isActive ? 'نشط' : 'محظور / غير نشط';
     };
 
     const openDetails = (user: UserData) => {
@@ -261,17 +219,12 @@ const UsersPage = () => {
         setIsDetailOpen(true);
     };
 
-    const totalUsers = users.length;
-    const activeLast24h = users.filter(u => u.active_last_24h).length;
 
     const handleExportData = () => {
         toast.info("جاري تجهيز تقرير المستخدمين بصيغة Excel...");
         // Simulation logic
     };
 
-    const handleImpersonate = (userName: string) => {
-        toast.warning(`جاري الدخول كـ ${userName}... (اختبار المحاكاة)`);
-    };
 
     if (loading && users.length === 0) {
         return (
@@ -306,20 +259,17 @@ const UsersPage = () => {
                         <div className="stat-premium-card">
                             <Users size={24} className="stat-icon" />
                             <div className="stat-values">
-                                <span className="label">إجمالي المستخدمين</span>
-                                <span className="value">{totalUsers}</span>
-                            </div>
-                        </div>
-                        <div className="stat-premium-card highlight">
-                            <RefreshCcw size={24} className="stat-icon spinning" />
-                            <div className="stat-values">
-                                <span className="label">نشاط 24 ساعة</span>
-                                <span className="value">+{activeLast24h}</span>
+                                <span className="label">المستخدمين بالصفحة</span>
+                                <span className="value">{users.length}</span>
                             </div>
                         </div>
                     </div>
 
                     <div className="header-actions">
+                        <button className="add-user-btn" onClick={handleOpenCreateModal}>
+                            <Plus size={20} />
+                            إضافة مستخدم جديد
+                        </button>
                         <button className="export-action-btn" onClick={handleExportData}>
                             <Download size={20} />
                             تصدير Excel
@@ -347,21 +297,20 @@ const UsersPage = () => {
                 </div>
                 <div className="filters-grid">
                     <select className="filter-select" value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}>
-                        <option value="all">كل الأنواع</option>
+                        <option value="all">كل الأدوار</option>
                         <option value="user">مستخدم (User)</option>
                         <option value="company">شركة (Company)</option>
                         <option value="craftsman">صنايعي (Craftsman)</option>
                     </select>
-                    <select className="filter-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-                        <option value="all">كل الحالات</option>
-                        <option value="active">نشط</option>
-                        <option value="inactive">غير مفعل</option>
-                        <option value="banned">محظور</option>
+                    <select className="filter-select" value={isActiveFilter.toString()} onChange={(e) => setIsActiveFilter(e.target.value === 'all' ? 'all' : e.target.value === 'true')}>
+                        <option value="all">كل الحالات (نشط/محظور)</option>
+                        <option value="true">نشط فقط</option>
+                        <option value="false">محظور فقط</option>
                     </select>
-                    <select className="filter-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                        <option value="newest">الأحدث تسجيلاً</option>
-                        <option value="requests">الأكثر طلباً</option>
-                        <option value="spent">الأكثر إنفاقاً</option>
+                    <select className="filter-select" value={isAdminFilter.toString()} onChange={(e) => setIsAdminFilter(e.target.value === 'all' ? 'all' : e.target.value === 'true')}>
+                        <option value="all">الكل (أدمن/مستخدم)</option>
+                        <option value="true">أدمن فقط</option>
+                        <option value="false">مستخدمين عاديين</option>
                     </select>
                 </div>
             </div>
@@ -373,15 +322,15 @@ const UsersPage = () => {
                             <th># ID</th>
                             <th>المستخدم</th>
                             <th>نوع الحساب</th>
+                            <th>الأدمن</th>
                             <th>حالة الحساب</th>
                             <th>تاريخ التسجيل</th>
-                            <th>آخر ظهور</th>
                             <th>الإجراءات</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredUsers.map(user => (
-                            <tr key={user.id} className={user.is_suspected ? 'suspected-row' : ''}>
+                            <tr key={user.id}>
                                 <td className="font-mono text-xs opacity-60">#{user.id}</td>
                                 <td>
                                     <div className="user-profile-cell">
@@ -391,11 +340,6 @@ const UsersPage = () => {
                                         <div className="user-main-info">
                                             <div className="name-wrapper">
                                                 <span className="user-name">{user.name}</span>
-                                                {user.total_requests && user.total_requests > 10 && (
-                                                    <span className="request-badge" title="عميل مميز">
-                                                        {user.total_requests} طلب
-                                                    </span>
-                                                )}
                                             </div>
                                             <span className="user-email">{user.email}</span>
                                             <span className="user-email">{user.phone}</span>
@@ -408,23 +352,29 @@ const UsersPage = () => {
                                     </span>
                                 </td>
                                 <td>
-                                    <span className={`status-badge-modern ${user.status}`}>
-                                        {getStatusLabel(user.status)}
+                                    {user.is_admin ? <ShieldCheck size={18} color="#10b981" /> : <X size={18} color="#94a3b8" />}
+                                </td>
+                                <td>
+                                    <span className={`status-badge-modern ${user.is_active ? 'active' : 'banned'}`}>
+                                        {getStatusLabel(user.is_active)}
                                     </span>
                                 </td>
                                 <td><span className="date-display">{formatDate(user.created_at)}</span></td>
-                                <td><span className="text-sm opacity-80">{user.last_login}</span></td>
                                 <td className="actions-cell">
                                     <button className="action-btn" onClick={() => openDetails(user)} title="عرض التفاصيل الكاملة">
                                         <Eye size={18} />
                                     </button>
-                                    <button className="action-btn" onClick={() => handleUpdateWallet(user.id)} title="إدارة المحفظة">
-                                        <Wallet size={18} />
+                                    <button className="action-btn edit" onClick={() => handleOpenEditModal(user)} title="تعديل البيانات">
+                                        <Edit size={18} />
                                     </button>
-                                    <button className="action-btn" onClick={() => handleResetPassword(user.id)} title="إعادة تعيين الباسوورد">
-                                        <RefreshCcw size={18} />
+                                    <button className="action-btn delete" onClick={() => handleDeleteUser(user.id)} title="حذف نهائي">
+                                        <Trash2 size={18} />
                                     </button>
-                                    <button className="action-btn delete" title="حظر المستخدم">
+                                    <button
+                                        className={`action-btn ${user.is_active ? 'delete' : 'success'}`}
+                                        onClick={() => handleToggleBlock(user.id, user.is_active)}
+                                        title={user.is_active ? 'حظر المستخدم' : 'إلغاء الحظر'}
+                                    >
                                         <UserX size={18} />
                                     </button>
                                 </td>
@@ -434,7 +384,28 @@ const UsersPage = () => {
                 </table>
             </div>
 
-            {/* User Details Sidebar - Production Ready */}
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="pagination-container">
+                    <button
+                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage(prev => prev - 1)}
+                        className="pg-btn"
+                    >
+                        السابق
+                    </button>
+                    <span className="pg-info">صفحة {currentPage} من {totalPages}</span>
+                    <button
+                        disabled={currentPage === totalPages}
+                        onClick={() => setCurrentPage(prev => prev + 1)}
+                        className="pg-btn"
+                    >
+                        التالي
+                    </button>
+                </div>
+            )}
+
+            {/* User Details Sidebar */}
             {isDetailOpen && selectedUser && (
                 <>
                     <div className="sidebar-overlay" onClick={() => setIsDetailOpen(false)}></div>
@@ -456,101 +427,15 @@ const UsersPage = () => {
                                 <h3 className="profile-name">{selectedUser.name}</h3>
                                 <div className="hero-badges">
                                     <span className={`role-badge ${selectedUser.role}`}>
-                                        {selectedUser.role === 'admin' ? 'أدمن' : selectedUser.role === 'company' ? 'شركة' : 'عميل'}
+                                        {selectedUser.role === 'admin' ? 'أدمن' : selectedUser.role === 'company' ? 'شركة' : selectedUser.role === 'craftsman' ? 'صنايعي' : 'عميل'}
                                     </span>
-                                    <span className={`status-badge ${selectedUser.status}`}>
-                                        {getStatusLabel(selectedUser.status)}
+                                    <span className={`status-badge ${selectedUser.is_active ? 'active' : 'banned'}`}>
+                                        {getStatusLabel(selectedUser.is_active)}
                                     </span>
                                 </div>
-                                {selectedUser.average_rating && (
-                                    <div className="detail-rating">
-                                        <div className="stars">⭐⭐⭐⭐⭐</div>
-                                        <span>({selectedUser.average_rating}) تقييم عام</span>
-                                    </div>
-                                )}
                             </div>
 
-                            {/* Wallet Info */}
-                            <div className="detail-balance-card">
-                                <div className="balance-info">
-                                    <label>رصيد المحفظة</label>
-                                    <strong>{(selectedUser.wallet_balance || 0).toFixed(2)} ج.م</strong>
-                                </div>
-                                <button className="add-balance-mini" onClick={() => handleUpdateWallet(selectedUser.id)}>
-                                    <Wallet size={16} /> تعديل الرصيد
-                                </button>
-                            </div>
-
-                            {/* Section: Activity Metrics (Not in API) */}
-                            <div className="detail-section">
-                                <h4 className="section-title">إحصائيات النشاط</h4>
-                                <div className="activity-grid">
-                                    <div className="activity-item">
-                                        <span className="value">{selectedUser.total_requests || 0}</span>
-                                        <span className="label">إجمالي الطلبات</span>
-                                    </div>
-                                    <div className="activity-item pulse-green">
-                                        <span className="value">{selectedUser.completed_requests || 0}</span>
-                                        <span className="label">مكتملة</span>
-                                    </div>
-                                    <div className="activity-item pulse-red">
-                                        <span className="value">{selectedUser.cancelled_requests || 0}</span>
-                                        <span className="label">ملغاة</span>
-                                    </div>
-                                    <div className="activity-item highlight">
-                                        <span className="value">{(selectedUser.total_spent || 0).toLocaleString()}</span>
-                                        <span className="label">إجمالي المدفوع</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Section: Security Details (Not in API) */}
-                            <div className="detail-section security-section">
-                                <h4 className="section-title">بيانات الأمان والرقابة</h4>
-                                <div className="security-list">
-                                    <div className={`security-check ${selectedUser.email_verified ? 'ok' : 'warn'}`}>
-                                        {selectedUser.email_verified ? <ShieldCheck size={16} /> : <X size={16} />}
-                                        <span>تأكيد الإيميل: {selectedUser.email_verified ? 'مفعل' : 'غير مؤكد'}</span>
-                                    </div>
-                                    <div className={`security-check ${selectedUser.phone_verified ? 'ok' : 'warn'}`}>
-                                        {selectedUser.phone_verified ? <ShieldCheck size={16} /> : <X size={16} />}
-                                        <span>تأكيد الموبايل: {selectedUser.phone_verified ? 'مفعل' : 'غير مؤكد'}</span>
-                                    </div>
-                                    <div className="security-item">
-                                        <label>IP تسجيل الدخول:</label>
-                                        <code>{selectedUser.ip_address || '---.---.---.---'}</code>
-                                    </div>
-                                    <div className={`security-item ${selectedUser.failed_logins && selectedUser.failed_logins > 5 ? 'danger' : ''}`}>
-                                        <label>محاولات فاشلة:</label>
-                                        <span>{selectedUser.failed_logins || 0} محاولات</span>
-                                    </div>
-                                    {selectedUser.is_suspected && (
-                                        <div className="suspect-alert">
-                                            <UserX size={18} />
-                                            <span>حساب مشتبه في سلوكه!</span>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Activity Timeline Section */}
-                            <div className="detail-section">
-                                <h4 className="section-title">سجل النشاط الأخير (Timeline)</h4>
-                                <div className="activity-timeline">
-                                    {(selectedUser.last_activity_timeline || []).map((item, idx) => (
-                                        <div key={idx} className="timeline-item">
-                                            <div className="timeline-marker"></div>
-                                            <div className="timeline-content">
-                                                <p className="action-text">{item.action}</p>
-                                                <span className="action-time">{item.time}</span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                    {(!selectedUser.last_activity_timeline || selectedUser.last_activity_timeline.length === 0) && (
-                                        <p className="no-data">لا يوجد نشاط مسجل مؤخراً</p>
-                                    )}
-                                </div>
-                            </div>
+                            {/* Role Hero Info */}
 
                             <div className="detail-section">
                                 <h4 className="section-title">المعلومات الأساسية</h4>
@@ -577,13 +462,6 @@ const UsersPage = () => {
                                         </div>
                                     </div>
                                     <div className="info-modern-item">
-                                        <MapPin size={18} />
-                                        <div className="content">
-                                            <label>الموقع / المحافظة</label>
-                                            <span>{selectedUser.governorate}</span>
-                                        </div>
-                                    </div>
-                                    <div className="info-modern-item">
                                         <RefreshCcw size={18} />
                                         <div className="content">
                                             <label>الجنس</label>
@@ -592,45 +470,102 @@ const UsersPage = () => {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </>
+            )}
 
-                            {/* Actions Dashboard */}
-                            <div className="detail-section">
-                                <h4 className="section-title">إجراءات الإدارة السريعة</h4>
-                                <div className="actions-control-stack">
-                                    <button className="control-action-card" onClick={() => handleImpersonate(selectedUser.name)}>
-                                        <div className="icon-box blue"><User size={20} /></div>
-                                        <div className="text">
-                                            <strong>تسجيل الدخول كمستخدم</strong>
-                                            <span>الدخول للحساب ومعاينة المشاكل</span>
-                                        </div>
-                                    </button>
-
-                                    <button className="control-action-card">
-                                        <div className="icon-box green"><Edit size={20} /></div>
-                                        <div className="text">
-                                            <strong>تعديل بيانات الحساب</strong>
-                                            <span>تحديث الإيميل، الاسم، أو الموبايل</span>
-                                        </div>
-                                    </button>
-
-                                    <button className="control-action-card" onClick={() => handleResetPassword(selectedUser.id)}>
-                                        <div className="icon-box orange"><RefreshCcw size={20} /></div>
-                                        <div className="text">
-                                            <strong>إعادة تعيين كلمة المرور</strong>
-                                            <span>إرسال رابط استعادة الوصول</span>
-                                        </div>
-                                    </button>
-
-                                    <button className="control-action-card danger">
-                                        <div className="icon-box red"><UserX size={20} /></div>
-                                        <div className="text">
-                                            <strong>حظر المستخدم نهائياً</strong>
-                                            <span>منع الدخول وإلغاء كافة الصلاحيات</span>
-                                        </div>
-                                    </button>
+            {/* Create / Edit User Modal */}
+            {isModalOpen && (
+                <>
+                    <div className="modal-overlay" onClick={() => setIsModalOpen(false)}></div>
+                    <div className="admin-user-modal">
+                        <div className="modal-header">
+                            <h3>{modalMode === 'create' ? 'إضافة مستخدم جديد' : 'تعديل بيانات المستخدم'}</h3>
+                            <button className="close-btn" onClick={() => setIsModalOpen(false)}><X size={20} /></button>
+                        </div>
+                        <form onSubmit={handleFormSubmit} className="user-form">
+                            <div className="form-grid">
+                                <div className="form-group-user">
+                                    <label>الاسم الكامل</label>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={formData.name}
+                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                    />
+                                </div>
+                                <div className="form-group-user">
+                                    <label>البريد الإلكتروني</label>
+                                    <input
+                                        type="email"
+                                        required
+                                        value={formData.email}
+                                        onChange={e => setFormData({ ...formData, email: e.target.value })}
+                                    />
+                                </div>
+                                <div className="form-group-user">
+                                    <label>رقم الهاتف</label>
+                                    <input
+                                        type="text"
+                                        value={formData.phone}
+                                        onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                                    />
+                                </div>
+                                <div className="form-group-user">
+                                    <label>{modalMode === 'create' ? 'كلمة المرور' : 'كلمة المرور الجديدة (اتركها فارغة لعدم التغيير)'}</label>
+                                    <input
+                                        type="password"
+                                        required={modalMode === 'create'}
+                                        value={formData.password}
+                                        onChange={e => setFormData({ ...formData, password: e.target.value })}
+                                    />
+                                </div>
+                                <div className="form-group-user">
+                                    <label>الجنس</label>
+                                    <select
+                                        value={formData.gender}
+                                        onChange={e => setFormData({ ...formData, gender: e.target.value as any })}
+                                    >
+                                        <option value="">اختر</option>
+                                        <option value="male">ذكر</option>
+                                        <option value="female">أنثى</option>
+                                    </select>
+                                </div>
+                                <div className="form-group-user">
+                                    <label>تاريخ الميلاد</label>
+                                    <input
+                                        type="date"
+                                        value={formData.birth_date}
+                                        onChange={e => setFormData({ ...formData, birth_date: e.target.value })}
+                                    />
+                                </div>
+                                <div className="form-check-group">
+                                    <label className="checkbox-wrapper">
+                                        <input
+                                            type="checkbox"
+                                            checked={formData.is_active}
+                                            onChange={e => setFormData({ ...formData, is_active: e.target.checked })}
+                                        />
+                                        <span>حساب نشط</span>
+                                    </label>
+                                    <label className="checkbox-wrapper">
+                                        <input
+                                            type="checkbox"
+                                            checked={formData.is_admin}
+                                            onChange={e => setFormData({ ...formData, is_admin: e.target.checked })}
+                                        />
+                                        <span>صلاحيات أدمن</span>
+                                    </label>
                                 </div>
                             </div>
-                        </div>
+                            <div className="modal-footer">
+                                <button type="button" className="cancel-btn" onClick={() => setIsModalOpen(false)}>إلغاء</button>
+                                <button type="submit" className="submit-btn">
+                                    {modalMode === 'create' ? 'إنشاء الحساب' : 'حفظ التغييرات'}
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </>
             )}

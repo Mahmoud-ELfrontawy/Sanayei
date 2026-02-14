@@ -87,80 +87,88 @@
 }
 
 /* Review Card */
-.review-card {
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 20px;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+.user-review-card {
+  background: #ffffff;
+  border: 1px solid #edf2f7;
+  border-radius: 20px;
+  padding: 24px;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
 }
 
-.review-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
+.user-review-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  border-color: var(--color-primary-light);
 }
 
 /* Review Header */
 .review-header {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 12px;
-  position: relative;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.craftsman-avatar-wrapper {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  padding: 2px;
+  border: 2px solid #5FA8D3;
+  background: #fff;
+  flex-shrink: 0;
 }
 
 .craftsman-avatar {
-  width: 48px;
-  height: 48px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   object-fit: cover;
-  flex-shrink: 0;
 }
 
 .craftsman-info {
   flex: 1;
-  min-width: 0;
 }
 
-.craftsman-info h3 {
+.craftsman-name-link {
+  font-weight: 700;
   font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  margin: 0 0 6px 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: #1a202c;
+  margin: 0 0 4px 0;
 }
 
 .rating-stars {
   display: flex;
-  gap: 2px;
+  gap: 3px;
+  margin-bottom: 4px;
 }
 
-.review-date {
-  position: absolute;
-  top: 0;
-  left: 0;
+.review-date-label {
   font-size: 12px;
-  color: #999;
-  white-space: nowrap;
+  color: #a0aec0;
+  font-weight: 500;
 }
 
 /* Review Comment */
-.review-comment {
-  background: #f8f9fa;
-  border-radius: 8px;
-  padding: 12px;
-  margin-top: 12px;
+.review-comment-body {
+  flex: 1;
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 16px;
+  position: relative;
 }
 
-.review-comment p {
+.review-comment-body p {
   margin: 0;
   font-size: 14px;
-  line-height: 1.6;
-  color: #555;
-  word-wrap: break-word;
+  line-height: 1.7;
+  color: #4a5568;
+  font-weight: 500;
+  font-style: italic;
 }
 
 /* Responsive Design */

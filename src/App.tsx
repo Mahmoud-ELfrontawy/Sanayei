@@ -42,7 +42,6 @@ function App() {
 
       localStorage.removeItem("after_reload_toast");
     } catch (e) {
-      console.error("Error parsing toast data", e);
       localStorage.removeItem("after_reload_toast");
     }
   }, []);

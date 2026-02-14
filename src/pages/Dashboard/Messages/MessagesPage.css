@@ -28,3 +28,23 @@
     height: calc(100vh - 250px);
     max-height: 800px;
 }
+
+@media (max-width: 768px) {
+    .messages-header {
+        display: none; /* Hide header to save space on mobile */
+    }
+
+    .messages-content {
+        height: 100%;
+        padding: 0;
+    }
+
+    .messages-page .chat-container {
+        height: 100%;
+        max-height: none;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
+}
+

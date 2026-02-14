@@ -2,7 +2,7 @@ import { useCraftsmanChat } from "../../../context/CraftsmanChatProvider";
 import SharedChatWindow from "../SharedChatWindow";
 
 const CraftsmanChatWindow = () => {
-    const { activeChat, messages, sendMessage, sendImage, sendAudio } = useCraftsmanChat();
+    const { activeChat, setActiveChat, messages, sendMessage, sendImage, sendAudio } = useCraftsmanChat();
 
     return (
         <SharedChatWindow
@@ -12,6 +12,7 @@ const CraftsmanChatWindow = () => {
             sendImage={sendImage}
             sendAudio={sendAudio}
             profileLink={activeChat ? `/user/${activeChat.id}` : undefined}
+            onBack={() => setActiveChat(null)}
         />
     );
 };

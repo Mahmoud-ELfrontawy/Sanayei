@@ -38,8 +38,20 @@ const ChooseSanayPage: React.FC = () => {
             .finally(() => setLoading(false));
     }, []);
 
+    const techniciansWithMappedGovernorates = useMemo(() => {
+        return data.map(t => {
+            if (!t.governorate && t.governorate_id) {
+                const gov = governorates.find(g => g.id.toString() === t.governorate_id?.toString());
+                if (gov) {
+                    return { ...t, governorate: { id: gov.id, name: gov.name } };
+                }
+            }
+            return t;
+        });
+    }, [data, governorates]);
+
     const filteredTechnicians = useMemo(() => {
-        return data.filter((t) => {
+        return techniciansWithMappedGovernorates.filter((t) => {
             const matchSearch =
                 search === "" ||
                 t.name.toLowerCase().includes(search.toLowerCase());
@@ -63,7 +75,7 @@ const ChooseSanayPage: React.FC = () => {
                 matchPrice
             );
         });
-    }, [data, search, serviceFilter, cityFilter, priceFilter]);
+    }, [techniciansWithMappedGovernorates, search, serviceFilter, cityFilter, priceFilter]);
 
     return (
         <section className="workers-section">

@@ -38,7 +38,14 @@ const ProfileCard: React.FC<Props> = ({ craftsman, isOwnProfile }) => {
       </div>
 
       <h2 className="craftsman-name">{craftsman.name}</h2>
-      <p className="craftsman-job">{craftsman.jobTitle}</p>
+      <p className="craftsman-job">
+        {craftsman.jobTitle}
+        {craftsman.governorate && (
+          <span style={{ fontSize: "0.9rem", color: "#777", marginRight: "5px" }}>
+            ({craftsman.governorate})
+          </span>
+        )}
+      </p>
 
       <div className="craftsman-rating">
         {Array.from({ length: 5 }).map((_, i) => (

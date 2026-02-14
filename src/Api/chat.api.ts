@@ -52,7 +52,7 @@ export interface ChatContact {
 /* ================= Get Workers ================= */
 
 export const getChatWorkers = async () => {
-    const response = await axios.get(`${BASE_URL}/workers`, {
+    const response = await axios.get(`${BASE_URL}/chat/workers`, {
         headers: getHeaders(),
     });
 
@@ -62,14 +62,13 @@ export const getChatWorkers = async () => {
 /* ================= Get Messages ================= */
 
 export const getMessages = async (userId: number, workerId: number) => {
-    const response = await axios.post(
-        `${BASE_URL}/messages/chat`,
-        {
+    const response = await axios.get(`${BASE_URL}/chat/messages`, {
+        params: {
             user_id: userId,
             worker_id: workerId,
         },
-        { headers: getHeaders() }
-    );
+        headers: getHeaders(),
+    });
 
     return response.data;
 };
@@ -84,7 +83,7 @@ export const sendChatMessage = async (
     message: string
 ) => {
     const response = await axios.post(
-        `${BASE_URL}/messages/send`,
+        `${BASE_URL}/chat/messages/send`,
         {
             sender_id: senderId,
             sender_type: senderType,
@@ -119,7 +118,7 @@ export const sendChatImage = async (
         formData.append("message", message);
     }
 
-    const response = await axios.post(`${BASE_URL}/messages/send-image`, formData, {
+    const response = await axios.post(`${BASE_URL}/chat/messages/image`, formData, {
         headers: getFormDataHeaders(),
     });
 
@@ -147,7 +146,7 @@ export const sendChatAudio = async (
         formData.append("duration", String(duration));
     }
 
-    const response = await axios.post(`${BASE_URL}/messages/send-audio`, formData, {
+    const response = await axios.post(`${BASE_URL}/chat/messages/audio`, formData, {
         headers: getFormDataHeaders(),
     });
 
@@ -158,11 +157,10 @@ export const sendChatAudio = async (
 
 export const getWorkerChats = async (workerId: number) => {
     try {
-        const response = await axios.post(
-            `${BASE_URL}/messages/worker-chats`,
-            { worker_id: workerId },
-            { headers: getHeaders() }
-        );
+        const response = await axios.get(`${BASE_URL}/chat/worker-chats`, {
+            params: { worker_id: workerId },
+            headers: getHeaders(),
+        });
 
         return response.data;
     } catch (error) {
@@ -180,11 +178,10 @@ export const getWorkerChats = async (workerId: number) => {
 
 export const getUserChats = async (userId: number) => {
     try {
-        const response = await axios.post(
-            `${BASE_URL}/messages/user-chats`,
-            { user_id: userId },
-            { headers: getHeaders() }
-        );
+        const response = await axios.get(`${BASE_URL}/chat/user-chats`, {
+            params: { user_id: userId },
+            headers: getHeaders(),
+        });
 
         return response.data;
     } catch (error) {
@@ -206,7 +203,7 @@ export const markMessagesAsRead = async (
     type: "user" | "worker"
 ) => {
     const response = await axios.post(
-        `${BASE_URL}/messages/mark-as-read`,
+        `${BASE_URL}/chat/messages/mark-read`,
         {
             user_id: userId,
             worker_id: workerId,
@@ -224,14 +221,13 @@ export const getUnreadMessagesCount = async (
     id: number,
     type: "user" | "worker"
 ) => {
-    const response = await axios.post(
-        `${BASE_URL}/messages/unread-count`,
-        {
+    const response = await axios.get(`${BASE_URL}/chat/unread-count`, {
+        params: {
             id,
             type,
         },
-        { headers: getHeaders() }
-    );
+        headers: getHeaders(),
+    });
 
     return response.data;
 };

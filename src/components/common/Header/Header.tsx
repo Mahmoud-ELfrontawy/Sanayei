@@ -1,8 +1,9 @@
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useLocation } from "react-router-dom";
 import { IoIosArrowDown, IoMdNotificationsOutline } from "react-icons/io";
 import { FiMessageCircle, FiMenu, FiX } from "react-icons/fi";
 import { useEffect, useRef, useState } from "react";
-import { User, LogOut, LayoutDashboard } from "lucide-react";
+import { User, LogOut, LayoutDashboard, Package, Clock } from "lucide-react";
+import { formatTimeAgo } from "../../../utils/timeAgo";
 
 import { NAV_LINKS, type NavLinkItem } from "../../../constants/header";
 import logo from "../../../assets/images/final logo.png";
@@ -23,11 +24,12 @@ type DropdownRef = HTMLDivElement | null;
 /* ================= COMPONENT ================= */
 
 const Header: React.FC = () => {
-  const { user, isAuthenticated, logout } = useAuth();
-  const { unreadCount } = useNotifications();
+  // ✅ Use userType from context for reactivity
+  const { user, isAuthenticated, logout, userType } = useAuth();
+  const location = useLocation();
 
-  // ✅ تعريف واحد فقط
-  const userType = localStorage.getItem("userType");
+  // Check if we are in dashboard or admin area
+  const isDashboardRoute = location.pathname.startsWith("/dashboard") || location.pathname.startsWith("/admin");
 
   // ✅ استدعاء الـ hooks بدون شروط (قواعد React)
   const userChat = useUserChat();
@@ -40,18 +42,39 @@ const Header: React.FC = () => {
       : userChat.contacts.reduce((s, c) => s + c.unread_count, 0);
 
   const [isOpen, setIsOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const dropdownRef = useRef<DropdownRef>(null);
+  const notifDropdownRef = useRef<DropdownRef>(null);
+  const { userNotifications, markAsRead, markAllAsRead, unreadCount } = useNotifications();
 
   /* ================= Helpers ================= */
 
-  const profilePath =
-    userType === "craftsman" ? "/craftsman/profile" : "/user/profile";
+  const isCraftsman = userType === "craftsman";
+  const isAdmin = userType === "admin";
+
+  const profilePath = isAdmin
+    ? "/admin/profile"
+    : (isCraftsman ? "/craftsman/profile" : "/user/profile");
+
+  const dashboardPath = isAdmin
+    ? "/admin/dashboard"
+    : (isCraftsman ? "/dashboard/craftsman" : "/dashboard");
 
   /* ================= HANDLERS ================= */
 
-  const toggleDropdown = () => setIsOpen((prev) => !prev);
+  const toggleDropdown = () => {
+    setIsOpen((prev) => !prev);
+    setNotifOpen(false);
+  };
+
+  const toggleNotifDropdown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setNotifOpen((prev) => !prev);
+    setIsOpen(false);
+  };
+
   const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev);
 
   const handleLogout = () => {
@@ -62,11 +85,12 @@ const Header: React.FC = () => {
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target as Node)
-    ) {
+    const target = event.target as Node;
+    if (dropdownRef.current && !dropdownRef.current.contains(target)) {
       setIsOpen(false);
+    }
+    if (notifDropdownRef.current && !notifDropdownRef.current.contains(target)) {
+      setNotifOpen(false);
     }
   };
 
@@ -97,7 +121,7 @@ const Header: React.FC = () => {
     <header className="header">
       <nav className="header-nav">
         {/* Logo */}
-        <Link to="/" className="header-logo">
+        <Link to="/" className={`header-logo ${isDashboardRoute ? "is-dashboard" : ""}`}>
           <img src={logo} alt="Sanayei Logo" />
         </Link>
 
@@ -143,17 +167,68 @@ const Header: React.FC = () => {
                 <span>الرسائل</span>
               </Link>
 
-              {/* Notifications */}
-              <Link
-                to="/dashboard/notifications"
-                className={`icon-btn-login ${unreadCount > 0 ? "has-unread" : ""}`}
-              >
-                {unreadCount > 0 && (
-                  <span className="notification-badge-header" />
+              {/* Notifications Dropdown */}
+              <div className="avatar-dropdown" ref={notifDropdownRef}>
+                <button
+                  onClick={toggleNotifDropdown}
+                  className={`icon-btn-login ${unreadCount > 0 ? "has-unread" : ""} ${unreadCount > 0 ? "has-new-notification" : ""}`}
+                >
+                  {unreadCount > 0 && (
+                    <span className="notification-badge-header" />
+                  )}
+                  <IoMdNotificationsOutline size={24} />
+                  <span>الإشعارات</span>
+                </button>
+
+                {notifOpen && (
+                  <div className="profile-dropdown notification-dropdown">
+                    <div className="dropdown-header-notif">
+                      <span>التنبيهات</span>
+                      {unreadCount > 0 && (
+                        <button onClick={markAllAsRead} className="mark-all-read">تعيين الكل كمقروء</button>
+                      )}
+                    </div>
+
+                    <div className="notification-list-scroll">
+                      {userNotifications.length === 0 ? (
+                        <div className="empty-notif">لا يوجد تنبيهات حالياً</div>
+                      ) : (
+                        userNotifications.map((notif) => (
+                          <div
+                            key={notif.id}
+                            className={`notification-item ${notif.status === "unread" ? "unread" : ""}`}
+                            onClick={() => markAsRead(notif.id)}
+                          >
+                            <div className={`notification-icon-wrapper icon-${notif.type}`}>
+                              {notif.type === "order_request" ? <Package size={16} /> :
+                                notif.type === "chat" ? <FiMessageCircle size={16} /> :
+                                  <Clock size={16} />}
+                            </div>
+                            <div className="notification-info">
+                              <div className="notification-title-row">
+                                <span className="notif-item-title">{notif.title}</span>
+                              </div>
+                              <p className="notif-item-message">{notif.message}</p>
+                              <div className="notification-time">
+                                <Clock size={12} />
+                                <span>{formatTimeAgo(notif.timestamp)}</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+
+                    <Link
+                      to="/dashboard/notifications"
+                      className="view-all-notif"
+                      onClick={() => setNotifOpen(false)}
+                    >
+                      عرض الكل
+                    </Link>
+                  </div>
                 )}
-                <IoMdNotificationsOutline size={24} />
-                <span>الإشعارات</span>
-              </Link>
+              </div>
 
               {/* Avatar Dropdown */}
               <div className="avatar-dropdown" ref={dropdownRef}>
@@ -166,9 +241,9 @@ const Header: React.FC = () => {
 
                 {isOpen && (
                   <div className="profile-dropdown">
-                    <Link to="/dashboard" className="dropdown-item">
+                    <Link to={dashboardPath} className="dropdown-item">
                       <LayoutDashboard size={20} />
-                      <span>لوحة التحكم</span>
+                      <span>{isAdmin ? "لوحة الإدارة" : "لوحة التحكم"}</span>
                     </Link>
 
                     <Link to={profilePath} className="dropdown-item">
@@ -255,12 +330,12 @@ const Header: React.FC = () => {
           ) : (
             <div className="mobile-auth">
               <Link
-                to="/dashboard"
+                to={dashboardPath}
                 className="dropdown-item"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <LayoutDashboard size={20} />
-                <span>لوحة التحكم</span>
+                <span>{isAdmin ? "لوحة الإدارة" : "لوحة التحكم"}</span>
               </Link>
 
               <Link

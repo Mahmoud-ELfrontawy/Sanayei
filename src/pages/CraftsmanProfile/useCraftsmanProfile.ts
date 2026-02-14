@@ -4,6 +4,8 @@ import { getCraftsmanProfile } from "../../Api/auth/Worker/profileWorker.api";
 import { getTechnicianById } from "../../Api/technicians.api";
 import { getAvatarUrl, getFullImageUrl } from "../../utils/imageUrl";
 
+import { getGovernorates } from "../../Api/serviceRequest/governorates.api";
+
 import {
   type CraftsmanProfileData,
 } from "../../types/craftsman"; 
@@ -26,7 +28,8 @@ export const useCraftsmanProfile = () => {
         let data: any;
         if (isOwnProfile) {
           const res = await getCraftsmanProfile();
-          data = res.data ?? res;
+          // 🛠️ FIX: Check 'craftsman' property first (matches AuthContext logic)
+          data = res.craftsman ?? res.data ?? res;
           if (Array.isArray(data)) {
             data = data.find((item: any) => item.id) || {};
           }
@@ -38,22 +41,28 @@ export const useCraftsmanProfile = () => {
           return;
         }
 
-        // 🔍 DEBUG: Log the raw data to see what we're getting
-        console.log("🔍 Raw API Response:", data);
-        console.log("🔍 Reviews in response:", data.last_reviews);
+        // Mapping API data to UI structure
 
         // ✅ FIX: If reviews are missing in "me" endpoint, fetch them from public profile
         if (isOwnProfile && data.id && (!data.last_reviews || data.last_reviews.length === 0)) {
           try {
-            console.log("🔄 Attempting to fetch reviews from public profile...");
             const publicProfile = await getTechnicianById(data.id);
             if (publicProfile?.last_reviews?.length > 0) {
-              console.log("✅ Fetched reviews from public profile fallback");
               data.last_reviews = publicProfile.last_reviews;
             }
           } catch (e) {
-            console.warn("⚠️ Failed to fetch public profile fallback", e);
+            // Ignore error
           }
+        }
+
+        // ✅ Fetch governorates for mapping
+        let govName = "غير محدد";
+        try {
+          const govs = await getGovernorates();
+          const gov = govs.find(g => g.id.toString() === data.governorate_id?.toString());
+          if (gov) govName = gov.name;
+        } catch (e) {
+          // Fallback to address or "غير محدد"
         }
 
         const avatar = getAvatarUrl(data.profile_photo, data.name);
@@ -67,6 +76,7 @@ export const useCraftsmanProfile = () => {
           rating: Number(data.rating) || 0,
           experienceYears: Number(data.experience_years) || 0,
           address: data.address || "غير محدد",
+          governorate: govName,
           phone: data.phone || "غير متاح",
           about: data.description || "لا يوجد وصف حالياً",
           priceRange: data.price_range,
@@ -88,10 +98,8 @@ export const useCraftsmanProfile = () => {
           })) || []
         };
 
-        console.log("🔍 Mapped reviews:", mappedData.reviews);
         setCraftsman(mappedData);
       } catch (err) {
-        console.error(err);
         setError("حدث خطأ أثناء تحميل البيانات");
       } finally {
         setLoading(false);

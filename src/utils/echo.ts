@@ -1,66 +1,29 @@
-import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
-import axios from 'axios';
-import { BASE_URL } from '../Api/chat.api';
+/**
+ * Echo / Pusher — DISABLED
+ * 
+ * The backend does not have a `broadcasting/auth` route, so all private-channel
+ * subscriptions fail with 404 and spam the console with errors.
+ * 
+ * Real-time is replaced by polling fallback in the chat providers
+ * (contacts every 15 s, messages every 8 s).
+ * 
+ * When the backend adds `broadcasting/auth`, uncomment the full implementation
+ * and remove the stubs below.
+ */
 
-// Make Pusher available globally for Laravel Echo
-(window as any).Pusher = Pusher;
-
-// Enable Pusher logging - useful for debugging
-Pusher.logToConsole = true;
-
-// Echo instance - will be initialized after login
-let echoInstance: Echo<any> | null = null;
-
-export const initializeEcho = (token: string) => {
-    if (echoInstance) return;
-
-    // Remove /api from BASE_URL to get root URL for broadcasting/auth
-    const rootUrl = BASE_URL.replace('/api', '');
-
-    echoInstance = new Echo({
-        broadcaster: 'pusher',
-        key: import.meta.env.VITE_PUSHER_APP_KEY || 'd95fa9401ed812570532',
-        cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER || 'eu',
-        forceTLS: true,
-        authorizer: (channel: any, _options: any) => {
-            return {
-                authorize: (socketId: string, callback: Function) => {
-                    axios.post(`${rootUrl}/broadcasting/auth`, {
-                        socket_id: socketId,
-                        channel_name: channel.name
-                    }, {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            Accept: 'application/json'
-                        }
-                    })
-                    .then(response => {
-                        callback(false, response.data);
-                    })
-                    .catch(error => {
-                        callback(true, error);
-                    });
-                }
-            };
-        }
-    });
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const initializeEcho = (_token: string) => {
+  return null;
 };
 
 export const disconnectEcho = () => {
-    if (echoInstance) {
-        echoInstance.disconnect();
-        echoInstance = null;
-    }
+  // no-op
 };
 
-export const getEcho = (): Echo<any> | null => {
-    return echoInstance;
-};
+export const getEcho = () => null;
 
 export default {
-    initialize: initializeEcho,
-    disconnect: disconnectEcho,
-    getEcho,
+  initialize: initializeEcho,
+  disconnect: disconnectEcho,
+  getEcho,
 };

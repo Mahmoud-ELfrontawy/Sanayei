@@ -36,8 +36,9 @@
 .tabs-container2 {
     display: flex;
     justify-content: flex-start;
-    gap: 10px;
-    margin-bottom: 2rem;
+    gap: 12px;
+    row-gap: 15px; /* Fix vertical overlap */
+    margin-bottom: 2.5rem;
     padding: 5px;
     flex-wrap: wrap;
     width: 100%;
@@ -313,17 +314,72 @@
 }
 
 @media (max-width: 768px) {
-    .card-body {
-        grid-template-columns: 1fr;
+    .orders-section {
+        padding: 40px 15px;
     }
+
+    .orders-title {
+        font-size: 28px;
+        margin-bottom: 25px;
+    }
+
+    .tabs-container2 {
+        gap: 8px;
+        row-gap: 12px;
+        margin-bottom: 1.5rem;
+    }
+
+    .tab-btn {
+        min-width: calc(33.33% - 8px);
+        padding: 8px 10px;
+        font-size: 0.85rem;
+        flex-grow: 1;
+    }
+
+    .card-header {
+        padding: 20px;
+    }
+
+    .service-name {
+        font-size: 22px;
+    }
+
+    .card-body {
+        padding: 20px;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
     .info-grid {
         grid-template-columns: 1fr;
+        gap: 15px;
     }
+
+    .info-label {
+        font-size: 16px;
+    }
+
+    .info-value {
+        font-size: 18px;
+    }
+
     .order-side {
         padding-right: 0;
         border-right: none;
-        border-top: 1px solid #f1f5f9;
-        padding-top: 24px;
+        border-top: 1px dashed #e2e8f0;
+        padding-top: 20px;
+        min-width: 100%;
+    }
+
+    .order-status {
+        font-size: 17px;
+        padding: 10px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .tab-btn {
+        min-width: calc(50% - 8px);
     }
 }
 

@@ -21,7 +21,6 @@ export const register = async (payload: RegisterPayload) => {
   const data = await response.json();
 
   if (!response.ok) {
-    console.log("REGISTER ERROR FULL:", data);
     throw data; // نرجّع الخطأ كامل
   }
 

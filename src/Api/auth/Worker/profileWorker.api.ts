@@ -45,6 +45,7 @@ export interface UpdateCraftsmanPayload {
     current_password?: string;
     password?: string;
     password_confirmation?: string;
+    governorate_id?: string | number;
 }
 
 /* ================= Helpers ================= */
@@ -58,6 +59,7 @@ type TextFieldKey =
     | "gender"
     | "identity_number"
     | "address"
+    | "governorate_id"
     | "craft_type"
     | "description"
     | "price_range"
@@ -124,7 +126,6 @@ export const updateCraftsmanProfile = async (
  _: number, data: UpdateCraftsmanPayload) => {
     const token = localStorage.getItem("token");
     const formData = new FormData();
-    // 🟢 Laravel Method Spoofing: Move to TOP to ensure it's processed first
     formData.append("_method", "PUT");
 
     /* ===== Text fields ===== */
@@ -137,6 +138,7 @@ export const updateCraftsmanProfile = async (
         "gender",
         "identity_number",
         "address",
+        "governorate_id",
         "craft_type",
         "description",
         "price_range",
@@ -150,8 +152,6 @@ export const updateCraftsmanProfile = async (
         if (key === "birth_date") {
             const val = data[key];
             if (val) {
-                // Laravel typically expects YYYY-MM-DD for date fields.
-                // If val is already YYYY-MM-DD from UI, send it as is.
                 formData.append("birth_date", String(val));
             }
         } else {
@@ -208,12 +208,6 @@ export const updateCraftsmanProfile = async (
     }
 
     /* ===== Request ===== */
-
-    // 🕵️ DEBUG: Log what we are sending
-    console.log("🚀 Payload being sent to Craftsman API:");
-    for (const pair of formData.entries()) {
-        console.log(`${pair[0]}:`, pair[1]);
-    }
 
     const res = await axios.post(
         `${API_BASE_URL}/craftsmen/profile/me`,

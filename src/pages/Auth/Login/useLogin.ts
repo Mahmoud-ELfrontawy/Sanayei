@@ -24,8 +24,7 @@ export const useLogin = () => {
             
             if (success) {
                 toast.success("تم تسجيل الدخول بنجاح");
-                // Navigation is handled inside AuthContext.login based on role/backend redirect
-                // But we can add a fallback here if needed, though AuthContext handles it.
+                
             } else {
                 // If login returns false without throwing (shouldn't happen with current implementation but for safety)
                 toast.error("فشل تسجيل الدخول، يرجى التحقق من البيانات");

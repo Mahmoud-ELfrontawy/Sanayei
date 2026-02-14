@@ -2,11 +2,12 @@ import React, { useState, useRef, useMemo, useEffect } from "react";
 import {
     HiPhotograph,
 } from "react-icons/hi";
-import { FaMicrophone, FaPaperPlane, FaUserCircle } from "react-icons/fa";
+import { FaArrowRight, FaMicrophone, FaPaperPlane, FaPlus, FaUserCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { BsEmojiSmile } from "react-icons/bs";
 import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
 import { getFullImageUrl } from "../../utils/imageUrl";
+import { toast } from "react-toastify";
 import "./Chat.css";
 
 /* ================= Types ================= */
@@ -33,6 +34,7 @@ interface Props {
     sendImage?: (file: File) => Promise<void>;
     sendAudio?: (file: Blob) => Promise<void>;
     profileLink?: string;
+    onBack?: () => void;
 }
 
 /* ================= Helpers ================= */
@@ -53,10 +55,14 @@ const SharedChatWindow: React.FC<Props> = ({
     sendImage,
     sendAudio,
     profileLink,
+    onBack,
 }) => {
     const [text, setText] = useState("");
     const [isRecording, setIsRecording] = useState(false);
+    const [recordingDuration, setRecordingDuration] = useState(0);
+    const [isSendingAudio, setIsSendingAudio] = useState(false);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [showMobileActions, setShowMobileActions] = useState(false);
 
     const bottomRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -73,6 +79,18 @@ const SharedChatWindow: React.FC<Props> = ({
                 new Date(b.created_at).getTime()
         );
     }, [messages]);
+
+    /* ===== Timer for Recording ===== */
+    useEffect(() => {
+        let interval: any;
+        if (isRecording) {
+            setRecordingDuration(0);
+            interval = setInterval(() => {
+                setRecordingDuration((prev) => prev + 1);
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [isRecording]);
 
     /* ===== Auto Scroll (داخل الشات فقط) ===== */
     useEffect(() => {
@@ -105,8 +123,13 @@ const SharedChatWindow: React.FC<Props> = ({
     /* ===== إرسال نص ===== */
     const handleSendText = async () => {
         if (!text.trim()) return;
-        await sendMessage(text.trim());
+        const msg = text.trim();
         setText("");
+        try {
+            await sendMessage(msg);
+        } catch {
+            // Error handled by mutation onError — message likely saved
+        }
     };
 
     /* ===== رفع صورة ===== */
@@ -121,39 +144,86 @@ const SharedChatWindow: React.FC<Props> = ({
     };
 
     /* ===== تسجيل صوت ===== */
-    const startRecording = async () => {
+    const getSupportedMimeType = () => {
+        const types = ["audio/webm", "audio/mp4", "audio/ogg", "audio/wav"];
+        for (const type of types) {
+            if (MediaRecorder.isTypeSupported(type)) return type;
+        }
+        return "";
+    };
+
+    const startRecording = async (e: React.MouseEvent | React.TouchEvent) => {
         if (!sendAudio) return;
+
+        // Prevent default browser behaviors on mobile/desktop
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            toast.error("المتصفح لا يدعم التسجيل الصوتي أو ينقصك اتصال آمن (HTTPS)");
+            return;
+        }
 
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const mimeType = getSupportedMimeType();
 
-            const mediaRecorder = new MediaRecorder(stream);
+            if (!mimeType) {
+                toast.error("تنسيق الصوت غير مدعوم في هذا المتصفح");
+                return;
+            }
+
+            const mediaRecorder = new MediaRecorder(stream, { mimeType });
             mediaRecorderRef.current = mediaRecorder;
             audioChunksRef.current = [];
 
-            mediaRecorder.ondataavailable = (e) => {
-                if (e.data.size > 0) audioChunksRef.current.push(e.data);
+            mediaRecorder.ondataavailable = (ev) => {
+                if (ev.data.size > 0) audioChunksRef.current.push(ev.data);
             };
 
             mediaRecorder.onstop = async () => {
-                const audioBlob = new Blob(audioChunksRef.current, {
-                    type: "audio/webm",
-                });
+                const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
 
-                await sendAudio(audioBlob);
+                try {
+                    setIsSendingAudio(true);
+                    await sendAudio(audioBlob);
+                } catch (err) {
+                    console.error("Audio upload failed", err);
+                    toast.error("فشل إرسال التسجيل الصوتي");
+                } finally {
+                    setIsSendingAudio(false);
+                }
                 stream.getTracks().forEach((t) => t.stop());
             };
 
             mediaRecorder.start();
             setIsRecording(true);
-        } catch {
-            console.error("Microphone permission denied");
+        } catch (err) {
+            console.error("Microphone access failed", err);
+            toast.error("يرجى السماح بالوصول إلى المايكروفون");
         }
     };
 
-    const stopRecording = () => {
+    const stopRecording = (e: React.MouseEvent | React.TouchEvent) => {
+        if (!isRecording) return;
+        e.preventDefault();
+        e.stopPropagation();
+
         mediaRecorderRef.current?.stop();
         setIsRecording(false);
+    };
+
+    const cancelRecording = () => {
+        if (!isRecording) return;
+        mediaRecorderRef.current!.onstop = () => { }; // Ignore the stop event
+        mediaRecorderRef.current?.stop();
+        setIsRecording(false);
+    };
+
+    const formatDuration = (seconds: number) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs.toString().padStart(2, "0")}`;
     };
 
     /* ===== Emoji Handler ===== */
@@ -177,29 +247,37 @@ const SharedChatWindow: React.FC<Props> = ({
         <div className="chat-window">
             {/* ===== Header ===== */}
             <header className="chat-window-header">
-                {profileLink ? (
-                    <Link to={profileLink} className="chat-header-link">
-                        <div className="avatar-wrapper-chat">
-                            <img
-                                src={avatarSrc}
-                                alt={activeChat.name}
-                                className="contact-avatar"
-                            />
-                        </div>
-                        <h4>{activeChat.name}</h4>
-                    </Link>
-                ) : (
-                    <>
-                        <div className="avatar-wrapper-chat">
-                            <img
-                                src={avatarSrc}
-                                alt={activeChat.name}
-                                className="contact-avatar"
-                            />
-                        </div>
-                        <h4>{activeChat.name}</h4>
-                    </>
-                )}
+                <div className="chat-header-user-info">
+                    {onBack && (
+                        <button onClick={onBack} className="chat-back-btn" title="العودة للقائمة">
+                            <FaArrowRight />
+                        </button>
+                    )}
+
+                    {profileLink ? (
+                        <Link to={profileLink} className="chat-header-link">
+                            <div className="avatar-wrapper-chat">
+                                <img
+                                    src={avatarSrc}
+                                    alt={activeChat.name}
+                                    className="contact-avatar"
+                                />
+                            </div>
+                            <h4>{activeChat.name}</h4>
+                        </Link>
+                    ) : (
+                        <>
+                            <div className="avatar-wrapper-chat">
+                                <img
+                                    src={avatarSrc}
+                                    alt={activeChat.name}
+                                    className="contact-avatar"
+                                />
+                            </div>
+                            <h4>{activeChat.name}</h4>
+                        </>
+                    )}
+                </div>
 
                 {/* Dedicated Profile Link Button */}
                 {profileLink && (
@@ -247,7 +325,16 @@ const SharedChatWindow: React.FC<Props> = ({
             </div>
 
             {/* ===== Input Area ===== */}
-            <div className="chat-input-area">
+            <div className={`chat-input-area ${showMobileActions ? "actions-expanded" : ""}`}>
+
+                {/* زر الإضافة للموبايل */}
+                <button
+                    className={`mobile-actions-toggle ${showMobileActions ? "active" : ""}`}
+                    onClick={() => setShowMobileActions(!showMobileActions)}
+                    title="المزيد من الخيارات"
+                >
+                    <FaPlus />
+                </button>
 
                 {/* أزرار جانبية */}
                 <div className="chat-actions">
@@ -268,11 +355,12 @@ const SharedChatWindow: React.FC<Props> = ({
                     </button>
 
                     <button
-                        onMouseDown={startRecording}
-                        onMouseUp={stopRecording}
-                        onTouchStart={startRecording}
-                        onTouchEnd={stopRecording}
-                        className={`icon-btn ${isRecording ? "recording" : ""}`}
+                        onMouseDown={(e) => startRecording(e)}
+                        onMouseUp={(e) => stopRecording(e)}
+                        onMouseLeave={(e) => isRecording && stopRecording(e)}
+                        onTouchStart={(e) => startRecording(e)}
+                        onTouchEnd={(e) => stopRecording(e)}
+                        className={`icon-btn mic-btn-feedback ${isRecording ? "recording" : ""}`}
                         title="تسجيل صوتي"
                     >
                         <FaMicrophone />
@@ -301,27 +389,35 @@ const SharedChatWindow: React.FC<Props> = ({
 
                 {/* النص */}
                 <div className="chat-input-wrapper">
-                    <input
-                        type="text"
-                        value={text}
-                        onChange={(e) => setText(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter" && !e.shiftKey) {
-                                e.preventDefault();
-                                handleSendText();
-                            }
-                        }}
-                        placeholder="اكتب رسالتك هنا..."
-                        className="chat-input"
-                    />
-
-                    {/* <button
-                        onClick={() => setShowEmojis((p) => !p)}
-                        className="emoji-btn"
-                        title="إيموجي"
-                    >
-                        <HiEmojiHappy />
-                    </button> */}
+                    {isRecording ? (
+                        <div className="recording-status-bar">
+                            <span className="recording-dot"></span>
+                            <span className="recording-text">جاري التسجيل...</span>
+                            <span className="recording-timer">{formatDuration(recordingDuration)}</span>
+                            <button className="cancel-recording-btn" onClick={cancelRecording}>
+                                إلغاء
+                            </button>
+                        </div>
+                    ) : isSendingAudio ? (
+                        <div className="sending-audio-status">
+                            <span className="spinner-mini"></span>
+                            جاري إرسال التسجيل...
+                        </div>
+                    ) : (
+                        <input
+                            type="text"
+                            value={text}
+                            onChange={(e) => setText(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" && !e.shiftKey) {
+                                    e.preventDefault();
+                                    handleSendText();
+                                }
+                            }}
+                            placeholder="اكتب رسالتك هنا..."
+                            className="chat-input"
+                        />
+                    )}
                 </div>
 
                 {/* إرسال */}

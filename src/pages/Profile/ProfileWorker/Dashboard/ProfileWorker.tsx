@@ -12,6 +12,7 @@ import {
 import { useAuth } from "../../../../hooks/useAuth";
 import { getAvatarUrl } from "../../../../utils/imageUrl";
 import { toUiDate } from "../../../../utils/dateApiHelper";
+import { getGovernorates } from "../../../../Api/serviceRequest/governorates.api";
 import FormSkeleton from "../../base/FormSkeleton";
 
 /* ================= Types ================= */
@@ -26,6 +27,7 @@ interface CraftsmanApiResponse {
     birth_date?: string;
     identity_number?: string;
     address?: string;
+    governorate_id?: string | number;
     latitude?: number | string;
     longitude?: number | string;
     profile_photo?: string;
@@ -55,6 +57,7 @@ interface CraftsmanState {
 
     // الموقع
     address?: string;
+    governorate_id?: string | number;
     latitude?: number;
     longitude?: number;
 
@@ -89,12 +92,14 @@ const ProfileWorker = () => {
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(true);
     const [imageFile, setImageFile] = useState<File | null>(null);
+    const [governorates, setGovernorates] = useState<{ id: number; name: string }[]>([]);
 
     const [craftsman, setCraftsman] = useState<CraftsmanState>({
         name: "",
         email: "",
         phone: "",
         description: "",
+        governorate_id: "",
         latitude: DEFAULT_LOCATION.latitude,
         longitude: DEFAULT_LOCATION.longitude,
     });
@@ -109,8 +114,13 @@ const ProfileWorker = () => {
 
         const fetchProfile = async () => {
             try {
+                // Fetch Governorates
+                const govs = await getGovernorates();
+                setGovernorates(govs);
+
                 const res = await getCraftsmanProfile();
-                let data: CraftsmanApiResponse | object = res.data ?? res;
+                // 🛠️ FIX: Prioritize 'craftsman' property as seen in other responses
+                let data: CraftsmanApiResponse | object = res.craftsman ?? res.data ?? res;
 
                 if (Array.isArray(data)) {
                     data = (data as CraftsmanApiResponse[]).find((item) => item.id) || {};
@@ -134,7 +144,7 @@ const ProfileWorker = () => {
                     longitude: Number(d.longitude) || DEFAULT_LOCATION.longitude,
 
                     avatar: getAvatarUrl(d.profile_photo, d.name),
-
+                    governorate_id: d.governorate_id,
                     description: d.description ?? undefined,
                     experience_years: d.experience_years ? Number(d.experience_years) : undefined,
 
@@ -178,6 +188,7 @@ const ProfileWorker = () => {
                 experience_years: craftsman.experience_years,
                 price_range: craftsman.price_range,
                 work_days: craftsman.work_days,
+                governorate_id: craftsman.governorate_id,
 
                 profile_photo: imageFile,
                 work_photos: craftsman.new_work_photos,
@@ -186,7 +197,6 @@ const ProfileWorker = () => {
 
             // ✅ الخطوة الحيوية: حذف الصور يدوياً عبر الـ API لضمان الحذف من السيرفر
             if (craftsman.delete_work_photos && craftsman.delete_work_photos.length > 0) {
-                console.log("🗑️ Deleting photos via API:", craftsman.delete_work_photos);
                 await Promise.all(
                     craftsman.delete_work_photos.map(path => deleteWorkPhoto(path))
                 );
@@ -199,7 +209,6 @@ const ProfileWorker = () => {
             window.location.reload();
         } catch (error: unknown) {
             const err = error as { response?: { data?: { message?: string } } };
-            console.error("Update Error Details:", err.response?.data);
             toast.error(err.response?.data?.message || "فشل حفظ البيانات ❌");
         } finally {
             setLoading(false);
@@ -241,6 +250,7 @@ const ProfileWorker = () => {
             onSave={handleSave}
             onDelete={handleDeleteAccount}
             loading={loading}
+            governorates={governorates}
         />
     );
 };

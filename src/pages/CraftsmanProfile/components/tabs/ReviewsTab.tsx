@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { FaStar } from "react-icons/fa6";
+import { FaStar, FaQuoteRight } from "react-icons/fa6";
 
-import defaultUserImg from "../../../../assets/images/image5.png"; // تأكد من المسار
-
+import defaultUserImg from "../../../../assets/images/image5.png";
 
 import type { Review } from "../../../../types/craftsman";
 
@@ -19,10 +18,12 @@ const ReviewsTab: React.FC<Props> = ({ reviews }) => {
   // التجاوب
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setItemsPerPage(1); // سلايدر للموبايل
+      if (window.innerWidth < 1024) {
+        setItemsPerPage(2);
+      } else if (window.innerWidth < 768) {
+        setItemsPerPage(1);
       } else {
-        setItemsPerPage(6); // صفين للديسك توب
+        setItemsPerPage(6);
       }
     };
     handleResize();
@@ -58,10 +59,15 @@ const ReviewsTab: React.FC<Props> = ({ reviews }) => {
       setCurrentPage((prev) => prev + 1);
   };
 
-  if (allReviews.length === 0) return <p>لا توجد تقييمات بعد.</p>;
+  if (allReviews.length === 0) return <p className="no-reviews-msg">لا توجد تقييمات بعد.</p>;
 
   return (
-    <div>
+    <div className="reviews-tab-wrapper">
+      <div className="reviews-tab-header">
+        <h3 className="reviews-tab-title">مراجعات العملاء</h3>
+        <span className="reviews-count">({allReviews.length} تقييم)</span>
+      </div>
+
       <div
         className="reviews-grid fade-enter"
         key={currentPage}
@@ -71,32 +77,37 @@ const ReviewsTab: React.FC<Props> = ({ reviews }) => {
       >
         {currentReviews.map((review) => (
           <div key={review.id} className="review-card">
+            <div className="review-quote-icon">
+              <FaQuoteRight />
+            </div>
+
             <div className="reviewer-info">
-              <img
-                src={review.clientImage || defaultUserImg}
-                alt="User"
-                className="reviewer-img"
-              />
-              <div>
-                <div className="reviewer-name">{review.clientName}</div>
-                <div
-                  style={{
-                    display: "flex",
-                    color: "#FFC107",
-                    fontSize: "12px",
-                    marginTop: "4px",
-                  }}
-                >
+              <div className="reviewer-avatar">
+                <img
+                  src={review.clientImage || defaultUserImg}
+                  alt={review.clientName}
+                  className="reviewer-img"
+                />
+              </div>
+              <div className="reviewer-meta">
+                <h4 className="reviewer-name">{review.clientName}</h4>
+                <div className="review-stars">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <FaStar
                       key={i}
-                      color={i < review.rating ? "#FF8031" : "#ddd"}
+                      color={i < review.rating ? "#FF8031" : "#e4e5e9"}
                     />
                   ))}
                 </div>
               </div>
+              {review.date && (
+                <span className="review-date">{review.date}</span>
+              )}
             </div>
-            <p className="review-text">{review.comment}</p>
+
+            <div className="review-content">
+              <p className="review-text">{review.comment}</p>
+            </div>
           </div>
         ))}
       </div>

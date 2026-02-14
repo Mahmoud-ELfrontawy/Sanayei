@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import * as chatApi from "../Api/chat.api";
 import { useAuth } from "../hooks/useAuth";
 import { getFullImageUrl } from "../utils/imageUrl";
-import { getEcho } from "../utils/echo";
 
 /* ================= Types ================= */
 
@@ -45,7 +44,7 @@ interface Ctx {
     contacts: ChatContact[];
     activeChat: ChatContact | null;
     messages: ChatMessage[];
-    setActiveChat: (contact: ChatContact) => void;
+    setActiveChat: (contact: ChatContact | null) => void;
     sendMessage: (text: string) => Promise<void>;
     sendImage: (file: File) => Promise<void>;
     sendAudio: (blob: Blob) => Promise<void>;
@@ -65,6 +64,7 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
     const contactsQuery = useQuery({
         queryKey: ["user-chats", user?.id],
         enabled: !!user?.id,
+        refetchInterval: 15000, // Reduced pressure
         queryFn: async (): Promise<ChatContact[]> => {
             const res: UserChatsResponse = await chatApi.getUserChats(user!.id);
 
@@ -82,6 +82,7 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
     const messagesQuery = useQuery({
         queryKey: ["user-messages", activeChat?.id, user?.id],
         enabled: !!activeChat && !!user?.id,
+        refetchInterval: 10000, // Reduced pressure
         queryFn: async (): Promise<ChatMessage[]> => {
             const res: MessagesResponse = await chatApi.getMessages(user!.id, activeChat!.id);
             const raw = res.data?.data ?? [];
@@ -99,7 +100,7 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
         mutationFn: async (text: string) => {
             await chatApi.sendChatMessage(user!.id, "user", activeChat!.id, "worker", text);
         },
-        onSuccess: () => {
+        onSettled: () => {
             qc.invalidateQueries({ queryKey: ["user-messages", activeChat?.id, user?.id] });
             qc.invalidateQueries({ queryKey: ["user-chats", user?.id] });
         },
@@ -109,8 +110,9 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
         mutationFn: async (file: File) => {
             await chatApi.sendChatImage(user!.id, "user", activeChat!.id, "worker", file);
         },
-        onSuccess: () => {
+        onSettled: () => {
             qc.invalidateQueries({ queryKey: ["user-messages", activeChat?.id, user?.id] });
+            qc.invalidateQueries({ queryKey: ["user-chats", user?.id] });
         },
     });
 
@@ -118,8 +120,9 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
         mutationFn: async (blob: Blob) => {
             await chatApi.sendChatAudio(user!.id, "user", activeChat!.id, "worker", blob);
         },
-        onSuccess: () => {
+        onSettled: () => {
             qc.invalidateQueries({ queryKey: ["user-messages", activeChat?.id, user?.id] });
+            qc.invalidateQueries({ queryKey: ["user-chats", user?.id] });
         },
     });
 
@@ -139,38 +142,6 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
             qc.invalidateQueries({ queryKey: ["user-chats", user.id] });
         });
     }, [activeChat, user?.id, qc]);
-
-    /* ================= Real-time Updates ================= */
-
-    useEffect(() => {
-        if (!user?.id || !activeChat?.id) return;
-
-        const echo = getEcho();
-        if (!echo) return;
-
-        // Listen on public channel: chat.{sender}.{receiver}
-        // We need to listen on both directions
-        const channel1 = echo.channel(`chat.${user.id}.${activeChat.id}`);
-        const channel2 = echo.channel(`chat.${activeChat.id}.${user.id}`);
-
-        const handleMessage = (event: any) => {
-            console.log('📨 New message received (User):', event);
-
-            // Refresh messages in current chat
-            qc.invalidateQueries({ queryKey: ["user-messages", activeChat.id, user.id] });
-
-            // Refresh chat list to update unread counts
-            qc.invalidateQueries({ queryKey: ["user-chats", user.id] });
-        };
-
-        channel1.listen('.message.sent', handleMessage);
-        channel2.listen('.message.sent', handleMessage);
-
-        return () => {
-            channel1.stopListening('.message.sent');
-            channel2.stopListening('.message.sent');
-        };
-    }, [user?.id, activeChat?.id, qc]);
 
     /* ================= Context Value ================= */
 

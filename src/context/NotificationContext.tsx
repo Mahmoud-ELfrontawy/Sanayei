@@ -2,14 +2,18 @@ import React, { createContext, useContext, useState, useEffect, useRef } from "r
 import type { ReactNode } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { toast } from "react-toastify";
-import { getMyServiceRequests, getIncomingServiceRequests } from "../Api/serviceRequest/serviceRequests.api";
+import { getMyServiceRequests, getIncomingServiceRequests, updateServiceRequestStatus } from "../Api/serviceRequest/serviceRequests.api";
 import { getEcho } from "../utils/echo";
+import NotificationToast from "../components/ui/NotificationToast";
+import "../assets/styles/notifications.css";
+
+const NOTIF_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3";
 
 export interface Notification {
     id: string;
     title: string;
     message: string;
-    type: "order_request" | "order_status";
+    type: "order_request" | "order_status" | "chat";
     status: "unread" | "read";
     timestamp: string;
     orderId: number;
@@ -39,6 +43,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     const prevRequestsRef = useRef<any[]>([]);
     const isFirstFetch = useRef(true);
     const lastNotifiedId = useRef<string | null>(null);
+    const addNotificationRef = useRef<any>(null);
 
     /* ================= LocalStorage Sync ================= */
 
@@ -57,20 +62,17 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         localStorage.setItem("app_notifications", JSON.stringify(allNotifications));
     }, [allNotifications]);
 
-    /* ================= Add Notification ================= */
+    /* ================= Helpers ================= */
 
-    const addNotification = React.useCallback((notif: Omit<Notification, "id" | "status" | "timestamp">) => {
-        const newNotif: Notification = {
-            ...notif,
-            id: Math.random().toString(36).substring(2, 9),
-            status: "unread",
-            timestamp: new Date().toISOString(),
-        };
-
-        setAllNotifications(prev => [newNotif, ...prev]);
+    const playNotificationSound = React.useCallback(() => {
+        try {
+            const audio = new Audio(NOTIF_SOUND_URL);
+            audio.volume = 0.5;
+            audio.play();
+        } catch (err) {
+            console.warn("🔇 Notification sound failed to play:", err);
+        }
     }, []);
-
-    /* ================= Polling Fallback ================= */
 
     const fetchServiceStatus = React.useCallback(async () => {
         if (!user || !userType) return;
@@ -98,7 +100,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
                 const prev = prevRequestsRef.current.find(p => String(p.id) === String(current.id));
 
                 if (!prev && userType === "craftsman") {
-                    addNotification({
+                    addNotificationRef.current?.({
                         title: "طلب خدمة جديد",
                         message: `لديك طلب خدمة جديد من ${current.user?.name || "عميل"}`,
                         type: "order_request",
@@ -107,35 +109,118 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
                         recipientType: "craftsman",
                     });
                 } else if (prev && prev.status !== current.status) {
-                    const statusMap: Record<string, string> = {
-                        accepted: "مقبول",
-                        rejected: "مرفوض",
-                        completed: "مكتمل",
-                        pending: "قيد الانتظار",
-                    };
+                    // ONLY Users (Clients) should get status update notifications
+                    if (userType !== "craftsman") {
+                        const statusMap: Record<string, string> = {
+                            accepted: "مقبول",
+                            rejected: "مرفوض",
+                            completed: "مكتمل",
+                            pending: "قيد الانتظار",
+                        };
 
-                    addNotification({
-                        title: "تحديث طلب الخدمة",
-                        message: `تم تغيير حالة طلبك رقم #${current.id} إلى ${statusMap[current.status] || current.status}`,
-                        type: "order_status",
-                        orderId: current.id,
-                        recipientId: user.id,
-                        recipientType: userType as any,
-                    });
+                        let customMessage = `تم تغيير حالة طلبك رقم #${current.id} إلى ${statusMap[current.status] || current.status}`;
+
+                        if (current.status === "completed") {
+                            customMessage = `تم إتمام الخدمة بنجاح، يمكنك الآن تقييم الصنايعي.`;
+                        }
+
+                        addNotificationRef.current?.({
+                            title: "تحديث طلب الخدمة",
+                            message: customMessage,
+                            type: "order_status",
+                            orderId: current.id,
+                            recipientId: user.id,
+                            recipientType: userType as any,
+                        });
+                    }
                 }
             });
 
             prevRequestsRef.current = currentRequests;
         } catch {
-            // silent fail (fallback polling only)
+            // silent fail
         }
-    }, [user, userType, addNotification]);
+    }, [user, userType]);
+
+    const handleAction = React.useCallback(async (orderId: number, status: "accepted" | "rejected") => {
+        try {
+            const actionText = status === "accepted" ? "قبول" : "رفض";
+            console.log(`🚀 Professional Notif: ${actionText} request #${orderId}`);
+
+            await updateServiceRequestStatus(orderId, status);
+            toast.success(`تم ${actionText} الطلب بنجاح`);
+
+            // Refresh local data
+            fetchServiceStatus();
+        } catch (err: any) {
+            toast.error(err.message || "حدث خطأ أثناء تنفيذ العملية");
+        }
+    }, [fetchServiceStatus]);
+
+    /* ================= Add Notification ================= */
+
+    const addNotification = React.useCallback((notif: Omit<Notification, "id" | "status" | "timestamp">) => {
+        // STRICT GUARD: Match recipientType with current userType
+        // Backends might broadcast to a channel but the payload might be generic.
+        // We filter here to be 100% sure.
+        const currentUserType = (userType as string) === "company" ? "user" : userType;
+        const targetRecipientType = (notif.recipientType as string) === "company" ? "user" : notif.recipientType;
+
+        if (currentUserType !== targetRecipientType) {
+            console.log(`🛡️ Guard: Blocked notification for ${notif.recipientType} as current user is a ${userType}`);
+            return;
+        }
+
+        const newNotif: Notification = {
+            ...notif,
+            id: Math.random().toString(36).substring(2, 9),
+            status: "unread",
+            timestamp: new Date().toISOString(),
+        };
+
+        setAllNotifications(prev => [newNotif, ...prev]);
+        playNotificationSound();
+
+        // Show toast
+        if (notif.type === "order_request" && userType === "craftsman") {
+            toast(
+                ({ closeToast }) => (
+                    <NotificationToast
+                        title={notif.title}
+                        message={notif.message}
+                        type={notif.type as any}
+                        onAccept={() => handleAction(notif.orderId, "accepted")}
+                        onReject={() => handleAction(notif.orderId, "rejected")}
+                        closeToast={closeToast}
+                    />
+                ),
+                {
+                    position: "top-right",
+                    autoClose: 10000,
+                }
+            );
+        } else if (notif.type !== "chat") {
+            // Standard toasts for non-chat, non-request notifications
+            toast.info(`${notif.title}: ${notif.message}`, {
+                position: "top-right",
+                autoClose: 7000,
+            });
+        }
+    }, [playNotificationSound, handleAction, userType]);
+
+    // Keep the ref in sync
+    useEffect(() => {
+        addNotificationRef.current = addNotification;
+    }, [addNotification]);
+
+    /* ================= Polling Fallback ================= */
 
     useEffect(() => {
         if (!user) return;
 
         fetchServiceStatus();
-        const intervalId = setInterval(fetchServiceStatus, 300000);
+        // Reduced polling interval to 30 seconds as a robust fallback
+        const intervalId = setInterval(fetchServiceStatus, 30000);
 
         return () => clearInterval(intervalId);
     }, [user, fetchServiceStatus]);
@@ -145,67 +230,157 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     useEffect(() => {
         if (!user || !userType) return;
 
-        const echo = getEcho();
+        const echo = getEcho() as any;
         if (!echo) return;
 
         const notifType = userType === "craftsman" ? "worker" : "user";
-        const channel = echo.channel(`notifications.${notifType}.${user.id}`);
+        const primaryChannelName = `notifications.${notifType}.${user.id}`;
 
-        channel.listen(".new-message", (event: any) => {
+        console.log(`🔌 Subscribing to primary channel: ${primaryChannelName}`);
+        const primaryChannel = echo.private(primaryChannelName);
+
+        // EXTRA: Fallback channels
+        let fallbackChannel: any = null;
+        let clientFallbackChannel: any = null;
+
+        if (userType === "craftsman") {
+            const fallbackChannelName = `notifications.craftsman.${user.id}`;
+            console.log(`🔌 Subscribing to fallback channel: ${fallbackChannelName}`);
+            fallbackChannel = echo.private(fallbackChannelName);
+        } else if (userType === "user" || userType === "company") {
+            // Some backends use 'client' instead of 'user'
+            const clientFallbackChannelName = `notifications.client.${user.id}`;
+            console.log(`🔌 Subscribing to user fallback channel: ${clientFallbackChannelName}`);
+            clientFallbackChannel = echo.private(clientFallbackChannelName);
+        }
+
+        const handleNewMessage = (event: any) => {
+            console.log('📨 Event Received: .new-message', event);
             addNotification({
                 title: "رسالة جديدة",
-                message: event.notification_text || `رسالة جديدة من ${event.sender_name}`,
+                message: event.notification_text || (event.sender_name ? `رسالة جديدة من ${event.sender_name}` : "لديك رسالة جديدة"),
+                type: "chat",
+                orderId: event.message_id || event.id || 0,
+                recipientId: user.id,
+                recipientType: userType as any, // CHAT: Always for current user
+            });
+        };
+
+        const handleRequestCreated = (event: any) => {
+            console.log('👷 Event Received (Service Request):', event);
+            addNotification({
+                title: "طلب خدمة جديد",
+                message: event.notification_text || `طلب خدمة جديد من ${event.user_name || "عميل"}`,
                 type: "order_request",
-                orderId: event.message_id,
+                orderId: event.request_id || event.id,
+                recipientId: user.id,
+                recipientType: "craftsman",
+            });
+        };
+
+        const handleRequestUpdated = (event: any) => {
+            console.log('✅ Event Received (Status Update):', event);
+
+            // ONLY Users (Clients) should get status update notifications
+            if (userType === "craftsman") return;
+
+            const statusMap: Record<string, string> = {
+                accepted: "مقبول",
+                rejected: "مرفوض",
+                completed: "مكتمل",
+                pending: "قيد الانتظار",
+            };
+
+            const status = event.new_status || event.status;
+            const arabicStatus = event.new_status_arabic || statusMap[status] || status;
+
+            let customMessage = event.notification_text || `تم تحديث حالة طلبك إلى ${arabicStatus}`;
+
+            if (status === "completed") {
+                customMessage = "تم إتمام الخدمة بنجاح، يمكنك الآن تقييم الصنايعي.";
+            }
+
+            addNotification({
+                title: "تحديث طلب الخدمة",
+                message: customMessage,
+                type: "order_status",
+                orderId: event.request_id || event.id,
                 recipientId: user.id,
                 recipientType: userType as any,
             });
+        };
+
+        const handleNewReview = (event: any) => {
+            console.log('🌟 Event Received: .new-review', event);
+            addNotification({
+                title: "تقييم جديد",
+                message: event.notification_text || `تقييم جديد: ${event.rating} نجوم`,
+                type: "order_status",
+                orderId: event.review_id || event.id,
+                recipientId: user.id,
+                recipientType: "craftsman",
+            });
+        };
+
+        // Bind listeners to all active notification channels
+        const activeChannels = [primaryChannel, fallbackChannel, clientFallbackChannel].filter(Boolean);
+
+        activeChannels.forEach(c => {
+            // Chat Messages
+            ['.new-message', 'NewMessage', '.NewMessage', 'App\\Events\\NewMessage'].forEach(evt => {
+                c.listen(evt, handleNewMessage);
+            });
+
+            if (userType === "craftsman") {
+                // Service Created
+                ['.service-request.created', 'ServiceRequestCreated', '.ServiceRequestCreated', '.new-service-request'].forEach(evt => {
+                    c.listen(evt, handleRequestCreated);
+                });
+
+                // Reviews
+                ['.new-review', 'NewReview', 'App\\Events\\NewReview'].forEach(evt => {
+                    c.listen(evt, handleNewReview);
+                });
+
+            } else {
+                // Service Updated
+                ['.service-request.updated', 'ServiceRequestUpdated', '.ServiceRequestUpdated', '.service-status-updated', '.request-status-updated'].forEach(evt => {
+                    c.listen(evt, handleRequestUpdated);
+                });
+
+                // Generic notification event
+                c.listen(".Illuminate\\Notifications\\Events\\BroadcastNotificationCreated", (e: any) => {
+                    console.log('🔔 Notification Event:', e);
+                    if (e.type?.includes('ServiceRequest') || e.message?.includes('طلب')) {
+                        addNotification({
+                            title: e.title || "تنبيه جديد",
+                            message: e.message || e.notification_text || "تم تحديث حالة طلبك",
+                            type: "order_status",
+                            orderId: e.request_id || e.id || 0,
+                            recipientId: user.id,
+                            recipientType: userType as any,
+                        });
+                    }
+                });
+            }
         });
 
-        if (userType === "craftsman") {
-            channel.listen(".service-request.created", (event: any) => {
-                addNotification({
-                    title: "طلب خدمة جديد",
-                    message: event.notification_text || `طلب خدمة جديد من ${event.user_name}`,
-                    type: "order_request",
-                    orderId: event.request_id,
-                    recipientId: user.id,
-                    recipientType: "craftsman",
-                });
-            });
-        }
-
-        if (userType === "user" || userType === "company") {
-            channel.listen(".service-request.updated", (event: any) => {
-                addNotification({
-                    title: "تحديث طلب الخدمة",
-                    message: event.notification_text || `تم تحديث حالة طلبك إلى ${event.new_status_arabic}`,
-                    type: "order_status",
-                    orderId: event.request_id,
-                    recipientId: user.id,
-                    recipientType: userType as any,
-                });
-            });
-        }
-
-        if (userType === "craftsman") {
-            channel.listen(".new-review", (event: any) => {
-                addNotification({
-                    title: "تقييم جديد",
-                    message: event.notification_text || `تقييم جديد: ${event.rating} نجوم`,
-                    type: "order_status",
-                    orderId: event.review_id,
-                    recipientId: user.id,
-                    recipientType: "craftsman",
-                });
-            });
-        }
-
         return () => {
-            channel.stopListening(".new-message");
-            channel.stopListening(".service-request.created");
-            channel.stopListening(".service-request.updated");
-            channel.stopListening(".new-review");
+            console.log(`🔌 Leaving channels for: ${user.id}`);
+            activeChannels.forEach(c => {
+                ['.new-message', 'NewMessage', '.NewMessage', 'App\\Events\\NewMessage'].forEach(evt => c.stopListening(evt));
+
+                if (userType === "craftsman") {
+                    ['.service-request.created', 'ServiceRequestCreated', '.ServiceRequestCreated', '.new-service-request'].forEach(evt => c.stopListening(evt));
+                    ['.new-review', 'NewReview', 'App\\Events\\NewReview'].forEach(evt => c.stopListening(evt));
+                } else {
+                    ['.service-request.updated', 'ServiceRequestUpdated', '.ServiceRequestUpdated', '.service-status-updated', '.request-status-updated'].forEach(evt => c.stopListening(evt));
+                    c.stopListening(".Illuminate\\Notifications\\Events\\BroadcastNotificationCreated");
+                }
+            });
+            echo.leave(primaryChannelName);
+            if (fallbackChannel) echo.leave(`notifications.craftsman.${user.id}`);
+            if (clientFallbackChannel) echo.leave(`notifications.client.${user.id}`);
         };
     }, [user?.id, userType, addNotification]);
 
@@ -221,20 +396,43 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         );
     }, [allNotifications, user, userType]);
 
+    // Track unread messages for toast notification
+    const [unreadMessagesSinceOpen, setUnreadMessagesSinceOpen] = useState(0);
+
+    /* ================= Effects ================= */
+
     useEffect(() => {
         if (!userNotifications.length) return;
 
         const newest = userNotifications[0];
-
         if (newest.status === "unread" && newest.id !== lastNotifiedId.current) {
-            toast.info(`${newest.title}: ${newest.message}`, {
-                position: "top-right",
-                autoClose: 7000,
-            });
-
             lastNotifiedId.current = newest.id;
+
+            // Group multiple message notifications
+            if (newest.title === "رسالة جديدة") {
+                playNotificationSound();
+                setUnreadMessagesSinceOpen(prev => {
+                    const next = prev + 1;
+                    const toastId = "chat-notification-toast";
+
+                    if (next > 1) {
+                        toast.info(`لديك ${next} رسائل جديدة`, {
+                            toastId,
+                            position: "top-right",
+                            autoClose: 7000,
+                        });
+                    } else {
+                        toast.info(`${newest.title}: ${newest.message}`, {
+                            toastId,
+                            position: "top-right",
+                            autoClose: 7000,
+                        });
+                    }
+                    return next;
+                });
+            }
         }
-    }, [userNotifications]);
+    }, [userNotifications, playNotificationSound]);
 
     const unreadCount = userNotifications.filter(n => n.status === "unread").length;
 

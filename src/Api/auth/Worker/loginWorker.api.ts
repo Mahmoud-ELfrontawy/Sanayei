@@ -1,8 +1,7 @@
 import axios from "axios";
 
 export interface LoginPayload {
-  email?: string;
-  phone?: string;
+  login: string;
   password: string;
 }
 

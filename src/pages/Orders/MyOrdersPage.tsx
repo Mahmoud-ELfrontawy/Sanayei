@@ -88,7 +88,6 @@ function MyOrdersPage() {
                 setOrders(finalOrders);
                 setError(null);
             } catch (err: any) {
-                console.error("Error fetching orders:", err);
                 setError(err.message || "تعذر جلب قائمة الطلبات");
                 toast.error("فشل تحميل الطلبات");
             } finally {
@@ -314,7 +313,7 @@ function MyOrdersPage() {
                                     onClick={() => {
                                         setSelectedOrder({
                                             id: order.id,
-                                            craftsmanId: order.craftsman_id,
+                                            craftsmanId: order.craftsman_id || order.craftsman?.id,
                                             craftsmanName: order.craftsman?.name || "الصنايعي"
                                         });
                                         setShowReviewModal(true);

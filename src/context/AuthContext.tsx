@@ -1,8 +1,10 @@
 import { createContext, useEffect, useState, useContext } from "react";
 import { getMyProfile } from "../Api/user/profile.api";
 import { getCraftsmanProfile } from "../Api/auth/Worker/profileWorker.api";
+// import { getAdminProfile } from "../Api/admin/admin.api";
 import { getFullImageUrl } from "../utils/imageUrl";
 import { initializeEcho, disconnectEcho } from "../utils/echo";
+import { toast } from "react-toastify";
 import axios from 'axios';
 import { BASE_URL } from '../Api/chat.api';
 
@@ -31,14 +33,14 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
-    const [userTypeState, setUserTypeState] = useState<"user" | "craftsman" | "company" | null>(
+    const [userTypeState, setUserTypeState] = useState<"user" | "craftsman" | "company" | "admin" | null>(
         localStorage.getItem("userType") as any
     );
     const [loading, setLoading] = useState(true);
 
     const fetchUser = async () => {
         const token = localStorage.getItem("token");
-        const storedType = localStorage.getItem("userType") as "user" | "craftsman" | "company";
+        const storedType = localStorage.getItem("userType") as "user" | "craftsman" | "company" | "admin";
 
         if (!token) {
             setUser(null);
@@ -52,38 +54,67 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             // 🔍 STRONGER TYPE DETECTION: Logic prioritized by stored type
             if (storedType === "craftsman") {
                 const res = await getCraftsmanProfile();
-                const c = res?.data?.data ?? res?.data ?? res;
-                const finalAvatarUrl = c.profile_photo ? getFullImageUrl(c.profile_photo) : undefined;
-                userData = { id: c.id, name: c.name, email: c.email, avatar: finalAvatarUrl };
-                setUserTypeState("craftsman");
+                // 🛠️ FIX: Check 'craftsman' property directly on the response object (res IS the data)
+                const c = res?.craftsman ?? res?.data ?? res;
+                // Ensure ID exists before setting
+                if (c?.id) {
+                    const finalAvatarUrl = c.profile_photo ? getFullImageUrl(c.profile_photo) : undefined;
+                    userData = { id: c.id, name: c.name, email: c.email, avatar: finalAvatarUrl };
+                    setUserTypeState("craftsman");
+                }
             } else if (storedType === "company") {
                 const response = await getMyProfile();
                 const u = response.data;
-                userData = { id: u.id, name: u.name, email: u.email, avatar: getFullImageUrl(u.profile_image_url) };
-                setUserTypeState("company");
+                if (u?.id) {
+                    userData = { id: u.id, name: u.name, email: u.email, avatar: getFullImageUrl(u.profile_image_url) };
+                    setUserTypeState("company");
+                }
+            } else if (storedType === "admin") {
+                // Try admin profile if exists, otherwise fallback to basic user profile
+                try {
+                    // const response = await getAdminProfile();
+                    // Admin API might return data directly or wrapped in data property
+                    // const u = response.data || response;
+                    // if (u?.id) {
+                    //     userData = { id: u.id, name: u.name, email: u.email, avatar: getFullImageUrl(u.profile_image_url) };
+                    //     setUserTypeState("admin");
+                    // }
+                } catch (e) {
+                    // Silently fail
+                }
             } else if (storedType === "user") {
                 const response = await getMyProfile();
                 const u = response.data;
-                userData = { id: u.id, name: u.name, email: u.email, avatar: getFullImageUrl(u.profile_image_url) };
-                setUserTypeState("user");
+                if (u?.id) {
+                    userData = { id: u.id, name: u.name, email: u.email, avatar: getFullImageUrl(u.profile_image_url) };
+                    setUserTypeState("user");
+                }
             } else {
                 // If NO type is stored, we probe
                 try {
                     const response = await getMyProfile();
                     const u = response.data;
-                    userData = { id: u.id, name: u.name, email: u.email, avatar: getFullImageUrl(u.profile_image_url) };
-                    localStorage.setItem("userType", "user");
-                    setUserTypeState("user");
+                    if (u?.id) {
+                        userData = { id: u.id, name: u.name, email: u.email, avatar: getFullImageUrl(u.profile_image_url) };
+                        localStorage.setItem("userType", "user");
+                        setUserTypeState("user");
+                    }
                 } catch (e) {
-                    const res = await getCraftsmanProfile();
-                    const c = res?.data?.data ?? res?.data ?? res;
-                    userData = { id: c.id, name: c.name, email: c.email, avatar: getFullImageUrl(c.profile_photo) };
-                    localStorage.setItem("userType", "craftsman");
-                    setUserTypeState("craftsman");
+                    try {
+                        const res = await getCraftsmanProfile();
+                        const c = res?.data?.data ?? res?.data ?? res;
+                        if (c?.id) {
+                            userData = { id: c.id, name: c.name, email: c.email, avatar: getFullImageUrl(c.profile_photo) };
+                            localStorage.setItem("userType", "craftsman");
+                            setUserTypeState("craftsman");
+                        }
+                    } catch (e2) {
+                        // Silently fail
+                    }
                 }
             }
 
-            if (userData) {
+            if (userData && userData.id) {
                 setUser(userData);
                 localStorage.setItem("user_id", userData.id.toString());
 
@@ -94,7 +125,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 }
             }
         } catch (error: any) {
-            console.error("Auth: Failed to fetch profile", error);
             if (error?.response?.status === 401) {
                 // Token invalid or expired
                 localStorage.removeItem("token");
@@ -108,68 +138,139 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const login = async (phoneOrEmail: string, password: string): Promise<boolean> => {
-        try {
-            // Backend expects 'email' key even if it's a phone number (based on provided backend code)
-            // Ideally, backend should accept 'login' or 'identifier', but we follow current structure.
-            const payload = {
-                email: phoneOrEmail,
-                password
-            };
+        const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(phoneOrEmail);
+        const normalizedPhone = phoneOrEmail.startsWith('0') ? phoneOrEmail.substring(1) : phoneOrEmail;
 
-            // Using the new Unified Login Endpoint
-            const response = await axios.post(`${BASE_URL}/login`, payload, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json",
-                },
-            });
+        const attempts = [
+            // 0. Admin Login (High Priority if Email)
+            isEmail ? {
+                url: `${BASE_URL}/admin/login`,
+                payload: { email: phoneOrEmail, password },
+                type: 'admin'
+            } : null,
+            // 1. New Craftsman Login (Unified)
+            {
+                url: `${BASE_URL}/craftsmen/login`,
+                payload: { login: phoneOrEmail, password },
+                type: 'craftsman'
+            },
+            // 2. User/General Login (Unified)
+            {
+                url: `${BASE_URL}/login`,
+                payload: { login: phoneOrEmail, password },
+                type: 'user'
+            },
+            // 3. User Login Fallback (Normalized Phone)
+            !isEmail ? {
+                url: `${BASE_URL}/login`,
+                payload: { login: normalizedPhone, password },
+                type: 'user'
+            } : null,
+            // 4. Old Auth Endpoint (Unified)
+            {
+                url: `${BASE_URL}/auth/login`,
+                payload: { login: phoneOrEmail, password },
+                type: 'user'
+            },
+        ].filter(Boolean) as any[];
 
-            if (response.data.status) {
-                const { token, role, user, redirect } = response.data;
+        let lastError: any = null;
+        let prioritizedError: string | null = null; // Store specific errors like "Not Approved"
 
-                // Store in localStorage
-                localStorage.setItem('token', token);
-                // Map backend roles to frontend types
-                const userType = role === 'admin' ? 'admin' : (role === 'craftsman' ? 'craftsman' : 'user');
-                localStorage.setItem('userType', userType);
-                localStorage.setItem('user_id', user.id.toString());
+        for (const attempt of attempts) {
+            try {
+                const response = await axios.post(attempt.url, attempt.payload, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                    },
+                });
 
-                // Update State
-                setUser(user);
-                setUserTypeState(userType as any);
+                if (response.data.status) {
+                    // Handle different response structures
+                    const token = response.data.token;
+                    let userData = response.data.user || response.data.craftsman;
+                    let role = response.data.role;
 
-                // Initialize Echo
-                initializeEcho(token);
-
-                // Redirect logic
-                // 1. Backend redirect takes precedence
-                if (redirect) {
-                    window.location.href = redirect;
-                } else {
-                    // 2. Fallback based on role
-                    switch (role) {
-                        case 'admin':
-                            window.location.href = '/admin/dashboard';
-                            break;
-                        case 'craftsman':
-                            window.location.href = `/craftsman/${user.id}`;
-                            break;
-                        default:
-                            window.location.href = '/';
+                    // If it was the craftsman endpoint and success, force craftsman role
+                    if (attempt.type === 'craftsman' && response.data.craftsman) {
+                        userData = response.data.craftsman;
+                        role = 'craftsman';
                     }
+
+                    // If it was the admin endpoint and success
+                    if (attempt.type === 'admin') {
+                        role = 'admin';
+                        // Admin data might be directly in response.data.user or just response.data depending on API
+                        // tailored based on standard Laravel pattern, but fallback to existing logic if needed
+                    }
+
+                    if (!userData && response.data.data) {
+                        userData = response.data.data;
+                    }
+
+                    localStorage.setItem('token', token);
+                    const userType = role === 'admin' ? 'admin' : (role === 'craftsman' ? 'craftsman' : 'user');
+                    localStorage.setItem('userType', userType);
+                    localStorage.setItem('user_id', userData.id.toString());
+
+                    // Normalize user data for state
+                    const finalUser = {
+                        id: userData.id,
+                        name: userData.name,
+                        email: userData.email,
+                        avatar: userData.profile_photo ? getFullImageUrl(userData.profile_photo) : getFullImageUrl(userData.profile_image_url)
+                    };
+
+                    setUser(finalUser);
+                    setUserTypeState(userType as any);
+                    initializeEcho(token);
+
+                    if (response.data.redirect) window.location.href = response.data.redirect;
+                    else {
+                        switch (role) {
+                            case 'admin': window.location.href = '/admin/dashboard'; break;
+                            case 'craftsman': window.location.href = `/craftsman/${userData.id}`; break;
+                            default: window.location.href = '/';
+                        }
+                    }
+                    return true;
+                }
+            } catch (error: any) {
+                lastError = error;
+
+                // 🛑 CRITICAL: Capture "Not Approved" (403) errors specifically
+                if (error.response?.status === 403) {
+                    prioritizedError = error.response?.data?.message || "حسابك غير مفعل بعد.";
                 }
 
-                return true;
+                // 🛑 Capture pending account (422) on craftsman endpoint
+                if (error.response?.status === 422 && attempt.type === 'craftsman') {
+                    const msg = error.response?.data?.message || "";
+                    // Check if this is a pending approval error (not just validation)
+                    if (
+                        msg.includes("انتظار") ||
+                        msg.includes("مراجعة") ||
+                        msg.includes("معلق") ||
+                        msg.includes("غير مفعل") ||
+                        msg.includes("pending")
+                    ) {
+                        prioritizedError = msg;
+                    }
+                }
             }
-            return false;
-        } catch (error: any) {
-            console.error("Login failed:", error);
-            if (error.response && error.response.data && error.response.data.message) {
-                // Handle specific backend errors (e.g. pending/rejected)
-                alert(error.response.data.message);
-            }
-            return false;
         }
+
+        console.error("Auth: Final Failure", lastError?.response?.data || lastError?.message);
+
+        // Show prioritized error (pending/not approved) with info toast
+        if (prioritizedError) {
+            toast.info(`${prioritizedError} ⏳\nيرجى عدم تسجيل الدخول لحين موافقة الإدارة.`);
+        } else {
+            const errorMsg = lastError?.response?.data?.message || "فشل تسجيل الدخول، يرجى التحقق من البيانات";
+            toast.error(errorMsg);
+        }
+        return false;
     };
 
     useEffect(() => {
@@ -201,15 +302,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         window.location.href = '/login';
     };
 
-    // Placeholder implementations for compatibility - Replace with actual API calls if needed
-    const register = async (userData: any) => {
-        console.log("Register: ", userData);
-        // Implement actual registration logic or import from api
+    const register = async (_userData: any) => {
+        // Implementation moved to separate API files
     };
 
-    const registerWorker = async (workerData: FormData) => {
-        console.log("Register Worker: ", workerData);
-        // Implement actual worker registration logic
+    const registerWorker = async (_workerData: FormData) => {
+        // Implementation moved to separate API files
     };
 
     const token = localStorage.getItem("token");

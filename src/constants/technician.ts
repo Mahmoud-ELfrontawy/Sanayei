@@ -12,6 +12,7 @@ export interface Technician {
         name: string;
     };
 
+    governorate_id?: string | number;
     governorate?: {
         id: number;
         name: string;
