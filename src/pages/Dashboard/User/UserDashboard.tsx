@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import StatCard from "../../../components/dashboard/StatCard/StatCard";
 import { getMyServiceRequests } from "../../../Api/serviceRequest/getMyRequests.api";
-import { Mail, Briefcase, Star, User, MessageCircle } from "lucide-react";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaEnvelope, FaBriefcase, FaStar, FaUser, FaCommentDots } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import DashboardSkeleton from "../DashboardSkeleton";
 import { useUserChat } from "../../../context/UserChatProvider";
@@ -84,17 +83,17 @@ const UserDashboard: React.FC = () => {
                             value={contacts.length.toString()}
                             change="12%"
                             isPositive={true}
-                            icon={<Mail size={20} />}
+                            icon={<FaEnvelope size={20} />}
                         />
                         <StatCard
                             title="الطلبات النشطة"
                             value={orders.filter(o => o.status === 'pending').length.toString()}
-                            icon={<Briefcase size={20} />}
+                            icon={<FaBriefcase size={20} />}
                         />
                         <StatCard
                             title="التقييمات"
                             value="4.8"
-                            icon={<Star size={20} />}
+                            icon={<FaStar size={20} />}
                         />
                     </div>
 
@@ -112,7 +111,7 @@ const UserDashboard: React.FC = () => {
                                     <div key={idx} className="craftsman-mini-card">
                                         <div className="c-info">
                                             <div className="c-avatar">
-                                                <User size={20} />
+                                                <FaUser size={20} />
                                             </div>
                                             <div className="c-meta">
                                                 <Link to={`/craftsman/${c.craftsman_id || c.industrial_type}`} className="craftsman-profile-link">
@@ -141,7 +140,7 @@ const UserDashboard: React.FC = () => {
                                                     }}
                                                     className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1"
                                                 >
-                                                    <Star size={12} fill="white" />
+                                                    <FaStar size={12} color="white" />
                                                     تقييم
                                                 </button>
                                             ) : (
@@ -150,7 +149,7 @@ const UserDashboard: React.FC = () => {
                                                     state={{ contact: { id: c.craftsman_id || c.industrial_type, name: c.craftsman?.name || c.industrial_name, type: 'craftsman' } }}
                                                     className="chat-btn-mini"
                                                 >
-                                                    <MessageCircle size={16} />
+                                                    <FaCommentDots size={16} />
                                                     تواصل
                                                 </Link>
                                             )}

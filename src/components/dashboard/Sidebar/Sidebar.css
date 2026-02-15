@@ -77,6 +77,29 @@
     border-color: rgba(76, 175, 80, 0.2);
 }
 
+.user-profile-btn {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    background: rgba(95, 168, 211, 0.08);
+    border: 1px solid transparent;
+    padding: 8px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    margin-top: 15px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-profile-btn:hover {
+    background: var(--color-primary);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(95, 168, 211, 0.3);
+}
+
 .sidebar-nav {
     flex: 1;
     padding: 20px 0;

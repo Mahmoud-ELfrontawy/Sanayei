@@ -1,8 +1,8 @@
 import { NavLink, Link, useLocation } from "react-router-dom";
-import { IoIosArrowDown, IoMdNotificationsOutline } from "react-icons/io";
-import { FiMessageCircle, FiMenu, FiX } from "react-icons/fi";
+import { IoIosArrowDown } from "react-icons/io";
+import {  FiMenu, FiX } from "react-icons/fi";
 import { useEffect, useRef, useState } from "react";
-import { User, LogOut, LayoutDashboard, Package, Clock } from "lucide-react";
+import { FaUser, FaSignOutAlt, FaThLarge, FaBox, FaRegClock, FaCommentDots, FaBell } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { formatTimeAgo } from "../../../utils/timeAgo";
 
@@ -166,7 +166,7 @@ const Header: React.FC = () => {
                 {unreadTotal > 0 && (
                   <span className="notification-badge-header" />
                 )}
-                <FiMessageCircle size={24} />
+                <FaCommentDots size={24} />
                 <span>الرسائل</span>
               </Link>
 
@@ -179,7 +179,7 @@ const Header: React.FC = () => {
                   {unreadCount > 0 && (
                     <span className="notification-badge-header" />
                   )}
-                  <IoMdNotificationsOutline size={24} />
+                  <FaBell size={24} />
                   <span>الإشعارات</span>
                 </button>
 
@@ -203,9 +203,9 @@ const Header: React.FC = () => {
                             onClick={() => markAsRead(notif.id)}
                           >
                             <div className={`notification-icon-wrapper icon-${notif.type}`}>
-                              {notif.type === "order_request" ? <Package size={16} /> :
-                                notif.type === "chat" ? <FiMessageCircle size={16} /> :
-                                  <Clock size={16} />}
+                              {notif.type === "order_request" ? <FaBox size={16} /> :
+                                notif.type === "chat" ? <FaCommentDots size={16} /> :
+                                  <FaRegClock size={16} />}
                             </div>
                             <div className="notification-info">
                               <div className="notification-title-row">
@@ -213,7 +213,7 @@ const Header: React.FC = () => {
                               </div>
                               <p className="notif-item-message">{notif.message}</p>
                               <div className="notification-time">
-                                <Clock size={12} />
+                                <FaRegClock size={12} />
                                 <span>{formatTimeAgo(notif.timestamp)}</span>
                               </div>
                             </div>
@@ -245,12 +245,12 @@ const Header: React.FC = () => {
                 {isOpen && (
                   <div className="profile-dropdown">
                     <Link to={dashboardPath} className="dropdown-item">
-                      <LayoutDashboard size={20} />
+                      <FaThLarge size={20} />
                       <span>{isAdmin ? "لوحة الإدارة" : "لوحة التحكم"}</span>
                     </Link>
 
                     <Link to={profilePath} className="dropdown-item">
-                      <User size={20} />
+                      <FaUser size={20} />
                       <span>الملف الشخصي</span>
                     </Link>
 
@@ -258,7 +258,7 @@ const Header: React.FC = () => {
                       className="dropdown-item logout"
                       onClick={handleLogout}
                     >
-                      <LogOut size={20} />
+                      <FaSignOutAlt size={20} />
                       <span>تسجيل الخروج</span>
                     </button>
                   </div>
@@ -287,7 +287,7 @@ const Header: React.FC = () => {
                 className={`mobile-icon-btn ${unreadTotal > 0 ? "has-unread" : ""} ${isNewMessage ? "new-arrival" : ""}`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <FiMessageCircle size={24} />
+                <FaCommentDots size={24} />
                 {unreadTotal > 0 && (
                   <span className="notification-badge-header" />
                 )}
@@ -299,7 +299,7 @@ const Header: React.FC = () => {
                 className={`mobile-icon-btn ${unreadCount > 0 ? "has-unread" : ""}`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <IoMdNotificationsOutline size={24} />
+                <FaBell size={24} />
                 {unreadCount > 0 && (
                   <span className="notification-badge-header" />
                 )}
@@ -337,7 +337,7 @@ const Header: React.FC = () => {
                 className="dropdown-item"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <LayoutDashboard size={20} />
+                <FaThLarge size={20} />
                 <span>{isAdmin ? "لوحة الإدارة" : "لوحة التحكم"}</span>
               </Link>
 
@@ -346,12 +346,12 @@ const Header: React.FC = () => {
                 className="dropdown-item"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <User size={20} />
+                <FaUser size={20} />
                 <span>الملف الشخصي</span>
               </Link>
 
               <button className="dropdown-item logout" onClick={handleLogout}>
-                <LogOut size={20} />
+                <FaSignOutAlt size={20} />
                 <span>تسجيل الخروج</span>
               </button>
             </div>

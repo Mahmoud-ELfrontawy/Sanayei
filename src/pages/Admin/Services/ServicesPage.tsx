@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import {
-    Search,
-    Edit,
-    Trash2,
-    Plus,
-    X,
-    Layers,
-    RefreshCcw
-} from 'lucide-react';
+    FaSearch,
+    FaEdit,
+    FaRegTrashAlt,
+    FaPlus,
+    FaTimes,
+    FaLayerGroup,
+    FaSyncAlt
+} from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { adminServicesApi } from '../../../Api/admin/adminServices.api';
 import './ServicesPage.css';
@@ -127,7 +127,7 @@ const ServicesPage = () => {
                     </div>
                     <div className="header-actions-top">
                         <button className="add-service-btn" onClick={() => handleOpenModal('create')}>
-                            <Plus size={20} />
+                            <FaPlus size={20} />
                             <span>إضافة خدمة جديدة</span>
                         </button>
                     </div>
@@ -136,7 +136,7 @@ const ServicesPage = () => {
 
             <div className="services-controls">
                 <div className="search-wrapper">
-                    <Search className="search-icon" size={20} />
+                    <FaSearch className="search-icon" size={20} />
                     <input
                         type="text"
                         placeholder="ابحث عن خدمة..."
@@ -146,7 +146,7 @@ const ServicesPage = () => {
                     />
                 </div>
                 <button className="action-btn" onClick={fetchServices} title="تحديث">
-                    <RefreshCcw size={18} />
+                    <FaSyncAlt size={18} />
                 </button>
             </div>
 
@@ -169,7 +169,7 @@ const ServicesPage = () => {
                                 <tr key={service.id}>
                                     <td>
                                         <div className="service-icon-cell">
-                                            <Layers size={24} />
+                                            <FaLayerGroup size={24} />
                                         </div>
                                     </td>
                                     <td>
@@ -183,10 +183,10 @@ const ServicesPage = () => {
                                     </td>
                                     <td className="actions-cell">
                                         <button className="action-btn edit" onClick={() => handleOpenModal('edit', service)}>
-                                            <Edit size={18} />
+                                            <FaEdit size={18} />
                                         </button>
                                         <button className="action-btn delete" onClick={() => handleDelete(service.id)}>
-                                            <Trash2 size={18} />
+                                            <FaRegTrashAlt size={18} />
                                         </button>
                                     </td>
                                 </tr>
@@ -229,7 +229,7 @@ const ServicesPage = () => {
                     <div className="service-modal">
                         <div className="modal-header">
                             <h3>{modalMode === 'create' ? 'إضافة خدمة جديدة' : 'تعديل الخدمة'}</h3>
-                            <button className="close-btn" onClick={handleCloseModal}><X size={24} /></button>
+                            <button className="close-btn" onClick={handleCloseModal}><FaTimes size={24} /></button>
                         </div>
                         <form onSubmit={handleSubmit} className="service-form">
                             <div className="form-group-service2">

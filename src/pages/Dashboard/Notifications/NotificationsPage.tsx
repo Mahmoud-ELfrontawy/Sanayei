@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNotifications } from "../../../context/NotificationContext";
-import { Bell, Clock, CheckCircle2 } from "lucide-react";
+import { FaBell, FaRegClock, FaCheckCircle } from "react-icons/fa";
 import "./NotificationsPage.css";
 
 const NotificationsPage: React.FC = () => {
@@ -26,13 +26,13 @@ const NotificationsPage: React.FC = () => {
                     userNotifications.map((notif) => (
                         <div key={notif.id} className={`notification-card ${notif.status}`}>
                             <div className="notif-icon-box">
-                                {notif.type === 'order_status' ? <CheckCircle2 size={20} /> : <Bell size={20} />}
+                                {notif.type === 'order_status' ? <FaCheckCircle size={20} /> : <FaBell size={20} />}
                             </div>
                             <div className="notif-content">
                                 <h3>{notif.title}</h3>
                                 <p>{notif.message}</p>
                                 <span className="notif-time">
-                                    <Clock size={12} />
+                                    <FaRegClock size={12} />
                                     {new Date(notif.timestamp).toLocaleString('ar-EG')}
                                 </span>
                             </div>
@@ -41,7 +41,7 @@ const NotificationsPage: React.FC = () => {
                     ))
                 ) : (
                     <div className="empty-notifications">
-                        <Bell size={48} />
+                        <FaBell size={48} />
                         <p>لا توجد تنبيهات جديدة</p>
                     </div>
                 )}

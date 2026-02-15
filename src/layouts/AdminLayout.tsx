@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-    LayoutDashboard,
-    Users,
-    HardHat,
-    Wrench,
-    MapPin,
-    FileText,
-    Star,
-    LogOut,
-    X,
-    Bell
-} from 'lucide-react';
+    FaThLarge,
+    FaUsers,
+    FaHardHat,
+    FaWrench,
+    FaMapMarkerAlt,
+    FaFileAlt,
+    FaStar,
+    FaSignOutAlt,
+    FaTimes,
+    FaBell
+} from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 import './AdminLayout.css';
 
@@ -27,13 +27,13 @@ const AdminLayout = () => {
     };
 
     const menuItems = [
-        { path: '/admin/dashboard', label: 'لوحة التحكم', icon: LayoutDashboard },
-        { path: '/admin/users', label: 'المستخدمين', icon: Users },
-        { path: '/admin/craftsmen', label: 'الصنايعية', icon: HardHat },
-        { path: '/admin/services', label: 'الخدمات', icon: Wrench },
-        { path: '/admin/governorates', label: 'المحافظات', icon: MapPin },
-        { path: '/admin/requests', label: 'الطلبات', icon: FileText },
-        { path: '/admin/reviews', label: 'التقييمات', icon: Star },
+        { path: '/admin/dashboard', label: 'لوحة التحكم', icon: FaThLarge },
+        { path: '/admin/users', label: 'المستخدمين', icon: FaUsers },
+        { path: '/admin/craftsmen', label: 'الصنايعية', icon: FaHardHat },
+        { path: '/admin/services', label: 'الخدمات', icon: FaWrench },
+        { path: '/admin/governorates', label: 'المحافظات', icon: FaMapMarkerAlt },
+        { path: '/admin/requests', label: 'الطلبات', icon: FaFileAlt },
+        { path: '/admin/reviews', label: 'التقييمات', icon: FaStar },
     ];
 
     return (
@@ -43,7 +43,7 @@ const AdminLayout = () => {
                 <div className="admin-sidebar-header">
                     <h1 className="admin-sidebar-title">صنايعي - أدمن</h1>
                     <button onClick={() => setIsSidebarOpen(false)} className="admin-close-btn md:hidden">
-                        <X size={24} />
+                        <FaTimes size={24} />
                     </button>
                 </div>
 
@@ -67,7 +67,7 @@ const AdminLayout = () => {
 
                 <div className="admin-sidebar-footer">
                     <button onClick={handleLogout} className="admin-logout-btn">
-                        <LogOut size={20} />
+                        <FaSignOutAlt size={20} />
                         <span>تسجيل الخروج</span>
                     </button>
                 </div>
@@ -78,7 +78,7 @@ const AdminLayout = () => {
                 <header className="admin-header">
                     <div className="admin-header-actions">
                         <button className="admin-bell-btn">
-                            <Bell size={20} />
+                            <FaBell size={20} />
                         </button>
                         <div className="admin-user-profile">
                             <span className="admin-username">{user?.name || 'Admin'}</span>

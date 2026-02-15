@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "../components/dashboard/Sidebar/Sidebar";
-import { Menu, X } from "lucide-react";
+import { FaBars, FaTimes } from "react-icons/fa";
 import logo from "../assets/images/final logo.png";
 import "./DashboardLayout.css";
 
@@ -19,7 +19,7 @@ function DashboardLayout() {
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                     aria-label="Toggle Navigation"
                 >
-                    {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+                    {isSidebarOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
                 </button>
                 <div className="mobile-logo-wrapper">
                     <img src={logo} alt="Sanayei" className="mobile-dashboard-logo" />

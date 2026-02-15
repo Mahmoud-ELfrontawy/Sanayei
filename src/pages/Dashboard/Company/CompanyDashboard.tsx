@@ -1,6 +1,6 @@
 import React from "react";
 import StatCard from "../../../components/dashboard/StatCard/StatCard";
-import { Users, Briefcase, TrendingUp } from "lucide-react";
+import { FaUsers, FaBriefcase, FaChartLine } from "react-icons/fa";
 import "../User/Dashboard.css";
 
 const CompanyDashboard: React.FC = () => {
@@ -15,18 +15,18 @@ const CompanyDashboard: React.FC = () => {
                 <StatCard
                     title="عدد الفنيين"
                     value="18"
-                    icon={<Users size={20} />}
+                    icon={<FaUsers size={20} />}
                 />
                 <StatCard
                     title="المشاريع الجارية"
                     value="7"
-                    icon={<Briefcase size={20} />}
+                    icon={<FaBriefcase size={20} />}
                 />
                 <StatCard
                     title="نسبة النمو"
                     value="15%"
                     isPositive={true}
-                    icon={<TrendingUp size={20} />}
+                    icon={<FaChartLine size={20} />}
                 />
             </div>
 

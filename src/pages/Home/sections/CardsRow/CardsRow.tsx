@@ -19,7 +19,7 @@ const CardsRow: React.FC = () => {
                             </div>
 
                             <div className="card-content">
-                                <h3 className="card-title">{item.title}</h3>
+                                <h3 className="card-title-home">{item.title}</h3>
                                 <p className="card-text">{item.text}</p>
                             </div>
                         </div>

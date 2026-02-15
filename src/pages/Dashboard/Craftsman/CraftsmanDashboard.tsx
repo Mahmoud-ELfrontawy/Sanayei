@@ -9,8 +9,9 @@ import {
     FaClock,
     FaArrowLeft,
     FaEnvelope,
+    FaUser,
+    FaCommentDots,
 } from "react-icons/fa";
-import { User, MessageCircle } from "lucide-react";
 
 import { useAuth } from "../../../hooks/useAuth";
 import { useNotifications } from "../../../context/NotificationContext";
@@ -280,7 +281,7 @@ const CraftsmanDashboard: React.FC = () => {
                                     <div key={idx} className="craftsman-mini-card">
                                         <div className="c-info">
                                             <div className="c-avatar text-gray-400">
-                                                <User size={20} />
+                                                <FaUser size={20} />
                                             </div>
                                             <div className="c-meta">
                                                 <h4>{u.name || "عميل"}</h4>
@@ -299,7 +300,7 @@ const CraftsmanDashboard: React.FC = () => {
                                                 onClick={() => handleStartChat(u)}
                                                 className="chat-btn-mini"
                                             >
-                                                <MessageCircle size={16} />
+                                                <FaCommentDots size={16} />
                                                 تواصل
                                             </button>
                                         </div>

@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import {
-    Search,
-    Edit,
-    Trash2,
-    Calendar,
-    Clock,
-    User,
-    RefreshCcw,
-    X
-} from 'lucide-react';
+    FaSearch,
+    FaEdit,
+    FaRegTrashAlt,
+    FaRegCalendarAlt,
+    FaRegClock,
+    FaUser,
+    FaSyncAlt,
+    FaTimes
+} from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { adminServiceRequestsApi } from '../../../Api/admin/adminServiceRequests.api';
 import './ServiceRequestsPage.css';
@@ -128,7 +128,7 @@ const ServiceRequestsPage = () => {
 
             <div className="requests-controls">
                 <div className="search-wrapper">
-                    <Search className="search-icon" size={20} />
+                    <FaSearch className="search-icon" size={20} />
                     <input
                         type="text"
                         placeholder="ابحث باسم العميل أو نوع الخدمة..."
@@ -138,7 +138,7 @@ const ServiceRequestsPage = () => {
                     />
                 </div>
                 <button className="action-btn" onClick={fetchRequests} title="تحديث">
-                    <RefreshCcw size={18} />
+                    <FaSyncAlt size={18} />
                 </button>
             </div>
 
@@ -178,14 +178,14 @@ const ServiceRequestsPage = () => {
                                     </td>
                                     <td>
                                         <div style={{ fontSize: '0.85rem' }}>
-                                            <div><Calendar size={12} style={{ marginLeft: 4 }} />{request.date}</div>
-                                            <div><Clock size={12} style={{ marginLeft: 4 }} />{request.time}</div>
+                                            <div><FaRegCalendarAlt size={12} style={{ marginLeft: 4 }} />{request.date}</div>
+                                            <div><FaRegClock size={12} style={{ marginLeft: 4 }} />{request.time}</div>
                                         </div>
                                     </td>
                                     <td>
                                         {request.craftsman ? (
                                             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                                                <User size={14} color="#3b82f6" />
+                                                <FaUser size={14} color="#3b82f6" />
                                                 <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>{request.craftsman.name}</span>
                                             </div>
                                         ) : (
@@ -199,10 +199,10 @@ const ServiceRequestsPage = () => {
                                     </td>
                                     <td className="actions-cell">
                                         <button className="action-btn edit" onClick={() => handleOpenEdit(request)}>
-                                            <Edit size={18} />
+                                            <FaEdit size={18} />
                                         </button>
                                         <button className="action-btn delete" onClick={() => handleDelete(request.id)}>
-                                            <Trash2 size={18} />
+                                            <FaRegTrashAlt size={18} />
                                         </button>
                                     </td>
                                 </tr>
@@ -223,7 +223,7 @@ const ServiceRequestsPage = () => {
                     <div className="request-modal">
                         <div className="modal-header">
                             <h3>تحديث حالة الطلب</h3>
-                            <button className="close-btn" onClick={handleCloseEdit} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={24} /></button>
+                            <button className="close-btn" onClick={handleCloseEdit} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><FaTimes size={24} /></button>
                         </div>
                         <form onSubmit={handleUpdate} className="request-form">
                             <div className="form-group-service">

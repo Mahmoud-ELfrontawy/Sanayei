@@ -29,7 +29,14 @@
     color: var(--color-primary);
 }
 
-.btn-outline:hover {
-    background-color: var(--color-primary);
-    color: #fff;
+
+/* Size Variants */
+.btn-sm {
+    font-size: 16px;
+    padding: 8px 16px;
+}
+
+/* Utilities */
+.w-100 {
+    width: 100%;
 }

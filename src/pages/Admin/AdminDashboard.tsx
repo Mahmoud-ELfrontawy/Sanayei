@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BASE_URL } from '../../Api/chat.api';
-import { Users, HardHat, FileText, Activity, DollarSign } from 'lucide-react';
+import { FaUsers, FaHardHat, FaRegFileAlt, FaChartLine, FaDollarSign } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import './AdminDashboard.css';
 
@@ -75,7 +75,7 @@ const AdminDashboard = () => {
                         <span className="stat-label">إجمالي المستخدمين</span>
                     </div>
                     <div className="stat-icon-wrapper users">
-                        <Users size={24} />
+                        <FaUsers size={24} />
                     </div>
                 </div>
 
@@ -85,7 +85,7 @@ const AdminDashboard = () => {
                         <span className="stat-label">إجمالي الصنايعية</span>
                     </div>
                     <div className="stat-icon-wrapper craftsmen">
-                        <HardHat size={24} />
+                        <FaHardHat size={24} />
                     </div>
                 </div>
 
@@ -95,7 +95,7 @@ const AdminDashboard = () => {
                         <span className="stat-label">إجمالي الطلبات</span>
                     </div>
                     <div className="stat-icon-wrapper requests">
-                        <FileText size={24} />
+                        <FaRegFileAlt size={24} />
                     </div>
                 </div>
 
@@ -105,7 +105,7 @@ const AdminDashboard = () => {
                         <span className="stat-label">صنايعية بانتظار الموافقة</span>
                     </div>
                     <div className="stat-icon-wrapper revenue">
-                        <DollarSign size={24} />
+                        <FaDollarSign size={24} />
                     </div>
                 </div>
             </div>
@@ -118,14 +118,14 @@ const AdminDashboard = () => {
                     </div>
                     <ul className="activity-list">
                         <li className="activity-item">
-                            <div className="activity-icon"><Activity size={18} /></div>
+                            <div className="activity-icon"><FaChartLine size={18} /></div>
                             <div className="activity-details">
                                 <p className="activity-text">تم تسجيل صنايعي جديد: أحمد محمد</p>
                                 <span className="activity-time">منذ 5 دقائق</span>
                             </div>
                         </li>
                         <li className="activity-item">
-                            <div className="activity-icon"><Activity size={18} /></div>
+                            <div className="activity-icon"><FaChartLine size={18} /></div>
                             <div className="activity-details">
                                 <p className="activity-text">طلب خدمة جديد #2034</p>
                                 <span className="activity-time">منذ 15 دقيقة</span>

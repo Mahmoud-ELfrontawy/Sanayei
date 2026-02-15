@@ -5,7 +5,7 @@ import UserProfileCard from "./components/UserProfileCard";
 import ProfileSkeleton from "../CraftsmanProfile/components/ProfileSkeleton";
 import { useAuth } from "../../hooks/useAuth";
 import "../CraftsmanProfile/CraftsmanProfile.css";
-import { Info, MessageSquare } from "lucide-react";
+import { FaInfoCircle, FaRegComments } from "react-icons/fa";
 import { toUiDate } from "../../utils/dateApiHelper";
 
 const UserProfilePage: React.FC = () => {
@@ -101,7 +101,7 @@ const UserProfilePage: React.FC = () => {
                             <div className="fade-enter">
                                 <div className="info-section">
                                     <h3 className="info-title">
-                                        <Info size={22} />
+                                        <FaInfoCircle size={22} />
                                         معلومات الحساب
                                     </h3>
                                     <div className="description-text">
@@ -111,7 +111,7 @@ const UserProfilePage: React.FC = () => {
 
                                 <div className="info-section">
                                     <h3 className="info-title">
-                                        <Info size={22} />
+                                        <FaInfoCircle size={22} />
                                         البيانات الإضافية
                                     </h3>
                                     <ul className="info-list">
@@ -127,9 +127,9 @@ const UserProfilePage: React.FC = () => {
                             </div>
                         ) : (
                             <div className="fade-enter">
-                                <div className="info-section" style={{ textAlign: 'center', padding: '40px' }}>
-                                    <MessageSquare size={48} color="#ccc" style={{ marginBottom: '20px' }} />
-                                    <p style={{ color: '#888', fontSize: '1.1rem' }}>لا توجد نشاطات عامة لعرضها حالياً</p>
+                                <div className="info-section" style={{ textAlign: "center", padding: "40px" }}>
+                                    <FaRegComments size={48} color="#ccc" style={{ marginBottom: "20px" }} />
+                                    <p style={{ color: "#888", fontSize: "1.1rem" }}>لا توجد نشاطات عامة لعرضها حالياً</p>
                                 </div>
                             </div>
                         )}

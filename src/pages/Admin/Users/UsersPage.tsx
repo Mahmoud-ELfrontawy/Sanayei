@@ -1,21 +1,21 @@
 /* UsersPage.tsx */
 import { useState, useEffect } from 'react';
 import {
-    Search,
-    Edit,
-    Trash2,
-    UserX,
-    Eye,
-    Plus,
-    Mail,
-    Phone,
-    Calendar,
-    RefreshCcw,
-    ShieldCheck,
-    X,
-    Download,
-    Users
-} from 'lucide-react';
+    FaSearch,
+    FaEdit,
+    FaRegTrashAlt,
+    FaUserSlash,
+    FaEye,
+    FaPlus,
+    FaRegEnvelope,
+    FaPhoneAlt,
+    FaRegCalendarAlt,
+    FaSyncAlt,
+    FaShieldAlt,
+    FaTimes,
+    FaDownload,
+    FaUsers
+} from 'react-icons/fa';
 import { adminUsersApi } from '../../../Api/admin/adminUsers.api';
 import { toast } from 'react-toastify';
 import './UsersPage.css';
@@ -257,7 +257,7 @@ const UsersPage = () => {
 
                     <div className="header-stats-grid">
                         <div className="stat-premium-card">
-                            <Users size={24} className="stat-icon" />
+                            <FaUsers size={24} className="stat-icon" />
                             <div className="stat-values">
                                 <span className="label">المستخدمين بالصفحة</span>
                                 <span className="value">{users.length}</span>
@@ -267,15 +267,15 @@ const UsersPage = () => {
 
                     <div className="header-actions">
                         <button className="add-user-btn" onClick={handleOpenCreateModal}>
-                            <Plus size={20} />
+                            <FaPlus size={20} />
                             إضافة مستخدم جديد
                         </button>
                         <button className="export-action-btn" onClick={handleExportData}>
-                            <Download size={20} />
+                            <FaDownload size={20} />
                             تصدير Excel
                         </button>
                         <button className="refresh-action-btn" onClick={fetchUsers}>
-                            <RefreshCcw size={20} />
+                            <FaSyncAlt size={20} />
                             تحديث
                         </button>
                     </div>
@@ -286,7 +286,7 @@ const UsersPage = () => {
 
             <div className="users-controls advanced">
                 <div className="search-wrapper">
-                    <Search className="search-icon" size={20} />
+                    <FaSearch className="search-icon" size={20} />
                     <input
                         type="text"
                         placeholder="بحث بالاسم، الإيميل، أو الهاتف..."
@@ -352,7 +352,7 @@ const UsersPage = () => {
                                     </span>
                                 </td>
                                 <td>
-                                    {user.is_admin ? <ShieldCheck size={18} color="#10b981" /> : <X size={18} color="#94a3b8" />}
+                                    {user.is_admin ? <FaShieldAlt size={18} color="#10b981" /> : <FaTimes size={18} color="#94a3b8" />}
                                 </td>
                                 <td>
                                     <span className={`status-badge-modern ${user.is_active ? 'active' : 'banned'}`}>
@@ -362,20 +362,20 @@ const UsersPage = () => {
                                 <td><span className="date-display">{formatDate(user.created_at)}</span></td>
                                 <td className="actions-cell">
                                     <button className="action-btn" onClick={() => openDetails(user)} title="عرض التفاصيل الكاملة">
-                                        <Eye size={18} />
+                                        <FaEye size={18} />
                                     </button>
                                     <button className="action-btn edit" onClick={() => handleOpenEditModal(user)} title="تعديل البيانات">
-                                        <Edit size={18} />
+                                        <FaEdit size={18} />
                                     </button>
                                     <button className="action-btn delete" onClick={() => handleDeleteUser(user.id)} title="حذف نهائي">
-                                        <Trash2 size={18} />
+                                        <FaRegTrashAlt size={18} />
                                     </button>
                                     <button
                                         className={`action-btn ${user.is_active ? 'delete' : 'success'}`}
                                         onClick={() => handleToggleBlock(user.id, user.is_active)}
                                         title={user.is_active ? 'حظر المستخدم' : 'إلغاء الحظر'}
                                     >
-                                        <UserX size={18} />
+                                        <FaUserSlash size={18} />
                                     </button>
                                 </td>
                             </tr>
@@ -415,7 +415,7 @@ const UsersPage = () => {
                                 <h2>ملف المستخدم الشامل</h2>
                                 <span className="user-id-tag">ID: {selectedUser.id}</span>
                             </div>
-                            <button onClick={() => setIsDetailOpen(false)} className="close-sidebar"><X size={24} /></button>
+                            <button onClick={() => setIsDetailOpen(false)} className="close-sidebar"><FaTimes size={24} /></button>
                         </div>
 
                         <div className="detail-scroll-area">
@@ -441,28 +441,28 @@ const UsersPage = () => {
                                 <h4 className="section-title">المعلومات الأساسية</h4>
                                 <div className="info-modern-list">
                                     <div className="info-modern-item">
-                                        <Mail size={18} />
+                                        <FaRegEnvelope size={18} />
                                         <div className="content">
                                             <label>البريد الإلكتروني</label>
                                             <span>{selectedUser.email}</span>
                                         </div>
                                     </div>
                                     <div className="info-modern-item">
-                                        <Phone size={18} />
+                                        <FaPhoneAlt size={18} />
                                         <div className="content">
                                             <label>رقم الهاتف</label>
                                             <span>{selectedUser.phone}</span>
                                         </div>
                                     </div>
                                     <div className="info-modern-item">
-                                        <Calendar size={18} />
+                                        <FaRegCalendarAlt size={18} />
                                         <div className="content">
                                             <label>تاريخ الميلاد</label>
                                             <span>{selectedUser.birth_date ? formatDate(selectedUser.birth_date) : 'غير مسجل'}</span>
                                         </div>
                                     </div>
                                     <div className="info-modern-item">
-                                        <RefreshCcw size={18} />
+                                        <FaSyncAlt size={18} />
                                         <div className="content">
                                             <label>الجنس</label>
                                             <span>{selectedUser.gender === 'male' ? 'ذكر' : selectedUser.gender === 'female' ? 'أنثى' : 'غير محدد'}</span>
@@ -482,7 +482,7 @@ const UsersPage = () => {
                     <div className="admin-user-modal">
                         <div className="modal-header">
                             <h3>{modalMode === 'create' ? 'إضافة مستخدم جديد' : 'تعديل بيانات المستخدم'}</h3>
-                            <button className="close-btn" onClick={() => setIsModalOpen(false)}><X size={20} /></button>
+                            <button className="close-btn" onClick={() => setIsModalOpen(false)}><FaTimes size={20} /></button>
                         </div>
                         <form onSubmit={handleFormSubmit} className="user-form">
                             <div className="form-grid">

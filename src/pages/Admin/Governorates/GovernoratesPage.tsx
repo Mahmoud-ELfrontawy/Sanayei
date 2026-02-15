@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import {
-    Search,
-    Edit,
-    Trash2,
-    Plus,
-    X,
-    RefreshCcw,
-    CheckCircle,
-    XCircle
-} from 'lucide-react';
+    FaSearch,
+    FaEdit,
+    FaRegTrashAlt,
+    FaPlus,
+    FaTimes,
+    FaSyncAlt,
+    FaCheckCircle,
+    FaTimesCircle
+} from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { adminGovernoratesApi } from '../../../Api/admin/adminGovernorates.api';
 import './GovernoratesPage.css';
@@ -115,7 +115,7 @@ const GovernoratesPage = () => {
                     </div>
                     <div className="header-actions-top">
                         <button className="add-gov-btn" onClick={() => handleOpenModal('create')}>
-                            <Plus size={20} />
+                            <FaPlus size={20} />
                             <span>إضافة محافظة جديدة</span>
                         </button>
                     </div>
@@ -124,7 +124,7 @@ const GovernoratesPage = () => {
 
             <div className="governorates-controls">
                 <div className="search-wrapper">
-                    <Search className="search-icon" size={20} />
+                    <FaSearch className="search-icon" size={20} />
                     <input
                         type="text"
                         placeholder="ابحث عن محافظة..."
@@ -134,7 +134,7 @@ const GovernoratesPage = () => {
                     />
                 </div>
                 <button className="action-btn" onClick={fetchGovernorates} title="تحديث">
-                    <RefreshCcw size={18} />
+                    <FaSyncAlt size={18} />
                 </button>
             </div>
 
@@ -158,16 +158,16 @@ const GovernoratesPage = () => {
                                     </td>
                                     <td>
                                         <span className={`gov-status-badge ${gov.is_active ? 'active' : 'inactive'}`}>
-                                            {gov.is_active ? <CheckCircle size={14} /> : <XCircle size={14} />}
+                                            {gov.is_active ? <FaCheckCircle size={14} /> : <FaTimesCircle size={14} />}
                                             {gov.is_active ? 'نشطة' : 'معطلة'}
                                         </span>
                                     </td>
                                     <td className="actions-cell">
                                         <button className="action-btn edit" onClick={() => handleOpenModal('edit', gov)}>
-                                            <Edit size={18} />
+                                            <FaEdit size={18} />
                                         </button>
                                         <button className="action-btn delete" onClick={() => handleDelete(gov.id)}>
-                                            <Trash2 size={18} />
+                                            <FaRegTrashAlt size={18} />
                                         </button>
                                     </td>
                                 </tr>
@@ -188,7 +188,7 @@ const GovernoratesPage = () => {
                     <div className="gov-modal">
                         <div className="modal-header">
                             <h3>{modalMode === 'create' ? 'إضافة محافظة جديدة' : 'تعديل المحافظة'}</h3>
-                            <button className="close-btn" onClick={handleCloseModal}><X size={24} /></button>
+                            <button className="close-btn" onClick={handleCloseModal}><FaTimes size={24} /></button>
                         </div>
                         <form onSubmit={handleSubmit} className="gov-form">
                             <div className="form-group-governate">

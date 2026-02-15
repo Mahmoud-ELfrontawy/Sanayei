@@ -1,14 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import {
-    LayoutDashboard,
-    User,
-    Mail,
-    Bell,
-
-    LogOut,
-    Heart
-} from "lucide-react";
+    FaThLarge,
+    FaBell,
+    FaSignOutAlt,
+    FaCommentDots,
+    FaWallet,
+    FaUser
+} from "react-icons/fa";
 
 import { toast } from "react-toastify";
 import { useAuth } from "../../../hooks/useAuth";
@@ -54,6 +53,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
     useEffect(() => {
         if (unreadTotal > prevUnreadTotal.current) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setIsNewMessage(true);
             setTimeout(() => setIsNewMessage(false), 1000);
         }
@@ -71,29 +71,25 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         {
             title: "لوحة التحكم",
             path: "/dashboard",
-            icon: <LayoutDashboard size={20} />
+            icon: <FaThLarge size={20} />
         },
-        {
-            title: "الملف الشخصي",
-            path: userType === "craftsman" ? "/craftsman/profile" : (userType === "admin" ? "/admin/profile" : "/user/profile"),
-            icon: <User size={20} />
-        },
+
         {
             title: "المحفظة",
             path: "/dashboard/saved",
-            icon: <Heart size={20} />
+            icon: <FaWallet size={20} />
         },
         {
             title: "الرسائل",
             path: "/dashboard/messages",
-            icon: <Mail size={20} />,
+            icon: <FaCommentDots size={20} />,
             badge: unreadTotal,
             hasUnread: unreadTotal > 0
         },
         {
             title: "إشعارات",
             path: "/dashboard/notifications",
-            icon: <Bell size={20} />,
+            icon: <FaBell size={20} />,
             badge: unreadCount,
             hasUnread: unreadCount > 0
         },
@@ -121,6 +117,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                         <span className={`user-role-badge ${userType || "user"}`}>
                             {roleLabels[userType as keyof typeof roleLabels] || "مستخدم"}
                         </span>
+                        
+                        <NavLink 
+                            to={userType === "craftsman" ? "/craftsman/profile" : (userType === "admin" ? "/admin/profile" : "/user/profile")}
+                            className="user-profile-btn"
+                            onClick={onClose}
+                        >
+                            <FaUser size={16} />
+                            عرض الملف الشخصي
+                        </NavLink>
                     </div>
                 </div>
             </div>
@@ -171,7 +176,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     }, 1000);
                     onClose?.();
                 }} className="logout-btn">
-                    <LogOut size={20} />
+                    <FaSignOutAlt size={20} />
                     <span>تسجيل الخروج</span>
                 </button>
             </div>

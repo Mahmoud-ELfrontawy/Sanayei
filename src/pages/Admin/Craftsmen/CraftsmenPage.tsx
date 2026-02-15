@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Search,
-    Edit,
-    Eye,
-    CheckCircle,
-    XCircle,
-    Star,
-    Clock,
-    Wrench,
-    Briefcase,
-    DollarSign,
-    ExternalLink,
-    Filter,
-    X
-} from 'lucide-react';
+    FaSearch,
+    FaEdit,
+    FaEye,
+    FaCheckCircle,
+    FaTimesCircle,
+    FaStar,
+    FaClock,
+    FaWrench,
+    FaBriefcase,
+    FaDollarSign,
+    FaExternalLinkAlt,
+    FaFilter,
+    FaTimes
+} from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import './CraftsmenPage.css';
 import { adminCraftsmenApi } from '../../../Api/admin/adminCraftsmen.api';
@@ -174,7 +174,7 @@ const CraftsmenPage: React.FC = () => {
 
             <div className="controls-section">
                 <div className="search-box">
-                    <Search size={20} />
+                    <FaSearch size={20} />
                     <input
                         type="text"
                         placeholder="بحث بالاسم، الإيميل، أو الهاتف..."
@@ -184,7 +184,7 @@ const CraftsmenPage: React.FC = () => {
                 </div>
                 <div className="filters-group">
                     <div className="filter-item">
-                        <Filter size={18} />
+                        <FaFilter size={18} />
                         <select value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
                             <option value="all">كل الحالات</option>
                             <option value="pending">بانتظار المراجعة</option>
@@ -193,7 +193,7 @@ const CraftsmenPage: React.FC = () => {
                         </select>
                     </div>
                     <div className="filter-item">
-                        <Wrench size={18} />
+                        <FaWrench size={18} />
                         <select value={selectedSpecialty} onChange={(e) => setSelectedSpecialty(e.target.value)}>
                             <option value="all">كل التخصصات</option>
                             <option value="سباكة">سباكة</option>
@@ -232,14 +232,14 @@ const CraftsmenPage: React.FC = () => {
                                 </td>
                                 <td>
                                     <span className="specialty-badge">
-                                        <Wrench size={14} />
+                                        <FaWrench size={14} />
                                         {craftsman.specialty}
                                     </span>
                                 </td>
                                 <td>{craftsman.governorate?.name || 'غير محدد'}</td>
                                 <td>
                                     <div className="rating-mini">
-                                        <Star size={14} fill="#f59e0b" color="#f59e0b" />
+                                        <FaStar size={14} fill="#f59e0b" color="#f59e0b" />
                                         <span>{craftsman.rating || 'جديد'}</span>
                                     </div>
                                 </td>
@@ -252,15 +252,15 @@ const CraftsmenPage: React.FC = () => {
                                 </td>
                                 <td className="actions-cell">
                                     <button className="view-btn" onClick={() => openSidebar(craftsman)} title="عرض التفاصيل">
-                                        <Eye size={18} />
+                                        <FaEye size={18} />
                                     </button>
                                     {craftsman.status === 'pending' && (
                                         <>
                                             <button className="approve-btn" onClick={() => handleUpdateStatus(craftsman.id, 'approve')} title="اعتماد">
-                                                <CheckCircle size={18} />
+                                                <FaCheckCircle size={18} />
                                             </button>
                                             <button className="reject-btn" onClick={() => handleUpdateStatus(craftsman.id, 'reject')} title="رفض">
-                                                <XCircle size={18} />
+                                                <FaTimesCircle size={18} />
                                             </button>
                                         </>
                                     )}
@@ -298,7 +298,7 @@ const CraftsmenPage: React.FC = () => {
                     <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>
                     <div className="artisan-sidebar">
                         <div className="sidebar-header">
-                            <button className="close-btn" onClick={() => setIsSidebarOpen(false)}><X size={24} /></button>
+                            <button className="close-btn" onClick={() => setIsSidebarOpen(false)}><FaTimes size={24} /></button>
                             <h3>تفاصيل الملف المهني</h3>
                         </div>
 
@@ -315,17 +315,17 @@ const CraftsmenPage: React.FC = () => {
 
                             <div className="metrics-grid">
                                 <div className="metric-item">
-                                    <Star size={20} color="#f59e0b" />
+                                    <FaStar size={20} color="#f59e0b" />
                                     <span className="m-value">{selectedCraftsman.rating}</span>
                                     <span className="m-label">تقييم عام</span>
                                 </div>
                                 <div className="metric-item">
-                                    <Briefcase size={20} color="#3b82f6" />
+                                    <FaBriefcase size={20} color="#3b82f6" />
                                     <span className="m-value">{selectedCraftsman.completed_jobs}</span>
                                     <span className="m-label">مهمة مكتملة</span>
                                 </div>
                                 <div className="metric-item">
-                                    <Clock size={20} color="#10b981" />
+                                    <FaClock size={20} color="#10b981" />
                                     <span className="m-value">{selectedCraftsman.experience_years}س</span>
                                     <span className="m-label">خبرة</span>
                                 </div>
@@ -335,21 +335,21 @@ const CraftsmenPage: React.FC = () => {
                                 <h4 className="s-title">المعلومات المهنية</h4>
                                 <div className="info-modern-list">
                                     <div className="info-modern-item">
-                                        <Wrench size={18} />
+                                        <FaWrench size={18} />
                                         <div className="content">
                                             <label>التخصص الأساسي</label>
                                             <span>{selectedCraftsman.specialty}</span>
                                         </div>
                                     </div>
                                     <div className="info-modern-item">
-                                        <DollarSign size={18} />
+                                        <FaDollarSign size={18} />
                                         <div className="content">
                                             <label>فئة الأسعار</label>
                                             <span>{selectedCraftsman.price_range}</span>
                                         </div>
                                     </div>
                                     <div className="info-modern-item">
-                                        <CheckCircle size={18} />
+                                        <FaCheckCircle size={18} />
                                         <div className="content">
                                             <label>نسبة النجاح / الإكمال</label>
                                             <span>{selectedCraftsman.completion_rate}%</span>
@@ -357,7 +357,7 @@ const CraftsmenPage: React.FC = () => {
                                     </div>
                                     {selectedCraftsman.portfolio_url && (
                                         <div className="info-modern-item">
-                                            <ExternalLink size={18} />
+                                            <FaExternalLinkAlt size={18} />
                                             <div className="content">
                                                 <label>معرض الأعمال / بورتفوليو</label>
                                                 <a href={selectedCraftsman.portfolio_url} target="_blank" rel="noreferrer">عرض الرابط الخارجي</a>
@@ -376,16 +376,16 @@ const CraftsmenPage: React.FC = () => {
                                 {selectedCraftsman.status === 'pending' ? (
                                     <div className="approval-actions">
                                         <button className="full-approve-btn" onClick={() => handleUpdateStatus(selectedCraftsman.id, 'approve')}>
-                                            <CheckCircle size={20} /> تفعيل الحساب فوراً
+                                            <FaCheckCircle size={20} /> تفعيل الحساب فوراً
                                         </button>
                                         <button className="full-reject-btn" onClick={() => handleUpdateStatus(selectedCraftsman.id, 'reject')}>
-                                            <XCircle size={20} /> رفض الطلب
+                                            <FaTimesCircle size={20} /> رفض الطلب
                                         </button>
                                     </div>
                                 ) : (
                                     <div className="approval-actions">
                                         <button className="full-reject-btn" onClick={() => handleUpdateStatus(selectedCraftsman.id, 'block')}>
-                                            <Edit size={20} /> {selectedCraftsman.status === 'blocked' ? 'إلغاء الحظر' : 'حظر الحساب'}
+                                            <FaEdit size={20} /> {selectedCraftsman.status === 'blocked' ? 'إلغاء الحظر' : 'حظر الحساب'}
                                         </button>
                                     </div>
                                 )}

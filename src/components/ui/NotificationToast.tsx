@@ -1,5 +1,5 @@
 import React from "react";
-import { Check, X, BellRing } from "lucide-react";
+import { FaCheck, FaTimes, FaBell } from "react-icons/fa";
 
 interface NotificationToastProps {
     title: string;
@@ -22,7 +22,7 @@ const NotificationToast: React.FC<NotificationToastProps> = ({
         <div className="notification-toast-content">
             <div className="notification-toast-body-wrapper">
                 <div className="notification-toast-main-icon">
-                    <BellRing size={28} />
+                    <FaBell size={28} />
                 </div>
                 <div className="notification-toast-text">
                     <div className="notification-toast-header">
@@ -42,7 +42,7 @@ const NotificationToast: React.FC<NotificationToastProps> = ({
                             closeToast?.();
                         }}
                     >
-                        <Check size={18} />
+                        <FaCheck size={18} />
                         <span>قبول</span>
                     </button>
                     <button
@@ -53,7 +53,7 @@ const NotificationToast: React.FC<NotificationToastProps> = ({
                             closeToast?.();
                         }}
                     >
-                        <X size={18} />
+                        <FaTimes size={18} />
                         <span>رفض</span>
                     </button>
                 </div>

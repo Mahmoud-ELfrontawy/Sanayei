@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import {
-    Search,
-    Trash2,
-    Star,
-    RefreshCcw,
-    Quote
-} from 'lucide-react';
+    FaSearch,
+    FaRegTrashAlt,
+    FaStar,
+    FaSyncAlt,
+    FaQuoteLeft
+} from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { adminReviewsApi } from '../../../Api/admin/adminReviews.api';
 import './ReviewsPage.css';
@@ -54,10 +54,9 @@ const ReviewsPage = () => {
 
     const renderStars = (rating: number) => {
         return Array.from({ length: 5 }).map((_, i) => (
-            <Star
+            <FaStar
                 key={i}
                 size={14}
-                fill={i < rating ? "#f59e0b" : "transparent"}
                 color={i < rating ? "#f59e0b" : "#d1d5db"}
             />
         ));
@@ -82,7 +81,7 @@ const ReviewsPage = () => {
 
             <div className="reviews-controls">
                 <div className="search-wrapper">
-                    <Search className="search-icon" size={20} />
+                    <FaSearch className="search-icon" size={20} />
                     <input
                         type="text"
                         placeholder="ابحث باسم العميل، الصنايعي، أو محتوى التقييم..."
@@ -92,7 +91,7 @@ const ReviewsPage = () => {
                     />
                 </div>
                 <button className="action-btn" onClick={fetchReviews} title="تحديث">
-                    <RefreshCcw size={18} />
+                    <FaSyncAlt size={18} />
                 </button>
             </div>
 
@@ -140,7 +139,7 @@ const ReviewsPage = () => {
                                         <div className="review-comment">
                                             {review.comment ? (
                                                 <div style={{ display: 'flex', gap: 6 }}>
-                                                    <Quote size={12} style={{ opacity: 0.3 }} />
+                                                    <FaQuoteLeft size={12} style={{ opacity: 0.3 }} />
                                                     <span>{review.comment}</span>
                                                 </div>
                                             ) : (
@@ -150,7 +149,7 @@ const ReviewsPage = () => {
                                     </td>
                                     <td className="actions-cell">
                                         <button className="action-btn delete" onClick={() => handleDelete(review.id)}>
-                                            <Trash2 size={18} />
+                                            <FaRegTrashAlt size={18} />
                                         </button>
                                     </td>
                                 </tr>
