@@ -1,6 +1,6 @@
 import React from "react";
+import { FaUserEdit } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
-import { Link } from "react-router-dom";
 import type { CraftsmanProfileData } from "../../../types/craftsman";
 import defaultAvatar from "../../../assets/images/image5.png";
 import Button from "../../../components/ui/Button/Button";
@@ -13,21 +13,7 @@ interface Props {
 const ProfileCard: React.FC<Props> = ({ craftsman, isOwnProfile }) => {
   return (
     <div className="craftsman-card">
-      {isOwnProfile && (
-        <div style={{ textAlign: "center", marginBottom: "1rem" }}>
-          <Link
-            to="/craftsman/profile/edit"
-            style={{
-              color: "#5FA8D3",
-              textDecoration: "none",
-              fontWeight: "bold",
-              fontSize: "1.1rem",
-            }}
-          >
-            تعديل بيانات الملف الشخصي
-          </Link>
-        </div>
-      )}
+
 
       <div className="craftsman-img-wrapper">
         <img
@@ -89,11 +75,17 @@ const ProfileCard: React.FC<Props> = ({ craftsman, isOwnProfile }) => {
             </Button>
           </>
         ) : (
-          <div
-            className="own-profile-badge"
-            style={{ color: "#777", fontSize: "0.9rem" }}
-          >
-            ملفك الشخصي
+          <div style={{ marginTop: '10px', width: "100%" }}>
+            <Button
+              to="/craftsman/profile/edit"
+              variant="outline"
+              className="w-100 btn-sm"
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", justifyContent: "center" }}>
+                <FaUserEdit size={18} />
+                تعديل بياناتي
+              </div>
+            </Button>
           </div>
         )}
       </div>

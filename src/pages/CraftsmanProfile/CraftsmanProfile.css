@@ -530,7 +530,7 @@
 }
 
 .view-all-btn {
-  background: #5FA8D3;
+  background: #cee1ec;
   color: #fff;
   border: none;
   padding: 10px 40px;
@@ -542,7 +542,7 @@
 }
 
 .view-all-btn:hover {
-  background-color: #4d94bd;
+  background-color: #0b3c59;
 }
 
 /* =========================================
