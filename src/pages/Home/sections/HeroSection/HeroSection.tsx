@@ -20,6 +20,11 @@ const HeroSection: React.FC = () => {
         navigate("/choose");
     };
 
+    const handleReadMore = () => {
+        // يعمل بدون تسجيل دخول
+        navigate("/choose");
+    };
+
     return (
         <section className="home">
             <div className="image-home">
@@ -54,7 +59,7 @@ const HeroSection: React.FC = () => {
                         </button>
 
                         <button
-                            onClick={handleRequestNow}
+                            onClick={handleReadMore}
                             className="btn-outline-herosection"
                         >
                             اقرأ اكثر

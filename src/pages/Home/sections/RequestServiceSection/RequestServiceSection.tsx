@@ -35,7 +35,6 @@ const RequestServiceSection: React.FC = () => {
         defaultValues: {
             name: "",
             email: "",
-            phone: "",
             province: "",
             address: "",
             service_type: "",
@@ -84,7 +83,6 @@ const RequestServiceSection: React.FC = () => {
         // ملء البيانات تلقائياً من المستخدم المسجل دخوله
         form.setValue("name", user.name || "");
         form.setValue("email", user.email || "");
-        form.setValue("phone", (user as any).phone || "");
     }, [user, form]);
 
     /* ===============================
@@ -104,7 +102,6 @@ const RequestServiceSection: React.FC = () => {
                 user_id: user?.id ? Number(user.id) : null,
                 name: data.name || user?.name || "زائر",
                 email: data.email || user?.email || "guest@example.com",
-                phone: data.phone || (user as any)?.phone || "غير محدد",
 
                 // Service Request Details
                 province: data.province,

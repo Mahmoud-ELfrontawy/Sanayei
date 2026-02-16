@@ -1,5 +1,5 @@
 import React from "react";
-import { FiCheck, FiMapPin, FiCreditCard, FiPhone } from "react-icons/fi";
+import { FiCheck, FiCreditCard } from "react-icons/fi";
 import type { CraftsmanProfileData } from "../../../../types/craftsman";
 
 interface Props {
@@ -29,30 +29,7 @@ const AboutTab: React.FC<Props> = ({ data }) => {
         <p className="description-text">{data.about}</p>
       </div>
 
-      <div className="info-grid-row">
-        {/* العنوان */}
-        <div className="info-section half">
-          <h3 className="info-title">
-            <FiMapPin /> العنوان
-          </h3>
-          <p className="info-text-val">
-            {data.governorate && (
-              <span style={{ fontWeight: "bold", display: "block", marginBottom: "4px" }}>
-                المحافظة: {data.governorate}
-              </span>
-            )}
-            {data.address}
-          </p>
-        </div>
 
-        {/* رقم الهاتف */}
-        <div className="info-section half">
-          <h3 className="info-title">
-            <FiPhone /> رقم الهاتف
-          </h3>
-          <p className="info-text-val ltr-text">{data.phone || "غير متاح"}</p>
-        </div>
-      </div>
 
       <div className="info-grid-row">
         {/* نطاق الأسعار */}

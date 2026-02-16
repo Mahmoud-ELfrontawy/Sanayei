@@ -183,6 +183,49 @@
     font-size: 16px;
 }
 
+/* Craftsman Name Link */
+.craftsman-name-link {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-radius: 12px;
+    border: 2px solid transparent;
+    transition: all var(--transition-main);
+    position: relative;
+    overflow: hidden;
+}
+
+.craftsman-name-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--color-primary) 0%, #5598C0 100%);
+    opacity: 0;
+    transition: opacity var(--transition-main);
+    z-index: -1;
+}
+
+.craftsman-name-link:hover {
+    color: #ffffff;
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px -4px rgba(95, 168, 211, 0.4);
+}
+
+.craftsman-name-link:hover::before {
+    opacity: 1;
+}
+
+.craftsman-name-link:active {
+    transform: translateY(0);
+}
+
 /* Status & Actions */
 .order-side {
     display: flex;

@@ -1,10 +1,17 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
 
 import type { ServiceRequestPayload } from "../../../../constants/serviceRequest";
 import type { Service } from "../../../../constants/service";
 import type { Governorate } from "../../../../Api/serviceRequest/governorates.api";
 import type { Sanaei } from "../../../../Api/serviceRequest/sanaei.api";
+
+import { Link } from "react-router-dom";
+import { FaUser } from "react-icons/fa";
+import { getTechnicianById } from "../../../../Api/technicians.api";
+import { getAvatarUrl } from "../../../../utils/imageUrl";
+// @ts-ignore
+import defaultAvatar from "../../../../assets/images/image5.png";
 
 import {
     RequestServiceInputSkeleton,
@@ -31,11 +38,34 @@ const RequestServiceForm: React.FC<Props> = ({
         formState: { errors, isSubmitting },
     } = form;
 
+    const [selectedCraftsmanDetails, setSelectedCraftsmanDetails] = useState<any>(null);
+
     const serviceId = watch("service_type");
     const workerId = watch("industrial_type");
 
     const autoSelectedRef = useRef(false);
 
+    // Fetch craftsman details on selection
+    useEffect(() => {
+        if (!workerId) {
+            setSelectedCraftsmanDetails(null);
+            return;
+        }
+
+        const fetchDetails = async () => {
+            try {
+                const data = await getTechnicianById(workerId);
+                setSelectedCraftsmanDetails(data);
+            } catch (error) {
+                console.error("Failed to fetch craftsman details", error);
+                // Fallback to basic info from list if fetch fails
+                const basicInfo = sanaei.find((w) => String(w.id) === String(workerId));
+                if (basicInfo) setSelectedCraftsmanDetails(basicInfo);
+            }
+        };
+
+        fetchDetails();
+    }, [workerId, sanaei]);
 
     /* ===============================
         Loading (صح)
@@ -79,6 +109,8 @@ const RequestServiceForm: React.FC<Props> = ({
             return String(workerServiceId) === String(serviceId);
         });
     }, [serviceId, sanaei]);
+
+
 
 
     /* ===============================
@@ -203,26 +235,18 @@ const RequestServiceForm: React.FC<Props> = ({
             ) : (
                 <div className="req-row">
                     <input
-                        type="text"
+                        type="date"
                         className="req-input"
                         placeholder="تاريخ الخدمة المطلوب"
-                        onFocus={(e) => (e.target.type = "date")}
-                        {...register("date", {
-                            onBlur: (e) => {
-                                if (!e.target.value) e.target.type = "text";
-                            },
-                        })}
+                        dir="ltr"
+                        {...register("date", { required: true })}
                     />
                     <input
-                        type="text"
+                        type="time"
                         className="req-input"
                         placeholder="وقت الخدمة المطلوب"
-                        onFocus={(e) => (e.target.type = "time")}
-                        {...register("time", {
-                            onBlur: (e) => {
-                                if (!e.target.value) e.target.type = "text";
-                            },
-                        })}
+                        dir="ltr"
+                        {...register("time", { required: true })}
                     />
                 </div>
             )}
@@ -270,6 +294,54 @@ const RequestServiceForm: React.FC<Props> = ({
                             </option>
                         ))}
                     </select>
+
+                    {selectedCraftsmanDetails && (
+                        <div className="selected-craftsman-card">
+                            <img
+                                src={
+                                    getAvatarUrl(
+                                        selectedCraftsmanDetails.profile_photo || 
+                                        selectedCraftsmanDetails.avatar || 
+                                        selectedCraftsmanDetails.avatarUrl || 
+                                        selectedCraftsmanDetails.image || 
+                                        selectedCraftsmanDetails.profile_image || 
+                                        selectedCraftsmanDetails.profile_image_url || 
+                                        selectedCraftsmanDetails.photo,
+                                        selectedCraftsmanDetails.name
+                                    )
+                                }
+                                alt={selectedCraftsmanDetails.name}
+                                className="selected-craftsman-avatar"
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src = defaultAvatar;
+                                }}
+                            />
+                            <div className="selected-craftsman-info">
+                                <h4 className="selected-craftsman-name">
+                                    {selectedCraftsmanDetails.name}
+                                </h4>
+                                <div className="selected-craftsman-rating">
+                                    <span>⭐</span>
+                                    <span>
+                                        {selectedCraftsmanDetails.rating || "5.0"}
+                                    </span>
+                                    {selectedCraftsmanDetails.reviews_count && (
+                                        <span style={{ color: '#94a3b8', fontSize: '12px', fontWeight: 'normal', marginInlineStart: '4px' }}>
+                                            ({selectedCraftsmanDetails.reviews_count})
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                            <Link
+                                to={`/craftsman/${selectedCraftsmanDetails.id}`}
+                                target="_blank"
+                                className="btn-view-profile"
+                                title="عرض الملف الشخصي للصنايعي"
+                            >
+                                <FaUser size={14} /> عرض الملف
+                            </Link>
+                        </div>
+                    )}
 
                     {errors.industrial_type && (
                         <span className="form-error">

@@ -5,6 +5,13 @@ export interface Sanaei {
     name: string;
     phone: string;
     email: string;
+    avatar?: string;
+    avatarUrl?: string;
+    image?: string;
+    profile_image?: string;
+    profile_image_url?: string;
+    photo?: string;
+
 
     craft_type: string | null;
     experience_years?: string;

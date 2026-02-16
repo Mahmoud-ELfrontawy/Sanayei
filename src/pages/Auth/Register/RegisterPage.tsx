@@ -66,6 +66,10 @@ const RegisterPage: React.FC = () => {
                 inputMode="numeric"
                 className="login-input"
                 placeholder="رقم الهاتف"
+                maxLength={11}
+                onInput={(e) => {
+                  e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, "");
+                }}
                 {...register("phone", {
                   required: "رقم الهاتف مطلوب",
                   pattern: {

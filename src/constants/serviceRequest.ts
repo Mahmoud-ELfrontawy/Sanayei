@@ -3,7 +3,7 @@ export interface ServiceRequestPayload {
     id : number;
     name: string;
     email: string;
-    phone: string;
+    phone?: string;
     province: string;
     address: string;
     date: string;

@@ -91,22 +91,22 @@ export const updateServiceRequestStatus = async (
 /**
  * Delete a service request
  */
-export const deleteServiceRequest = async (requestId: number) => {
-    try {
-        const userType = localStorage.getItem("userType");
+// export const deleteServiceRequest = async (requestId: number) => {
+//     try {
+//         const userType = localStorage.getItem("userType");
         
-        // Craftsman uses the base endpoint as confirmed working.
-        // User/Company might use a singular resource name for individual deletion.
-        const url = userType === "craftsman"
-            ? `${BASE_URL}/service-requests/${requestId}`
-            : `${BASE_URL}/user/service-request/${requestId}`;
+//         // Craftsman uses the base endpoint as confirmed working.
+//         // User/Company might use a singular resource name for individual deletion.
+//         const url = userType === "craftsman"
+//             ? `${BASE_URL}/service-requests/${requestId}`
+//             : `${BASE_URL}/user/service-request/${requestId}`;
 
-        const response = await axios.delete(url, { headers: getHeaders() });
-        return response.data;
-    } catch (error) {
-        throw handleError(error);
-    }
-};
+//         const response = await axios.delete(url, { headers: getHeaders() });
+//         return response.data;
+//     } catch (error) {
+//         throw handleError(error);
+//     }
+// };
 
 /**
  * Create a new service request

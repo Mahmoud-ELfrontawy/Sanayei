@@ -1,11 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
 import ReviewModal from "../../components/ui/ReviewModal/ReviewModal";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
     getMyServiceRequests,
     getIncomingServiceRequests,
     updateServiceRequestStatus,
-    deleteServiceRequest,
+    // deleteServiceRequest,
 } from "../../Api/serviceRequest/serviceRequests.api";
 import { useAuth } from "../../hooks/useAuth";
 import { useNotifications } from "../../context/NotificationContext";
@@ -15,7 +15,6 @@ import type { ChatContact } from "../../context/UserChatProvider";
 
 import { toast } from "react-toastify";
 import {
-    FaPhone,
     FaTrash,
     FaEnvelope,
     FaMapMarkerAlt,
@@ -143,19 +142,19 @@ function MyOrdersPage() {
         setOrderToDelete(orderId);
     };
 
-    const confirmDelete = async () => {
-        if (!orderToDelete) return;
+    // const confirmDelete = async () => {
+    //     if (!orderToDelete) return;
 
-        try {
-            await deleteServiceRequest(orderToDelete);
-            toast.success("تم حذف الطلب بنجاح ✅");
-            setOrders((prev) => prev.filter((order) => order.id !== orderToDelete));
-        } catch (err) {
-            toast.error("فشل حذف الطلب");
-        } finally {
-            setOrderToDelete(null);
-        }
-    };
+    //     try {
+    //         await deleteServiceRequest(orderToDelete);
+    //         toast.success("تم حذف الطلب بنجاح ✅");
+    //         setOrders((prev) => prev.filter((order) => order.id !== orderToDelete));
+    //     } catch (err) {
+    //         toast.error("فشل حذف الطلب");
+    //     } finally {
+    //         setOrderToDelete(null);
+    //     }
+    // };
 
     const cancelDelete = () => {
         setOrderToDelete(null);
@@ -199,13 +198,13 @@ function MyOrdersPage() {
 
         return (
             <div className="order-card">
-                <button
+                {/* <button
                     onClick={() => handleDeleteRequest(order.id)}
                     className="trash-btn"
                     title="حذف الطلب"
                 >
                     <FaTrash size={16} />
-                </button>
+                </button> */}
 
                 {/* Header: Service Name & Base Info */}
                 <div className="card-header">
@@ -255,29 +254,19 @@ function MyOrdersPage() {
                             <span className="info-value">كاش</span>
                         </div>
                         <div className="info-item">
-                            <span className="info-label"><FaPhone /> رقم التواصل</span>
-                            <div className="phone-container">
-                                {(() => {
-                                    // If user is Craftsman -> Show Client Phone (order.phone)
-                                    // If user is Regular User -> Show Craftsman Phone (order.craftsman?.phone)
-                                    const phoneToShow = isCraftsman
-                                        ? order.phone
-                                        : (order.craftsman?.phone || order.phone);
-
-                                    return (
-                                        <a href={`tel:${phoneToShow}`} className="phone-link">
-                                            <span className="phone-icon"><FaPhone /></span>
-                                            {phoneToShow || "غير متاح"}
-                                        </a>
-                                    );
-                                })()}
-                            </div>
-                        </div>
-                        <div className="info-item">
                             <span className="info-label"><FaUser /> {isCraftsman ? "العميل" : "الصنايعي"}</span>
-                            <span className="info-value">
-                                {isCraftsman ? (order.name || "عميل") : (order.craftsman?.name || "صنايعي")}
-                            </span>
+                            {!isCraftsman && order.craftsman_id ? (
+                                <Link 
+                                    to={`/craftsman/${order.craftsman_id}`} 
+                                    className="craftsman-name-link"
+                                >
+                                    {order.craftsman?.name || "صنايعي"}
+                                </Link>
+                            ) : (
+                                <span className="info-value">
+                                    {isCraftsman ? (order.name || "عميل") : (order.craftsman?.name || "صنايعي")}
+                                </span>
+                            )}
                         </div>
                     </div>
 

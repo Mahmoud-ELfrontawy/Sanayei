@@ -62,6 +62,8 @@ const Header: React.FC = () => {
     ? "/admin/dashboard"
     : (isCraftsman ? "/dashboard/craftsman" : "/dashboard");
 
+  const viewLinks = NAV_LINKS.filter(link => !link.authRequired || isAuthenticated);
+
   /* ================= HANDLERS ================= */
 
   const toggleDropdown = () => {
@@ -130,7 +132,7 @@ const Header: React.FC = () => {
 
         {/* ================= DESKTOP NAV ================= */}
         <ul className="header-links desktop-only">
-          {NAV_LINKS.map((link: NavLinkItem) => (
+          {viewLinks.map((link: NavLinkItem) => (
             <li key={link.path}>
               <NavLink
                 to={link.path}
@@ -214,7 +216,7 @@ const Header: React.FC = () => {
                               <p className="notif-item-message">{notif.message}</p>
                               <div className="notification-time">
                                 <FaRegClock size={12} />
-                                <span>{formatTimeAgo(notif.timestamp)}</span>
+                                <span className="">{formatTimeAgo(notif.timestamp)}</span>
                               </div>
                             </div>
                           </div>
@@ -309,7 +311,7 @@ const Header: React.FC = () => {
           )}
 
           <ul className="mobile-links">
-            {NAV_LINKS.map((link) => (
+            {viewLinks.map((link) => (
               <li key={link.path}>
                 <NavLink
                   to={link.path}
