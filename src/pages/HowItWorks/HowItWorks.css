@@ -1,0 +1,232 @@
+/* HowItWorks.css */
+
+.hiw-page-wrapper {
+    background-color: var(--color-bg-main);
+    color: var(--color-text-main);
+    overflow-x: hidden;
+    direction: rtl;
+    line-height: 1.6;
+}
+
+/* Hero Section */
+.hiw-hero-section {
+    position: relative;
+    padding: 120px 0 80px;
+    background: linear-gradient(180deg, #f0f7ff 0%, var(--color-bg-main) 100%);
+    overflow: hidden;
+    text-align: center;
+}
+
+.hiw-hero-section::after {
+    content: '';
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150%;
+    height: 100px;
+    background: var(--color-bg-main);
+    border-radius: 50%;
+}
+
+.hiw-content-container {
+    width: min(1200px, 90%);
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.hiw-hero-badge {
+    padding: 12px 28px;
+    background: white;
+    color: var(--color-primary);
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 25px rgba(95, 168, 211, 0.1);
+    border: 1px solid rgba(95, 168, 211, 0.1);
+    display: inline-block;
+    letter-spacing: 0.5px;
+}
+
+.hiw-hero-title {
+    font-size: clamp(2.8rem, 7vw, 4.5rem);
+    color: var(--color-text-accent);
+    margin-bottom: 25px;
+    line-height: 1.1;
+    font-weight: 900;
+}
+
+.hiw-hero-subtitle {
+    font-size: 1.4rem;
+    color: var(--color-text-main);
+    max-width: 700px;
+    margin: 0 auto;
+    opacity: 0.8;
+}
+
+/* Tabs */
+.hiw-tabs-outer-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: -15px 0 60px;
+    position: relative;
+    z-index: 10;
+}
+
+.hiw-tabs-inner-container {
+    display: flex;
+    background: white;
+    padding: 6px;
+    border-radius: 60px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+    min-width: min(500px, 100%);
+}
+
+.hiw-tab-trigger-btn {
+    flex: 1;
+    padding: 16px 20px;
+    border-radius: 50px;
+    font-size: 1.25rem; /* Increased font size */
+    font-weight: 850; /* Slightly bolder */
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.hiw-tab-trigger-btn.active {
+    background: var(--color-primary);
+    color: #ffffff !important;
+    box-shadow: 0 12px 25px rgba(95, 168, 211, 0.3);
+}
+
+/* Steps Grid */
+.hiw-steps-display-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 35px;
+    padding: 40px 0 100px;
+    min-height: 600px; /* Stabilize height during transitions */
+}
+
+.hiw-individual-step-card {
+    background: white;
+    padding: 65px 45px;
+    border-radius: 45px;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 15px 45px rgba(0,0,0,0.03);
+}
+
+.hiw-individual-step-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top right, rgba(95, 168, 211, 0.03), transparent);
+    z-index: 0;
+}
+
+.hiw-individual-step-card:hover {
+    transform: translateY(-15px);
+    box-shadow: 0 45px 90px rgba(95, 168, 211, 0.12);
+    border-color: rgba(95, 168, 211, 0.2);
+}
+
+.hiw-step-bg-number {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    font-size: 6rem;
+    font-weight: 900;
+    color: rgba(95, 168, 211, 0.06);
+    line-height: 1;
+    z-index: 0;
+    font-family: 'Outfit', sans-serif;
+}
+
+.hiw-step-visual-icon {
+    width: 95px;
+    height: 95px;
+    background: linear-gradient(135deg, var(--color-primary) 0%, #7ec4ed 100%);
+    color: white;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    margin: 0 auto 35px;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 15px 35px rgba(95, 168, 211, 0.25);
+    transition: 0.5s ease;
+}
+
+.hiw-individual-step-card:hover .hiw-step-visual-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.hiw-individual-step-card h3 {
+    font-size: 1.9rem;
+    margin-bottom: 22px;
+    color: var(--color-text-accent);
+    font-weight: 800;
+    position: relative;
+    z-index: 1;
+}
+
+.hiw-individual-step-card p {
+    font-size: 1.25rem;
+    color: var(--color-text-main);
+    line-height: 1.8;
+    position: relative;
+    z-index: 1;
+    opacity: 0.85;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hiw-tabs-outer-wrapper {
+        padding: 0 20px;
+    }
+
+    .hiw-tabs-inner-container {
+        width: 100%;
+        flex-direction: column;
+        border-radius: 25px;
+    }
+
+    .hiw-tab-trigger-btn {
+        width: 100%;
+        padding: 12px;
+        border-radius: 20px;
+    }
+
+    .hiw-hero-title {
+        font-size: 2.8rem;
+    }
+
+    .hiw-individual-step-card {
+        padding: 50px 35px;
+    }
+
+    .hiw-hero-section {
+        padding: 80px 0 50px;
+    }
+}

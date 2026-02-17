@@ -7,7 +7,7 @@ export const FOOTER_LINKS = [
         links: [
             { label: "من نحن", to: "/about" },
             { label: "كيف نعمل", to: "/how-it-works" },
-            { label: "انضم إلينا", to: "/careers" },
+            { label: "انضم إلينا", to: "/join-us" },
         ],
     },
     {

@@ -7,6 +7,11 @@ import Home from "../pages/Home";
 import ServicesPage from "../pages/Services/ServicesPage";
 import JoinPage from "../pages/Join/JoinPage";
 import ContactPage from "../pages/Contact/ContactPage";
+import AboutUs from "../pages/AboutUs/AboutUs";
+import HowItWorks from "../pages/HowItWorks/HowItWorks";
+import JoinUs from "../pages/JoinUs/JoinUs";
+import PrivacyPolicy from "../pages/Legal/PrivacyPolicy";
+import TermsOfUse from "../pages/Legal/TermsOfUse";
 
 import LoginPage from "../pages/Auth/Login/LoginPage";
 import ForgotPasswordPage from "../pages/Auth/ForgotPassword/ForgotPasswordPage";
@@ -70,6 +75,11 @@ const AppRouter: React.FC = () => {
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/choose" element={<ChooseSanayPage />} />
           <Route path="/orders" element={<MyOrdersPage />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="/join-us" element={<JoinUs />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfUse />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/profile" element={<EditProfilePagee />} />
           <Route path="/request-service" element={<RequestServiceSection />} />

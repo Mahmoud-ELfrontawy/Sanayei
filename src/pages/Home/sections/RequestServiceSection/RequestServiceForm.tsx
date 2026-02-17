@@ -300,12 +300,12 @@ const RequestServiceForm: React.FC<Props> = ({
                             <img
                                 src={
                                     getAvatarUrl(
-                                        selectedCraftsmanDetails.profile_photo || 
-                                        selectedCraftsmanDetails.avatar || 
-                                        selectedCraftsmanDetails.avatarUrl || 
-                                        selectedCraftsmanDetails.image || 
-                                        selectedCraftsmanDetails.profile_image || 
-                                        selectedCraftsmanDetails.profile_image_url || 
+                                        selectedCraftsmanDetails.profile_photo ||
+                                        selectedCraftsmanDetails.avatar ||
+                                        selectedCraftsmanDetails.avatarUrl ||
+                                        selectedCraftsmanDetails.image ||
+                                        selectedCraftsmanDetails.profile_image ||
+                                        selectedCraftsmanDetails.profile_image_url ||
                                         selectedCraftsmanDetails.photo,
                                         selectedCraftsmanDetails.name
                                     )
