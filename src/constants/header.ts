@@ -10,7 +10,7 @@ export interface NavLinkItem {
 export const NAV_LINKS: NavLinkItem[] = [
     { label: "الرئيسية", path: "/" },
     { label: "طلب خدمة", path: "/services" },
-    { label: "اختر صنايعي", path: "/choose" },
+    { label: "المتجر", path: "/store" },
     { label: "متابعة الطلبات", path: "/orders", authRequired: true },
     { label: "تواصل معنا", path: "/contact" },
 ];

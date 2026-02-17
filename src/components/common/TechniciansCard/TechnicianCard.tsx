@@ -1,8 +1,10 @@
 import { FaStar, FaHeart, FaRegHeart } from "react-icons/fa";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { getAvatarUrl } from "../../../utils/imageUrl";
+import { formatTimeAgo } from "../../../utils/timeAgo";
 import type { Technician } from "../../../constants/technician";
-import Button from "../../ui/Button/Button";
+import "./TechnicianCard.css";
 
 interface Props {
     technician: Technician;
@@ -12,15 +14,12 @@ const TechnicianCard: React.FC<Props> = ({ technician }) => {
 
     const [isFavorite, setIsFavorite] = useState(false);
 
-    // اقرأ من localStorage أول ما الكارد يفتح
+    // Load favorite status
     useEffect(() => {
         const stored = JSON.parse(
             localStorage.getItem("favorites") || "[]"
         );
-
-        setTimeout(() => {
-            setIsFavorite(stored.includes(technician.id));
-        }, 0);
+        setIsFavorite(stored.includes(technician.id));
     }, [technician.id]);
 
     const toggleFavorite = () => {
@@ -42,100 +41,110 @@ const TechnicianCard: React.FC<Props> = ({ technician }) => {
     };
 
     return (
-        <article className="worker-card">
+        <article className="technician-card">
 
-            {/* Favorite */}
+            {/* Favorite Button */}
             <button
-                className="worker-fav"
-                aria-label="favorite"
+                className="fav-btn"
                 onClick={toggleFavorite}
+                aria-label="Add to favorites"
             >
                 {isFavorite ? <FaHeart /> : <FaRegHeart />}
             </button>
 
-            <div className="worker-media">
+            {/* Profile Image (Floating Circle) */}
+            <div className="technician-image-wrapper">
                 <img
                     src={getAvatarUrl(technician.profile_photo, technician.name)}
                     alt={technician.name}
-                    className="worker-profile-image"
+                    className="technician-image"
                     loading="lazy"
+                    onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = "/default-avatar.png";
+                    }}
                 />
             </div>
 
-            <div className="worker-body">
+            {/* Content Body */}
+            <h3 className="technician-name">
+                {technician.name}
+            </h3>
 
-                <span className="worker-tag">
-                    {technician.service?.name}
-                </span>
+            <span className="technician-service">
+                {technician.service?.name || "خدمة عامة"}
+            </span>
 
-                <div className="worker-header">
-                    <h3 className="worker-name-sanay">
-                        {technician.name}
-                    </h3>
+            {/* Online Status */}
+            <div className={`technician-status ${technician.is_online ? 'online' : ''}`}>
+                {technician.is_online ? (
+                    <>
+                        <span className="status-dot online"></span>
+                        <span style={{ color: '#22c55e', fontWeight: 'bold' }}>متصل الآن</span>
+                    </>
+                ) : (
+                    <>
+                        {technician.last_seen && formatTimeAgo(technician.last_seen) === "الآن" ? (
+                            <>
+                                <span className="status-dot online"></span>
+                                <span style={{ color: '#22c55e', fontWeight: 'bold' }}>متصل الآن</span>
+                            </>
+                        ) : (
+                            <>
+                                <span className="status-dot offline"></span>
+                                {technician.last_seen
+                                    ? `آخر ظهور ${formatTimeAgo(technician.last_seen)}`
+                                    : "غير متصل"}
+                            </>
+                        )}
+                    </>
+                )}
+            </div>
 
-                    {technician.governorate?.name && (
-                        <span className="worker-location">
-                            ({technician.governorate.name})
-                        </span>
-                    )}
-                </div>
+            <p className="technician-bio">
+                {technician.description || "لا يوجد وصف متاح لهذا الصنايعي حالياً."}
+            </p>
 
-                <p className="worker-bio">
-                    {technician.description || "لا يوجد وصف"}
-                </p>
-
-                <div className="worker-price">
-                    {technician.price_range
-                        ? `من ${technician.price_range} جنيه`
-                        : "السعر غير محدد"}
-                </div>
-
-                <div className="worker-meta">
-                    <ul className="worker-stars">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                            <li
-                                key={i}
-                                className={
-                                    i < Math.round(technician.rating || 0)
-                                        ? "on"
-                                        : ""
-                                }
-                            >
-                                <FaStar />
-                            </li>
-                        ))}
-                    </ul>
-
-                    <span className="worker-reviews">
-                        ({technician.reviews_count || 0})
+            {/* Meta Info */}
+            <div className="technician-meta">
+                <div className="meta-item">
+                    <FaStar className="star-icon" />
+                    <span>
+                        {technician.rating || 0} ({technician.reviews_count || 0})
                     </span>
                 </div>
-
-                <div className="worker-actions">
-                    <Button
-                        to="/request-service"
-                        variant="primary"
-                        state={{
-                            industrial_type: technician.id.toString(),
-                            industrial_name: technician.name,
-                            service_type: technician.service?.id?.toString(),
-                            service_name: technician.service?.name,
-                            price: technician.price_range
-                                ? `من ${technician.price_range} جنيه`
-                                : "السعر غير محدد",
-                        }}
-                    >
-                        طلب خدمة
-                    </Button>
-
-                    <Button
-                        to={`/craftsman/${technician.id}`}
-                        variant="outline"
-                    >
-                        الملف الشخصي
-                    </Button>
+                <div className="meta-item">
+                    <span>
+                        {technician.price_range
+                            ? `${technician.price_range} ج.م`
+                            : "السعر غير محدد"}
+                    </span>
                 </div>
+            </div>
 
+            {/* Actions */}
+            <div className="technician-actions">
+                <Link
+                    to="/request-service"
+                    state={{
+                        industrial_type: technician.id.toString(),
+                        industrial_name: technician.name,
+                        service_type: technician.service?.id?.toString(),
+                        service_name: technician.service?.name,
+                        price: technician.price_range
+                            ? `من ${technician.price_range} جنيه`
+                            : "السعر غير محدد",
+                    }}
+                    className="btn-tech-request"
+                >
+                    طلب خدمة
+                </Link>
+
+                <Link
+                    to={`/craftsman/${technician.id}`}
+                    className="btn-tech-profile"
+                >
+                    الملف الشخصي
+                </Link>
             </div>
         </article>
     );

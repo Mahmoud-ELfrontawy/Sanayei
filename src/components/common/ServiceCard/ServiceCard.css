@@ -201,3 +201,24 @@
         opacity: 1;
     }
 }
+
+/* Workers Grid in Services Page */
+.workers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 35px;
+    row-gap: 50px;
+    margin-top: 40px;
+}
+
+@media (max-width: 1024px) {
+    .workers-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .workers-grid {
+        grid-template-columns: 1fr;
+    }
+}

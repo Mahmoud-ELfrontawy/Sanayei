@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 import { getServices } from "../../../../Api/services.api";
@@ -12,6 +12,12 @@ interface ServicesSectionProps {
 }
 
 const ServicesSection: React.FC<ServicesSectionProps> = ({ limit }) => {
+    const navigate = useNavigate();
+
+    const handleServiceClick = (service: any) => {
+        navigate("/services", { state: { serviceSlug: service.slug } });
+    };
+
     const {
         data: services = [],
         isLoading: loading,
@@ -51,6 +57,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ limit }) => {
                             <ServiceCard
                                 key={service.id}
                                 service={service}
+                                onRequestClick={handleServiceClick}
                             />
                         ))}
                     </div>

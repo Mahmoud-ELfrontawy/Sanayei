@@ -17,4 +17,8 @@ export interface Technician {
         id: number;
         name: string;
     };
+
+    is_online?: boolean;
+    last_seen?: string | null;
+    last_seen_human?: string | null;
 }

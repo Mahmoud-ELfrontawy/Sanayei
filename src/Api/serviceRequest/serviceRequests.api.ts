@@ -70,16 +70,32 @@ export const getIncomingServiceRequests = async () => {
 };
 
 /**
- * Update service request status (accept/reject)
+ * Update service request status by craftsman (accept/reject only)
  */
 export const updateServiceRequestStatus = async (
     requestId: number,
-    status: "accepted" | "rejected" | "completed"
+    status: "accepted" | "rejected"
 ) => {
     try {
         const response = await axios.post(
             `${BASE_URL}/craftsmen/service-requests/${requestId}/status`,
             { status },
+            { headers: getHeaders() }
+        );
+        return response.data;
+    } catch (error) {
+        throw handleError(error);
+    }
+};
+
+/**
+ * Complete service request by user (mark as completed)
+ */
+export const completeServiceRequest = async (requestId: number) => {
+    try {
+        const response = await axios.post(
+            `${BASE_URL}/user/service-requests/${requestId}/complete`,
+            { status: "completed" },
             { headers: getHeaders() }
         );
         return response.data;

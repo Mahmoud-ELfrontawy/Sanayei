@@ -5,6 +5,7 @@ import {
     getMyServiceRequests,
     getIncomingServiceRequests,
     updateServiceRequestStatus,
+    completeServiceRequest,
     // deleteServiceRequest,
 } from "../../Api/serviceRequest/serviceRequests.api";
 import { useAuth } from "../../hooks/useAuth";
@@ -15,7 +16,6 @@ import type { ChatContact } from "../../context/UserChatProvider";
 
 import { toast } from "react-toastify";
 import {
-    FaTrash,
     FaEnvelope,
     FaMapMarkerAlt,
     FaClock,
@@ -54,7 +54,6 @@ function MyOrdersPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState("all");
-    const [orderToDelete, setOrderToDelete] = useState<number | null>(null);
     const [showReviewModal, setShowReviewModal] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
 
@@ -97,24 +96,21 @@ function MyOrdersPage() {
         fetchOrders();
     }, [user, isCraftsman, authLoading]);
 
-    const handleStatusUpdate = async (orderId: number, newStatus: "accepted" | "rejected" | "completed") => {
+    // للصنايعي - قبول أو رفض الطلب فقط
+    const handleStatusUpdate = async (orderId: number, newStatus: "accepted" | "rejected") => {
         const order = orders.find(o => o.id === orderId);
         const serviceName = order?.service?.name || order?.service_name || "خدمة صيانة";
-
 
         try {
             await updateServiceRequestStatus(orderId, newStatus);
 
             // Trigger Notification for the User
             addNotification({
-                title:
-                    newStatus === "accepted" ? "تم قبول طلبك ✅" :
-                        newStatus === "completed" ? "اكتملت الخدمة ✨" :
-                            "تم رفض الطلب ❌",
+                title: newStatus === "accepted" ? "تم قبول طلبك ✅" : "تم رفض الطلب ❌",
                 message:
-                    newStatus === "accepted" ? `تم قبول طلبك لخدمة ${serviceName} بنجاح.` :
-                        newStatus === "completed" ? `تم إتمام خدمة ${serviceName}، يمكنك الآن تقييم الصنايعي.` :
-                            `نعتذر، تم رفض طلبك لخدمة ${serviceName}.`,
+                    newStatus === "accepted"
+                        ? `تم قبول طلبك لخدمة ${serviceName} بنجاح.`
+                        : `نعتذر، تم رفض طلبك لخدمة ${serviceName}.`,
                 recipientId: order.user_id,
                 recipientType: "user",
                 type: "order_status",
@@ -123,9 +119,7 @@ function MyOrdersPage() {
             });
 
             toast.success(
-                newStatus === "accepted" ? "تم قبول الطلب بنجاح ✅" :
-                    newStatus === "completed" ? "تم إتمام المهمة بنجاح ✨" :
-                        "تم رفض الطلب ❌"
+                newStatus === "accepted" ? "تم قبول الطلب بنجاح ✅" : "تم رفض الطلب ❌"
             );
 
             setOrders((prev) =>
@@ -138,26 +132,31 @@ function MyOrdersPage() {
         }
     };
 
-    const handleDeleteRequest = (orderId: number) => {
-        setOrderToDelete(orderId);
-    };
+    // لليوزر - تحديد اكتمال الخدمة
+    const handleCompleteService = async (orderId: number) => {
+        try {
+            console.log('🚀 [Complete Service] Attempting to complete order:', orderId);
 
-    // const confirmDelete = async () => {
-    //     if (!orderToDelete) return;
+            const response = await completeServiceRequest(orderId);
 
-    //     try {
-    //         await deleteServiceRequest(orderToDelete);
-    //         toast.success("تم حذف الطلب بنجاح ✅");
-    //         setOrders((prev) => prev.filter((order) => order.id !== orderToDelete));
-    //     } catch (err) {
-    //         toast.error("فشل حذف الطلب");
-    //     } finally {
-    //         setOrderToDelete(null);
-    //     }
-    // };
+            console.log('✅ [Complete Service] Response:', response);
+            console.log('📊 [Complete Service] Returned data:', response?.data);
 
-    const cancelDelete = () => {
-        setOrderToDelete(null);
+            toast.success("تم تحديد الخدمة كمكتملة بنجاح ✨");
+
+            // Update user_confirmation instead of status
+            setOrders((prev) => {
+                const updated = prev.map((order) =>
+                    order.id === orderId ? { ...order, user_confirmation: 'confirmed' } : order
+                );
+                console.log('🔄 [Complete Service] Updated orders:', updated.find(o => o.id === orderId));
+                return updated;
+            });
+        } catch (err: any) {
+            console.error('❌ [Complete Service] Error:', err);
+            console.error('❌ [Complete Service] Error response:', err?.response?.data);
+            toast.error("فشل تحديد اكتمال الخدمة");
+        }
     };
 
     const handleStartChat = (order: any) => {
@@ -256,8 +255,8 @@ function MyOrdersPage() {
                         <div className="info-item">
                             <span className="info-label"><FaUser /> {isCraftsman ? "العميل" : "الصنايعي"}</span>
                             {!isCraftsman && order.craftsman_id ? (
-                                <Link 
-                                    to={`/craftsman/${order.craftsman_id}`} 
+                                <Link
+                                    to={`/craftsman/${order.craftsman_id}`}
                                     className="craftsman-name-link"
                                 >
                                     {order.craftsman?.name || "صنايعي"}
@@ -281,21 +280,27 @@ function MyOrdersPage() {
                                     <button onClick={() => handleStartChat(order)} className="btn-premium btn-chat">
                                         <FaEnvelope /> دردشة
                                     </button>
-                                    {isCraftsman && (
+                                    {!isCraftsman && order.user_confirmation !== 'confirmed' && (
                                         <button
-                                            onClick={() => handleStatusUpdate(order.id, "completed")}
+                                            onClick={() => handleCompleteService(order.id)}
                                             className="btn-premium btn-accept"
                                             style={{ background: "#22c55e" }}
                                         >
-                                            إتمام المهمة
+                                            تحديد الخدمة كمكتملة
                                         </button>
                                     )}
                                 </div>
                             )}
 
-                            {!isCraftsman && order.status === "completed" && (
+                            {!isCraftsman && (order.status === "completed" || order.user_confirmation === "confirmed") && (
                                 <button
                                     onClick={() => {
+                                        // Check if already reviewed (requires backend to send 'review' object)
+                                        if (order.review || order.is_reviewed) {
+                                            toast.info("تم تقييم هذه الخدمة مسبقاً 🌟");
+                                            return;
+                                        }
+
                                         setSelectedOrder({
                                             id: order.id,
                                             craftsmanId: order.craftsman_id || order.craftsman?.id,
@@ -397,27 +402,6 @@ function MyOrdersPage() {
                 </div>
             </div>
 
-            {/* Premium Delete Confirmation Popup */}
-            {orderToDelete && (
-                <div className="confirm-overlay" onClick={cancelDelete}>
-                    <div className="confirm-box" onClick={(e) => e.stopPropagation()}>
-                        <div className="confirm-icon">
-                            <FaTrash />
-                        </div>
-                        <h4>تأكيد الحذف</h4>
-                        <p>هل أنت متأكد من أنك تريد حذف هذا الطلب نهائياً؟ لا يمكن التراجع عن هذا الإجراء.</p>
-                        <div className="confirm-actions">
-                            <button className="btn-confirm-delete" onClick={confirmDelete}>
-                                حذف الطلب
-                            </button>
-                            <button className="btn-cancel-delete" onClick={cancelDelete}>
-                                إلغاء
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
             {selectedOrder && (
                 <ReviewModal
                     isOpen={showReviewModal}
@@ -429,7 +413,7 @@ function MyOrdersPage() {
                     craftsmanId={selectedOrder.craftsmanId}
                     craftsmanName={selectedOrder.craftsmanName}
                     onSuccess={() => {
-                        setOrders(prev => prev.map(o => o.id === selectedOrder.id ? { ...o, status: 'completed' } : o));
+                        setOrders(prev => prev.map(o => o.id === selectedOrder.id ? { ...o, user_confirmation: 'confirmed', is_reviewed: true } : o));
                     }}
                 />
             )}

@@ -24,7 +24,7 @@ import ProfileWorker from "../pages/Profile/ProfileWorker/Dashboard/ProfileWorke
 import ProfileReviews from "../pages/Profile/Reviews/ProfileReviews";
 import EditProfileLayout from "../layouts/EditProfileLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
-import ChooseSanayPage from "../pages/Technicians/ChooseSanayPage";
+import Store from "../pages/Store/Store";
 import MyOrdersPage from "../pages/Orders/MyOrdersPage";
 import RequestServiceSection from "../pages/Home/sections/RequestServiceSection/RequestServiceSection";
 import RegisterWorkerPage from "../pages/Auth/Worker/Register/RegisterWorkerPage";
@@ -73,7 +73,7 @@ const AppRouter: React.FC = () => {
           <Route path="/" element={<Home />} />
           <Route path="/join" element={<JoinPage />} />
           <Route path="/services" element={<ServicesPage />} />
-          <Route path="/choose" element={<ChooseSanayPage />} />
+          <Route path="/store" element={<Store />} />
           <Route path="/orders" element={<MyOrdersPage />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/how-it-works" element={<HowItWorks />} />

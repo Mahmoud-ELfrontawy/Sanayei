@@ -12,6 +12,7 @@ import { getTechnicianById } from "../../../../Api/technicians.api";
 import { getAvatarUrl } from "../../../../utils/imageUrl";
 // @ts-ignore
 import defaultAvatar from "../../../../assets/images/image5.png";
+import { formatTimeAgo } from "../../../../utils/timeAgo";
 
 import {
     RequestServiceInputSkeleton,
@@ -329,6 +330,25 @@ const RequestServiceForm: React.FC<Props> = ({
                                         <span style={{ color: '#94a3b8', fontSize: '12px', fontWeight: 'normal', marginInlineStart: '4px' }}>
                                             ({selectedCraftsmanDetails.reviews_count})
                                         </span>
+                                    )}
+                                </div>
+
+                                {/* Online Status */}
+                                <div style={{ marginTop: '4px', fontSize: '13px' }}>
+                                    {selectedCraftsmanDetails.is_online ? (
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#22c55e', fontWeight: 'bold' }}>
+                                            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#22c55e', display: 'inline-block' }}></span>
+                                            متصل الآن
+                                        </div>
+                                    ) : (
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: formatTimeAgo(selectedCraftsmanDetails.last_seen) === "الآن" ? '#22c55e' : '#64748b', fontWeight: formatTimeAgo(selectedCraftsmanDetails.last_seen) === "الآن" ? 'bold' : 'normal' }}>
+                                            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: formatTimeAgo(selectedCraftsmanDetails.last_seen) === "الآن" ? '#22c55e' : '#cbd5e1', display: 'inline-block' }}></span>
+                                            {selectedCraftsmanDetails.last_seen
+                                                ? (formatTimeAgo(selectedCraftsmanDetails.last_seen) === "الآن"
+                                                    ? "متصل الآن"
+                                                    : `آخر ظهور ${formatTimeAgo(selectedCraftsmanDetails.last_seen)}`)
+                                                : "غير متصل"}
+                                        </div>
                                     )}
                                 </div>
                             </div>

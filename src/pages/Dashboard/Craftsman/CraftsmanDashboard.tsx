@@ -75,7 +75,7 @@ const CraftsmanDashboard: React.FC = () => {
 
     /* ================= ACTIONS ================= */
 
-    const handleAction = async (orderId: number, status: "accepted" | "rejected" | "completed") => {
+    const handleAction = async (orderId: number, status: "accepted" | "rejected") => {
         try {
             await updateServiceRequestStatus(orderId, status);
 
@@ -83,7 +83,7 @@ const CraftsmanDashboard: React.FC = () => {
                 prev.map((o) => (o.id === orderId ? { ...o, status } : o))
             );
 
-            const statusText = status === "accepted" ? "تم قبول الطلب ✅" : status === "completed" ? "تم إتمام المهمة ✨" : "تم رفض الطلب ❌";
+            const statusText = status === "accepted" ? "تم قبول الطلب ✅" : "تم رفض الطلب ❌";
             toast.success(statusText);
 
             addNotification({
@@ -91,9 +91,7 @@ const CraftsmanDashboard: React.FC = () => {
                 message:
                     status === "accepted"
                         ? `لقد وافق الصنايعي ${user?.name || ""} على طلب الخدمة`
-                        : status === "completed"
-                            ? `لقد أتم الصنايعي ${user?.name || ""} الخدمة بنجاح`
-                            : "نعتذر، تم رفض الطلب حالياً",
+                        : "نعتذر، تم رفض الطلب حالياً",
                 type: "order_status",
                 orderId: orderId,
                 recipientId: 0,
@@ -230,23 +228,12 @@ const CraftsmanDashboard: React.FC = () => {
                                             )}
 
                                             {req.status === "accepted" && (
-                                                <>
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleAction(req.id, "completed");
-                                                        }}
-                                                        className="btn-complete-task"
-                                                    >
-                                                        إتمام المهمة
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleStartChat(req)}
-                                                        className="btn-chat-mini"
-                                                    >
-                                                        <FaEnvelope size={18} />
-                                                    </button>
-                                                </>
+                                                <button
+                                                    onClick={() => handleStartChat(req)}
+                                                    className="btn-chat-mini"
+                                                >
+                                                    <FaEnvelope size={18} />
+                                                </button>
                                             )}
                                         </div>
                                     </div>
