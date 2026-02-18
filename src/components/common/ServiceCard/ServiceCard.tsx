@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa";
 
 import type { Service } from "../../../constants/service";
 
@@ -38,10 +38,10 @@ const ServiceCard: React.FC<Props> = ({ service, onRequestClick }) => {
                             onRequestClick(service);
                         }}
                         className="service-link-card"
-                        style={{ cursor: "pointer", background: "none", border: "none" }}
+                        type="button"
                     >
                         طلب الخدمة
-                        <FaArrowRight className="service-arrow" />
+                        <FaArrowLeft className="service-link-arrow" />
                     </button>
                 ) : (
                     <Link
@@ -53,10 +53,9 @@ const ServiceCard: React.FC<Props> = ({ service, onRequestClick }) => {
                         }}
                     >
                         طلب الخدمة
-                        <FaArrowRight className="service-arrow" />
+                        <FaArrowLeft className="service-link-arrow" />
                     </Link>
                 )}
-
 
             </div>
         </article>

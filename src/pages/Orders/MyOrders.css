@@ -225,83 +225,177 @@
 .craftsman-name-link:active {
     transform: translateY(0);
 }
-
-/* Status & Actions */
+/* =============================================
+   🎯 Order Side Panel — Status + Actions
+   ============================================= */
 .order-side {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 16px;
-    padding-right: 30px;
-    border-right: 1px solid #f1f5f9;
-    min-width: 220px;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 12px;
+    padding-right: 28px;
+    border-right: 2px solid var(--color-border);
+    min-width: 210px;
 }
 
+/* =============================================
+   📌 Status Badges — Chip with dot indicator
+   ============================================= */
 .order-status {
     width: 100%;
     text-align: center;
-    padding: 12px 0;
-    border-radius: 12px;
-    font-size: 19px;
-    font-weight: 800;
+    padding: 10px 16px;
+    border-radius: var(--radius-card-sm);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    transition: var(--transition-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
-.order-status.pending { background: #fff7ed; color: #c2410c; border: 1px solid #fdba74; }
-.order-status.accepted { background: #ecfdf5; color: #059669; border: 1px solid #6ee7b7; }
-.order-status.rejected { background: #fef2f2; color: #dc2626; border: 1px solid #feca95; }
+/* Dot before status text */
+.order-status::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
 
-/* Buttons */
+.order-status.pending {
+    background: #fffbeb;
+    color: #b45309;
+    border: 1.5px solid var(--color-warning);
+}
+.order-status.pending::before { background: var(--color-warning); }
+
+.order-status.accepted {
+    background: #f0fdf4;
+    color: #15803d;
+    border: 1.5px solid var(--color-success);
+}
+.order-status.accepted::before { background: var(--color-success); }
+
+.order-status.completed {
+    background: #eff6ff;
+    color: var(--color-primary);
+    border: 1.5px solid var(--color-primary);
+}
+.order-status.completed::before { background: var(--color-primary); }
+
+.order-status.rejected {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1.5px solid var(--color-error);
+}
+.order-status.rejected::before { background: var(--color-error); }
+
+/* =============================================
+   🎬 Action Buttons — Premium style
+   ============================================= */
 .card-actions {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
     width: 100%;
 }
 
 .btn-premium {
     width: 100%;
-    padding: 14px;
-    border-radius: 12px;
+    padding: 11px 18px;
+    border-radius: var(--radius-card-sm);
     font-weight: 700;
-    font-size: 17px;
+    font-size: 15px;
     cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    border: none;
+    gap: 8px;
+    border: 2px solid transparent;
+    outline: none;
+    position: relative;
+    letter-spacing: 0.2px;
 }
 
+.btn-premium:active {
+    transform: scale(0.96);
+    transition-duration: 0.1s;
+}
+
+/* -------- Chat — Project Primary -------- */
 .btn-chat {
-    background: #4f46e5;
+    background: var(--color-primary);
     color: #fff;
+    border-color: var(--color-primary);
 }
 
 .btn-chat:hover {
-    background: #4338ca;
+    background: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
     transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+    box-shadow: 0 6px 20px rgba(95, 168, 211, 0.35);
 }
 
+/* -------- Accept — Success -------- */
 .btn-accept {
-    background: #10b981;
+    background: var(--color-success);
     color: #fff;
+    border-color: var(--color-success);
 }
 
 .btn-accept:hover {
-    background: #059669;
+    background: #43a047;
+    border-color: #43a047;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.35);
 }
 
+/* -------- Complete — Outlined Success -------- */
+.btn-complete {
+    background: transparent;
+    color: var(--color-success);
+    border-color: var(--color-success);
+}
+
+.btn-complete:hover {
+    background: var(--color-success);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+}
+
+/* -------- Rate — Warning/Amber -------- */
+.btn-rate {
+    background: var(--color-warning);
+    color: #1B1B1B;
+    border-color: var(--color-warning);
+}
+
+.btn-rate:hover {
+    background: #e6ac00;
+    border-color: #e6ac00;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+}
+
+/* -------- Reject — Ghost/Outlined -------- */
 .btn-reject {
-    background: #f1f5f9;
-    color: #64748b;
+    background: transparent;
+    color: var(--color-text-secondary);
+    border-color: var(--color-border);
 }
 
 .btn-reject:hover {
-    background: #e2e8f0;
-    color: #ef4444;
+    background: #fef2f2;
+    color: var(--color-error);
+    border-color: var(--color-error);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.12);
 }
 
 .trash-btn {

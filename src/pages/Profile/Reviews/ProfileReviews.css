@@ -142,9 +142,14 @@
 }
 
 .rating-stars {
-  display: flex;
+  display: inline-flex;
+  align-items: center;
   gap: 3px;
   margin-bottom: 4px;
+  background: #fff3cd;
+  padding: 3px 10px;
+  border-radius: 12px;
+  border: 1px solid #ffeeba;
 }
 
 .review-date-label {

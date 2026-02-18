@@ -526,12 +526,13 @@
     align-items: center;
     gap: 5px;
     font-size: 14px;
-    color: #f59e0b;
-    font-weight: 600;
-    background: #fffbeb;
-    padding: 2px 8px;
-    border-radius: 20px;
+    color: #856404;
+    font-weight: 700;
+    background: #fff3cd;
+    padding: 3px 10px;
+    border-radius: 12px;
     width: fit-content;
+    border: 1px solid #ffeeba;
 }
 
 .btn-view-profile {

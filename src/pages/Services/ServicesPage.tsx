@@ -159,21 +159,23 @@ const ServicesPage: React.FC = () => {
                     <ServicesSkeleton />
                 ) : (
                     <>
-                        {/* Services Grid */}
-                        <div className="services-grid">
-                            {filteredServices.map((service) => (
-                                <ServiceCard
-                                    key={service.id}
-                                    service={service}
-                                    onRequestClick={handleServiceRequest}
-                                />
-                            ))}
-                        </div>
+                        {/* Services Grid — hidden when a specific service is selected */}
+                        {serviceFilter === "all" && (
+                            <div className="services-grid">
+                                {filteredServices.map((service) => (
+                                    <ServiceCard
+                                        key={service.id}
+                                        service={service}
+                                        onRequestClick={handleServiceRequest}
+                                    />
+                                ))}
+                            </div>
+                        )}
 
                         {/* Craftsmen Section (Only shows if a service is selected) */}
                         {serviceFilter !== "all" && (
-                            <div id="craftsmen-section" className="mt-12">
-                                <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-4">
+                            <div id="craftsmen-section" className="craftsmen-section">
+                                <h2 className="craftsmen-section__title">
                                     صنايعية {services.find(s => s.slug === serviceFilter)?.name || ""}
                                 </h2>
 
@@ -189,7 +191,7 @@ const ServicesPage: React.FC = () => {
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
+                                    <div className="craftsmen-section__empty">
                                         لا يوجد صنايعية متاحين لهذه الخدمة حالياً
                                     </div>
                                 )}

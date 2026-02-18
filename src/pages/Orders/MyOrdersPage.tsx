@@ -283,8 +283,7 @@ function MyOrdersPage() {
                                     {!isCraftsman && order.user_confirmation !== 'confirmed' && (
                                         <button
                                             onClick={() => handleCompleteService(order.id)}
-                                            className="btn-premium btn-accept"
-                                            style={{ background: "#22c55e" }}
+                                            className="btn-premium btn-complete"
                                         >
                                             تحديد الخدمة كمكتملة
                                         </button>
@@ -308,8 +307,7 @@ function MyOrdersPage() {
                                         });
                                         setShowReviewModal(true);
                                     }}
-                                    className="btn-premium"
-                                    style={{ background: "#f97316" }}
+                                    className="btn-premium btn-rate"
                                 >
                                     تقييم الخدمة
                                 </button>
