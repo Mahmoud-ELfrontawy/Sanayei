@@ -82,8 +82,8 @@
 
 /* ===== Service Icon ===== */
 .service-icon {
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     background: transparent;
     display: flex;
@@ -118,14 +118,15 @@
 
 /* ===== Text Content ===== */
 .service-title {
-    font-size: 22px; /* Slightly refined */
-    font-weight: 800;
+    font-size: 30px; /* Slightly refined */
+    font-weight: 600;
     color: var(--color-text-main);
     margin: 0 0 12px 0;
+    letter-spacing:0.5px
 }
 
 .service-desc {
-    font-size: 16px;
+    font-size: 23px;
     color: var(--color-text-muted);
     line-height: 1.6;
     min-height: 52px;
@@ -142,13 +143,13 @@
     width: 100%;
     background: var(--color-primary);
     color: #fff;
-    font-weight: 700;
-    font-size: 16px;
+    font-weight: 600;
+    font-size: 23px;
     text-decoration: none;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: 10px;
+    direction: rtl;
     transition: all 0.35s ease;
     margin-top: auto;
     padding: 12px 20px;
@@ -167,7 +168,6 @@
 .service-link-arrow {
     display: inline-flex;
     transition: transform 0.35s ease;
-    font-size: 14px;
 }
 
 .service-link-card:hover .service-link-arrow {
@@ -217,8 +217,8 @@
 }
 
 .skeleton-icon-service {
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     background: #3E587133;
     margin-bottom: 20px;
