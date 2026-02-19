@@ -11,6 +11,7 @@ import { toUiDate } from "../../../utils/dateApiHelper";
 import { useAuth } from "../../../hooks/useAuth";
 import { useEffect, useState } from "react";
 import FormSkeleton from "../base/FormSkeleton";
+import { useNavigate } from "react-router-dom";
 
 interface UserState {
     name: string;
@@ -29,7 +30,15 @@ interface ApiErrorResponse {
 }
 
 const ProfileUser = () => {
-    const { refreshUser } = useAuth();
+    const { refreshUser, userType } = useAuth();
+    const navigate = useNavigate();
+
+    // 🛑 Redirect if Company
+    useEffect(() => {
+        if (userType === "company") {
+            navigate("/dashboard/company/profile", { replace: true });
+        }
+    }, [userType, navigate]);
 
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(true);

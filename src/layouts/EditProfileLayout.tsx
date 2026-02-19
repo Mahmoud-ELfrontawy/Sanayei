@@ -7,7 +7,7 @@ const EditProfileLayout = () => {
   const basePath =
     userType === "craftsman"
       ? "/craftsman/profile"
-      : "/user/profile";
+      : (userType === "company" ? "/dashboard/company/profile" : "/user/profile");
 
   return (
     <div className="profile-content-container" dir="rtl">

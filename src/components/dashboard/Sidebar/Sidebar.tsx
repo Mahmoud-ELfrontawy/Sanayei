@@ -6,7 +6,10 @@ import {
     FaSignOutAlt,
     FaCommentDots,
     FaWallet,
-    FaUser
+    FaUser,
+    FaBoxOpen,
+    FaList,
+    FaShoppingCart
 } from "react-icons/fa";
 
 import { toast } from "react-toastify";
@@ -93,7 +96,30 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             badge: unreadCount,
             hasUnread: unreadCount > 0
         },
-
+        // Company-specific links
+        ...(userType === "company" ? [
+            {
+                title: "إدارة الأقسام",
+                path: "/dashboard/company/categories",
+                icon: <FaList size={20} />
+            },
+            {
+                title: "إدارة المنتجات",
+                path: "/dashboard/company/products",
+                icon: <FaBoxOpen size={20} />
+            },
+            {
+                title: "متابعة طلبات العملاء",
+                path: "/dashboard/company/orders",
+                icon: <FaShoppingCart size={20} />
+            },
+        ] : [
+            {
+                title: "طلباتي",
+                path: "/store-orders",
+                icon: <FaBoxOpen size={20} />
+            },
+        ]),
     ];
 
     return (
@@ -117,9 +143,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                         <span className={`user-role-badge ${userType || "user"}`}>
                             {roleLabels[userType as keyof typeof roleLabels] || "مستخدم"}
                         </span>
-                        
-                        <NavLink 
-                            to={userType === "craftsman" ? "/craftsman/profile" : (userType === "admin" ? "/admin/profile" : "/user/profile")}
+
+                        <NavLink
+                            to={userType === "craftsman" ? "/craftsman/profile" : (userType === "company" ? "/dashboard/company/profile" : (userType === "admin" ? "/admin/profile" : "/user/profile"))}
                             className="user-profile-btn"
                             onClick={onClose}
                         >

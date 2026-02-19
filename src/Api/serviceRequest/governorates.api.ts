@@ -10,7 +10,7 @@ export interface Governorate {
 
 export const getGovernorates = async (): Promise<Governorate[]> => {
     const response = await axios.get(
-        "https://sanay3i.net/api/governorates",
+        "/api/governorates",
         { headers: { Accept: "application/json" } }
     );
 

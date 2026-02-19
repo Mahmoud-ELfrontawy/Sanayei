@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export interface RegisterPayload {
   name: string;
   email: string;
@@ -7,22 +9,16 @@ export interface RegisterPayload {
 }
 
 export const register = async (payload: RegisterPayload) => {
-  const response = await fetch(
-    "https://sanay3i.net/api/auth/register",
+  const response = await axios.post(
+    "/api/auth/register",
+    payload,
     {
-      method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
-      body: JSON.stringify(payload),
     }
   );
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw data; // نرجّع الخطأ كامل
-  }
-
-  return data; // غالبًا بيرجع token + user
+  return response.data;
 };

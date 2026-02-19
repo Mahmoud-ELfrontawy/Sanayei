@@ -1,69 +1,153 @@
-/* Store Page Styles */
-.store-section {
-    padding: 40px 20px;
-    min-height: 80vh;
-    background-color: var(--color-bg-light);
+.store-section-modern {
+    background: var(--color-bg-section);
+    min-height: 100vh;
 }
 
-.store-container {
-    max-width: 1200px;
+/* 🧭 Navigation Header */
+.store-section-modern {
+    width: 100%;
+    min-height: 100vh;
+    background: var(--color-bg-section);
+    direction: rtl;
+    padding-bottom: 3rem;
+}
+
+.store-navigation-header {
+    background: var(--color-bg-main);
+    padding: 1.5rem 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-container {
+    width: min(1380px, 96%);
     margin: 0 auto;
-    text-align: center;
-}
-
-.store-title {
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--color-text-main);
-    margin-bottom: 30px;
-}
-
-.store-tabs {
     display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 40px;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
 }
 
-.store-tab {
-    background: white;
-    border: 1px solid var(--color-border);
-    padding: 10px 24px;
-    border-radius: 30px;
+.store-brand-mini h2 {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--color-text-accent);
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.store-brand-mini span {
+    color: var(--color-primary);
+}
+
+.store-tabs-premium {
+    display: flex;
+    background: #f0f4f8;
+    padding: 0.4rem;
+    border-radius: 50px;
+    gap: 0.3rem;
+}
+
+.store-tab-btn {
+    padding: 0.7rem 1.5rem;
+    border: none;
+    background: transparent;
+    border-radius: 40px;
     font-size: 16px;
     font-weight: 600;
     color: var(--color-text-secondary);
     cursor: pointer;
-    transition: all 0.3s;
-}
-
-.store-tab:hover {
-    background-color: var(--color-bg-hover);
-    color: var(--color-primary);
-    border-color: var(--color-primary);
-}
-
-.store-tab.active {
-    background-color: var(--color-primary);
-    color: white;
-    border-color: var(--color-primary);
-    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);
-}
-
-.store-content {
-    background: white;
-    padding: 60px 20px;
-    border-radius: 16px;
-    box-shadow: var(--shadow-card);
-    min-height: 300px;
+    transition: var(--transition-main);
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 0.5rem;
+}
+
+.store-tab-btn.active {
+    background: var(--color-primary);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(95, 168, 211, 0.3);
+}
+
+.store-tab-btn:hover:not(.active) {
+    background: rgba(95, 168, 211, 0.1);
+    color: var(--color-primary);
+}
+
+.tab-with-badge {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-badge {
+    background: var(--color-error);
+    color: #fff;
+    padding: 2px 7px;
+    border-radius: 10px;
+    position: absolute;
+    top: -14px;
+    left: -14px;
+    box-shadow: 0 2px 6px rgba(244, 67, 54, 0.35);
+    font-weight: 900;
+}
+
+/* 🖼️ Render Area */
+.store-render-area {
+    padding-top: 24px;
 }
 
 .store-placeholder {
-    font-size: 24px;
+    padding: 100px 20px;
+    text-align: center;
+    font-size: 20px;
     font-weight: 700;
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
+    background: var(--color-bg-main);
+    margin: 40px auto;
+    max-width: 800px;
+    border-radius: var(--radius-card);
+    border: 2px dashed var(--color-border);
+}
+
+.empty-state-mini h3 {
+    font-size: 22px;
+    color: var(--color-text-main);
+    margin-bottom: 10px;
+}
+
+.empty-state-mini p {
+    color: var(--color-text-secondary);
+    font-size: 16px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+    .nav-container {
+        flex-direction: column;
+        gap: 14px;
+    }
+    .store-tabs-premium {
+        width: 100%;
+        overflow-x: auto;
+        justify-content: flex-start;
+        scrollbar-width: none;
+    }
+    .store-tabs-premium::-webkit-scrollbar {
+        display: none;
+    }
+    .store-tab-btn {
+        flex-shrink: 0;
+        white-space: nowrap;
+        padding: 9px 16px;
+        font-size: 15px;
+    }
+    .store-brand-mini h2 {
+        font-size: 22px;
+    }
 }

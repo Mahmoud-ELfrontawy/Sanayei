@@ -1,0 +1,109 @@
+.orders-tracking-page {
+    width: 100%;
+}
+
+.tracking-header {
+    margin-bottom: 2.5rem;
+}
+
+.tracking-header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--color-text-accent);
+}
+
+.tracking-table-card {
+    background: #fff;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+
+.tracking-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: right;
+}
+
+.tracking-table th {
+    background: #f8fafc;
+    padding: 1.2rem;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    border-bottom: 1px solid var(--color-divider);
+}
+
+.tracking-table td {
+    padding: 1.2rem;
+    font-size: 16px;
+    color: var(--color-text-main);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.name-with-type {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-weight: 700;
+}
+
+.user-type-badge {
+    font-size: 11px;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.user-type-badge.user { background: #e3f2fd; color: #1976d2; }
+.user-type-badge.craftsman { background: #f3e5f5; color: #7b1fa2; }
+
+.status-select-premium {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background: #f8fafc;
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+    transition: var(--transition-main);
+}
+
+.status-select-premium:focus {
+    border-color: var(--color-primary);
+    background: #fff;
+}
+
+.update-btn-mini {
+    background: var(--color-primary);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition-main);
+    margin-right: 0.5rem;
+}
+
+.update-btn-mini:hover {
+    background: var(--color-primary-hover);
+    transform: scale(1.05);
+}
+
+.update-btn-mini:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@media (max-width: 992px) {
+    .tracking-table-card { overflow-x: auto; }
+}
+
+@media (max-width: 768px) {
+    .orders-tracking-container {
+        padding: 1rem;
+    }
+}

@@ -3,7 +3,7 @@ import type { Technician } from "../constants/technician";
 
 export const getTechnicians = async (): Promise<Technician[]> => {
   const res = await axios.get(
-    "https://sanay3i.net/api/craftsmen"
+    "/api/craftsmen"
   );
 
   // ✅ حماية كاملة من undefined
@@ -19,6 +19,6 @@ export const getTechnicians = async (): Promise<Technician[]> => {
 };
 
 export const getTechnicianById = async (id: string | number): Promise<any> => {
-    const res = await axios.get(`https://sanay3i.net/api/craftsmen/${id}`);
+    const res = await axios.get(`/api/craftsmen/${id}`);
     return res.data?.data || res.data;
 };

@@ -82,19 +82,19 @@
 
 /* ===== Service Icon ===== */
 .service-icon {
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     transition: all 0.4s ease;
     overflow: hidden;
     position: relative;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    border: 3px solid rgba(95, 168, 211, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    border: 2px solid rgba(95, 168, 211, 0.15);
 }
 
 .service-icon img {
@@ -105,16 +105,6 @@
     transition: transform 0.4s ease;
 }
 
-.service-card:hover .service-icon {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 4px rgba(95, 168, 211, 0.15),
-                0 8px 25px rgba(95, 168, 211, 0.25);
-    transform: translateY(-4px);
-}
-
-.service-card:hover .service-icon img {
-    transform: scale(1.08);
-}
 
 /* ===== Text Content ===== */
 .service-title {
@@ -143,8 +133,8 @@
     width: 100%;
     background: var(--color-primary);
     color: #fff;
-    font-weight: 600;
-    font-size: 23px;
+    font-weight: 700;
+    font-size: 20px;
     text-decoration: none;
     display: flex;
     justify-content: space-between;
@@ -152,8 +142,8 @@
     direction: rtl;
     transition: all 0.35s ease;
     margin-top: auto;
-    padding: 12px 20px;
-    border-radius: 12px;
+    padding: 10px 16px;
+    border-radius: 10px;
     border: 2px solid transparent;
     cursor: pointer;
 }
@@ -217,8 +207,8 @@
 }
 
 .skeleton-icon-service {
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     background: #3E587133;
     margin-bottom: 20px;

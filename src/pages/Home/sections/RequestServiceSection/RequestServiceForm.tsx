@@ -298,70 +298,68 @@ const RequestServiceForm: React.FC<Props> = ({
 
                     {selectedCraftsmanDetails && (
                         <div className="selected-craftsman-card">
-                            <img
-                                src={
-                                    getAvatarUrl(
-                                        selectedCraftsmanDetails.profile_photo ||
-                                        selectedCraftsmanDetails.avatar ||
-                                        selectedCraftsmanDetails.avatarUrl ||
-                                        selectedCraftsmanDetails.image ||
-                                        selectedCraftsmanDetails.profile_image ||
-                                        selectedCraftsmanDetails.profile_image_url ||
-                                        selectedCraftsmanDetails.photo,
-                                        selectedCraftsmanDetails.name
-                                    )
-                                }
-                                alt={selectedCraftsmanDetails.name}
-                                className="selected-craftsman-avatar"
-                                onError={(e) => {
-                                    (e.target as HTMLImageElement).src = defaultAvatar;
-                                }}
-                            />
-                            <div className="selected-craftsman-info">
-                                <h4 className="selected-craftsman-name">
-                                    {selectedCraftsmanDetails.name}
-                                </h4>
-                                <div className="selected-craftsman-rating">
-                                    <span>⭐</span>
-                                    <span>
-                                        {selectedCraftsmanDetails.rating || "5.0"}
-                                    </span>
-                                    {selectedCraftsmanDetails.reviews_count && (
-                                        <span style={{ color: '#94a3b8', fontSize: '12px', fontWeight: 'normal', marginInlineStart: '4px' }}>
-                                            ({selectedCraftsmanDetails.reviews_count})
-                                        </span>
-                                    )}
-                                </div>
+                            <div className="craftsman-main-group">
+                                <img
+                                    src={
+                                        getAvatarUrl(
+                                            selectedCraftsmanDetails.profile_photo ||
+                                            selectedCraftsmanDetails.avatar ||
+                                            selectedCraftsmanDetails.avatarUrl ||
+                                            selectedCraftsmanDetails.image ||
+                                            selectedCraftsmanDetails.profile_image ||
+                                            selectedCraftsmanDetails.profile_image_url ||
+                                            selectedCraftsmanDetails.photo,
+                                            selectedCraftsmanDetails.name
+                                        )
+                                    }
+                                    alt={selectedCraftsmanDetails.name}
+                                    className="selected-craftsman-avatar"
+                                    onError={(e) => {
+                                        (e.target as HTMLImageElement).src = defaultAvatar;
+                                    }}
+                                />
+                                <div className="selected-craftsman-details">
+                                    <h4 className="selected-craftsman-name">
+                                        {selectedCraftsmanDetails.name}
+                                    </h4>
+                                    <div className="craftsman-meta-row">
+                                        <div className="meta-item-badge rating">
+                                            <span>⭐</span>
+                                            <span>{selectedCraftsmanDetails.rating || "5.0"}</span>
+                                            {selectedCraftsmanDetails.reviews_count && (
+                                                <span style={{ fontSize: '11px', opacity: 0.7, marginInlineStart: '2px' }}>
+                                                    ({selectedCraftsmanDetails.reviews_count})
+                                                </span>
+                                            )}
+                                        </div>
 
-                                {/* Online Status */}
-                                <div style={{ marginTop: '4px', fontSize: '13px' }}>
-                                    {selectedCraftsmanDetails.is_online ? (
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#22c55e', fontWeight: 'bold' }}>
-                                            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#22c55e', display: 'inline-block' }}></span>
-                                            متصل الآن
+                                        <div className={`meta-item-badge status ${selectedCraftsmanDetails.is_online || formatTimeAgo(selectedCraftsmanDetails.last_seen) === "الآن" ? 'online' : ''}`}>
+                                            <span className="status-dot"></span>
+                                            <span>
+                                                {selectedCraftsmanDetails.is_online ? "متصل الآن" : (
+                                                    selectedCraftsmanDetails.last_seen
+                                                        ? (formatTimeAgo(selectedCraftsmanDetails.last_seen) === "الآن"
+                                                            ? "متصل الآن"
+                                                            : `آخر ظهور ${formatTimeAgo(selectedCraftsmanDetails.last_seen)}`)
+                                                        : "غير متصل"
+                                                )}
+                                            </span>
                                         </div>
-                                    ) : (
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: formatTimeAgo(selectedCraftsmanDetails.last_seen) === "الآن" ? '#22c55e' : '#64748b', fontWeight: formatTimeAgo(selectedCraftsmanDetails.last_seen) === "الآن" ? 'bold' : 'normal' }}>
-                                            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: formatTimeAgo(selectedCraftsmanDetails.last_seen) === "الآن" ? '#22c55e' : '#cbd5e1', display: 'inline-block' }}></span>
-                                            {selectedCraftsmanDetails.last_seen
-                                                ? (formatTimeAgo(selectedCraftsmanDetails.last_seen) === "الآن"
-                                                    ? "متصل الآن"
-                                                    : `آخر ظهور ${formatTimeAgo(selectedCraftsmanDetails.last_seen)}`)
-                                                : "غير متصل"}
-                                        </div>
-                                    )}
+                                    </div>
                                 </div>
                             </div>
+
                             <Link
                                 to={`/craftsman/${selectedCraftsmanDetails.id}`}
                                 target="_blank"
-                                className="btn-view-profile"
+                                className="btn-view-profile-modern"
                                 title="عرض الملف الشخصي للصنايعي"
                             >
-                                <FaUser size={14} /> عرض الملف
+                                <FaUser size={16} />
                             </Link>
                         </div>
                     )}
+
 
                     {errors.industrial_type && (
                         <span className="form-error">

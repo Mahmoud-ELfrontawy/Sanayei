@@ -15,7 +15,7 @@ export const resetPassword = async (
     data: ResetPasswordApiPayload,
 ): Promise<ResetPasswordApiResponse> => {
     const response = await axios.post(
-        "https://sanay3i.net/api/auth/reset-password",
+        "/api/auth/reset-password",
         data,
     );
 

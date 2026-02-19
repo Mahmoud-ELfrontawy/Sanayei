@@ -3,7 +3,7 @@ import type { Service } from "../constants/service";
 
 export const getServices = async (): Promise<Service[]> => {
     const response = await axios.get(
-        "https://sanay3i.net/api/services",
+        "/api/services",
         { headers: { Accept: "application/json" } }
     );
 

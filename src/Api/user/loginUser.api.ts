@@ -7,7 +7,7 @@ export interface LoginPayload {
 
 export const loginUser = async (data: LoginPayload) => {
   const res = await axios.post(
-    "https://sanay3i.net/api/auth/login",
+    "/api/auth/login",
     data,
     {
       headers: { Accept: "application/json" },

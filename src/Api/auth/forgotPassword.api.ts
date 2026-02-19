@@ -6,7 +6,7 @@ export interface ForgotPasswordPayload {
 
 export const forgotPassword = async (data: ForgotPasswordPayload) => {
     const response = await axios.post(
-        "https://sanay3i.net/api/auth/send-otp",
+        "/api/auth/send-otp",
         data,
     );
 

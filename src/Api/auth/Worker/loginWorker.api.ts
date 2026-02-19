@@ -7,7 +7,7 @@ export interface LoginPayload {
 
 export const loginCraftsman = async (data: LoginPayload) => {
   const res = await axios.post(
-    "https://sanay3i.net/api/craftsmen/login",
+    "/api/craftsmen/login",
     data,
     {
       headers: {

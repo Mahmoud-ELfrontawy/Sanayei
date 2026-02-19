@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://sanay3i.net/api";
+const BASE_URL = "/api";
 
 const getHeaders = () => {
     const token = localStorage.getItem("token");

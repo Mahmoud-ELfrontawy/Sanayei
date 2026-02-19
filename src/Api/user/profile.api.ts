@@ -1,92 +1,8 @@
-// import axios from "axios";
-
-// const API_BASE_URL = "https://sanay3i.net/api";
-
-// /* ================= Get Profile ================= */
-// export const getMyProfile = async () => {
-//   const token = localStorage.getItem("token");
-
-//   const res = await axios.get(`${API_BASE_URL}/user/me`, {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//       Accept: "application/json",
-//     },
-//   });
-
-//   return res.data;
-// };
-
-// /* ================= Update Profile ================= */
-// export const updateProfile = async (data: {
-//   name: string;
-//   phone: string;
-//   birth_date?: string;
-//   gender?: "male" | "female";
-//   latitude?: number;
-//   longitude?: number;
-//   profile_image?: File | null;
-// }) => {
-//   const token = localStorage.getItem("token");
-//   const formData = new FormData();
-
-//   // 👈 Laravel يحتاجها
-//   formData.append("_method", "PUT");
-
-//   Object.entries(data).forEach(([key, value]) => {
-//     if (value === undefined || value === null || value === "") return;
-
-//     if (value instanceof File) {
-//       formData.append(key, value);
-//     } else {
-//       formData.append(key, String(value));
-//     }
-//   });
-
-//   const res = await axios.post(
-//     `${API_BASE_URL}/user/profile`,
-//     formData,
-//     {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         Accept: "application/json",
-//       },
-//     }
-//   );
-
-//   return res.data;
-// };
-
-
-// /* ================= Delete Account ================= */
-// export const deleteUserAccount = async () => {
-//   const token = localStorage.getItem("token");
-
-//   const res = await axios.delete(
-//     `${API_BASE_URL}/user/delete-account`,
-//     {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         Accept: "application/json",
-//       },
-//     }
-//   );
-
-//   return res.data;
-// };
-
-
-
-
-
-
-
-
-
 
 import axios from "axios";
 import { toApiDate } from "../../utils/dateApiHelper";
 
-const API_BASE_URL = "https://sanay3i.net/api";
+const BASE_URL = "/api";
 
 /* ================= Interfaces ================= */
 export interface UserProfile {
@@ -112,7 +28,7 @@ export interface ProfileResponse {
 export const getMyProfile = async () => {
   const token = localStorage.getItem("token");
 
-  const res = await axios.get(`${API_BASE_URL}/user/me`, {
+  const res = await axios.get(`${BASE_URL}/user/me`, {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",
@@ -156,7 +72,7 @@ export const updateProfile = async (data: {
   });
 
   const res = await axios.post(
-    `${API_BASE_URL}/user/profile`,
+    `${BASE_URL}/user/profile`,
     formData,
     {
       headers: {
@@ -174,7 +90,7 @@ export const updateProfile = async (data: {
 export const getUserProfileById = async (id: string | number) => {
   const token = localStorage.getItem("token");
 
-  const res = await axios.get(`${API_BASE_URL}/user/${id}`, {
+  const res = await axios.get(`${BASE_URL}/auth/user/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",
@@ -189,7 +105,7 @@ export const deleteUserAccount = async () => {
   const token = localStorage.getItem("token");
 
   const res = await axios.delete(
-    `${API_BASE_URL}/user/delete-account`,
+    `${BASE_URL}/user/delete-account`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

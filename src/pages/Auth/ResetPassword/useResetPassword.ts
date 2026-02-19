@@ -24,7 +24,7 @@ export const useResetPassword = ({ email }: UseResetPasswordProps) => {
         };
 
         try {
-            await axios.post("https://sanay3i.net/api/auth/reset-password", payload);
+            await axios.post("/api/auth/reset-password", payload);
 
             toast.success("تم تغيير كلمة المرور بنجاح ✅");
             navigate("/login");

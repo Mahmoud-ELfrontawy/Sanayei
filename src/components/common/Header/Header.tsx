@@ -1,6 +1,6 @@
 import { NavLink, Link, useLocation } from "react-router-dom";
 import { IoIosArrowDown } from "react-icons/io";
-import {  FiMenu, FiX } from "react-icons/fi";
+import { FiMenu, FiX } from "react-icons/fi";
 import { useEffect, useRef, useState } from "react";
 import { FaUser, FaSignOutAlt, FaThLarge, FaBox, FaRegClock, FaCommentDots, FaBell } from "react-icons/fa";
 import { toast } from "react-toastify";
@@ -53,14 +53,15 @@ const Header: React.FC = () => {
 
   const isCraftsman = userType === "craftsman";
   const isAdmin = userType === "admin";
+  const isCompany = userType === "company";
 
   const profilePath = isAdmin
     ? "/admin/profile"
-    : (isCraftsman ? "/craftsman/profile" : "/user/profile");
+    : (isCraftsman ? "/craftsman/profile" : (isCompany ? "/dashboard/company/profile" : "/user/profile"));
 
   const dashboardPath = isAdmin
     ? "/admin/dashboard"
-    : (isCraftsman ? "/dashboard/craftsman" : "/dashboard");
+    : (isCraftsman ? "/dashboard/craftsman" : (isCompany ? "/dashboard/company" : "/dashboard"));
 
   const viewLinks = NAV_LINKS.filter(link => !link.authRequired || isAuthenticated);
 

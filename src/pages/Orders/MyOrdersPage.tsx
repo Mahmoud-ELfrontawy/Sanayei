@@ -213,9 +213,12 @@ function MyOrdersPage() {
                             رقم الطلب: #{order.id}
                         </span>
                     </div>
+                    <div className={`order-status ${config.className}`}>
+                        {config.label}
+                    </div>
                 </div>
 
-                {/* Body: Details & Status Side */}
+                {/* Body: Details */}
                 <div className="card-body">
                     <div className="info-grid">
                         <div className="info-item">
@@ -268,68 +271,63 @@ function MyOrdersPage() {
                             )}
                         </div>
                     </div>
+                </div>
 
-                    <div className="order-side">
-                        <div className={`order-status ${config.className}`}>
-                            {config.label}
-                        </div>
-
-                        <div className="card-actions">
-                            {order.status === "accepted" && (
-                                <div className="flex flex-col gap-2 w-full">
-                                    <button onClick={() => handleStartChat(order)} className="btn-premium btn-chat">
-                                        <FaEnvelope /> دردشة
-                                    </button>
-                                    {!isCraftsman && order.user_confirmation !== 'confirmed' && (
-                                        <button
-                                            onClick={() => handleCompleteService(order.id)}
-                                            className="btn-premium btn-complete"
-                                        >
-                                            تحديد الخدمة كمكتملة
-                                        </button>
-                                    )}
-                                </div>
-                            )}
-
-                            {!isCraftsman && (order.status === "completed" || order.user_confirmation === "confirmed") && (
-                                <button
-                                    onClick={() => {
-                                        // Check if already reviewed (requires backend to send 'review' object)
-                                        if (order.review || order.is_reviewed) {
-                                            toast.info("تم تقييم هذه الخدمة مسبقاً 🌟");
-                                            return;
-                                        }
-
-                                        setSelectedOrder({
-                                            id: order.id,
-                                            craftsmanId: order.craftsman_id || order.craftsman?.id,
-                                            craftsmanName: order.craftsman?.name || "الصنايعي"
-                                        });
-                                        setShowReviewModal(true);
-                                    }}
-                                    className="btn-premium btn-rate"
-                                >
-                                    تقييم الخدمة
+                {/* Footer: Actions */}
+                <div className="card-footer">
+                    <div className="card-actions">
+                        {order.status === "accepted" && (
+                            <>
+                                <button onClick={() => handleStartChat(order)} className="btn-premium btn-chat">
+                                    <FaEnvelope /> دردشة
                                 </button>
-                            )}
+                                {!isCraftsman && order.user_confirmation !== 'confirmed' && (
+                                    <button
+                                        onClick={() => handleCompleteService(order.id)}
+                                        className="btn-premium btn-complete"
+                                    >
+                                        تحديد الخدمة كمكتملة
+                                    </button>
+                                )}
+                            </>
+                        )}
 
-                            {isCraftsman && order.status === "pending" && (
-                                <>
-                                    <button
-                                        onClick={() => handleStatusUpdate(order.id, "accepted")}
-                                        className="btn-premium btn-accept"
-                                    >
-                                        قبول الطلب
-                                    </button>
-                                    <button
-                                        onClick={() => handleStatusUpdate(order.id, "rejected")}
-                                        className="btn-premium btn-reject"
-                                    >
-                                        رفض
-                                    </button>
-                                </>
-                            )}
-                        </div>
+                        {!isCraftsman && (order.status === "completed" || order.user_confirmation === "confirmed") && (
+                            <button
+                                onClick={() => {
+                                    if (order.review || order.is_reviewed) {
+                                        toast.info("تم تقييم هذه الخدمة مسبقاً 🌟");
+                                        return;
+                                    }
+                                    setSelectedOrder({
+                                        id: order.id,
+                                        craftsmanId: order.craftsman_id || order.craftsman?.id,
+                                        craftsmanName: order.craftsman?.name || "الصنايعي"
+                                    });
+                                    setShowReviewModal(true);
+                                }}
+                                className="btn-premium btn-rate"
+                            >
+                                تقييم الخدمة
+                            </button>
+                        )}
+
+                        {isCraftsman && order.status === "pending" && (
+                            <div className="status-pending-actions">
+                                <button
+                                    onClick={() => handleStatusUpdate(order.id, "accepted")}
+                                    className="btn-premium btn-accept"
+                                >
+                                    قبول الطلب
+                                </button>
+                                <button
+                                    onClick={() => handleStatusUpdate(order.id, "rejected")}
+                                    className="btn-premium btn-reject"
+                                >
+                                    رفض
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

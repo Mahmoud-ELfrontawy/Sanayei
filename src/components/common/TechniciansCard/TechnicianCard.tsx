@@ -39,7 +39,7 @@ const TechnicianCard: React.FC<Props> = ({ technician }) => {
 
     return (
         <article className="tech-card">
-            {/* ===== Favorite Button (Absolute) ===== */}
+            {/* ===== Favorite Button ===== */}
             <button
                 className={`tech-card__fav ${isFavorite ? "active" : ""}`}
                 onClick={toggleFavorite}
@@ -48,7 +48,7 @@ const TechnicianCard: React.FC<Props> = ({ technician }) => {
                 {isFavorite ? <FaHeart /> : <FaRegHeart />}
             </button>
 
-            {/* ===== Header Section ===== */}
+            {/* ===== Header & Info ===== */}
             <div className="tech-card__header">
                 {/* Avatar */}
                 <div className={`tech-card__avatar-wrap ${isOnline ? "online" : ""}`}>
@@ -63,32 +63,31 @@ const TechnicianCard: React.FC<Props> = ({ technician }) => {
                     />
                 </div>
 
-                {/* Info Column */}
+                {/* Main Info */}
                 <div className="tech-card__info-col">
-                    {/* Name */}
                     <h3 className="tech-card__name">{technician.name}</h3>
 
-                    {/* Middle Row: Service + Rating */}
                     <div className="tech-card__details-row">
                         <span className="tech-card__service">
                             {technician.service?.name || "خدمة عامة"}
                         </span>
-                        <span className="tech-card__rating">
+                        <div className="tech-card__rating">
                             <FaStar className="tech-card__star" />
-                            {technician.rating || "0.0"}
-                            <small>({technician.reviews_count || 0})</small>
-                        </span>
+                            <span>{technician.rating || "5.0"}</span>
+                            <span style={{ color: '#94a3b8', fontSize: '13px', fontWeight: '500' }}>
+                                ({technician.reviews_count || 0})
+                            </span>
+                        </div>
                     </div>
 
-                    {/* Bottom Row: Status */}
-                    <span className={`tech-card__status ${isOnline ? "online" : ""}`}>
+                    <div className={`tech-card__status ${isOnline ? "online" : ""}`}>
                         <span className={`tech-card__status-dot ${isOnline ? "online" : "offline"}`} />
                         {isOnline
                             ? "متصل الآن"
                             : technician.last_seen
                                 ? `آخر ظهور ${formatTimeAgo(technician.last_seen)}`
                                 : "غير متصل"}
-                    </span>
+                    </div>
                 </div>
             </div>
 
@@ -97,7 +96,7 @@ const TechnicianCard: React.FC<Props> = ({ technician }) => {
                 {technician.description || "لا يوجد وصف متاح لهذا الصنايعي حالياً."}
             </p>
 
-            {/* ===== Price ===== */}
+            {/* ===== Price Row ===== */}
             <div className="tech-card__price-row">
                 <span className="tech-card__price">
                     {technician.price_range

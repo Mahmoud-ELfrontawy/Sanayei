@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState, useContext } from "react";
 import { getMyProfile } from "../Api/user/profile.api";
 import { getCraftsmanProfile } from "../Api/auth/Worker/profileWorker.api";
+import { getCompanyProfile } from "../Api/auth/Company/profileCompany.api";
 // import { getAdminProfile } from "../Api/admin/admin.api";
 import { getFullImageUrl } from "../utils/imageUrl";
 import { initializeEcho, disconnectEcho } from "../utils/echo";
@@ -63,24 +64,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     setUserTypeState("craftsman");
                 }
             } else if (storedType === "company") {
-                const response = await getMyProfile();
-                const u = response.data;
+                const response = await getCompanyProfile();
+                // Company API might return data directly or nested
+                const u = response.company || response.data?.company || response.data || response;
                 if (u?.id) {
-                    userData = { id: u.id, name: u.name, email: u.email, avatar: getFullImageUrl(u.profile_image_url) };
+                    userData = {
+                        id: u.id,
+                        name: u.company_name || u.name,
+                        email: u.company_email || u.email,
+                        avatar: getFullImageUrl(u.company_logo || u.profile_image_url)
+                    };
                     setUserTypeState("company");
                 }
             } else if (storedType === "admin") {
                 // Try admin profile if exists, otherwise fallback to basic user profile
                 try {
-                    // const response = await getAdminProfile();
-                    // Admin API might return data directly or wrapped in data property
-                    // const u = response.data || response;
-                    // if (u?.id) {
-                    //     userData = { id: u.id, name: u.name, email: u.email, avatar: getFullImageUrl(u.profile_image_url) };
-                    //     setUserTypeState("admin");
-                    // }
                 } catch (e) {
-                    // Silently fail
                 }
             } else if (storedType === "user") {
                 const response = await getMyProfile();
@@ -109,7 +108,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                             setUserTypeState("craftsman");
                         }
                     } catch (e2) {
-                        // Silently fail
                     }
                 }
             }
@@ -140,43 +138,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const login = async (phoneOrEmail: string, password: string, shouldRedirect: boolean = true): Promise<boolean> => {
         const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(phoneOrEmail);
-        const normalizedPhone = phoneOrEmail.startsWith('0') ? phoneOrEmail.substring(1) : phoneOrEmail;
 
         const attempts = [
-            // 0. Admin Login (High Priority if Email)
-            isEmail ? {
+            // 0. New Unified Admins/Store Login (High Priority)
+            {
                 url: `${BASE_URL}/admin/login`,
                 payload: { email: phoneOrEmail, password },
                 type: 'admin'
+            },
+            // 1. Company Login
+            isEmail ? {
+                url: `${BASE_URL}/companies/login`,
+                payload: { company_email: phoneOrEmail, company_password: password },
+                type: 'company'
             } : null,
-            // 1. New Craftsman Login (Unified)
+            // 2. Craftsman Login
             {
                 url: `${BASE_URL}/craftsmen/login`,
                 payload: { login: phoneOrEmail, password },
                 type: 'craftsman'
             },
-            // 2. User/General Login (Unified)
+            // 3. General User Login
             {
-                url: `${BASE_URL}/login`,
-                payload: { login: phoneOrEmail, password },
+                url: `${BASE_URL}/auth/login`, // Corrected from /login to /auth/login
+                payload: { email: phoneOrEmail, login: phoneOrEmail, password },
                 type: 'user'
-            },
-            // 3. User Login Fallback (Normalized Phone)
-            !isEmail ? {
-                url: `${BASE_URL}/login`,
-                payload: { login: normalizedPhone, password },
-                type: 'user'
-            } : null,
-            // 4. Old Auth Endpoint (Unified)
-            {
-                url: `${BASE_URL}/auth/login`,
-                payload: { login: phoneOrEmail, password },
-                type: 'user'
-            },
+            }
         ].filter(Boolean) as any[];
 
         let lastError: any = null;
-        let prioritizedError: string | null = null; // Store specific errors like "Not Approved"
+        let prioritizedError: string | null = null;
 
         for (const attempt of attempts) {
             try {
@@ -187,45 +178,33 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     },
                 });
 
-                if (response.data.status) {
-                    // Handle different response structures
-                    const token = response.data.token;
-                    let userData = response.data.user || response.data.craftsman;
-                    let role = response.data.role;
+                if (response.data.status || response.data.success || response.data.token || response.data.data?.token) {
+                    const token = response.data.token || response.data.data?.token || response.data.access_token;
 
-                    // If it was the craftsman endpoint and success, force craftsman role
-                    if (attempt.type === 'craftsman' && response.data.craftsman) {
-                        userData = response.data.craftsman;
-                        role = 'craftsman';
+                    if (!token) {
+                        console.warn("Auth: Success detected but token is missing in response", response.data);
+                        continue; // try next one if this one didn't give a token
                     }
 
-                    // If it was the admin endpoint and success
-                    if (attempt.type === 'admin') {
-                        role = 'admin';
-                        // Admin data might be directly in response.data.user or just response.data depending on API
-                        // tailored based on standard Laravel pattern, but fallback to existing logic if needed
-                    }
-
-                    if (!userData && response.data.data) {
-                        userData = response.data.data;
-                    }
+                    let userData = response.data.user || response.data.craftsman || response.data.company || response.data.data?.user || response.data.data;
+                    let role = response.data.role || attempt.type;
 
                     localStorage.setItem('token', token);
-                    const userType = role === 'admin' ? 'admin' : (role === 'craftsman' ? 'craftsman' : 'user');
-                    localStorage.setItem('userType', userType);
+                    const detectedUserType = role === 'admin' ? 'admin' : (role === 'craftsman' ? 'craftsman' : (role === 'company' ? 'company' : 'user'));
+                    localStorage.setItem('userType', detectedUserType);
                     localStorage.setItem('user_id', userData.id.toString());
 
                     // Normalize user data for state
                     const finalUser = {
                         id: userData.id,
-                        name: userData.name,
-                        email: userData.email,
-                        avatar: userData.profile_photo ? getFullImageUrl(userData.profile_photo) : getFullImageUrl(userData.profile_image_url)
+                        name: userData.company_name || userData.name,
+                        email: userData.company_email || userData.email,
+                        avatar: getFullImageUrl(userData.company_logo || userData.profile_photo || userData.profile_image_url)
                     };
 
                     setUser(finalUser);
                     localStorage.setItem('user_name', finalUser.name);
-                    setUserTypeState(userType as any);
+                    setUserTypeState(detectedUserType as any);
                     initializeEcho(token);
 
                     if (shouldRedirect) {
@@ -234,6 +213,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                             switch (role) {
                                 case 'admin': window.location.href = '/admin/dashboard'; break;
                                 case 'craftsman': window.location.href = `/craftsman/${userData.id}`; break;
+                                case 'company': window.location.href = '/dashboard/company'; break;
                                 default: window.location.href = '/';
                             }
                         }

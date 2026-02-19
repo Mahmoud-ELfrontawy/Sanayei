@@ -42,7 +42,7 @@ export interface Sanaei {
 
 export const getSanaei = async (): Promise<Sanaei[]> => {
     const response = await axios.get(
-        "https://sanay3i.net/api/craftsmen",
+        "/api/craftsmen",
         {
             headers: {
                 Accept: "application/json",

@@ -106,7 +106,7 @@ const LoginPage: React.FC = () => {
             <button type="button" className="social-btn"
               onClick={() => {
                 window.location.href =
-                  "https://sanay3i.net/api/auth/google-login";
+                  "/api/auth/google-login";
               }}
             >
               <FaGoogle />

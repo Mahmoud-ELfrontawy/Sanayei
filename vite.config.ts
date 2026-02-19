@@ -11,5 +11,19 @@ export default defineConfig({
     strictPort: true,
     https: {},
     host: true,
+    proxy: {
+      '/api': {
+        target: 'https://sanay3i.net',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '/api'),
+        secure: false,
+      },
+      '/storage': {
+        target: 'https://sanay3i.net',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/storage/, '/storage'),
+        secure: false,
+      }
+    }
   }
 })

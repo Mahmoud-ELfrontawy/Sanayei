@@ -3,7 +3,7 @@ import axios from "axios";
 /* ================= Constants ================= */
 // ... existing constants ...
 
-const API_BASE_URL = "https://sanay3i.net/api";
+const BASE_URL = "/api";
 
 /* ================= Shared Types ================= */
 
@@ -108,7 +108,7 @@ export const getCraftsmanProfile = async () => {
     const token = localStorage.getItem("token");
 
     const res = await axios.get(
-        `${API_BASE_URL}/craftsmen/profile/me`,
+        `${BASE_URL}/craftsmen/profile/me`,
         {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -210,7 +210,7 @@ export const updateCraftsmanProfile = async (
     /* ===== Request ===== */
 
     const res = await axios.post(
-        `${API_BASE_URL}/craftsmen/profile/me`,
+        `${BASE_URL}/craftsmen/profile/me`,
         formData,
         {
             headers: {
@@ -229,7 +229,7 @@ export const deleteCraftsmanAccount = async () => {
     const token = localStorage.getItem("token");
 
     const res = await axios.delete(
-        `${API_BASE_URL}/craftsmen/profile/me`,
+        `${BASE_URL}/craftsmen/profile/me`,
         {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -250,7 +250,7 @@ export const uploadWorkPhoto = async (file: File) => {
     formData.append("work_photo", file);
 
     const res = await axios.post(
-        `${API_BASE_URL}/craftsmen/profile/work-photos`,
+        `${BASE_URL}/craftsmen/profile/work-photos`,
         formData,
         {
             headers: {
@@ -269,7 +269,7 @@ export const deleteWorkPhoto = async (photoPath: string) => {
     const token = localStorage.getItem("token");
 
     const res = await axios.delete(
-        `${API_BASE_URL}/craftsmen/profile/work-photos`,
+        `${BASE_URL}/craftsmen/profile/work-photos`,
         {
             headers: {
                 Authorization: `Bearer ${token}`,

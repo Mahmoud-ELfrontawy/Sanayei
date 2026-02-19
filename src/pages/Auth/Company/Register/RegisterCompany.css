@@ -1,0 +1,86 @@
+.company-card {
+  max-width: 1200px;
+  background: var(--color-bg-section);
+}
+
+.company-register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: #fff;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--color-bg-secondary);
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.company-illustration {
+  width: 35%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background: #fafafa;
+  border-right: 1px solid var(--color-border);
+  padding: 40px 20px;
+}
+
+.company-illustration img {
+  width: 100%;
+  max-width: 400px;
+  object-fit: contain;
+}
+
+.auth-subtitle {
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+  font-size: 15px;
+}
+
+textarea.login-input {
+  min-height: 100px;
+  padding-top: 12px;
+  resize: vertical;
+}
+
+@media (max-width: 1024px) {
+  .company-card {
+    flex-direction: column;
+    max-width: 800px;
+  }
+  .company-illustration {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+    padding: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .form-section {
+    padding: 15px;
+  }
+  .req-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+}

@@ -2,7 +2,7 @@ import axios, { AxiosError } from "axios";
 
 /* ================= Base Config ================= */
 
-export const BASE_URL = "https://sanay3i.net/api";
+export const BASE_URL = "/api";
 
 const getHeaders = () => {
     const token = localStorage.getItem("token");

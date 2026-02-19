@@ -39,7 +39,7 @@ export const registerWorker = async (
   formData.append("back_identity_photo", payload.back_identity_photo);
 
   const registerResponse = await axios.post(
-    "https://sanay3i.net/api/craftsmen/register",
+    "/api/craftsmen/register",
     formData,
     {
       headers: {

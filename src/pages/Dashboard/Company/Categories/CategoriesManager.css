@@ -1,0 +1,226 @@
+.categories-manager-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    direction: rtl;
+}
+
+.manager-header {
+    margin-bottom: 3rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.manager-header h2 {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--color-text-accent);
+    margin-bottom: 0.5rem;
+}
+
+.manager-header p {
+    font-size: 18px;
+    color: var(--color-text-secondary);
+}
+
+.manager-content {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 2.5rem;
+    align-items: start;
+}
+
+/* フォームカード */
+.add-category-card {
+    background: #fff;
+    padding: 2.5rem;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 2rem;
+}
+
+.add-category-card h3 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-text-accent);
+    margin-bottom: 2rem;
+    border-right: 4px solid var(--color-primary);
+    padding-right: 1rem;
+}
+
+.add-cat-form-premium {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.input-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.input-field label {
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.input-field input,
+.input-field textarea {
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    font-size: 16px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.input-field input:focus,
+.input-field textarea:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(95, 168, 211, 0.1);
+}
+
+.save-btn {
+    background: var(--color-primary);
+    color: #fff;
+    padding: 1rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 1rem;
+}
+
+.save-btn:hover {
+    background: var(--color-primary-hover);
+    transform: translateY(-3px);
+}
+
+/* リストセクション */
+.categories-list-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.list-header h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-text-accent);
+}
+
+.list-header span {
+    background: #f0f7ff;
+    color: var(--color-primary);
+    padding: 0.5rem 1.2rem;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.category-item-card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.3s;
+}
+
+.category-item-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+    border-color: var(--color-primary);
+}
+
+.cat-info {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.cat-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--color-bg-section);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: var(--color-primary);
+}
+
+.cat-info h4 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-text-accent);
+    margin-bottom: 0.2rem;
+}
+
+.cat-info p {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+}
+
+.delete-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #fff5f5;
+    color: #ff4d4f;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.delete-btn:hover {
+    background: #ff4d4f;
+    color: #fff;
+}
+
+@media (max-width: 1100px) {
+    .manager-content {
+        grid-template-columns: 1fr;
+    }
+    .add-category-card {
+        position: static;
+    }
+}
+
+@media (max-width: 600px) {
+    .categories-manager-container {
+        padding: 1rem;
+    }
+    .categories-grid {
+        grid-template-columns: 1fr;
+    }
+}

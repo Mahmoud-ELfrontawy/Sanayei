@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { AxiosError } from "axios";
 
 import { register as registerApi } from "../../../Api/user/register.api";
 import { setToastAfterReload } from "../../../utils/toastAfterReload";
@@ -31,15 +30,26 @@ export const useRegister = () => {
 
             if (res?.token) {
                 localStorage.setItem("token", res.token);
+                localStorage.setItem("userType", "user"); // Default for this register
+                if (res.data?.id) localStorage.setItem("user_id", res.data.id.toString());
+                
+                setToastAfterReload("تم إنشاء الحساب بنجاح 🎉");
+                window.location.replace("/"); // Go to home/dashboard directly
+            } else {
+                setToastAfterReload("تم إنشاء الحساب بنجاح 🎉");
+                window.location.replace("/login");
             }
-
-            setToastAfterReload("تم إنشاء الحساب بنجاح 🎉");
-            window.location.replace("/login");
-        } catch (error: unknown) {
-            const message =
-                error instanceof AxiosError
-                    ? error?.response?.data?.message || "حدث خطأ أثناء إنشاء الحساب ❌"
-                    : "حدث خطأ أثناء إنشاء الحساب ❌";
+        } catch (error: any) {
+            console.error("Register Error:", error);
+            let message = "حدث خطأ أثناء إنشاء الحساب ❌";
+            
+            if (error.response?.data?.errors) {
+                const errors = error.response.data.errors;
+                const firstError = Object.values(errors)[0] as string[];
+                message = firstError[0] || message;
+            } else if (error.response?.data?.message) {
+                message = error.response.data.message;
+            }
 
             toast.error(message);
         }

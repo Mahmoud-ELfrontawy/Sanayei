@@ -4,7 +4,7 @@ export const getMyServiceRequests = async () => {
     const token = localStorage.getItem("token");
 
     try {
-        const res = await axios.get("https://sanay3i.net/api/user/service-requests", {
+        const res = await axios.get("/api/user/service-requests", {
             headers: {
                 Authorization: `Bearer ${token}`,
                 Accept: "application/json",

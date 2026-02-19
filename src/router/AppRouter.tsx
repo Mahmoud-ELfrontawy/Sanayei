@@ -28,12 +28,19 @@ import Store from "../pages/Store/Store";
 import MyOrdersPage from "../pages/Orders/MyOrdersPage";
 import RequestServiceSection from "../pages/Home/sections/RequestServiceSection/RequestServiceSection";
 import RegisterWorkerPage from "../pages/Auth/Worker/Register/RegisterWorkerPage";
+import RegisterCompanyPage from "../pages/Auth/Company/Register/RegisterCompanyPage";
 
 // Dashboards
 import CraftsmanDashboardReviews from "../pages/Dashboard/Craftsman/CraftsmanDashboardReviews";
 // import UserDashboard from "../pages/Dashboard/User/UserDashboard";
 import CraftsmanDashboard from "../pages/Dashboard/Craftsman/CraftsmanDashboard";
 import CompanyDashboard from "../pages/Dashboard/Company/CompanyDashboard";
+import CompanyProfilePage from "../pages/Dashboard/Company/Profile/CompanyProfilePage";
+import CategoriesManager from "../pages/Dashboard/Company/Categories/CategoriesManager";
+import ProductsManager from "../pages/Dashboard/Company/Products/ProductsManager";
+import OrdersTracking from "../pages/Dashboard/Company/Orders/OrdersTracking";
+import StoreGalleryPage from "../pages/Store/StoreGalleryPage";
+import StoreOrdersPage from "../pages/Store/StoreOrdersPage";
 import DashboardIndex from "../pages/Dashboard/DashboardIndex";
 import MessagesPage from "../pages/Dashboard/Messages/MessagesPage";
 import NotificationsPage from "../pages/Dashboard/Notifications/NotificationsPage";
@@ -74,6 +81,7 @@ const AppRouter: React.FC = () => {
           <Route path="/join" element={<JoinPage />} />
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/store" element={<Store />} />
+          <Route path="/store-orders" element={<StoreOrdersPage />} />
           <Route path="/orders" element={<MyOrdersPage />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
@@ -92,6 +100,7 @@ const AppRouter: React.FC = () => {
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/register-worker" element={<RegisterWorkerPage />} />
+          <Route path="/register-company" element={<RegisterCompanyPage />} />
 
           {/* ===== User Profile ===== */}
           <Route path="/user/profile">
@@ -115,9 +124,16 @@ const AppRouter: React.FC = () => {
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<DashboardIndex />} />
             <Route path="craftsman" element={<CraftsmanDashboard />} />
-            <Route path="company" element={<CompanyDashboard />} />
+            <Route path="company">
+              <Route index element={<CompanyDashboard />} />
+              <Route path="profile" element={<CompanyProfilePage />} />
+              <Route path="categories" element={<CategoriesManager />} />
+              <Route path="products" element={<ProductsManager />} />
+              <Route path="orders" element={<OrdersTracking />} />
+            </Route>
             <Route path="messages" element={<MessagesPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
+            <Route path="store" element={<StoreGalleryPage />} />
           </Route>
         </Route>
       </Routes>

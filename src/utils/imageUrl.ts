@@ -21,7 +21,7 @@ export const getFullImageUrl = (path?: string | null) => {
         cleanPath = cleanPath.substring("storage/".length);
     }
 
-    const BASE_URL = "https://sanay3i.net/storage/app/public/";
+    const BASE_URL = "/storage/app/public/";
     return `${BASE_URL}${cleanPath}`;
 };
 

@@ -3,7 +3,7 @@ import axios from "axios";
 /**
  * Base URL for the API
  */
-const BASE_URL = "https://sanay3i.net/api";
+const BASE_URL = "/api";
 
 /**
  * Error handling helper
