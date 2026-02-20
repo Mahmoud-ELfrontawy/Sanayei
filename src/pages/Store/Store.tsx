@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { FiList, FiPackage, FiSearch, FiShoppingCart } from "react-icons/fi";
 import StoreGalleryPage from "./StoreGalleryPage";
 import CartPage from "./CartPage";
-import DepartmentsPage from "./DepartmentsPage";
 import CheckoutPage from "./CheckoutPage";
 import StoreOrdersPage from "./StoreOrdersPage";
 import { getCartItems } from "../../Api/store/cart.api";
@@ -11,6 +11,7 @@ const StorePage: React.FC = () => {
     const [activeTab, setActiveTab] = useState("products");
     const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
     const [cartCount, setCartCount] = useState(0);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const fetchCartCount = async () => {
         try {
@@ -28,17 +29,16 @@ const StorePage: React.FC = () => {
         return () => clearInterval(interval);
     }, [activeTab]);
 
-    const handleSelectCategory = (categoryId: number | null) => {
-        setSelectedCategoryId(categoryId);
-        setActiveTab("products"); // Switch to products list after selecting a category
-    };
 
     const renderContent = () => {
         switch (activeTab) {
-            case "departments":
-                return <DepartmentsPage onSelectCategory={handleSelectCategory} />;
             case "products":
-                return <StoreGalleryPage initialCategoryId={selectedCategoryId} onResetCategory={() => setSelectedCategoryId(null)} />;
+                return <StoreGalleryPage
+                    initialCategoryId={selectedCategoryId}
+                    onResetCategory={() => setSelectedCategoryId(null)}
+                    searchQuery={searchQuery}
+                    onSearchChange={setSearchQuery}
+                />;
             case "cart":
                 return <CartPage onCheckout={() => setActiveTab("checkout")} />;
             case "checkout":
@@ -57,33 +57,43 @@ const StorePage: React.FC = () => {
                     <div className="store-brand-mini">
                         <h2>متجر<span>صنايعي</span></h2>
                     </div>
+
+                    <div className="store-nav-search">
+                        <FiSearch className="nav-search-icon" />
+                        <input
+                            type="text"
+                            placeholder="ابحث في المتجر..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+
                     <nav className="store-tabs-premium">
                         <button
                             className={`store-tab-btn ${activeTab === "products" ? "active" : ""}`}
                             onClick={() => setActiveTab("products")}
                         >
-                            🛍️ المنتجات
-                        </button>
-                        <button
-                            className={`store-tab-btn ${activeTab === "departments" ? "active" : ""}`}
-                            onClick={() => setActiveTab("departments")}
-                        >
-                            📁 الأقسام
+                            <FiList />
+                            <span>المنتجات</span>
                         </button>
                         <button
                             className={`store-tab-btn ${activeTab === "cart" ? "active" : ""}`}
                             onClick={() => setActiveTab("cart")}
                         >
                             <div className="tab-with-badge">
-                                🛒 السلة
-                                {cartCount > 0 && <span className="nav-badge">{cartCount}</span>}
+                                <div className="icon-badge-wrapper">
+                                    <FiShoppingCart />
+                                    {cartCount > 0 && <span className="nav-badge">{cartCount}</span>}
+                                </div>
+                                <span>السلة</span>
                             </div>
                         </button>
                         <button
                             className={`store-tab-btn ${activeTab === "orders" ? "active" : ""}`}
                             onClick={() => setActiveTab("orders")}
                         >
-                            📦 طلباتي
+                            <FiPackage />
+                            <span>طلباتي</span>
                         </button>
                     </nav>
                 </div>

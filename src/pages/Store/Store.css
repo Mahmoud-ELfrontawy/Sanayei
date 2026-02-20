@@ -14,20 +14,62 @@
 
 .store-navigation-header {
     background: var(--color-bg-main);
-    padding: 1.5rem 0;
+    padding: 1rem 0;
     box-shadow: 0 4px 20px rgba(0,0,0,0.05);
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 100; /* Lower than global header dropdowns (200) */
 }
 
 .nav-container {
-    width: min(1380px, 96%);
+    max-width: 1600px; /* Increased from 1400px */
+    width: 100%;
     margin: 0 auto;
+    padding: 0 40px; /* Wider side padding */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 2rem;
+    height: 100%;
+    gap: 30px;
+}
+
+/* 🔍 Header Search Bar */
+.store-nav-search {
+    flex: 0 1 600px; /* Increased base width */
+    height: 52px; /* Slightly taller */
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.store-nav-search:focus-within {
+    border-color: #3b82f6;
+    background: #fff;
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.12);
+}
+
+.nav-search-icon {
+    color: #94a3b8;
+    font-size: 18px;
+}
+
+.store-nav-search input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.store-nav-search input::placeholder {
+    color: #94a3b8;
 }
 
 .store-brand-mini h2 {
@@ -44,55 +86,80 @@
 
 .store-tabs-premium {
     display: flex;
-    background: #f0f4f8;
-    padding: 0.4rem;
-    border-radius: 50px;
-    gap: 0.3rem;
+    background: #f1f5f9;
+    padding: 6px;
+    border-radius: 16px;
+    gap: 8px;
+    margin-right: auto; /* Extreme push to the left in RTL */
+    border: 1px solid #e2e8f0;
+    flex-shrink: 0;
 }
 
 .store-tab-btn {
-    padding: 0.7rem 1.5rem;
+    padding: 8px 20px;
     border: none;
     background: transparent;
-    border-radius: 40px;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--color-text-secondary);
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #64748b;
     cursor: pointer;
-    transition: var(--transition-main);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 10px;
+}
+
+.store-tab-btn svg {
+    font-size: 18px;
+    opacity: 0.8;
 }
 
 .store-tab-btn.active {
-    background: var(--color-primary);
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(95, 168, 211, 0.3);
+    background: #fff;
+    color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.store-tab-btn.active svg {
+    color: #3b82f6;
+    opacity: 1;
 }
 
 .store-tab-btn:hover:not(.active) {
-    background: rgba(95, 168, 211, 0.1);
-    color: var(--color-primary);
+    background: rgba(59, 130, 246, 0.05);
+    color: #3b82f6;
 }
 
 .tab-with-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.icon-badge-wrapper {
     position: relative;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
 }
 
 .nav-badge {
-    background: var(--color-error);
-    color: #fff;
-    padding: 2px 7px;
-    border-radius: 10px;
     position: absolute;
-    top: -14px;
-    left: -14px;
-    box-shadow: 0 2px 6px rgba(244, 67, 54, 0.35);
-    font-weight: 900;
+    top: -8px;
+    right: -10px;
+    background: #ef4444;
+    color: #fff;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+    z-index: 5;
 }
 
 /* 🖼️ Render Area */

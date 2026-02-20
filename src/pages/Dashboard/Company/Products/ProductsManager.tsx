@@ -172,12 +172,17 @@ const ProductsManager: React.FC = () => {
                             </div>
 
                             <div className="input-field full-width">
-                                <label>وصف المنتج</label>
-                                <textarea
+                                <label>وصف المنتج (بحد أقصى 50 حرفاً)</label>
+                                <input
+                                    type="text"
+                                    maxLength={50}
                                     value={newProduct.description}
                                     onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
-                                    placeholder="اكتب تفاصيل المنتج..."
+                                    placeholder="اكتب وصفاً مختصراً للمنتج..."
                                 />
+                                <small style={{ color: '#94a3b8', fontSize: '12px' }}>
+                                    {newProduct.description.length}/50 حرفاً
+                                </small>
                             </div>
 
                             <div className="image-upload-zone">
