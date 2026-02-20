@@ -59,7 +59,7 @@ const ProfileUser = () => {
     useEffect(() => {
         // Check for toast flag from previous reload
         if (localStorage.getItem("profileUpdated") === "true") {
-            toast.success("تم حفظ التعديلات بنجاح ✅");
+            toast.success("تم حفظ البيانات بنجاح ✅");
             localStorage.removeItem("profileUpdated");
         }
 

@@ -108,7 +108,7 @@ const ProfileWorker = () => {
 
     useEffect(() => {
         if (localStorage.getItem("profileUpdated") === "true") {
-            toast.success("تم حفظ بياناتك بنجاح ✅");
+            toast.success("تم حفظ البيانات بنجاح ✅");
             localStorage.removeItem("profileUpdated");
         }
 
@@ -207,6 +207,7 @@ const ProfileWorker = () => {
 
             localStorage.setItem("profileUpdated", "true");
             window.location.reload();
+            toast.success("تم حفظ البيانات بنجاح ✅");
         } catch (error: unknown) {
             const err = error as { response?: { data?: { message?: string } } };
             toast.error(err.response?.data?.message || "فشل حفظ البيانات ❌");

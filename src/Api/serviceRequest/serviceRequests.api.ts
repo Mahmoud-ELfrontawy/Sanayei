@@ -95,7 +95,7 @@ export const completeServiceRequest = async (requestId: number) => {
     try {
         const response = await axios.post(
             `${BASE_URL}/user/service-requests/${requestId}/complete`,
-            { status: "completed" },
+            { user_confirmation: "confirmed" },
             { headers: getHeaders() }
         );
         return response.data;
