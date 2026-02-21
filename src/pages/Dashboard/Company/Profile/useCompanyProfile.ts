@@ -27,7 +27,7 @@ export const useCompanyProfile = () => {
         try {
             const res = await updateCompanyProfile(data);
             if (res.success) {
-                toast.success("تم تحديث بيانات المتجر بنجاح");
+                toast.info("جاري مراجعة البيانات وسيتم الموافقة عليها ⏳");
                 fetchProfileData(); // Reload
             } else {
                 toast.error(res.message || "فشل تحديث البيانات");

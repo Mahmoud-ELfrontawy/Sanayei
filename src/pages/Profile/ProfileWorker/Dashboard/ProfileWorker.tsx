@@ -14,6 +14,7 @@ import { getAvatarUrl } from "../../../../utils/imageUrl";
 import { toUiDate } from "../../../../utils/dateApiHelper";
 import { getGovernorates } from "../../../../Api/serviceRequest/governorates.api";
 import FormSkeleton from "../../base/FormSkeleton";
+import { setToastAfterReload } from "../../../../utils/toastAfterReload";
 
 /* ================= Types ================= */
 
@@ -107,11 +108,6 @@ const ProfileWorker = () => {
     /* ================= Fetch Profile ================= */
 
     useEffect(() => {
-        if (localStorage.getItem("profileUpdated") === "true") {
-            toast.success("تم حفظ البيانات بنجاح ✅");
-            localStorage.removeItem("profileUpdated");
-        }
-
         const fetchProfile = async () => {
             try {
                 // Fetch Governorates
@@ -193,6 +189,7 @@ const ProfileWorker = () => {
                 profile_photo: imageFile,
                 work_photos: craftsman.new_work_photos,
                 delete_work_photos: craftsman.delete_work_photos,
+                status: "approved",
             });
 
             // ✅ الخطوة الحيوية: حذف الصور يدوياً عبر الـ API لضمان الحذف من السيرفر
@@ -205,9 +202,8 @@ const ProfileWorker = () => {
             await refreshUser();
             setImageFile(null);
 
-            localStorage.setItem("profileUpdated", "true");
+            setToastAfterReload("جاري مراجعة البيانات وسيتم الموافقة عليها ⏳", "info");
             window.location.reload();
-            toast.success("تم حفظ البيانات بنجاح ✅");
         } catch (error: unknown) {
             const err = error as { response?: { data?: { message?: string } } };
             toast.error(err.response?.data?.message || "فشل حفظ البيانات ❌");

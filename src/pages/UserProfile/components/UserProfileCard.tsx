@@ -29,34 +29,36 @@ const UserProfileCard: React.FC<Props> = ({ user, isOwnProfile }) => {
             <h2 className="craftsman-name">{user.name}</h2>
             <p className="craftsman-job">عميل منصة صنايعي</p>
 
-            <div className="card-actions" style={{ marginTop: '20px' }}>
-                <div className="info-item" style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    justifyContent: 'center',
-                    color: 'var(--color-text-secondary)',
-                    fontSize: '0.95rem',
-                    marginBottom: '8px'
-                }}>
-                    <FaPhoneAlt size={16} color="#5FA8D3" />
-                    <span>{user.phone}</span>
+            {isOwnProfile && (
+                <div className="card-actions" style={{ marginTop: '20px' }}>
+                    <div className="info-item" style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        justifyContent: 'center',
+                        color: 'var(--color-text-secondary)',
+                        fontSize: '0.95rem',
+                        marginBottom: '8px'
+                    }}>
+                        <FaPhoneAlt size={16} color="#5FA8D3" />
+                        <span>{user.phone}</span>
+                    </div>
+                    <div className="info-item" style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        justifyContent: 'center',
+                        color: 'var(--color-text-secondary)',
+                        fontSize: '0.95rem'
+                    }}>
+                        <FaEnvelope size={16} color="#5FA8D3" />
+                        <span>{user.email}</span>
+                    </div>
                 </div>
-                <div className="info-item" style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    justifyContent: 'center',
-                    color: 'var(--color-text-secondary)',
-                    fontSize: '0.95rem'
-                }}>
-                    <FaEnvelope size={16} color="#5FA8D3" />
-                    <span>{user.email}</span>
-                </div>
-            </div>
+            )}
 
             {!isOwnProfile ? (
-                 <div className="card-actions" style={{ marginTop: '25px' }}>
+                <div className="card-actions" style={{ marginTop: '25px' }}>
                     <Button
                         to="/dashboard/messages"
                         variant="primary"

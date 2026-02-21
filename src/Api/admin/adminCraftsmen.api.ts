@@ -21,32 +21,44 @@ export const adminCraftsmenApi = {
         return axios.get(`${BASE_URL}/admin/craftsmen?${queryParams.toString()}`, { headers: getAuthHeader() });
     },
 
+    getStatistics: async () => {
+        return axios.get(`${BASE_URL}/admin/craftsmen/statistics`, { headers: getAuthHeader() });
+    },
+
     // Verify/Approve a craftsman
-    verifyCraftsman: async (id: string) => {
+    verifyCraftsman: async (id: string | number) => {
         return axios.post(`${BASE_URL}/admin/craftsmen/${id}/verify`, {}, { headers: getAuthHeader() });
     },
 
     // Reject a craftsman request
-    rejectCraftsman: async (id: string) => {
+    rejectCraftsman: async (id: string | number) => {
         return axios.post(`${BASE_URL}/admin/craftsmen/${id}/reject`, {}, { headers: getAuthHeader() });
     },
 
     // Toggle block status for a craftsman
-    toggleCraftsmanBlock: async (id: string) => {
-        return axios.post(`${BASE_URL}/admin/craftsmen/${id}/block`, {}, { headers: getAuthHeader() });
+    toggleCraftsmanBlock: async (id: string | number) => {
+        return axios.post(`${BASE_URL}/admin/craftsmen/${id}/toggle-block`, {}, { headers: getAuthHeader() });
+    },
+
+    getCraftsmanWallet: async (id: string | number) => {
+        return axios.get(`${BASE_URL}/admin/craftsmen/${id}/wallet`, { headers: getAuthHeader() });
+    },
+
+    addCraftsmanBalance: async (id: string | number, amount: number) => {
+        return axios.post(`${BASE_URL}/admin/craftsmen/${id}/add-balance`, { amount }, { headers: getAuthHeader() });
     },
 
     // CRUD Resource Methods (from Route::apiResource)
-    getCraftsman: async (id: string) => {
+    getCraftsman: async (id: string | number) => {
         return axios.get(`${BASE_URL}/admin/craftsmen/${id}`, { headers: getAuthHeader() });
     },
     createCraftsman: async (data: any) => {
         return axios.post(`${BASE_URL}/admin/craftsmen`, data, { headers: getAuthHeader() });
     },
-    updateCraftsman: async (id: string, data: any) => {
+    updateCraftsman: async (id: string | number, data: any) => {
         return axios.put(`${BASE_URL}/admin/craftsmen/${id}`, data, { headers: getAuthHeader() });
     },
-    deleteCraftsman: async (id: string) => {
+    deleteCraftsman: async (id: string | number) => {
         return axios.delete(`${BASE_URL}/admin/craftsmen/${id}`, { headers: getAuthHeader() });
     }
 };

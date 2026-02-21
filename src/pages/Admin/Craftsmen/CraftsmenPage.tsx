@@ -28,7 +28,7 @@ interface CraftsmanData {
     sub_specialties?: string[];
     governorate?: { id: number; name: string };
     service?: { id: number; name: string };
-    status: 'pending' | 'approved' | 'rejected' | 'blocked';
+    status: 'pending' | 'approved' | 'rejected' | 'blocked' | 'active';
     rating: number;
     reviews_count: number;
     completed_jobs: number;
@@ -62,20 +62,22 @@ const CraftsmenPage: React.FC = () => {
                 status: selectedStatus === 'all' ? undefined : selectedStatus
             };
             const response = await adminCraftsmenApi.getAllCraftsmen(params);
-            const paginationData = response.data;
-            const allCraftsmen = paginationData.data || [];
+
+            // Handle both wrapped {data: {...}} and direct {...} response formats
+            const paginationObj = response.data.data || response.data;
+            const allCraftsmen = paginationObj?.data || [];
 
             // Map to the interface
             const mapped: CraftsmanData[] = allCraftsmen.map((u: any) => ({
-                id: u.id.toString(),
-                name: u.name,
-                email: u.email,
-                phone: u.phone,
-                avatar: u.avatar || u.profile_image_url,
+                id: (u.id || '').toString(),
+                name: u.name || 'بدون اسم',
+                email: u.email || '',
+                phone: u.phone || '',
+                avatar: u.avatar || u.profile_image_url || u.profile_photo,
                 specialty: u.service?.name || u.craft_type || 'غير محدد',
                 governorate: u.governorate,
                 service: u.service,
-                status: u.status,
+                status: u.status || 'pending',
                 rating: parseFloat(u.average_rating || u.rating || 0),
                 reviews_count: parseInt(u.reviews_count || 0),
                 completed_jobs: parseInt(u.completed_requests || u.completed_jobs || 0),
@@ -88,7 +90,7 @@ const CraftsmenPage: React.FC = () => {
             }));
 
             setCraftsmen(mapped);
-            setTotalPages(paginationData.last_page || 1);
+            setTotalPages(paginationObj?.last_page || 1);
             setError(null);
         } catch (err: any) {
             setError("فشل تحميل البيانات من السيرفر");
@@ -109,7 +111,7 @@ const CraftsmenPage: React.FC = () => {
             switch (action) {
                 case 'approve':
                     await adminCraftsmenApi.verifyCraftsman(id);
-                    toast.success("تم اعتماد الصنايعي بنجاح");
+                    toast.success("تم تنشيط الحساب بنجاح");
                     break;
                 case 'reject':
                     await adminCraftsmenApi.rejectCraftsman(id);
@@ -188,7 +190,7 @@ const CraftsmenPage: React.FC = () => {
                         <select value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
                             <option value="all">كل الحالات</option>
                             <option value="pending">بانتظار المراجعة</option>
-                            <option value="approved">معتمد</option>
+                            <option value="approved">نشط</option>
                             <option value="rejected">مرفوض</option>
                         </select>
                     </div>
@@ -245,7 +247,7 @@ const CraftsmenPage: React.FC = () => {
                                 </td>
                                 <td>
                                     <span className={`status-badge ${craftsman.status}`}>
-                                        {craftsman.status === 'approved' ? 'معتمد' :
+                                        {(craftsman.status === 'approved' || craftsman.status === 'active') ? 'نشط' :
                                             craftsman.status === 'rejected' ? 'مرفوض' :
                                                 craftsman.status === 'blocked' ? 'محظور' : 'قيد المراجعة'}
                                     </span>
@@ -256,7 +258,7 @@ const CraftsmenPage: React.FC = () => {
                                     </button>
                                     {craftsman.status === 'pending' && (
                                         <>
-                                            <button className="approve-btn" onClick={() => handleUpdateStatus(craftsman.id, 'approve')} title="اعتماد">
+                                            <button className="approve-btn" onClick={() => handleUpdateStatus(craftsman.id, 'approve')} title="تنشيط">
                                                 <FaCheckCircle size={18} />
                                             </button>
                                             <button className="reject-btn" onClick={() => handleUpdateStatus(craftsman.id, 'reject')} title="رفض">
@@ -307,7 +309,7 @@ const CraftsmenPage: React.FC = () => {
                                 <div className="large-avatar">{selectedCraftsman.name[0]}</div>
                                 <h4>{selectedCraftsman.name}</h4>
                                 <span className={`status-pill ${selectedCraftsman.status}`}>
-                                    {selectedCraftsman.status === 'approved' ? 'حساب معتمد' :
+                                    {(selectedCraftsman.status === 'approved' || selectedCraftsman.status === 'active') ? 'حساب نشط' :
                                         selectedCraftsman.status === 'rejected' ? 'حساب مرفوض' :
                                             selectedCraftsman.status === 'blocked' ? 'حساب محظور' : 'بانتظار التفعيل'}
                                 </span>

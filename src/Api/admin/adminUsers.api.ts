@@ -25,19 +25,44 @@ export const adminUsersApi = {
         
         return axios.get(`${BASE_URL}/admin/users?${queryParams.toString()}`, { headers: getAuthHeader() });
     },
-    showUser: async (userId: string) => {
+    
+    getStatistics: async () => {
+        return axios.get(`${BASE_URL}/admin/users/statistics`, { headers: getAuthHeader() });
+    },
+
+    exportUsers: async () => {
+        return axios.get(`${BASE_URL}/admin/users/export`, { headers: getAuthHeader(), responseType: 'blob' });
+    },
+
+    showUser: async (userId: string | number) => {
         return axios.get(`${BASE_URL}/admin/users/${userId}`, { headers: getAuthHeader() });
     },
+
     createUser: async (data: any) => {
         return axios.post(`${BASE_URL}/admin/users`, data, { headers: getAuthHeader(true) });
     },
-    updateUser: async (userId: string, data: any) => {
+
+    updateUser: async (userId: string | number, data: any) => {
         return axios.put(`${BASE_URL}/admin/users/${userId}`, data, { headers: getAuthHeader(true) });
     },
-    deleteUser: async (userId: string) => {
-        return axios.delete(`${BASE_URL}/admin/users/${userId}`, { headers: getAuthHeader(true) });
+
+    deleteUser: async (userId: string | number) => {
+        return axios.post(`${BASE_URL}/admin/users/${userId}`, {}, { headers: getAuthHeader(true) });
     },
-    toggleBlockUser: async (userId: string) => {
-        return axios.patch(`${BASE_URL}/admin/users/${userId}/toggle-block`, {}, { headers: getAuthHeader(true) });
+
+    forceDeleteUser: async (userId: string | number) => {
+        return axios.delete(`${BASE_URL}/admin/users/${userId}/force`, { headers: getAuthHeader(true) });
+    },
+
+    toggleBlockUser: async (userId: string | number) => {
+        return axios.post(`${BASE_URL}/admin/users/${userId}/toggle-block`, {}, { headers: getAuthHeader(true) });
+    },
+
+    getUserWallet: async (userId: string | number) => {
+        return axios.get(`${BASE_URL}/admin/users/${userId}/wallet`, { headers: getAuthHeader() });
+    },
+
+    addUserBalance: async (userId: string | number, amount: number) => {
+        return axios.post(`${BASE_URL}/admin/users/${userId}/add-balance`, { amount }, { headers: getAuthHeader(true) });
     },
 };

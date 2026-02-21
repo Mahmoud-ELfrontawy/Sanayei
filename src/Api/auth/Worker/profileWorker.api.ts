@@ -46,6 +46,7 @@ export interface UpdateCraftsmanPayload {
     password?: string;
     password_confirmation?: string;
     governorate_id?: string | number;
+    status?: string;
 }
 
 /* ================= Helpers ================= */
@@ -66,7 +67,8 @@ type TextFieldKey =
     | "work_hours"
     | "current_password"
     | "password"
-    | "password_confirmation";
+    | "password_confirmation"
+    | "status";
 
 // مفاتيح رقمية فقط
 type NumberFieldKey =
@@ -146,6 +148,7 @@ export const updateCraftsmanProfile = async (
         "current_password",
         "password",
         "password_confirmation",
+        "status",
     ];
 
     textFields.forEach((key) => {

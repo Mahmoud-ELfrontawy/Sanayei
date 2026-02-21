@@ -17,8 +17,9 @@ function App() {
 
   // ✅ toast after reload
   useEffect(() => {
-    const toastData = localStorage.getItem("after_reload_toast");
+    if (loading) return; // Wait until loader is gone
 
+    const toastData = localStorage.getItem("after_reload_toast");
     if (!toastData) return;
 
     try {
@@ -26,25 +27,18 @@ function App() {
 
       setTimeout(() => {
         switch (type) {
-          case "success":
-            toast.success(message);
-            break;
-          case "error":
-            toast.error(message);
-            break;
-          case "info":
-            toast.info(message);
-            break;
-          default:
-            toast(message);
+          case "success": toast.success(message); break;
+          case "error": toast.error(message); break;
+          case "info": toast.info(message); break;
+          default: toast(message);
         }
-      }, 500); // Delay toast display slightly to ensure UI is ready
+      }, 300); // Small delay after loader disappears
 
       localStorage.removeItem("after_reload_toast");
     } catch (e) {
       localStorage.removeItem("after_reload_toast");
     }
-  }, []);
+  }, [loading]);
 
   if (loading) {
     return <LogoLoader />;
