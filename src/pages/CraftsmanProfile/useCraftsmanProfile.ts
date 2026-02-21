@@ -25,20 +25,29 @@ export const useCraftsmanProfile = () => {
       setLoading(true);
       setError(null);
       try {
+        let rawResponse: any;
         let data: any;
         if (isOwnProfile) {
-          const res = await getCraftsmanProfile();
-          // 🛠️ FIX: Check 'craftsman' property first (matches AuthContext logic)
-          data = res.craftsman ?? res.data ?? res;
-          if (Array.isArray(data)) {
-            data = data.find((item: any) => item.id) || {};
-          }
+          rawResponse = await getCraftsmanProfile();
         } else if (id) {
-          data = await getTechnicianById(id);
+          rawResponse = await getTechnicianById(id);
         } else {
           setError("معرف المستخدم غير موجود");
           setLoading(false);
           return;
+        }
+
+        // Normalize the data (handle different API wrapper structures)
+        data = rawResponse.craftsman ?? rawResponse.data ?? rawResponse;
+
+        if (Array.isArray(data)) {
+          data = data.find((item: any) => item.id) || {};
+        }
+
+        if (!data || Object.keys(data).length === 0) {
+           setError("لم يتم العثور على بيانات المستخدم");
+           setLoading(false);
+           return;
         }
 
         // Mapping API data to UI structure

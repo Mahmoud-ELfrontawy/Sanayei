@@ -13,124 +13,27 @@
 .dept-header-info h1 {
     font-size: clamp(28px, 5vw, 42px);
     font-weight: 800;
-    color: var(--color-text-main);
-    margin-bottom: 10px;
-    line-height: 1.15;
+    color: var(--color-text-accent);
+    margin-bottom: 12px;
 }
 
 .dept-header-info p {
     color: var(--color-text-secondary);
     font-size: 18px;
-    line-height: 1.5;
-}
-
-.departments-container-premium {
-    width: min(1380px, 96%);
-    margin: 2rem auto;
-}
-
-.departments-header-mini {
-    margin-bottom: 3rem;
-}
-
-.departments-header-mini h1 {
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--color-text-main);
-}
-
-.departments-header-mini p {
-    font-size: 20px;
-    color: var(--color-text-muted);
-}
-
-.deps-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-}
-
-.dep-card-premium {
-    background: #fff;
-    border-radius: var(--radius-card);
-    padding: 2.5rem 2rem;
-    text-align: center;
-    border: 1px solid var(--color-border);
-    transition: var(--transition-main);
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-}
-
-.dep-card-premium:hover {
-    transform: translateY(-8px);
-    border-color: var(--color-primary);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.08);
-}
-
-.dep-icon-wrapper {
-    width: 60px;
-    height: 60px;
-    background: #f0f4f8;
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 30px;
-    color: var(--color-primary);
-    transition: var(--transition-main);
-}
-
-.dep-card-premium:hover .dep-icon-wrapper {
-    background: var(--color-primary);
-    color: #fff;
-    /* Rotation animation removed */
-}
-
-.dep-content h3 {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--color-text-accent);
-    margin-bottom: 0.8rem;
-}
-
-.dep-content p {
-    font-size: 16px;
-    color: var(--color-text-muted);
     line-height: 1.6;
-}
-
-.btn-view-dep {
-    margin-top: 1rem;
-    padding: 0.6rem 2rem;
-    border-radius: 30px;
-    border: 1px solid var(--color-divider);
-    background: transparent;
-    color: var(--color-text-secondary);
-    font-weight: 600;
-    transition: var(--transition-main);
-}
-
-.dep-card-premium:hover .btn-view-dep {
-    background: var(--color-primary);
-    color: #fff;
-    border-color: var(--color-primary);
-}
-.cat-icon-text {
-    font-style: normal;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .depts-grid-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 22px;
+    gap: 24px;
 }
 
 .dept-card-premium {
-    background: var(--color-bg-main);
-    padding: 24px;
+    background-color: var(--color-bg-main);
+    padding: 28px;
     border-radius: var(--radius-card);
     display: flex;
     align-items: center;
@@ -143,33 +46,29 @@
 }
 
 .dept-card-premium:hover {
-    transform: translateY(-4px);
+    transform: translateY(-5px);
     box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.08);
     border-color: var(--color-primary);
 }
 
 .dept-icon-wrapper {
-    width: 50px;
-    height: 50px;
-    background: var(--color-bg-section);
+    width: 60px;
+    height: 60px;
+    background-color: var(--color-bg-section);
     color: var(--color-primary);
     border-radius: var(--radius-card-sm);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
+    font-size: 26px;
     transition: var(--transition-main);
     flex-shrink: 0;
 }
 
 .dept-card-premium:hover .dept-icon-wrapper {
-    background: var(--color-primary);
+    background-color: var(--color-primary);
     color: #fff;
-}
-
-.dept-icon-wrapper.all-depts {
-    background: rgba(95, 168, 211, 0.1);
-    color: var(--color-primary);
+    transform: scale(1.1) rotate(5deg);
 }
 
 .dept-details {
@@ -178,55 +77,60 @@
 
 .dept-details h3 {
     font-size: 20px;
-    font-weight: 700;
-    color: var(--color-text-main);
-    margin-bottom: 4px;
+    font-weight: 800;
+    color: var(--color-text-accent);
+    margin-bottom: 6px;
 }
 
 .dept-details p {
     font-size: 15px;
     color: var(--color-text-secondary);
     margin: 0;
-    line-height: 1.4;
+    line-height: 1.5;
+    font-weight: 600;
 }
 
 .arrow-go {
-    font-size: 20px;
-    color: var(--color-divider);
+    font-size: 22px;
+    color: var(--color-border);
     transition: var(--transition-main);
 }
 
 .dept-card-premium:hover .arrow-go {
     color: var(--color-primary);
-    transform: translateX(-5px);
+    transform: translateX(-8px);
 }
 
 .dept-loading {
-    padding: 100px;
+    padding: 120px;
     text-align: center;
-    font-size: 18px;
+    font-size: 20px;
     color: var(--color-text-secondary);
-    font-weight: 600;
+    font-weight: 800;
 }
 
 .empty-depts {
     grid-column: 1 / -1;
     text-align: center;
-    padding: 60px;
+    padding: 80px;
     color: var(--color-text-secondary);
     font-size: 18px;
+    background-color: var(--color-bg-main);
+    border-radius: var(--radius-card);
+    border: 2px dashed var(--color-border);
 }
 
 /* 📱 Responsive */
 @media (max-width: 768px) {
     .depts-grid-container {
         grid-template-columns: 1fr;
-        gap: 14px;
+        gap: 16px;
     }
-    .departments-page-premium { padding: 16px; margin: 20px auto; }
-    .dept-header-info { margin-bottom: 30px; }
+    .departments-page-premium { padding: 16px; margin: 24px auto; }
+    .dept-header-info { margin-bottom: 32px; }
+    .dept-header-info h1 { font-size: 28px; }
     .dept-header-info p { font-size: 16px; }
-    .dept-card-premium { padding: 18px; gap: 16px; }
-    .dept-icon-wrapper { width: 50px; height: 50px; font-size: 22px; }
+    .dept-card-premium { padding: 20px; gap: 16px; }
+    .dept-icon-wrapper { width: 52px; height: 52px; font-size: 22px; }
     .dept-details h3 { font-size: 18px; }
 }

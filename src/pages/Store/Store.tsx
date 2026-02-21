@@ -9,7 +9,7 @@ import "./Store.css";
 
 const StorePage: React.FC = () => {
     const [activeTab, setActiveTab] = useState("products");
-    const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+    const [selectedCategoryId] = useState<number | null>(null);
     const [cartCount, setCartCount] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -35,7 +35,6 @@ const StorePage: React.FC = () => {
             case "products":
                 return <StoreGalleryPage
                     initialCategoryId={selectedCategoryId}
-                    onResetCategory={() => setSelectedCategoryId(null)}
                     searchQuery={searchQuery}
                     onSearchChange={setSearchQuery}
                 />;
@@ -46,7 +45,7 @@ const StorePage: React.FC = () => {
             case "orders":
                 return <StoreOrdersPage />;
             default:
-                return <StoreGalleryPage initialCategoryId={selectedCategoryId} onResetCategory={() => setSelectedCategoryId(null)} />;
+                return <StoreGalleryPage initialCategoryId={selectedCategoryId} />;
         }
     };
 
@@ -64,8 +63,18 @@ const StorePage: React.FC = () => {
                             type="text"
                             placeholder="ابحث في المتجر..."
                             value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                                if (activeTab !== "products") {
+                                    setActiveTab("products");
+                                }
+                            }}
                         />
+                        {searchQuery && (
+                            <button className="clear-search-btn" onClick={() => setSearchQuery("")}>
+                                &times;
+                            </button>
+                        )}
                     </div>
 
                     <nav className="store-tabs-premium">

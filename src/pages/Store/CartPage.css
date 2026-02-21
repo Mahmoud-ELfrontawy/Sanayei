@@ -16,10 +16,9 @@
 }
 
 .cart-header h1 {
-    font-size: clamp(26px, 4vw, 36px);
     font-size: 32px;
     font-weight: 800;
-    color: var(--color-text-main);
+    color: var(--color-text-accent);
 }
 
 .continue-shopping {
@@ -28,11 +27,13 @@
     gap: 0.5rem;
     color: var(--color-primary);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 700;
+    transition: var(--transition-fast);
 }
 
 .continue-shopping:hover {
     transform: translateX(-5px);
+    color: var(--color-primary-hover);
 }
 
 /* 🛒 Layout */
@@ -50,9 +51,9 @@
 }
 
 .cart-item-card {
-    background: #fff;
-    border-radius: var(--radius-card-sm);
-    padding: 1.2rem;
+    background-color: var(--color-bg-main);
+    border-radius: var(--radius-card);
+    padding: 1.5rem;
     display: flex;
     align-items: center;
     gap: 1.5rem;
@@ -69,8 +70,9 @@
     width: 100px;
     height: 100px;
     object-fit: contain;
-    background: #f8fafc;
+    background-color: var(--color-bg-section);
     border-radius: var(--radius-sm);
+    padding: 10px;
 }
 
 .cart-item-info {
@@ -79,29 +81,30 @@
 
 .cart-item-info h3 {
     font-size: 18px;
-    font-weight: 700;
-    color: var(--color-text-main);
+    font-weight: 800;
+    color: var(--color-text-accent);
     margin-bottom: 0.5rem;
 }
 
 .item-price {
     font-size: 20px;
     font-weight: 800;
-    color: var(--color-text-accent);
+    color: var(--color-primary);
 }
 
 .item-qty {
     font-size: 14px;
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     margin-top: 0.4rem;
+    font-weight: 600;
 }
 
 .remove-btn {
-    background: #fff0f0;
+    background-color: rgba(244, 67, 54, 0.08);
     color: var(--color-error);
     border: none;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -111,14 +114,15 @@
 }
 
 .remove-btn:hover {
-    background: var(--color-error);
+    background-color: var(--color-error);
     color: #fff;
+    transform: rotate(90deg);
 }
 
 /* 📊 Summary Card */
 .cart-summary-card {
-    background: var(--color-bg-main);
-    padding: 28px;
+    background-color: var(--color-bg-main);
+    padding: 32px;
     border-radius: var(--radius-card);
     border: 1px solid var(--color-border);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
@@ -128,53 +132,53 @@
 }
 
 .cart-summary-card h3 {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--color-text-main);
-    margin-bottom: 22px;
-    padding-bottom: 14px;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--color-text-accent);
+    margin-bottom: 24px;
+    padding-bottom: 16px;
     border-bottom: 1px solid var(--color-border);
 }
 
 .summary-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
     color: var(--color-text-secondary);
-    font-weight: 600;
-    font-size: 15px;
+    font-weight: 700;
+    font-size: 16px;
 }
 
 .total-row {
-    margin-top: 18px;
-    padding-top: 18px;
+    margin-top: 20px;
+    padding-top: 20px;
     border-top: 2px dashed var(--color-divider);
-    color: var(--color-text-main);
+    color: var(--color-text-accent);
     font-size: 18px;
 }
 
 .total-amount {
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 900;
     color: var(--color-primary);
 }
 
 .checkout-btn {
     width: 100%;
-    height: 54px;
-    background: var(--color-primary);
+    height: 56px;
+    background-color: var(--color-primary);
     color: #fff;
     border: none;
     border-radius: var(--radius-btn);
     font-size: 18px;
-    font-weight: 700;
-    margin-top: 26px;
+    font-weight: 800;
+    margin-top: 32px;
     cursor: pointer;
     transition: var(--transition-main);
 }
 
 .checkout-btn:hover {
-    background: var(--color-primary-hover);
+    background-color: var(--color-primary-hover);
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(95, 168, 211, 0.3);
 }
@@ -185,47 +189,51 @@
     justify-content: center;
     align-items: center;
     height: 60vh;
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 20px;
+    font-weight: 800;
     color: var(--color-text-secondary);
 }
 
 .cart-empty-state {
     text-align: center;
-    padding: 80px 24px;
-    background: var(--color-bg-main);
+    padding: 100px 24px;
+    background-color: var(--color-bg-main);
     border-radius: var(--radius-card);
     border: 2px dashed var(--color-border);
 }
 
 .cart-empty-state h2 {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--color-text-main);
-    margin: 20px 0 10px;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--color-text-accent);
+    margin: 24px 0 12px;
 }
 
 .cart-empty-state p {
     color: var(--color-text-secondary);
-    font-size: 16px;
-    margin-bottom: 28px;
+    font-size: 17px;
+    margin-bottom: 32px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .browse-btn {
     display: inline-block;
-    padding: 12px 32px;
-    background: var(--color-primary);
+    padding: 14px 40px;
+    background-color: var(--color-primary);
     color: #fff;
     text-decoration: none;
     border-radius: var(--radius-btn);
-    font-weight: 700;
-    font-size: 16px;
+    font-weight: 800;
+    font-size: 17px;
     transition: var(--transition-main);
 }
 
 .browse-btn:hover {
-    background: var(--color-primary-hover);
+    background-color: var(--color-primary-hover);
     transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(95, 168, 211, 0.25);
 }
 
 /* 📱 Responsive */
@@ -241,8 +249,10 @@
 @media (max-width: 768px) {
     .cart-page-container { padding: 16px; margin: 20px auto; }
     .cart-header h1 { font-size: 24px; }
-    .cart-item-card { padding: 14px; gap: 14px; }
-    .cart-item-img { width: 72px; height: 72px; }
+    .cart-item-card { padding: 14px; gap: 14px; flex-direction: column; text-align: center; }
+    .cart-item-img { width: 120px; height: 120px; }
     .cart-item-info h3 { font-size: 16px; }
-    .item-price { font-size: 15px; }
+    .item-price { font-size: 18px; }
+    .remove-btn { position: absolute; top: 10px; left: 10px; }
+    .cart-item-card { position: relative; }
 }

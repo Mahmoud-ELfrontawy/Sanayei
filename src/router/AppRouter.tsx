@@ -44,6 +44,7 @@ import StoreOrdersPage from "../pages/Store/StoreOrdersPage";
 import DashboardIndex from "../pages/Dashboard/DashboardIndex";
 import MessagesPage from "../pages/Dashboard/Messages/MessagesPage";
 import NotificationsPage from "../pages/Dashboard/Notifications/NotificationsPage";
+import WalletPage from "../pages/Dashboard/Wallet/WalletPage";
 import CraftsmanProfilePage from "../pages/CraftsmanProfile/CraftsmanProfilePage";
 import UserProfilePage from "../pages/UserProfile/UserProfilePage";
 import AdminLayout from "../layouts/AdminLayout";
@@ -133,6 +134,7 @@ const AppRouter: React.FC = () => {
             </Route>
             <Route path="messages" element={<MessagesPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
+            <Route path="wallet" element={<WalletPage />} />
             <Route path="store" element={<StoreGalleryPage />} />
           </Route>
         </Route>

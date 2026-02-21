@@ -11,15 +11,16 @@
 }
 
 .checkout-header-modern h1 {
-    font-size: clamp(26px, 5vw, 36px);
+    font-size: 36px;
     font-weight: 800;
-    color: var(--color-text-main);
-    margin-bottom: 8px;
+    color: var(--color-text-accent);
+    margin-bottom: 12px;
 }
 
 .checkout-header-modern p {
     color: var(--color-text-secondary);
-    font-size: 17px;
+    font-size: 18px;
+    font-weight: 600;
 }
 
 .checkout-grid-layout {
@@ -36,7 +37,7 @@
 }
 
 .form-card-modern {
-    background: #fff;
+    background-color: var(--color-bg-main);
     border-radius: var(--radius-card);
     padding: 32px;
     border: 1px solid var(--color-border);
@@ -49,14 +50,14 @@
     gap: 12px;
     margin-bottom: 24px;
     padding-bottom: 16px;
-    border-bottom: 1px solid var(--color-divider);
+    border-bottom: 1px solid var(--color-border);
     color: var(--color-primary);
 }
 
 .card-header h3 {
     font-size: 20px;
-    font-weight: 700;
-    color: var(--color-text-main);
+    font-weight: 800;
+    color: var(--color-text-accent);
 }
 
 .input-group-modern {
@@ -66,7 +67,7 @@
 .input-group-modern label {
     display: block;
     margin-bottom: 10px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--color-text-secondary);
     font-size: 15px;
 }
@@ -75,30 +76,31 @@
 .input-group-modern textarea {
     width: 100%;
     padding: 14px 18px;
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-btn);
     font-family: inherit;
     font-size: 16px;
-    background: var(--color-bg-section);
-    transition: all 0.2s ease;
+    background-color: var(--color-bg-section);
+    transition: var(--transition-fast);
+    color: var(--color-text-main);
 }
 
 .input-group-modern input:focus,
 .input-group-modern textarea:focus {
     outline: none;
     border-color: var(--color-primary);
-    background: #fff;
+    background-color: var(--color-bg-main);
     box-shadow: 0 0 0 4px rgba(95, 168, 211, 0.1);
 }
 
 .input-group-modern textarea {
-    min-height: 100px;
+    min-height: 120px;
     resize: vertical;
 }
 
 .payment-options-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 16px;
 }
 
@@ -119,51 +121,56 @@
     gap: 12px;
     padding: 24px;
     border: 2px solid var(--color-border);
-    border-radius: 16px;
-    transition: all 0.2s ease;
-    background: #fcfdfe;
+    border-radius: var(--radius-card-sm);
+    transition: var(--transition-fast);
+    background-color: var(--color-bg-section);
 }
 
 .opt-content svg {
-    font-size: 32px;
+    font-size: 36px;
     color: var(--color-text-muted);
 }
 
 .opt-content span {
-    font-weight: 700;
-    color: var(--color-text-main);
+    font-weight: 800;
+    color: var(--color-text-secondary);
 }
 
 .payment-option.active .opt-content {
     border-color: var(--color-primary);
-    background: rgba(95, 168, 211, 0.05);
+    background-color: rgba(95, 168, 211, 0.08);
 }
 
 .payment-option.active .opt-content svg {
     color: var(--color-primary);
 }
 
+.payment-option.active .opt-content span {
+    color: var(--color-primary);
+}
+
 .payment-option.disabled {
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: 0.5;
 }
 
 .btn-confirm-order {
     width: 100%;
     padding: 18px;
-    background: var(--color-primary);
+    background-color: var(--color-primary);
     color: #fff;
     border: none;
-    border-radius: 16px;
+    border-radius: var(--radius-btn);
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 800;
     cursor: pointer;
     transition: var(--transition-main);
     box-shadow: 0 10px 25px rgba(95, 168, 211, 0.25);
+    margin-top: 24px;
 }
 
 .btn-confirm-order:hover:not(:disabled) {
-    background: var(--color-primary-hover);
+    background-color: var(--color-primary-hover);
     transform: translateY(-2px);
     box-shadow: 0 15px 35px rgba(95, 168, 211, 0.35);
 }
@@ -180,23 +187,24 @@
 }
 
 .summary-card-modern {
-    background: #fff;
+    background-color: var(--color-bg-main);
     border-radius: var(--radius-card);
-    padding: 28px;
+    padding: 32px;
     border: 1px solid var(--color-border);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.04);
 }
 
 .summary-card-modern h3 {
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 22px;
+    font-weight: 800;
     margin-bottom: 24px;
-    color: var(--color-text-main);
+    color: var(--color-text-accent);
 }
 
 .items-mini-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
     margin-bottom: 24px;
 }
 
@@ -205,24 +213,20 @@
     justify-content: space-between;
     font-size: 15px;
     color: var(--color-text-secondary);
-}
-
-.summary-divider {
-    height: 1px;
-    background: var(--color-divider);
-    margin-bottom: 24px;
+    font-weight: 700;
 }
 
 .pricing-rows {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
+    margin-top: 24px;
 }
 
 .price-row {
     display: flex;
     justify-content: space-between;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--color-text-secondary);
 }
 
@@ -231,14 +235,17 @@
 }
 
 .total-order {
-    margin-top: 8px;
-    padding-top: 16px;
+    margin-top: 16px;
+    padding-top: 20px;
     border-top: 2px dashed var(--color-divider);
-    color: var(--color-text-main);
+    color: var(--color-text-accent);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .total-order span:last-child {
-    font-size: 22px;
+    font-size: 26px;
     font-weight: 900;
     color: var(--color-primary);
 }

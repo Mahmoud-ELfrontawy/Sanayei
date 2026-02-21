@@ -32,10 +32,8 @@ export const useLogin = () => {
                 // Navigate manually based on user role
                 setTimeout(() => {
                     const role = localStorage.getItem('userType');
-                    const userId = localStorage.getItem('user_id');
                     
                     if (role === 'admin') navigate('/admin/dashboard');
-                    else if (role === 'craftsman') navigate(`/craftsman/${userId}`);
                     else navigate('/');
                 }, 100);
                 

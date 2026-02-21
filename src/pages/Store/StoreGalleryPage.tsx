@@ -8,14 +8,12 @@ import "./StoreGalleryPage.css";
 
 interface StoreGalleryPageProps {
     initialCategoryId?: number | null;
-    onResetCategory?: () => void;
     searchQuery?: string;
     onSearchChange?: (val: string) => void;
 }
 
 const StoreGalleryPage: React.FC<StoreGalleryPageProps> = ({
     initialCategoryId = null,
-    onResetCategory,
     searchQuery = "",
     onSearchChange
 }) => {
@@ -172,7 +170,7 @@ const StoreGalleryPage: React.FC<StoreGalleryPageProps> = ({
                         </div>
                     ) : (
                         <>
-                            {!selectedCompany ? (
+                            {(!selectedCompany && !searchQuery) ? (
                                 <div className="companies-premium-grid">
                                     {getCompanyCards().map(company => (
                                         <div
@@ -220,7 +218,7 @@ const StoreGalleryPage: React.FC<StoreGalleryPageProps> = ({
                                 </div>
                             ) : (
                                 <div className="products-premium-grid">
-                                    {filteredProducts.map(prod => (
+                                    {(searchQuery && !selectedCompany ? products : filteredProducts).map(prod => (
                                         <div key={prod.id} className="store-product-card-premium">
                                             <div className="card-media">
                                                 {prod.discount_price && Number(prod.discount_price) > 0 && Number(prod.discount_price) < Number(prod.price) && (
@@ -285,16 +283,21 @@ const StoreGalleryPage: React.FC<StoreGalleryPageProps> = ({
                                         </div>
                                     ))}
 
-                                    {filteredProducts.length === 0 && (
+                                    {(searchQuery && !selectedCompany ? products : filteredProducts).length === 0 && (
                                         <div className="store-empty-state">
                                             <div className="empty-icon-circle">
                                                 <FiPackage />
                                             </div>
-                                            <h3>لا توجد منتجات لهذه الشركة حالياً</h3>
-                                            <button className="back-home-btn" onClick={() => setSelectedCompany(null)}>
-                                                <span>الرجوع للشركات</span>
-                                                <FiArrowLeft />
-                                            </button>
+                                            <h3>{searchQuery ? "لا توجد نتائج للبحث" : "لا توجد منتجات حالياً"}</h3>
+                                            {(selectedCompany || searchQuery) && (
+                                                <button className="back-home-btn" onClick={() => {
+                                                    if (searchQuery && onSearchChange) onSearchChange("");
+                                                    setSelectedCompany(null);
+                                                }}>
+                                                    <span>{searchQuery ? "مسح البحث" : "الرجوع للشركات"}</span>
+                                                    <FiArrowLeft />
+                                                </button>
+                                            )}
                                         </div>
                                     )}
                                 </div>

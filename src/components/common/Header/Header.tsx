@@ -86,7 +86,7 @@ const Header: React.FC = () => {
     logout(false);
     toast.success(`تم تسجيل الخروج بنجاح، نراك قريباً ${name}`);
     setTimeout(() => {
-      window.location.href = "/login";
+      window.location.href = "/";
     }, 1000);
   };
 

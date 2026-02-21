@@ -300,6 +300,8 @@
 
 .status-pending-actions {
     display: flex;
+    flex-direction: column;
+    width: 100%;
     gap: 12px;
 }
 

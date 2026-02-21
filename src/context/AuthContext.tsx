@@ -77,9 +77,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     setUserTypeState("company");
                 }
             } else if (storedType === "admin") {
-                // Try admin profile if exists, otherwise fallback to basic user profile
+                // Try to get admin profile info (using current user profile endpoint)
                 try {
+                    const response = await getMyProfile();
+                    const u = response.data;
+                    if (u?.id) {
+                        userData = {
+                            id: u.id,
+                            name: u.name,
+                            email: u.email,
+                            avatar: getFullImageUrl(u.profile_image_url || u.avatar)
+                        };
+                        setUserTypeState("admin");
+                    }
                 } catch (e) {
+                    console.error("Auth: Failed to fetch admin profile", e);
                 }
             } else if (storedType === "user") {
                 const response = await getMyProfile();
@@ -212,9 +224,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                         else {
                             switch (role) {
                                 case 'admin': window.location.href = '/admin/dashboard'; break;
-                                case 'craftsman': window.location.href = `/craftsman/${userData.id}`; break;
+                                case 'craftsman': window.location.href = '/'; break;
                                 case 'company': window.location.href = '/dashboard/company'; break;
-                                default: window.location.href = '/';
+                                default: window.location.href = '/'; break;
                             }
                         }
                     }
@@ -284,7 +296,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUserTypeState(null);
         // Page reload to clear any memory states
         if (shouldRedirect) {
-            window.location.href = '/login';
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 1000);
         }
     };
 

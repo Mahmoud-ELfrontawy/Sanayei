@@ -196,7 +196,7 @@
     line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    min-height: 52px;
+    min-height: 30px;
 }
 
 /* ===== Price Row ===== */
@@ -225,12 +225,12 @@
 
 .tech-card__btn {
     flex: 1;
-    height: 42px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
-    font-size: 18px;
+    border-radius: 14px;
+    font-size: 20px;
     font-weight: 700;
     text-decoration: none;
     transition: all 0.3s ease;

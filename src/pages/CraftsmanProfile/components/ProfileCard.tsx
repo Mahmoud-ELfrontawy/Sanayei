@@ -50,7 +50,7 @@ const ProfileCard: React.FC<Props> = ({ craftsman, isOwnProfile }) => {
               to="/request-service"
               variant="primary"
               state={{
-                industrial_type: craftsman.id.toString(),
+                industrial_type: craftsman.id?.toString(),
                 industrial_name: craftsman.name,
                 // Assuming service info is available or handled by the form
                 service_type: craftsman.jobTitle,

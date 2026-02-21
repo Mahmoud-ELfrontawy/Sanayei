@@ -22,7 +22,7 @@ import "./Sidebar.css";
 
 /* ===== Helper: Avatar Fallback ===== */
 const buildAvatar = (avatar?: string | null, name?: string | null) => {
-    if (avatar && avatar.startsWith("http")) return avatar;
+    if (avatar && (avatar.startsWith("http") || avatar.startsWith("/"))) return avatar;
 
     const safeName = name || "User";
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -67,6 +67,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         user: "مستخدم",
         craftsman: "صنايعي",
         company: "شركة",
+        admin: "مدير النظام",
     };
 
 
@@ -79,7 +80,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
         {
             title: "المحفظة",
-            path: "/dashboard/saved",
+            path: "/dashboard/wallet",
             icon: <FaWallet size={20} />
         },
         {
@@ -198,7 +199,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     logout(false);
                     toast.success(`تم تسجيل الخروج بنجاح، نراك قريباً ${name}`);
                     setTimeout(() => {
-                        window.location.href = "/login";
+                        window.location.href = "/";
                     }, 1000);
                     onClose?.();
                 }} className="logout-btn">
