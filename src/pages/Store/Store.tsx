@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { FiList, FiPackage, FiSearch, FiShoppingCart } from "react-icons/fi";
 import StoreGalleryPage from "./StoreGalleryPage";
+import StoreProductList from "./StoreProductList";
+import ProductDetails from "./ProductDetails";
 import CartPage from "./CartPage";
 import CheckoutPage from "./CheckoutPage";
 import StoreOrdersPage from "./StoreOrdersPage";
@@ -14,6 +16,9 @@ const StorePage: React.FC = () => {
     const [selectedCategoryId] = useState<number | null>(null);
     const [cartCount, setCartCount] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
+    const [storeView, setStoreView] = useState("gallery"); // gallery, productList, productDetails
+    const [selectedProduct, setSelectedProduct] = useState<any>(null);
+    const [selectedCompanyId, setSelectedCompanyId] = useState<any>(null);
 
     const fetchCartCount = async () => {
         if (!isAuthenticated) return;
@@ -36,15 +41,41 @@ const StorePage: React.FC = () => {
         }
     }, [activeTab, isAuthenticated]);
 
-
-    const renderContent = () => {
-        switch (activeTab) {
-            case "products":
+    const renderStoreContent = () => {
+        switch (storeView) {
+            case "gallery":
                 return <StoreGalleryPage
                     initialCategoryId={selectedCategoryId}
                     searchQuery={searchQuery}
                     onSearchChange={setSearchQuery}
+                    onBrowseProducts={(companyId) => {
+                        setSelectedCompanyId(companyId);
+                        setStoreView("productList");
+                    }}
                 />;
+            case "productList":
+                return <StoreProductList 
+                    companyId={selectedCompanyId} 
+                    onBack={() => setStoreView("gallery")}
+                    onProductClick={(product) => {
+                        setSelectedProduct(product);
+                        setStoreView("productDetails");
+                    }}
+                />;
+            case "productDetails":
+                return <ProductDetails 
+                    product={selectedProduct} 
+                    onBack={() => setStoreView("productList")} 
+                />;
+            default:
+                return <StoreGalleryPage initialCategoryId={selectedCategoryId} />;
+        }
+    };
+
+    const renderContent = () => {
+        switch (activeTab) {
+            case "products":
+                return renderStoreContent();
             case "cart":
                 return <CartPage onCheckout={() => setActiveTab("checkout")} />;
             case "checkout":
@@ -52,7 +83,7 @@ const StorePage: React.FC = () => {
             case "orders":
                 return <StoreOrdersPage />;
             default:
-                return <StoreGalleryPage initialCategoryId={selectedCategoryId} />;
+                return renderStoreContent();
         }
     };
 

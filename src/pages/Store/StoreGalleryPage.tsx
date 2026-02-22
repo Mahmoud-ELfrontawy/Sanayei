@@ -10,12 +10,14 @@ interface StoreGalleryPageProps {
     initialCategoryId?: number | null;
     searchQuery?: string;
     onSearchChange?: (val: string) => void;
+    onBrowseProducts?: (companyId: any) => void;
 }
 
 const StoreGalleryPage: React.FC<StoreGalleryPageProps> = ({
     initialCategoryId = null,
     searchQuery = "",
-    onSearchChange
+    onSearchChange,
+    onBrowseProducts
 }) => {
     const [products, setProducts] = useState<any[]>([]);
     const [categories, setCategories] = useState<any[]>([]);
@@ -118,16 +120,26 @@ const StoreGalleryPage: React.FC<StoreGalleryPageProps> = ({
         <div className="store-gallery-container-premium">
             <div className="gallery-layout-wrapper">
                 <div className="categories-pills-container">
-                    <button
-                        className={`pill-btn ${selectedCategory === null ? 'active' : ''}`}
-                        onClick={() => {
-                            setSelectedCategory(null);
-                            setSelectedCompany(null);
-                        }}
-                    >
-                        الكل
-                    </button>
-                    {categories.map(cat => (
+                    {[
+                        { id: null, name: "الكل" },
+                        { id: "plumbing", name: "سباكة" },
+                        { id: "carpentry", name: "نجارة" },
+                        { id: "plastering", name: "محارة" },
+                        { id: "cooling", name: "تكييف وتبريد" }
+                    ].map(cat => (
+                        <button
+                            key={cat.id === null ? "all" : cat.id}
+                            className={`pill-btn ${selectedCategory === cat.id ? 'active' : ''}`}
+                            onClick={() => {
+                                setSelectedCategory(cat.id as any);
+                                setSelectedCompany(null);
+                            }}
+                        >
+                            {cat.name}
+                        </button>
+                    ))}
+                    {/* Keep dynamic categories if they are different from hardcoded ones */}
+                    {categories.filter(c => !["الكل", "سباكة", "نجارة", "محارة", "تكييف وتبريد"].includes(c.name)).map(cat => (
                         <button
                             key={cat.id}
                             className={`pill-btn ${selectedCategory === cat.id ? 'active' : ''}`}
@@ -193,7 +205,13 @@ const StoreGalleryPage: React.FC<StoreGalleryPageProps> = ({
                                             <div className="company-card-body">
                                                 <h3 className="company-title">{company.company_name}</h3>
                                                 <p className="company-hint">{company.company_simple_hint || "استكشف تشكيلة واسعة من المنتجات والمعدات"}</p>
-                                                <button className="view-company-products-btn">
+                                                <button 
+                                                    className="view-company-products-btn"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        onBrowseProducts?.(company.id);
+                                                    }}
+                                                >
                                                     <span>تصفح المنتجات</span>
                                                     <FiArrowLeft />
                                                 </button>

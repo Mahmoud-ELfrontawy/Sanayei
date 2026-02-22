@@ -23,10 +23,9 @@
 }
 
 .nav-container {
-    max-width: 1600px;
     width: 100%;
     margin: 0 auto;
-    padding: 0 40px;
+    padding: 0 5%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -182,7 +181,7 @@
 }
 
 .store-render-area {
-    padding-top: 24px;
+    padding-top: 0;
 }
 
 /* 📱 Responsive */
