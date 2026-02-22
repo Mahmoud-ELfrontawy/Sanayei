@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
     FaThLarge,
@@ -12,19 +12,37 @@ import {
     FaTimes,
     FaBell
 } from 'react-icons/fa';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import './AdminLayout.css';
 
 const AdminLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const location = useLocation();
-    const { logout, user } = useAuth();
+    const { logout, user, isAuthenticated, userType, isLoading } = useAuth();
     const navigate = useNavigate();
+
+    // Guard: Only allow admins
+    useEffect(() => {
+        if (!isLoading) {
+            if (!isAuthenticated || userType !== 'admin') {
+                console.warn("🚫 AdminLayout: Unauthorized access attempt. Redirecting to login.");
+                navigate('/login');
+            }
+        }
+    }, [isAuthenticated, userType, isLoading, navigate]);
 
     const handleLogout = () => {
         logout();
         navigate('/login');
     };
+
+    if (isLoading) {
+        return <div className="admin-loading">جاري التحميل...</div>;
+    }
+
+    if (!isAuthenticated || userType !== 'admin') {
+        return null; // Will be redirected by useEffect
+    }
 
     const menuItems = [
         { path: '/admin/dashboard', label: 'لوحة التحكم', icon: FaThLarge },

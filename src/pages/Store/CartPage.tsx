@@ -10,17 +10,26 @@ interface CartPageProps {
     onCheckout?: () => void;
 }
 
+import { useAuth } from "../../hooks/useAuth";
+
 const CartPage: React.FC<CartPageProps> = ({ onCheckout }) => {
+    const { isAuthenticated } = useAuth();
     const [cartItems, setCartItems] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     const fetchCart = async () => {
+        if (!isAuthenticated) {
+            setLoading(false);
+            return;
+        }
         try {
             setLoading(true);
             const data = await getCartItems();
             setCartItems(data || []);
-        } catch (error) {
-            console.error("Fetch Cart Error:", error);
+        } catch (error: any) {
+            if (error.message !== "Unauthorized") {
+                console.error("Fetch Cart Error:", error);
+            }
         } finally {
             setLoading(false);
         }
@@ -28,7 +37,20 @@ const CartPage: React.FC<CartPageProps> = ({ onCheckout }) => {
 
     useEffect(() => {
         fetchCart();
-    }, []);
+    }, [isAuthenticated]);
+
+    if (!isAuthenticated) {
+        return (
+            <div className="cart-page-container">
+                <div className="cart-empty-state">
+                    <FiShoppingCart size={64} />
+                    <h2>يرجى تسجيل الدخول</h2>
+                    <p>يجب عليك تسجيل الدخول لعرض سلة المشتريات الخاصة بك.</p>
+                    <Link to="/login" className="browse-btn">تسجيل الدخول</Link>
+                </div>
+            </div>
+        );
+    }
 
     const handleRemove = async (id: number) => {
         try {

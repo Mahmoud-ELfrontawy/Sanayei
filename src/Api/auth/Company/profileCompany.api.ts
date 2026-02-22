@@ -1,4 +1,5 @@
 import axios from "axios";
+import { authStorage } from "../../../context/auth/auth.storage";
 
 const BASE_URL = "/api";
 
@@ -19,7 +20,7 @@ export interface CompanyProfile {
 }
 
 export const getCompanyProfile = async () => {
-    const token = localStorage.getItem("token");
+    const token = authStorage.getToken();
     const res = await axios.get(`${BASE_URL}/company/me`, {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -30,7 +31,7 @@ export const getCompanyProfile = async () => {
 };
 
 export const updateCompanyProfile = async (data: any) => {
-    const token = localStorage.getItem("token");
+    const token = authStorage.getToken();
     const formData = new FormData();
 
     // Workaround for Laravel PUT with multipart/form-data

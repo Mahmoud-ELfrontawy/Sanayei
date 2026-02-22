@@ -1,7 +1,8 @@
 import axios from "axios";
+import { authStorage } from "../../context/auth/auth.storage";
 
 export const getMyServiceRequests = async () => {
-    const token = localStorage.getItem("token");
+    const token = authStorage.getToken();
 
     try {
         const res = await axios.get("/api/user/service-requests", {

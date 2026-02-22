@@ -1,11 +1,11 @@
 import axios from "axios";
+import { authStorage } from "../../../context/auth/auth.storage";
 
 const BASE_URL = "/api";
 
 const getAuthHeaders = (isMultipart = false) => {
-    const token = localStorage.getItem("token");
+    const token = authStorage.getToken();
     if (!token) {
-        console.error("Store API: No token found");
         return null;
     }
     return {

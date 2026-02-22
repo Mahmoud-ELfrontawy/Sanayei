@@ -1,6 +1,6 @@
-
 import axios from "axios";
 import { toApiDate } from "../../utils/dateApiHelper";
+import { authStorage } from "../../context/auth/auth.storage";
 
 const BASE_URL = "/api";
 
@@ -26,7 +26,7 @@ export interface ProfileResponse {
 
 /* ================= Get Profile ================= */
 export const getMyProfile = async () => {
-  const token = localStorage.getItem("token");
+  const token = authStorage.getToken();
 
   const res = await axios.get(`${BASE_URL}/user/me`, {
     headers: {
@@ -48,7 +48,7 @@ export const updateProfile = async (data: {
   longitude?: number;
   profile_image?: File | null;
 }) => {
-  const token = localStorage.getItem("token");
+  const token = authStorage.getToken();
   const formData = new FormData();
 
   // 👈 Laravel workaround
@@ -88,7 +88,7 @@ export const updateProfile = async (data: {
 
 /* ================= Get User Profile by ID (Public) ================= */
 export const getUserProfileById = async (id: string | number) => {
-  const token = localStorage.getItem("token");
+  const token = authStorage.getToken();
 
   const res = await axios.get(`${BASE_URL}/auth/user/${id}`, {
     headers: {
@@ -102,7 +102,7 @@ export const getUserProfileById = async (id: string | number) => {
 
 /* ================= Delete Account ================= */
 export const deleteUserAccount = async () => {
-  const token = localStorage.getItem("token");
+  const token = authStorage.getToken();
 
   const res = await axios.delete(
     `${BASE_URL}/user/delete-account`,

@@ -1,8 +1,10 @@
 import axios from 'axios';
-import { BASE_URL } from '../chat.api';
+import { authStorage } from '../../context/auth/auth.storage';
+
+const BASE_URL = '/api';
 
 const getAuthHeader = () => {
-    const token = localStorage.getItem('token');
+    const token = authStorage.getToken();
     return { 
         Authorization: `Bearer ${token}`,
         "Accept": "application/json",

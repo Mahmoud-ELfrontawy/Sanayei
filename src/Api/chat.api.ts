@@ -1,11 +1,12 @@
 import axios, { AxiosError } from "axios";
+import { authStorage } from "../context/auth/auth.storage";
 
 /* ================= Base Config ================= */
 
 export const BASE_URL = "/api";
 
 const getHeaders = () => {
-    const token = localStorage.getItem("token");
+    const token = authStorage.getToken();
 
     return {
         Accept: "application/json",
@@ -13,10 +14,8 @@ const getHeaders = () => {
     };
 };
 
-// For FormData uploads, we only need Authorization
-// Axios will automatically set Content-Type with boundary
 const getFormDataHeaders = () => {
-    const token = localStorage.getItem("token");
+    const token = authStorage.getToken();
 
     return {
         Authorization: `Bearer ${token}`,

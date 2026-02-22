@@ -1,9 +1,10 @@
 import axios from "axios";
+import { authStorage } from "../context/auth/auth.storage";
 
 const BASE_URL = "/api/wallet";
 
 const getHeaders = () => {
-    const token = localStorage.getItem("token");
+    const token = authStorage.getToken();
     return {
         Accept: "application/json",
         Authorization: `Bearer ${token}`,

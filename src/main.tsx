@@ -7,7 +7,7 @@ import "leaflet/dist/leaflet.css";
 
 import App from "./App.tsx";
 
-import { AuthProvider } from "./context/AuthContext.tsx";
+import { AuthProvider } from "./context/auth/AuthProvider.tsx";
 import { NotificationProvider } from "./context/NotificationContext.tsx";
 
 // ✅ Providers الجديدة بعد تقسيم الشات

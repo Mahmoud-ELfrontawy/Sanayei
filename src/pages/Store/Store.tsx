@@ -6,28 +6,35 @@ import CheckoutPage from "./CheckoutPage";
 import StoreOrdersPage from "./StoreOrdersPage";
 import { getCartItems } from "../../Api/store/cart.api";
 import "./Store.css";
+import { useAuth } from "../../hooks/useAuth";
 
 const StorePage: React.FC = () => {
+    const { isAuthenticated } = useAuth();
     const [activeTab, setActiveTab] = useState("products");
     const [selectedCategoryId] = useState<number | null>(null);
     const [cartCount, setCartCount] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
 
     const fetchCartCount = async () => {
+        if (!isAuthenticated) return;
         try {
             const items = await getCartItems();
             setCartCount(Array.isArray(items) ? items.length : 0);
-        } catch (error) {
-            console.error("Error fetching cart count:", error);
+        } catch (error: any) {
+            // Only log if it's not an unauthorized error (which we already handled)
+            if (error.message !== "Unauthorized") {
+                console.error("Error fetching cart count:", error);
+            }
         }
     };
 
     useEffect(() => {
-        fetchCartCount();
-        // Update count every 5 seconds or on tab change
-        const interval = setInterval(fetchCartCount, 5000);
-        return () => clearInterval(interval);
-    }, [activeTab]);
+        if (isAuthenticated) {
+            fetchCartCount();
+            const interval = setInterval(fetchCartCount, 5000);
+            return () => clearInterval(interval);
+        }
+    }, [activeTab, isAuthenticated]);
 
 
     const renderContent = () => {

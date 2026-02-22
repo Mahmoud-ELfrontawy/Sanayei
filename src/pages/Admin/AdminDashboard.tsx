@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BASE_URL } from '../../Api/chat.api';
 import { FaUsers, FaHardHat, FaRegFileAlt, FaChartLine, FaDollarSign } from 'react-icons/fa';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import './AdminDashboard.css';
 
 interface DashboardStats {

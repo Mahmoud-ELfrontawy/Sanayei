@@ -1,9 +1,10 @@
 import axios from "axios";
+import { authStorage } from "../../context/auth/auth.storage";
 
 const BASE_URL = "/api";
 
 const getAuthHeaders = () => {
-    const token = localStorage.getItem("token");
+    const token = authStorage.getToken();
     if (!token) return null;
     return {
         Authorization: `Bearer ${token}`,
@@ -41,6 +42,7 @@ export const getUserOrders = async () => {
         if (data && Array.isArray(data.orders)) return data.orders;
         return data || [];
     } catch (error: any) {
+        if (error.response?.status === 401) throw new Error("Unauthorized");
         console.error("Fetch Orders Error:", error.response?.data || error.message);
         throw error;
     }

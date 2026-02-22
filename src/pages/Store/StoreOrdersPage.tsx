@@ -5,25 +5,48 @@ import { toast } from "react-toastify";
 import { formatArabicDate } from "../../utils/dateFormatter";
 import "./StoreOrdersPage.css";
 
+import { useAuth } from "../../hooks/useAuth";
+
 const StoreOrdersPage: React.FC = () => {
+    const { isAuthenticated } = useAuth();
     const [orders, setOrders] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchOrders = async () => {
-            try {
-                setLoading(true);
-                const data = await getUserOrders();
-                setOrders(Array.isArray(data) ? data : []);
-            } catch (error) {
+    const fetchOrders = async () => {
+        if (!isAuthenticated) {
+            setLoading(false);
+            return;
+        }
+        try {
+            setLoading(true);
+            const data = await getUserOrders();
+            setOrders(Array.isArray(data) ? data : []);
+        } catch (error: any) {
+            if (error.message !== "Unauthorized") {
                 console.error("Fetch Store Orders Error:", error);
                 toast.error("فشل في تحميل الطلبات، حاول مرة أخرى");
-            } finally {
-                setLoading(false);
             }
-        };
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchOrders();
-    }, []);
+    }, [isAuthenticated]);
+
+    if (!isAuthenticated) {
+        return (
+            <div className="store-orders-container-premium">
+                <div className="orders-empty-state">
+                    <FiPackage size={64} />
+                    <h2>يرجى تسجيل الدخول</h2>
+                    <p>يجب عليك تسجيل الدخول لعرض قائمة طلباتك.</p>
+                    <button onClick={() => window.location.href = "/login"} className="btn-go-store">تسجيل الدخول</button>
+                </div>
+            </div>
+        );
+    }
 
     const getStatusInfo = (status: string) => {
         switch (status) {

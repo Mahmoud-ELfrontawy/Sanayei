@@ -1,4 +1,5 @@
 import axios from "axios";
+import { authStorage } from "../../../context/auth/auth.storage";
 
 /* ================= Constants ================= */
 // ... existing constants ...
@@ -107,7 +108,7 @@ const appendNumberIfExists = <
 /* ================= Get Profile ================= */
 
 export const getCraftsmanProfile = async () => {
-    const token = localStorage.getItem("token");
+    const token = authStorage.getToken();
 
     const res = await axios.get(
         `${BASE_URL}/craftsmen/profile/me`,
@@ -126,7 +127,7 @@ export const getCraftsmanProfile = async () => {
 
 export const updateCraftsmanProfile = async (
  _: number, data: UpdateCraftsmanPayload) => {
-    const token = localStorage.getItem("token");
+    const token = authStorage.getToken();
     const formData = new FormData();
     formData.append("_method", "PUT");
 
@@ -229,7 +230,7 @@ export const updateCraftsmanProfile = async (
 /* ================= Delete Account ================= */
 
 export const deleteCraftsmanAccount = async () => {
-    const token = localStorage.getItem("token");
+    const token = authStorage.getToken();
 
     const res = await axios.delete(
         `${BASE_URL}/craftsmen/profile/me`,
@@ -247,7 +248,7 @@ export const deleteCraftsmanAccount = async () => {
 /* ================= Upload Work Photo ================= */
 
 export const uploadWorkPhoto = async (file: File) => {
-    const token = localStorage.getItem("token");
+    const token = authStorage.getToken();
     const formData = new FormData();
 
     formData.append("work_photo", file);
@@ -269,7 +270,7 @@ export const uploadWorkPhoto = async (file: File) => {
 /* ================= Delete Work Photo ================= */
 
 export const deleteWorkPhoto = async (photoPath: string) => {
-    const token = localStorage.getItem("token");
+    const token = authStorage.getToken();
 
     const res = await axios.delete(
         `${BASE_URL}/craftsmen/profile/work-photos`,

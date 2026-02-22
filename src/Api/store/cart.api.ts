@@ -1,9 +1,10 @@
 import axios from "axios";
+import { authStorage } from "../../context/auth/auth.storage";
 
 const BASE_URL = "/api";
 
 const getAuthHeaders = () => {
-    const token = localStorage.getItem("token");
+    const token = authStorage.getToken();
     if (!token) return null;
     return {
         Authorization: `Bearer ${token}`,
@@ -21,6 +22,7 @@ export const getCartItems = async () => {
         const res = await axios.get(`${BASE_URL}/company/store/cart`, { headers });
         return res.data;
     } catch (error: any) {
+        if (error.response?.status === 401) throw new Error("Unauthorized");
         console.error("Cart API Error (Get):", error.response?.data || error.message);
         throw error;
     }
