@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FiPlus, FiTrash2, FiPackage, FiImage, FiX } from "react-icons/fi";
+import { FiPlus, FiTrash2, FiPackage, FiImage, FiX, FiEdit } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { getStoreProducts, addStoreProduct, getStoreCategories, deleteStoreProduct } from "../../../../Api/auth/Company/storeManagement.api";
 import { getFullImageUrl } from "../../../../utils/imageUrl";
@@ -28,6 +28,7 @@ const ProductsManager: React.FC = () => {
     const [isAdding, setIsAdding] = useState(false);
     const [showAddForm, setShowAddForm] = useState(false);
     const [newProduct, setNewProduct] = useState({ ...EMPTY_PRODUCT });
+    const [editingProduct, setEditingProduct] = useState<any | null>(null);
 
     // Preview URLs
     const [mainPreview, setMainPreview] = useState<string | null>(null);
@@ -81,12 +82,44 @@ const ProductsManager: React.FC = () => {
 
     const resetForm = () => {
         setNewProduct({ ...EMPTY_PRODUCT });
+        setEditingProduct(null);
         setMainPreview(null);
         setGalleryPreviews([]);
         setShowAddForm(false);
     };
 
-    const handleAddProduct = async (e: React.FormEvent) => {
+    const handleEditClick = (prod: any) => {
+        setEditingProduct(prod);
+        setNewProduct({
+            name: prod.name || "",
+            price: prod.price?.toString() || "",
+            discount_price: prod.discount_price?.toString() || "",
+            category_id: prod.category_id?.toString() || "",
+            stock: prod.stock?.toString() || "1",
+            description: prod.description || "",
+            brand: prod.brand || "",
+            origin_country: prod.origin_country || "",
+            warranty: prod.warranty || "",
+            badge: prod.badge || "",
+            is_active: prod.is_active === 1 || prod.is_active === true,
+            main_image: null,
+            gallery_images: [],
+        });
+        
+        // Handle previews for existing images
+        if (prod.main_image) setMainPreview(getFullImageUrl(prod.main_image) || null);
+        else setMainPreview(null);
+        
+        if (prod.images && Array.isArray(prod.images)) {
+            setGalleryPreviews(prod.images.map((img: string) => getFullImageUrl(img) || ""));
+        } else {
+            setGalleryPreviews([]);
+        }
+        
+        setShowAddForm(true);
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!newProduct.name || !newProduct.price) {
             toast.warning("يرجى ملء الحقول الأساسية (الاسم والسعر)");
@@ -106,18 +139,26 @@ const ProductsManager: React.FC = () => {
         if (newProduct.origin_country) formData.append("origin_country", newProduct.origin_country);
         if (newProduct.warranty) formData.append("warranty", newProduct.warranty);
         if (newProduct.badge) formData.append("badge", newProduct.badge);
-        if (newProduct.main_image) formData.append("main_image", newProduct.main_image);
+        
+        // Only append images if a new file was selected
+        if (newProduct.main_image) {
+            formData.append("main_image", newProduct.main_image);
+        }
 
-        // Gallery images
-        newProduct.gallery_images.forEach((img) => {
-            formData.append("images[]", img);
-        });
+        if (newProduct.gallery_images.length > 0) {
+            newProduct.gallery_images.forEach((img) => {
+                formData.append("images[]", img);
+            });
+        }
 
         try {
             setIsAdding(true);
-            const res = await addStoreProduct(formData);
+            const res = editingProduct 
+                ? await (await import("../../../../Api/auth/Company/storeManagement.api")).updateStoreProduct(editingProduct.id, formData)
+                : await addStoreProduct(formData);
+
             if (res.success) {
-                toast.success("تم إضافة المنتج بنجاح ✅");
+                toast.success(editingProduct ? "تم تحديث المنتج بنجاح ✅" : "تم إضافة المنتج بنجاح ✅");
                 resetForm();
                 fetchData();
             }
@@ -127,7 +168,7 @@ const ProductsManager: React.FC = () => {
                 (error.response?.data?.errors
                     ? Object.values(error.response.data.errors).flat()[0]
                     : null) ||
-                "فشل إضافة المنتج";
+                (editingProduct ? "فشل تحديث المنتج" : "فشل إضافة المنتج");
             toast.error(String(errorMsg));
         } finally {
             setIsAdding(false);
@@ -167,11 +208,11 @@ const ProductsManager: React.FC = () => {
                 <div className="add-product-overlay" onClick={(e) => e.target === e.currentTarget && resetForm()}>
                     <div className="add-product-modal profile-card">
                         <div className="modal-header-row">
-                            <h3>بيانات المنتج الجديد</h3>
+                            <h3>{editingProduct ? "تعديل بيانات المنتج" : "بيانات المنتج الجديد"}</h3>
                             <button className="close-modal-btn" onClick={resetForm}><FiX /></button>
                         </div>
 
-                        <form onSubmit={handleAddProduct} className="prod-form">
+                        <form onSubmit={handleSubmit} className="prod-form">
 
                             {/* ── Section: Basic Info ── */}
                             <p className="form-section-title">المعلومات الأساسية</p>
@@ -306,9 +347,9 @@ const ProductsManager: React.FC = () => {
                                 )}
                             </div>
 
-                            <div className="modal-actions">
+                             <div className="modal-actions">
                                 <button type="submit" className="save-btn" disabled={isAdding}>
-                                    {isAdding ? "جاري الإضافة..." : "حفظ المنتج"}
+                                    {isAdding ? "جاري الحفظ..." : (editingProduct ? "تحديث المنتج" : "حفظ المنتج")}
                                 </button>
                                 <button type="button" className="cancel-btn" onClick={resetForm}>إلغاء</button>
                             </div>
@@ -366,9 +407,12 @@ const ProductsManager: React.FC = () => {
                                         </span>
                                     </td>
                                     <td data-label="القسم">{prod.category?.name || "عام"}</td>
-                                    <td data-label="الإجراءات">
+                                     <td data-label="الإجراءات">
                                         <div className="actions-row">
-                                            <button className="delete-btn" onClick={() => handleDeleteProduct(prod.id)}>
+                                            <button className="edit-btn-mini" onClick={() => handleEditClick(prod)} title="تعديل">
+                                                <FiEdit />
+                                            </button>
+                                            <button className="delete-btn" onClick={() => handleDeleteProduct(prod.id)} title="حذف">
                                                 <FiTrash2 />
                                             </button>
                                         </div>

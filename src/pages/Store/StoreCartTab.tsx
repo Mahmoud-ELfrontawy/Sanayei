@@ -8,6 +8,7 @@ import { getCartItems, removeFromCart } from "../../Api/store/cart.api";
 import { createOrder } from "../../Api/store/orders.api";
 import { getFullImageUrl } from "../../utils/imageUrl";
 import { useAuth } from "../../hooks/useAuth";
+import { useNotifications } from "../../context/NotificationContext";
 import "./StoreCartTab.css";
 
 interface StoreCartTabProps {
@@ -18,7 +19,8 @@ interface StoreCartTabProps {
 type CartView = "cart" | "checkout" | "success";
 
 const StoreCartTab: React.FC<StoreCartTabProps> = ({ onCartCountChange, onGoToOrders }) => {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, user } = useAuth();
+    const { addNotification } = useNotifications();
     const [cartItems, setCartItems] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [cartView, setCartView] = useState<CartView>("cart");
@@ -76,6 +78,18 @@ const StoreCartTab: React.FC<StoreCartTabProps> = ({ onCartCountChange, onGoToOr
                 payment_method: checkoutData.payment_method,
             });
             if (res.success) {
+                // ─── إشعار فوري لليوزر (لا يعتمد على Pusher) ───
+                const firstOrder = Array.isArray(res.orders) && res.orders[0];
+                addNotification({
+                    title: "تم استلام طلبك ✅",
+                    message: `طلبك رقم #${firstOrder?.id || ''} قيد الانتظار. سيتم التواصل معك قريباً.`,
+                    type: "order_status",
+                    orderId: firstOrder?.id || 0,
+                    recipientId: user?.id || 0,
+                    recipientType: "user",
+                    variant: "success",
+                });
+
                 setCartView("success");
                 setCartItems([]);
                 onCartCountChange?.(0);

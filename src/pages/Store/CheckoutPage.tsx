@@ -4,10 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getCartItems } from "../../Api/store/cart.api";
 import { createOrder } from "../../Api/store/orders.api";
+import { useNotifications } from "../../context/NotificationContext";
+import { useAuth } from "../../hooks/useAuth";
 import "./CheckoutPage.css";
 
 const CheckoutPage: React.FC = () => {
     const navigate = useNavigate();
+    const { addNotification } = useNotifications();
+    const { user } = useAuth();
     const [cartItems, setCartItems] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -58,6 +62,18 @@ const CheckoutPage: React.FC = () => {
             });
 
             if (res.success) {
+                // Trigger real-time notification for the user
+                if (user) {
+                    addNotification({
+                        title: "تم استلام طلبك بنجاح ✅",
+                        message: "طلبك الآن (قيد الانتظار)، تابعه من صفحة طلباتي.",
+                        type: "store_order",
+                        orderId: res.data?.id || res.id || 0,
+                        recipientId: user.id,
+                        recipientType: "user",
+                        variant: "success",
+                    });
+                }
                 setOrderSuccess(true);
                 toast.success("تم تسجيل طلبك بنجاح!");
             }

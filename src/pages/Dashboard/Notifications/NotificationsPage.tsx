@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNotifications } from "../../../context/NotificationContext";
-import { FaBell, FaRegClock, FaCheckCircle } from "react-icons/fa";
+import { FaBell, FaRegClock, FaCheckCircle, FaShoppingCart, FaTools } from "react-icons/fa";
 import "./NotificationsPage.css";
 
 const NotificationsPage: React.FC = () => {
@@ -14,6 +14,15 @@ const NotificationsPage: React.FC = () => {
         return () => clearTimeout(timer);
     }, [markAllAsRead]);
 
+    const getIcon = (type: string) => {
+        switch (type) {
+            case 'order_status': return <FaCheckCircle size={20} color="#10b981" />;
+            case 'store_order': return <FaShoppingCart size={20} color="#3b82f6" />;
+            case 'order_request': return <FaTools size={20} color="#f59e0b" />;
+            default: return <FaBell size={20} color="#64748b" />;
+        }
+    };
+
     return (
         <div className="notifications-page">
             <header className="notifications-header">
@@ -26,7 +35,7 @@ const NotificationsPage: React.FC = () => {
                     userNotifications.map((notif) => (
                         <div key={notif.id} className={`notification-card ${notif.status}`}>
                             <div className="notif-icon-box">
-                                {notif.type === 'order_status' ? <FaCheckCircle size={20} /> : <FaBell size={20} />}
+                                {getIcon(notif.type)}
                             </div>
                             <div className="notif-content">
                                 <h3>{notif.title}</h3>

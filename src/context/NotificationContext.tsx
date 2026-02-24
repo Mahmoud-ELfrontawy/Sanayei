@@ -46,6 +46,13 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     const isFirstFetch = useRef(true);
     const addNotificationRef = useRef<any>(null);
     const unreadChatCountRef = useRef(0);
+    // ── Store order polling refs ──
+    const prevCompanyOrderCountRef = useRef<number>(-1);   // -1 = not initialized
+    const isFirstCompanyFetch = useRef(true);
+    const prevUserOrdersRef = useRef<Record<number, string>>({}); // { orderId: status } — User only
+    const isFirstUserOrdersFetch = useRef(true);
+    const prevCraftsmanOrdersRef = useRef<Record<number, string>>({}); // { orderId: status } — Craftsman only
+    const isFirstCraftsmanOrdersFetch = useRef(true);
 
     /* ================= LocalStorage Sync ================= */
 
@@ -103,7 +110,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
 
                 if (!prev && userType === "craftsman") {
                     addNotificationRef.current?.({
-                        title: "طلب خدمة جديد",
+                        title: "طلب خدمة جديد 🛠️",
                         message: `لديك طلب خدمة جديد من ${current.user?.name || "عميل"}`,
                         type: "order_request",
                         orderId: current.id,
@@ -123,7 +130,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
                         let customMessage = `تم تحديث حالة طلب الخدمة الخاص بك إلى ${statusMap[current.status] || current.status} ✅`;
 
                         if (current.status === "accepted") {
-                            customMessage = `تم قبول طلبك للخدمة بنجاح ✅`;
+                            customMessage = `تم قبول طلبك للخدمة بنجاح ✅ وهو الآن قيد التنفيذ.`;
                         } else if (current.status === "rejected") {
                             customMessage = `نعتذر، تم رفض طلب الخدمة الخاص بك ❌`;
                         } else if (current.status === "completed") {
@@ -157,19 +164,140 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         try {
             const { getStoreOrders } = await import("../Api/auth/Company/storeManagement.api");
             const currentOrders = await getStoreOrders();
-
             if (!Array.isArray(currentOrders)) return;
 
-            // For companies, we check for 'pending' orders that might be new
-            if (isFirstFetch.current) {
-                // we reuse the same ref logic if needed, but for now just update ref
+            const currentCount = currentOrders.length;
+
+            if (isFirstCompanyFetch.current) {
+                prevCompanyOrderCountRef.current = currentCount;
+                isFirstCompanyFetch.current = false;
                 return;
             }
 
-            // Simple logic: if count increased, notify (or check status changes)
-            // For now, let's keep it simple as real-time is the main goal
+            // Detect new orders (count increased)
+            if (currentCount > prevCompanyOrderCountRef.current) {
+                const newCount = currentCount - prevCompanyOrderCountRef.current;
+                const newestOrder = currentOrders[0]; // API returns latest first
+                
+                // Backend returns user_type as full class name: e.g. "App\\Models\\Craftsman"
+                const isCraftsmanOrder = newestOrder?.user_type?.includes('Craftsman');
+                const emoji = isCraftsmanOrder ? "🛠️" : "🛒";
+                const buyerLabel = isCraftsmanOrder ? "صنايعي" : "عميل";
+                const title = isCraftsmanOrder ? "طلب من صنايعي" : "طلب منتج جديد";
+
+                addNotificationRef.current?.({
+                    title: `${title} ${emoji}`,
+                    message: `وصل ${newCount > 1 ? newCount + ' طلبات جديدة' : 'طلب جديد'} من ${newestOrder?.user_name || buyerLabel} – الإجمالي: ${newestOrder?.total_amount ? Number(newestOrder.total_amount).toLocaleString() + ' ج.م' : 'غير محدد'}`,
+                    type: "store_order",
+                    orderId: newestOrder?.id || 0,
+                    recipientId: user.id,
+                    recipientType: "company",
+                    variant: "success",
+                });
+            }
+
+            prevCompanyOrderCountRef.current = currentCount;
         } catch (err) {
             console.warn("⚠️ [Polling] Failed to fetch company orders:", err);
+        }
+    }, [user, userType]);
+
+    const fetchUserStoreOrders = React.useCallback(async () => {
+        // ⚠️ User ONLY — craftsmen have their own separate function below
+        if (!user || userType !== "user") return;
+
+        try {
+            const { getUserOrders } = await import("../Api/store/orders.api");
+            const currentOrders = await getUserOrders();
+            if (!Array.isArray(currentOrders)) return;
+
+            if (isFirstUserOrdersFetch.current) {
+                const snapshot: Record<number, string> = {};
+                currentOrders.forEach((o: any) => { snapshot[o.id] = o.status; });
+                prevUserOrdersRef.current = snapshot;
+                isFirstUserOrdersFetch.current = false;
+                return;
+            }
+
+            const statusMap: Record<string, string> = {
+                pending: "قيد الانتظار",
+                processing: "جاري التجهيز",
+                shipped: "تم الشحن",
+                delivered: "تم التوصيل",
+                cancelled: "تم الإلغاء",
+            };
+
+            currentOrders.forEach((order: any) => {
+                const prevStatus = prevUserOrdersRef.current[order.id];
+                if (prevStatus !== undefined && prevStatus !== order.status) {
+                    const arabicStatus = statusMap[order.status] || order.status;
+                    addNotificationRef.current?.({
+                        title: "تحديث حالة طلبك ✅",
+                        message: `تم تحديث حالة طلبك رقم #${order.id} إلى ${arabicStatus}`,
+                        type: "order_status",
+                        orderId: order.id,
+                        recipientId: user.id,
+                        recipientType: "user",
+                        variant: order.status === "cancelled" ? "error" : (order.status === "delivered" ? "success" : "info"),
+                    });
+                }
+            });
+
+            const newSnapshot: Record<number, string> = {};
+            currentOrders.forEach((o: any) => { newSnapshot[o.id] = o.status; });
+            prevUserOrdersRef.current = newSnapshot;
+        } catch {
+            // silent
+        }
+    }, [user, userType]);
+
+    /* ── Craftsman Store Orders (separate from user) ──────────────────── */
+    const fetchCraftsmanStoreOrders = React.useCallback(async () => {
+        // ⚠️ Craftsman ONLY — do NOT call for regular users
+        if (!user || userType !== "craftsman") return;
+
+        try {
+            const { getUserOrders } = await import("../Api/store/orders.api");
+            const currentOrders = await getUserOrders();
+            if (!Array.isArray(currentOrders)) return;
+
+            if (isFirstCraftsmanOrdersFetch.current) {
+                const snapshot: Record<number, string> = {};
+                currentOrders.forEach((o: any) => { snapshot[o.id] = o.status; });
+                prevCraftsmanOrdersRef.current = snapshot;
+                isFirstCraftsmanOrdersFetch.current = false;
+                return;
+            }
+
+            const statusMap: Record<string, string> = {
+                pending: "قيد الانتظار",
+                processing: "جاري التجهيز",
+                shipped: "تم الشحن",
+                delivered: "تم التوصيل",
+                cancelled: "تم الإلغاء",
+            };
+
+            currentOrders.forEach((order: any) => {
+                const prevStatus = prevCraftsmanOrdersRef.current[order.id];
+                if (prevStatus && prevStatus !== order.status) {
+                    const arabicStatus = statusMap[order.status] || order.status;
+                    addNotificationRef.current?.({
+                        title: "تحديث طلبك (صنايعي) 🛠️",
+                        message: `تم تحديث حالة طلبك رقم #${order.id} إلى ${arabicStatus}`,
+                        type: "order_status",
+                        orderId: order.id,
+                        recipientId: user.id,
+                        recipientType: "craftsman",
+                        variant: order.status === "cancelled" ? "error" : (order.status === "delivered" ? "success" : "info"),
+                    });
+                }
+            });
+
+            const newSnapshot: Record<number, string> = {};
+            currentOrders.forEach((o: any) => { newSnapshot[o.id] = o.status; });
+            prevCraftsmanOrdersRef.current = newSnapshot;
+        } catch {
+            // silent
         }
     }, [user, userType]);
 
@@ -191,14 +319,12 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     /* ================= Add Notification ================= */
 
     const addNotification = React.useCallback((notif: Omit<Notification, "id" | "status" | "timestamp">) => {
-        // GUARD: recipientType must match current userType.
-        // Special: 'company' maps to itself (not 'user')
-        const normalise = (t: string) => t; // keep 'company' as-is
-        const currentUserType = normalise(userType as string);
-        const targetRecipientType = normalise(notif.recipientType as string);
+        // GUARD: allow if recipientType matches userType OR if recipientId === current user's id (self-notification)
+        const typeMatches = (notif.recipientType as string) === (userType as string);
+        const idMatches = user && String(notif.recipientId) === String(user.id);
 
-        if (currentUserType !== targetRecipientType) {
-            console.log(`🛡️ Guard: Blocked notification for ${notif.recipientType} (current user role: ${userType})`);
+        if (!typeMatches && !idMatches) {
+            console.log(`🛡️ Guard: Blocked | target=${notif.recipientType}/${notif.recipientId} | current=${userType}/${user?.id}`);
             return;
         }
 
@@ -277,16 +403,28 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         if (!user) return;
 
         fetchServiceStatus();
-        if (userType === "company") fetchCompanyOrders();
+        if (userType === "company") {
+            fetchCompanyOrders();
+        } else if (userType === "user") {
+            fetchUserStoreOrders();
+        } else if (userType === "craftsman") {
+            fetchCraftsmanStoreOrders();
+        }
 
-        // Robust polling interval
+        // Polling every 30s: reduced from 12s to mitigate 429 Too Many Requests
         const intervalId = setInterval(() => {
             fetchServiceStatus();
-            if (userType === "company") fetchCompanyOrders();
+            if (userType === "company") {
+                fetchCompanyOrders();
+            } else if (userType === "user") {
+                fetchUserStoreOrders();
+            } else if (userType === "craftsman") {
+                fetchCraftsmanStoreOrders();
+            }
         }, 30000);
 
         return () => clearInterval(intervalId);
-    }, [user, userType, fetchServiceStatus, fetchCompanyOrders]);
+    }, [user, userType, fetchServiceStatus, fetchCompanyOrders, fetchUserStoreOrders, fetchCraftsmanStoreOrders]);
 
     /* ================= Real-Time via Laravel Echo ================= */
 
@@ -296,26 +434,29 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         const echo = getEcho() as any;
         if (!echo) return;
 
-        const notifType = userType === "craftsman" ? "worker" : (userType === "company" ? "user" : "user");
-        const primaryChannelName = `notifications.${notifType}.${user.id}`;
+        // ── Channel names per role ──
+        // Company backend broadcasts to: notifications.user.{company_id} (via SBroadcastOn)
+        // User/Craftsman: notifications.user.{id} or notifications.worker.{id}
+        const notifPrefix = userType === "craftsman" ? "worker" : "user";
+        const primaryChannelName = `notifications.${notifPrefix}.${user.id}`;
 
         console.log(`🔌 [Echo] PRIMARY: ${primaryChannelName} | Role: ${userType}`);
         const primaryChannel = echo.private(primaryChannelName);
 
-        let fallbackChannel: any = null;
-        let clientFallbackChannel: any = null;
-        let companyChannel: any = null;
-        let companyUserChannel: any = null;
+        // Secondary fallback channels (extra aliases the backend might use)
+        let fallbackChannel: any = null;      // craftsman: notifications.craftsman.{id}
+        let clientFallbackChannel: any = null; // user: notifications.client.{id}
+        let companyChannel: any = null;        // company: notifications.company.{id} (if backend supports)
+        // NOTE: We do NOT open notifications.user.{id} AGAIN for company — it's already primaryChannel
 
         if (userType === "craftsman") {
             fallbackChannel = echo.private(`notifications.craftsman.${user.id}`);
         } else if (userType === "user") {
             clientFallbackChannel = echo.private(`notifications.client.${user.id}`);
         } else if (userType === "company") {
+            // Secondary channel - only if backend also supports notifications.company.{id}
             companyChannel = echo.private(`notifications.company.${user.id}`);
-            // Often companies use their base user_id for notifications too
-            companyUserChannel = echo.private(`notifications.user.${user.id}`);
-            console.log(`🏢 [Echo] COMPANY specific: notifications.company.${user.id}`);
+            console.log(`🏢 [Echo] COMPANY secondary: notifications.company.${user.id}`);
         }
 
         const handleNewMessage = (event: any) => {
@@ -377,11 +518,15 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
 
         const handleNewStoreOrder = (event: any) => {
             console.log('🛒 [Echo] New Store Order Arrival:', event);
+            // The event might be nested under 'order' or direct
+            const orderData = event.order || event;
+            const buyer = event.user || event.buyer || {};
+            
             addNotification({
-                title: "طلب منتج جديد",
-                message: event.notification_text || `طلب جديد من ${event.customer_name || "عميل"} – الإجمالي: ${event.total_amount ? Number(event.total_amount).toLocaleString() + ' ج.م' : 'غير محدد'}`,
+                title: "طلب منتج جديد 🛒",
+                message: event.notification_text || `طلب جديد من ${orderData.customer_name || buyer.name || "عميل"} – الإجمالي: ${orderData.total_amount ? Number(orderData.total_amount).toLocaleString() + ' ج.م' : 'غير محدد'}`,
                 type: "store_order",
-                orderId: event.order_id || event.id || 0,
+                orderId: orderData.order_id || orderData.id || 0,
                 recipientId: user.id,
                 recipientType: "company",
                 variant: "success",
@@ -390,115 +535,90 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
 
         const handleStoreOrderStatusUpdated = (event: any) => {
             console.log('📦 [Echo] Store Order Status Change:', event);
+            // This event is for the buyer (user/craftsman) — company does not need it
+            if (userType === "company") return;
+
             const statusMap: Record<string, string> = {
                 pending: "قيد الانتظار",
-                processing: "قيد التنفيذ",
+                processing: "جاري التجهيز",
                 shipped: "تم الشحن",
                 delivered: "تم التوصيل",
                 cancelled: "تم الإلغاء",
             };
-            const status = event.status || event.new_status;
+            const orderData = event.order || event;
+            const status = orderData.status || orderData.new_status;
             const arabicStatus = statusMap[status] || status;
 
+            // Set recipientType to actual role so the notification guard passes correctly
+            const isCraftsman = userType === "craftsman";
+            const notifTitle = isCraftsman ? "تحديث طلبك (صنايعي) 🛠️" : "تحديث حالة طلبك ✅";
+            const notifRecipient = isCraftsman ? "craftsman" : "user";
+
             addNotification({
-                title: "تحديث حالة الطلب",
-                message: event.notification_text || `تم تحديث حالة طلبك رقم #${event.order_id || event.id} إلى ${arabicStatus} ✨`,
+                title: notifTitle,
+                message: event.notification_text || `تم تحديث حالة طلبك رقم #${orderData.order_id || orderData.id} إلى ${arabicStatus} ✨`,
                 type: "order_status",
-                orderId: event.order_id || event.id || 0,
+                orderId: orderData.order_id || orderData.id || 0,
                 recipientId: user.id,
-                recipientType: userType as any,
+                recipientType: notifRecipient as any,
                 variant: status === "cancelled" ? "error" : (status === "delivered" ? "success" : "info"),
             });
         };
 
-        // ── Bind listeners ──
-        const activeChannels = [primaryChannel, fallbackChannel, clientFallbackChannel, companyChannel, companyUserChannel].filter(Boolean);
+        // ── Build the unique channels array ──
+        // IMPORTANT: Avoid subscribing to the same channel twice (e.g. company primaryChannel IS notifications.user.{id})
+        const activeChannels = [primaryChannel, fallbackChannel, clientFallbackChannel, companyChannel].filter(Boolean);
 
         activeChannels.forEach(c => {
-            console.log(`📡 [Echo] Binding listeners to channel: ${c.name || 'private channel'}`);
-            ['.new-message', 'NewMessage', '.NewMessage', 'App\\Events\\NewMessage', '.new_message', 'new_message'].forEach(evt => c.listen(evt, handleNewMessage));
+            const channelName = (c as any).name || 'private channel';
+            console.log(`📡 [Echo] Binding listeners to channel: ${channelName}`);
 
-            // Any user (Client or Craftsman) can be a buyer
-            ['.store-order.updated', 'StoreOrderUpdated', '.StoreOrderUpdated'].forEach(evt => c.listen(evt, handleStoreOrderStatusUpdated));
+            // ── Chat messages (all roles) ──
+            ['.new-message', 'NewMessage', '.NewMessage'].forEach(evt => c.listen(evt, handleNewMessage));
 
+            // ── Store order status update (User / Craftsman who placed the order) ──
+            if (userType === "user" || userType === "craftsman") {
+                ['.store-order.updated', 'store-order.updated', 'StoreOrderStatusNotification'].forEach(evt => c.listen(evt, handleStoreOrderStatusUpdated));
+                ['.service-request.updated', 'ServiceRequestUpdated', '.service-status-updated'].forEach(evt => c.listen(evt, handleRequestUpdated));
+            }
+
+            // ── Craftsman-specific events ──
             if (userType === "craftsman") {
-                ['.service-request.created', 'ServiceRequestCreated', '.ServiceRequestCreated', '.new-service-request'].forEach(evt => c.listen(evt, handleRequestCreated));
-                ['.new-review', 'NewReview', 'App\\Events\\NewReview'].forEach(evt => c.listen(evt, handleNewReview));
-            } else if (userType === "user") {
-                ['.service-request.updated', 'ServiceRequestUpdated', '.ServiceRequestUpdated', '.service-status-updated', '.request-status-updated'].forEach(evt => c.listen(evt, handleRequestUpdated));
-                c.listen(".Illuminate\\Notifications\\Events\\BroadcastNotificationCreated", (e: any) => {
-                    if (e.type?.includes('ServiceRequest') || e.message?.includes('طلب')) {
-                        addNotification({
-                            title: e.title || "تنبيه جديد",
-                            message: e.message || e.notification_text || "تم تحديث حالة طلبك",
-                            type: "order_status",
-                            orderId: e.request_id || e.id || 0,
-                            recipientId: user.id,
-                            recipientType: userType as any,
-                        });
-                    } else if (e.type?.includes('StoreOrder') || e.message?.includes('المنتج') || e.message?.includes('حالة')) {
-                        handleStoreOrderStatusUpdated(e);
-                    }
-                });
-            } else if (userType === "company") {
-                // Listen for store orders on ALL company-related channels
+                ['.service-request.created', 'ServiceRequestCreated', '.new-service-request'].forEach(evt => c.listen(evt, handleRequestCreated));
+                ['.new-review', 'NewReview'].forEach(evt => c.listen(evt, handleNewReview));
+            }
+
+            // ── Company: new store orders ──
+            if (userType === "company") {
+                // The backend broadcasts 'store-order.created' via broadcastAs()
+                // It goes to: private-notifications.user.{company_id}
                 [
-                    '.store-order.created',
-                    'StoreOrderCreated',
-                    '.StoreOrderCreated',
-                    '.new-store-order',
-                    'NewStoreOrder',
-                    'store_order_created',
-                    '.store_order_created',
-                    'StoreOrderNotification'
+                    '.store-order.created',     // ← This is what broadcastAs() returns (with dot prefix)
+                    'store-order.created',       // without dot
+                    'StoreOrderNotification',    // class-based name
+                    'App\\Events\\StoreOrderNotification',
                 ].forEach(evt => c.listen(evt, handleNewStoreOrder));
             }
+
+            // ── Generic Laravel Notification fallback ──
+            c.listen(".Illuminate\\Notifications\\Events\\BroadcastNotificationCreated", (e: any) => {
+                console.log('🔔 [Echo] Generic Broadcast:', e);
+                if (e.type?.includes('ServiceRequest')) {
+                    if (userType === "craftsman") handleRequestCreated(e);
+                    else handleRequestUpdated(e);
+                } else if (e.type?.includes('StoreOrder')) {
+                    if (userType === "company") handleNewStoreOrder(e);
+                    else handleStoreOrderStatusUpdated(e);
+                }
+            });
         });
 
-        // Company-specific channel exhaustive logging
-        if (companyChannel) {
-            console.log(`🔍 [Echo] Exhaustive logging enabled for Company Channel...`);
-
-            // Re-listen for core events just in case
-            ['.new-message', 'NewMessage', '.NewMessage'].forEach(evt => companyChannel.listen(evt, handleNewMessage));
-
-            [
-                '.store-order.created',
-                'StoreOrderCreated',
-                '.StoreOrderCreated',
-                '.new-store-order',
-                'NewStoreOrder',
-            ].forEach(evt => companyChannel.listen(evt, handleNewStoreOrder));
-
-            // Catch-all for basic broadcasting
-            companyChannel.listen(".Illuminate\\Notifications\\Events\\BroadcastNotificationCreated", (e: any) => {
-                console.log('🔔 [Echo] Received Generic Broadcast:', e);
-                if (e.type?.includes('Order') || e.message?.includes('طلب') || e.type?.includes('Store')) {
-                    handleNewStoreOrder(e);
-                }
-            });
-        }
-
         return () => {
-            console.log(`🔌 Leaving channels for user: ${user.id}`);
-            activeChannels.forEach(c => {
-                ['.new-message', 'NewMessage', '.NewMessage', 'App\\Events\\NewMessage'].forEach(evt => c.stopListening(evt));
-                if (userType === "craftsman") {
-                    ['.service-request.created', 'ServiceRequestCreated', '.ServiceRequestCreated', '.new-service-request'].forEach(evt => c.stopListening(evt));
-                    ['.new-review', 'NewReview', 'App\\Events\\NewReview'].forEach(evt => c.stopListening(evt));
-                } else if (userType === "user") {
-                    ['.service-request.updated', 'ServiceRequestUpdated', '.ServiceRequestUpdated', '.service-status-updated', '.request-status-updated'].forEach(evt => c.stopListening(evt));
-                    c.stopListening(".Illuminate\\Notifications\\Events\\BroadcastNotificationCreated");
-                }
-            });
-            if (companyChannel) {
-                ['.store-order.created', 'StoreOrderCreated', '.StoreOrderCreated', '.new-store-order', 'NewStoreOrder'].forEach(evt => companyChannel.stopListening(evt));
-                companyChannel.stopListening(".Illuminate\\Notifications\\Events\\BroadcastNotificationCreated");
-                echo.leave(`notifications.company.${user.id}`);
-            }
+            console.log(`🔌 [Echo] Leaving channels for user: ${user.id}`);
             echo.leave(primaryChannelName);
             if (fallbackChannel) echo.leave(`notifications.craftsman.${user.id}`);
             if (clientFallbackChannel) echo.leave(`notifications.client.${user.id}`);
+            if (companyChannel) echo.leave(`notifications.company.${user.id}`);
         };
     }, [user?.id, userType, addNotification]);
 

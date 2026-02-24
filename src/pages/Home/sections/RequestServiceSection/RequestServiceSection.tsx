@@ -138,12 +138,13 @@ const RequestServiceSection: React.FC = () => {
 
             // 2. Notification for the User (Confirmation)
             addNotification({
-                title: "",
-                message: `تم إرسال طلبك بنجاح لخدمة ${data.service_name} إلى ${data.industrial_name}.`,
+                title: "تم إرسال طلبك بنجاح ✅",
+                message: `طلبك لخدمة ${data.service_name} هو الآن (قيد الانتظار). سيتواصل معك ${data.industrial_name} قريباً.`,
                 recipientId: payload.user_id!,
                 recipientType: "user",
                 type: "order_status",
                 orderId: serverId,
+                variant: "success",
             });
 
             // Local fallback logic for persistence if refresh occurs

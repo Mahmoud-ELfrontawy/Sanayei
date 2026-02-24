@@ -64,15 +64,15 @@ const Context = createContext<Ctx | null>(null);
 /* ===================================================== */
 
 export const CraftsmanChatProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user } = useAuth();
+  const { user, userType } = useAuth();
   const qc = useQueryClient();
   const [activeChat, setActiveChat] = useState<ChatContact | null>(null);
   const prevTotalUnreadRef = useRef<number>(0);
 
   const contactsQuery = useQuery({
     queryKey: ["worker-chats", user?.id],
-    enabled: !!user?.id,
-    refetchInterval: 15000,
+    enabled: !!user?.id && userType === "craftsman",
+    refetchInterval: 30000,
     queryFn: async (): Promise<ChatContact[]> => {
       const res = await chatApi.getWorkerChats(user!.id);
       const arr = normalizeArray(res) as WorkerChatsResponseItem[];
@@ -114,8 +114,8 @@ export const CraftsmanChatProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const messagesQuery = useQuery({
     queryKey: ["worker-messages", activeChat?.id, user?.id],
-    enabled: !!activeChat && !!user?.id,
-    refetchInterval: 10000,
+    enabled: !!activeChat && !!user?.id && userType === "craftsman",
+    refetchInterval: 20000,
     queryFn: async (): Promise<ChatMessage[]> => {
       const res: MessagesResponse = await chatApi.getMessages(activeChat!.id, user!.id);
       const raw = res.data?.data ?? [];

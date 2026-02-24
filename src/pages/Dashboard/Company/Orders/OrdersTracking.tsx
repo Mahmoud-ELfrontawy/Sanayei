@@ -2,17 +2,21 @@ import React, { useState, useEffect } from "react";
 import { FiShoppingCart, FiClock, FiCheckCircle, FiPackage, FiTruck, FiXCircle, FiCheck } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { getStoreOrders, updateOrderStatus } from "../../../../Api/auth/Company/storeManagement.api";
+import { useNotifications } from "../../../../context/NotificationContext";
+import { useAuth } from "../../../../hooks/useAuth";
 import "./OrdersTracking.css";
 
 const statusMap: Record<string, { label: string, icon: any, color: string }> = {
-    pending: { label: "قيد الانتظار", icon: <FiClock />, color: "#ff9800" },
+    pending:    { label: "قيد الانتظار", icon: <FiClock />, color: "#ff9800" },
     processing: { label: "جاري التجهيز", icon: <FiPackage />, color: "#2196f3" },
-    shipped: { label: "تم الشحن", icon: <FiTruck />, color: "#9c27b0" },
-    delivered: { label: "تم التوصيل", icon: <FiCheckCircle />, color: "#4caf50" },
-    cancelled: { label: "ملغي", icon: <FiXCircle />, color: "#f44336" },
+    shipped:    { label: "تم الشحن",     icon: <FiTruck />, color: "#9c27b0" },
+    delivered:  { label: "تم التوصيل",  icon: <FiCheckCircle />, color: "#4caf50" },
+    cancelled:  { label: "ملغي",         icon: <FiXCircle />, color: "#f44336" },
 };
 
 const OrdersTracking: React.FC = () => {
+    const { user } = useAuth();
+    const { addNotification } = useNotifications();
     const [orders, setOrders] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [updatingStatus, setUpdatingStatus] = useState<Record<number, string>>({});
@@ -39,8 +43,20 @@ const OrdersTracking: React.FC = () => {
             const res = await updateOrderStatus(orderId, newStatus);
             if (res.success) {
                 toast.success("تم تحديث حالة الطلب");
+
+                // إشعار فوري للشركة نفسها بتأكيد التحديث
+                const arabicStatus = statusMap[newStatus]?.label || newStatus;
+                addNotification({
+                    title: "تم تحديث حالة الطلب ✅",
+                    message: `تم تغيير حالة الطلب رقم #${orderId} إلى ${arabicStatus}`,
+                    type: "order_status",
+                    orderId: orderId,
+                    recipientId: user?.id || 0,
+                    recipientType: "company",
+                    variant: newStatus === "cancelled" ? "error" : "success",
+                });
+
                 fetchOrders();
-                // Clear the local state for this order
                 const nextUpdating = { ...updatingStatus };
                 delete nextUpdating[orderId];
                 setUpdatingStatus(nextUpdating);

@@ -56,7 +56,7 @@ interface Ctx {
 const Context = createContext<Ctx | null>(null);
 
 export const UserChatProvider = ({ children }: { children: React.ReactNode }) => {
-    const { user } = useAuth();
+    const { user, userType } = useAuth();
     const qc = useQueryClient();
     const [activeChat, setActiveChat] = useState<ChatContact | null>(null);
     const prevTotalUnreadRef = useRef<number>(0);
@@ -65,8 +65,8 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
 
     const contactsQuery = useQuery({
         queryKey: ["user-chats", user?.id],
-        enabled: !!user?.id,
-        refetchInterval: 15000, // Reduced pressure
+        enabled: !!user?.id && userType === "user",
+        refetchInterval: 30000, // Reduced pressure from 15s to 30s
         queryFn: async (): Promise<ChatContact[]> => {
             const res: UserChatsResponse = await chatApi.getUserChats(user!.id);
 
@@ -111,8 +111,8 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
 
     const messagesQuery = useQuery({
         queryKey: ["user-messages", activeChat?.id, user?.id],
-        enabled: !!activeChat && !!user?.id,
-        refetchInterval: 10000, // Reduced pressure
+        enabled: !!activeChat && !!user?.id && userType === "user",
+        refetchInterval: 20000, // Reduced from 10s to 20s
         queryFn: async (): Promise<ChatMessage[]> => {
             const res: MessagesResponse = await chatApi.getMessages(user!.id, activeChat!.id);
             const raw = res.data?.data ?? [];
