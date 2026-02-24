@@ -122,8 +122,25 @@ export const getPublicStoreCategories = async () => {
     return res.data;
 };
 
-export const getPublicStoreProducts = async () => {
-    const res = await axios.get(`${BASE_URL}/store/products`, {
+export interface PublicProductsParams {
+    category_id?: number | string;
+    company_id?: number | string;
+    search?: string;
+    sort?: "price" | "rating" | "created_at";
+    dir?: "asc" | "desc";
+    page?: number;
+}
+
+export const getPublicStoreProducts = async (params: PublicProductsParams = {}) => {
+    const query = new URLSearchParams();
+    if (params.category_id) query.append("category_id", String(params.category_id));
+    if (params.company_id) query.append("company_id", String(params.company_id));
+    if (params.search) query.append("search", params.search);
+    if (params.sort) query.append("sort", params.sort);
+    if (params.dir) query.append("dir", params.dir);
+    if (params.page) query.append("page", String(params.page));
+
+    const res = await axios.get(`${BASE_URL}/store/products?${query.toString()}`, {
         headers: { Accept: "application/json" }
     });
     return res.data;

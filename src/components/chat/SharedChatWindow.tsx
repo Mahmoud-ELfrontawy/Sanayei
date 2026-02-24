@@ -1,11 +1,14 @@
-import React, { useState, useRef, useMemo, useEffect } from "react";
+import React, { useState, useRef, useMemo, useEffect, Suspense, lazy } from "react";
 import {
     HiPhotograph,
 } from "react-icons/hi";
 import { FaArrowRight, FaMicrophone, FaPaperPlane, FaPlus, FaUserCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { BsEmojiSmile } from "react-icons/bs";
-import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
+import { type EmojiClickData } from "emoji-picker-react";
+
+// Lazy load EmojiPicker to improve performance
+const EmojiPicker = lazy(() => import("emoji-picker-react"));
 import { getFullImageUrl } from "../../utils/imageUrl";
 import { toast } from "react-toastify";
 import "./Chat.css";
@@ -379,11 +382,13 @@ const SharedChatWindow: React.FC<Props> = ({
                 {/* Emoji Picker */}
                 {showEmojiPicker && (
                     <div className="emoji-picker-wrapper" ref={emojiPickerRef}>
-                        <EmojiPicker
-                            onEmojiClick={handleEmojiClick}
-                            width={320}
-                            height={400}
-                        />
+                        <Suspense fallback={<div style={{ width: 320, height: 400, display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#fff' }}>جاري التحميل...</div>}>
+                            <EmojiPicker
+                                onEmojiClick={handleEmojiClick}
+                                width={320}
+                                height={400}
+                            />
+                        </Suspense>
                     </div>
                 )}
 

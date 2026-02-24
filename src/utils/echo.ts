@@ -1,29 +1,49 @@
-/**
- * Echo / Pusher — DISABLED
- * 
- * The backend does not have a `broadcasting/auth` route, so all private-channel
- * subscriptions fail with 404 and spam the console with errors.
- * 
- * Real-time is replaced by polling fallback in the chat providers
- * (contacts every 15 s, messages every 8 s).
- * 
- * When the backend adds `broadcasting/auth`, uncomment the full implementation
- * and remove the stubs below.
- */
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const initializeEcho = (_token: string) => {
-  return null;
+// Setup Pusher globally for Laravel Echo
+(window as any).Pusher = Pusher;
+
+let echoInstance: Echo<any> | null = null;
+
+export const initializeEcho = (token: string) => {
+  if (echoInstance) return echoInstance;
+
+  try {
+    const apiUrl = import.meta.env.VITE_API_URL || '';
+    const authEndpoint = apiUrl
+      ? `${apiUrl.replace(/\/$/, '')}/broadcasting/auth`
+      : '/api/broadcasting/auth';
+
+    echoInstance = new Echo<any>({
+      broadcaster: 'pusher',
+      key: import.meta.env.VITE_PUSHER_APP_KEY,
+      cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER || 'eu',
+      forceTLS: true,
+      encrypted: true,
+      authEndpoint,
+      auth: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+        },
+      },
+    });
+
+    console.log('📡 [Echo] Initialized successfully');
+    return echoInstance;
+  } catch (error) {
+    console.error('❌ [Echo] Initialization failed:', error);
+    return null;
+  }
 };
+
+export const getEcho = () => echoInstance;
 
 export const disconnectEcho = () => {
-  // no-op
-};
-
-export const getEcho = () => null;
-
-export default {
-  initialize: initializeEcho,
-  disconnect: disconnectEcho,
-  getEcho,
+  if (echoInstance) {
+    echoInstance.disconnect();
+    echoInstance = null;
+    console.log('🔌 [Echo] Disconnected');
+  }
 };

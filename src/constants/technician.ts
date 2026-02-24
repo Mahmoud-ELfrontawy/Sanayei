@@ -21,4 +21,5 @@ export interface Technician {
     is_online?: boolean;
     last_seen?: string | null;
     last_seen_human?: string | null;
+    status?: string;
 }

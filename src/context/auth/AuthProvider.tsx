@@ -14,12 +14,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [state, setState] = useState<AuthState>(() => {
         const token = authStorage.getToken();
         const userType = authStorage.getUserType();
+        const storedUser = authStorage.getUser();
         return {
-            user: null,
+            user: storedUser,
             token,
             userType,
             isAuthenticated: !!token && !!userType,
-            isLoading: !!token, // Still loading if we have a token but no user yet
+            isLoading: !!token && !storedUser, // Loading if we have a token but no stored user
         };
     });
 
@@ -73,13 +74,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Synchronize Query Result to Local State
     useEffect(() => {
-        if (userProfile && userProfile.id !== state.user?.id) {
-            setState(prev => ({
-                ...prev,
-                user: userProfile,
-                isLoading: false,
-                isAuthenticated: true
-            }));
+        if (userProfile) {
+            // Save to storage to persist across refreshes
+            authStorage.setUser(userProfile);
+
+            if (userProfile.id !== state.user?.id) {
+                setState(prev => ({
+                    ...prev,
+                    user: userProfile,
+                    isLoading: false,
+                    isAuthenticated: true
+                }));
+            }
         } else if (!isFetchingProfile && !state.token && state.isAuthenticated) {
             setState(prev => ({ ...prev, isLoading: false, isAuthenticated: false, user: null }));
         } else if (!isFetchingProfile && state.token && !userProfile && !isFetchingProfile) {
@@ -90,6 +96,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, [userProfile, isFetchingProfile, state.token]);
 
     const updateState = useCallback((updates: Partial<AuthState>) => {
+        if (updates.user) {
+            authStorage.setUser(updates.user);
+        }
         setState(prev => ({ ...prev, ...updates }));
     }, []);
 

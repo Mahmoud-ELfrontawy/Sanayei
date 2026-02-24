@@ -39,13 +39,23 @@ const AboutSection: React.FC = () => {
                             src={bigImg}
                             alt=""
                             className="media-img media-img--large"
+                            loading="lazy"
+                            decoding="async"
                         />
                         <img
                             src={smallImg}
                             alt=""
                             className="media-img media-img--small"
+                            loading="lazy"
+                            decoding="async"
                         />
-                        <img src={mediaDot} alt="" className="media-dots" />
+                        <img
+                            src={mediaDot}
+                            alt=""
+                            className="media-dots"
+                            loading="lazy"
+                            decoding="async"
+                        />
                         <div className="media-deco" />
                     </div>
                 </div>

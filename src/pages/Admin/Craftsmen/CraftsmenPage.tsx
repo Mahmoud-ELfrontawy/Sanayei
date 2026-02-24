@@ -28,7 +28,7 @@ interface CraftsmanData {
     sub_specialties?: string[];
     governorate?: { id: number; name: string };
     service?: { id: number; name: string };
-    status: 'pending' | 'approved' | 'rejected' | 'blocked' | 'active';
+    status: 'pending' | 'approved' | 'rejected' | 'blocked';
     rating: number;
     reviews_count: number;
     completed_jobs: number;
@@ -247,7 +247,7 @@ const CraftsmenPage: React.FC = () => {
                                 </td>
                                 <td>
                                     <span className={`status-badge ${craftsman.status}`}>
-                                        {(craftsman.status === 'approved' || craftsman.status === 'active') ? 'نشط' :
+                                        {craftsman.status === 'approved' ? 'نشط' :
                                             craftsman.status === 'rejected' ? 'مرفوض' :
                                                 craftsman.status === 'blocked' ? 'محظور' : 'قيد المراجعة'}
                                     </span>
@@ -309,7 +309,7 @@ const CraftsmenPage: React.FC = () => {
                                 <div className="large-avatar">{selectedCraftsman.name[0]}</div>
                                 <h4>{selectedCraftsman.name}</h4>
                                 <span className={`status-pill ${selectedCraftsman.status}`}>
-                                    {(selectedCraftsman.status === 'approved' || selectedCraftsman.status === 'active') ? 'حساب نشط' :
+                                    {selectedCraftsman.status === 'approved' ? 'حساب نشط' :
                                         selectedCraftsman.status === 'rejected' ? 'حساب مرفوض' :
                                             selectedCraftsman.status === 'blocked' ? 'حساب محظور' : 'بانتظار التفعيل'}
                                 </span>

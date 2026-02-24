@@ -169,8 +169,8 @@ class AuthService {
 
   async fetchProfile(type: UserRole): Promise<User | null> {
     try {
-      const endpoint = type === "craftsman" ? "/craftsmen/profile" : 
-                       type === "company"   ? "/companies/profile" : "/user/me";
+      const endpoint = type === "craftsman" ? "/craftsmen/profile/me" : 
+                       type === "company"   ? "/company/me" : "/user/me";
       const { data } = await this.api.get<ProfileApiResponse>(endpoint);
       return this.normalizeUser(data);
     } catch (err) { 

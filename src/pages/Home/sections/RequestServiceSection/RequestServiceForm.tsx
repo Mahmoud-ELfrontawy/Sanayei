@@ -100,9 +100,12 @@ const RequestServiceForm: React.FC<Props> = ({
     ================================ */
 
     const filteredSanaei = useMemo(() => {
-        if (!serviceId) return sanaei;
+        // ✅ Only show approved craftsmen regardless of service selection
+        const approvedOnly = sanaei.filter(w => w.status === 'approved');
 
-        return sanaei.filter((w) => {
+        if (!serviceId) return approvedOnly;
+
+        return approvedOnly.filter((w) => {
             const workerServiceId =
                 w.service_id ??
                 w.service?.id;

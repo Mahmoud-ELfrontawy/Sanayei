@@ -32,6 +32,7 @@ const HeroSection: React.FC = () => {
                     src={imageHome}
                     alt="Home"
                     className="image-home__img"
+                    fetchPriority="high"
                 />
 
                 <div className="image-home__overlay" />

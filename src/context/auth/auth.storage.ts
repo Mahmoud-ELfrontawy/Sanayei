@@ -3,8 +3,17 @@ import type { UserRole, PersistentData } from "./auth.types";
 const TOKEN_KEY = "auth_token";
 const REFRESH_TOKEN_KEY = "refresh_token";
 const USER_TYPE_KEY = "userType";
+const USER_KEY = "auth_user";
 
 export const authStorage = {
+  setUser: (user: any) => {
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+  },
+
+  getUser: (): any | null => {
+    const user = localStorage.getItem(USER_KEY);
+    return user ? JSON.parse(user) : null;
+  },
   setToken: (token: string) => {
     // Set cookie
     const d = new Date();
@@ -27,7 +36,7 @@ export const authStorage = {
       if (c.indexOf(name) === 0) return c.substring(name.length, c.length);
     }
     // 2. Check localStorage
-    return localStorage.getItem(TOKEN_KEY);
+    return localStorage.getItem(TOKEN_KEY) || localStorage.getItem("token");
   },
 
   setRefreshToken: (token: string) => {
@@ -53,6 +62,7 @@ export const authStorage = {
     // Clear ALL possible auth keys to ensure no stale data
     const keysToClear = [
         TOKEN_KEY, 
+        USER_KEY,
         "token", // Legacy key
         REFRESH_TOKEN_KEY, 
         USER_TYPE_KEY, 

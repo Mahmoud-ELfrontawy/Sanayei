@@ -8,7 +8,6 @@ import {
     FaWallet,
     FaUser,
     FaBoxOpen,
-    FaList,
     FaShoppingCart
 } from "react-icons/fa";
 
@@ -99,11 +98,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         },
         // Company-specific links
         ...(userType === "company" ? [
-            {
-                title: "إدارة الأقسام",
-                path: "/dashboard/company/categories",
-                icon: <FaList size={20} />
-            },
             {
                 title: "إدارة المنتجات",
                 path: "/dashboard/company/products",

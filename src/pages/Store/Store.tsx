@@ -1,89 +1,55 @@
-import React, { useState, useEffect } from "react";
-import { FiList, FiPackage, FiSearch, FiShoppingCart } from "react-icons/fi";
+import React, { useState } from "react";
+import { FiList, FiPackage, FiShoppingCart } from "react-icons/fi";
 import StoreGalleryPage from "./StoreGalleryPage";
 import StoreProductList from "./StoreProductList";
 import ProductDetails from "./ProductDetails";
-import CartPage from "./CartPage";
-import CheckoutPage from "./CheckoutPage";
 import StoreOrdersPage from "./StoreOrdersPage";
-import { getCartItems } from "../../Api/store/cart.api";
+import StoreCartTab from "./StoreCartTab";
 import "./Store.css";
-import { useAuth } from "../../hooks/useAuth";
 
 const StorePage: React.FC = () => {
-    const { isAuthenticated } = useAuth();
     const [activeTab, setActiveTab] = useState("products");
-    const [selectedCategoryId] = useState<number | null>(null);
-    const [cartCount, setCartCount] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
-    const [storeView, setStoreView] = useState("gallery"); // gallery, productList, productDetails
+    const [storeView, setStoreView] = useState("gallery");
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
     const [selectedCompanyId, setSelectedCompanyId] = useState<any>(null);
-
-    const fetchCartCount = async () => {
-        if (!isAuthenticated) return;
-        try {
-            const items = await getCartItems();
-            setCartCount(Array.isArray(items) ? items.length : 0);
-        } catch (error: any) {
-            // Only log if it's not an unauthorized error (which we already handled)
-            if (error.message !== "Unauthorized") {
-                console.error("Error fetching cart count:", error);
-            }
-        }
-    };
-
-    useEffect(() => {
-        if (isAuthenticated) {
-            fetchCartCount();
-            const interval = setInterval(fetchCartCount, 5000);
-            return () => clearInterval(interval);
-        }
-    }, [activeTab, isAuthenticated]);
+    const [cartCount, setCartCount] = useState(0);
 
     const renderStoreContent = () => {
         switch (storeView) {
             case "gallery":
-                return <StoreGalleryPage
-                    initialCategoryId={selectedCategoryId}
-                    searchQuery={searchQuery}
-                    onSearchChange={setSearchQuery}
-                    onBrowseProducts={(companyId) => {
-                        setSelectedCompanyId(companyId);
-                        setStoreView("productList");
-                    }}
-                />;
+                return (
+                    <StoreGalleryPage
+                        initialCategoryId={null}
+                        searchQuery={searchQuery}
+                        onSearchChange={setSearchQuery}
+                        onBrowseProducts={(companyId) => {
+                            setSelectedCompanyId(companyId);
+                            setStoreView("productList");
+                        }}
+                    />
+                );
             case "productList":
-                return <StoreProductList 
-                    companyId={selectedCompanyId} 
-                    onBack={() => setStoreView("gallery")}
-                    onProductClick={(product) => {
-                        setSelectedProduct(product);
-                        setStoreView("productDetails");
-                    }}
-                />;
+                return (
+                    <StoreProductList
+                        companyId={selectedCompanyId}
+                        onBack={() => setStoreView("gallery")}
+                        onProductClick={(product) => {
+                            setSelectedProduct(product);
+                            setStoreView("productDetails");
+                        }}
+                        onCartCountChange={setCartCount}
+                    />
+                );
             case "productDetails":
-                return <ProductDetails 
-                    product={selectedProduct} 
-                    onBack={() => setStoreView("productList")} 
-                />;
+                return (
+                    <ProductDetails
+                        product={selectedProduct}
+                        onBack={() => setStoreView("productList")}
+                    />
+                );
             default:
-                return <StoreGalleryPage initialCategoryId={selectedCategoryId} />;
-        }
-    };
-
-    const renderContent = () => {
-        switch (activeTab) {
-            case "products":
-                return renderStoreContent();
-            case "cart":
-                return <CartPage onCheckout={() => setActiveTab("checkout")} />;
-            case "checkout":
-                return <CheckoutPage />;
-            case "orders":
-                return <StoreOrdersPage />;
-            default:
-                return renderStoreContent();
+                return <StoreGalleryPage initialCategoryId={null} />;
         }
     };
 
@@ -96,22 +62,17 @@ const StorePage: React.FC = () => {
                     </div>
 
                     <div className="store-nav-search">
-                        <FiSearch className="nav-search-icon" />
                         <input
                             type="text"
                             placeholder="ابحث في المتجر..."
                             value={searchQuery}
                             onChange={(e) => {
                                 setSearchQuery(e.target.value);
-                                if (activeTab !== "products") {
-                                    setActiveTab("products");
-                                }
+                                if (activeTab !== "products") setActiveTab("products");
                             }}
                         />
                         {searchQuery && (
-                            <button className="clear-search-btn" onClick={() => setSearchQuery("")}>
-                                &times;
-                            </button>
+                            <button className="clear-search-btn" onClick={() => setSearchQuery("")}>&times;</button>
                         )}
                     </div>
 
@@ -123,18 +84,20 @@ const StorePage: React.FC = () => {
                             <FiList />
                             <span>المنتجات</span>
                         </button>
+
+                        {/* ── Cart Tab ── */}
                         <button
                             className={`store-tab-btn ${activeTab === "cart" ? "active" : ""}`}
                             onClick={() => setActiveTab("cart")}
+                            style={{ position: "relative" }}
                         >
-                            <div className="tab-with-badge">
-                                <div className="icon-badge-wrapper">
-                                    <FiShoppingCart />
-                                    {cartCount > 0 && <span className="nav-badge">{cartCount}</span>}
-                                </div>
-                                <span>السلة</span>
-                            </div>
+                            <FiShoppingCart />
+                            <span>السلة</span>
+                            {cartCount > 0 && (
+                                <span className="tab-cart-badge">{cartCount}</span>
+                            )}
                         </button>
+
                         <button
                             className={`store-tab-btn ${activeTab === "orders" ? "active" : ""}`}
                             onClick={() => setActiveTab("orders")}
@@ -147,7 +110,9 @@ const StorePage: React.FC = () => {
             </header>
 
             <main className="store-render-area">
-                {renderContent()}
+                {activeTab === "products" && renderStoreContent()}
+                {activeTab === "cart" && <StoreCartTab onCartCountChange={setCartCount} onGoToOrders={() => setActiveTab("orders")} />}
+                {activeTab === "orders" && <StoreOrdersPage />}
             </main>
         </section>
     );

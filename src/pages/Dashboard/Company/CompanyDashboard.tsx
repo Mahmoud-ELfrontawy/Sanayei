@@ -84,17 +84,6 @@ const CompanyDashboard: React.FC = () => {
             </div>
 
             <div className="quick-actions-grid">
-                <Link to="/dashboard/company/categories" className="action-card">
-                    <div className="action-card-inner">
-                        <div className="action-icon">
-                            <FaList />
-                        </div>
-                        <div className="action-info">
-                            <h4>إدارة الأقسام</h4>
-                            <p>تنظيم وتبويب منتجاتك في أقسام واضحة</p>
-                        </div>
-                    </div>
-                </Link>
                 <Link to="/dashboard/company/products" className="action-card">
                     <div className="action-card-inner">
                         <div className="action-icon">

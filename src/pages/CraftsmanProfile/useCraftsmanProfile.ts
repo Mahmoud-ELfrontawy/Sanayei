@@ -50,6 +50,16 @@ export const useCraftsmanProfile = () => {
            return;
         }
 
+        // ✅ Check approval status for public profiles
+        if (!isOwnProfile) {
+          const status = data.status;
+          if (status && status !== 'approved') {
+            setError("هذا الحساب لم يتم تفعيله بعد من قبل الإدارة");
+            setLoading(false);
+            return;
+          }
+        }
+
         // Mapping API data to UI structure
 
         // ✅ FIX: If reviews are missing in "me" endpoint, fetch them from public profile

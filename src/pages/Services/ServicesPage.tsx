@@ -92,6 +92,10 @@ const ServicesPage: React.FC = () => {
         if (!selectedService) return [];
 
         return techniciansWithMappedGovernorates.filter((t) => {
+            // ✅ Only show approved technicians
+            const isApproved = t.status === 'approved';
+            if (!isApproved) return false;
+
             const matchService = t.service?.id === selectedService.id;
 
             const matchCity =

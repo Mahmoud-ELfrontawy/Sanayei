@@ -22,7 +22,7 @@ export const useRequestServiceData = () => {
     return {
         services: servicesQuery.data ?? [],
         governorates: governoratesQuery.data ?? [],
-        sanaei: sanaeiQuery.data ?? [],
+        sanaei: (sanaeiQuery.data ?? []).filter((w: any) => w.status === 'approved'),
         loading: servicesQuery.isLoading || governoratesQuery.isLoading || sanaeiQuery.isLoading,
         isError: servicesQuery.isError || governoratesQuery.isError || sanaeiQuery.isError,
     };
