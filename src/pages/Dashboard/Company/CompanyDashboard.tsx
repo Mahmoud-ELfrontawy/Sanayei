@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import StatCard from "../../../components/dashboard/StatCard/StatCard";
-import { FaBox, FaList, FaShoppingCart, FaChartLine, FaStore } from "react-icons/fa";
+import { FaBox, FaShoppingCart, FaChartLine, FaStore } from "react-icons/fa";
 import { getStoreProducts, getStoreOrders } from "../../../Api/auth/Company/storeManagement.api";
 import "./CompanyDashboard.css";
 

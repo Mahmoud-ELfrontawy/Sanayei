@@ -1,4 +1,4 @@
-.icon-btn-login, .mobile-icon-btn {
+.header-icon-btn, .mobile-icon-btn {
     position: relative;
     display: flex;
     align-items: center;
@@ -7,9 +7,9 @@
 }
 
 /* Vibrant Glow for unread items */
-.icon-btn-login.has-unread svg, 
+.header-icon-btn.has-unread svg, 
 .mobile-icon-btn.has-unread svg,
-.nav-link.has-unread .link-icon svg {
+.header-nav-link.has-unread .link-icon svg {
     filter: drop-shadow(0 0 5px rgba(79, 70, 229, 0.6));
     animation: bounce-vibrant 2s infinite ease-in-out;
     color: #4f46e5 !important;
@@ -20,7 +20,7 @@
     animation: shake-vibrant 0.5s ease-in-out both;
 }
 
-.notification-badge-header {
+.header-notification-badge {
     position: absolute;
     top: -4px;
     right: -4px;
@@ -51,7 +51,7 @@
 }
 
 /* Badge arrival bump */
-.notification-badge-header {
+.header-notification-badge {
     animation: pulse-vibrant 1.5s infinite, badge-arrival 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -60,7 +60,7 @@
     to { transform: scale(1); }
 }
 
-.mobile-icon-btn .notification-badge-header {
+.mobile-icon-btn .header-notification-badge {
     top: -4px;
     right: 5px;
 }

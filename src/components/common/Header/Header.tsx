@@ -138,7 +138,7 @@ const Header: React.FC = () => {
               <NavLink
                 to={link.path}
                 className={({ isActive }) =>
-                  `nav-link ${isActive ? "active" : ""}`
+                  `header-nav-link ${isActive ? "active" : ""}`
                 }
               >
                 <span>{link.label}</span>
@@ -164,30 +164,30 @@ const Header: React.FC = () => {
               {/* Messages */}
               <Link
                 to="/dashboard/messages"
-                className={`icon-btn-login ${unreadTotal > 0 ? "has-unread" : ""} ${isNewMessage ? "new-arrival" : ""}`}
+                className={`header-icon-btn ${unreadTotal > 0 ? "has-unread" : ""} ${isNewMessage ? "new-arrival" : ""}`}
               >
                 {unreadTotal > 0 && (
-                  <span className="notification-badge-header" />
+                  <span className="header-notification-badge" />
                 )}
-                <FaCommentDots size={24} />
+                <FaCommentDots size={22} />
                 <span>الرسائل</span>
               </Link>
 
               {/* Notifications Dropdown */}
-              <div className="avatar-dropdown" ref={notifDropdownRef}>
+              <div className="header-avatar-dropdown" ref={notifDropdownRef}>
                 <button
                   onClick={toggleNotifDropdown}
-                  className={`icon-btn-login ${unreadCount > 0 ? "has-unread" : ""} ${unreadCount > 0 ? "has-new-notification" : ""}`}
+                  className={`header-icon-btn ${unreadCount > 0 ? "has-unread" : ""} ${unreadCount > 0 ? "has-new-notification" : ""}`}
                 >
                   {unreadCount > 0 && (
-                    <span className="notification-badge-header" />
+                    <span className="header-notification-badge" />
                   )}
-                  <FaBell size={24} />
+                  <FaBell size={22} />
                   <span>الإشعارات</span>
                 </button>
 
                 {notifOpen && (
-                  <div className="profile-dropdown notification-dropdown">
+                  <div className="header-profile-dropdown header-notification-dropdown">
                     <div className="dropdown-header-notif">
                       <span>التنبيهات</span>
                       {unreadCount > 0 && (
@@ -237,7 +237,7 @@ const Header: React.FC = () => {
               </div>
 
               {/* Avatar Dropdown */}
-              <div className="avatar-dropdown" ref={dropdownRef}>
+              <div className="header-avatar-dropdown" ref={dropdownRef}>
                 <button className="profile-btn" onClick={toggleDropdown}>
                   <div className="avatar-wrapper-profile">
                     <img src={user?.avatar || "/avatar.png"} alt="profile" />
@@ -246,19 +246,19 @@ const Header: React.FC = () => {
                 </button>
 
                 {isOpen && (
-                  <div className="profile-dropdown">
-                    <Link to={dashboardPath} className="dropdown-item">
+                  <div className="header-profile-dropdown">
+                    <Link to={dashboardPath} className="header-dropdown-item">
                       <FaThLarge size={20} />
                       <span>{isAdmin ? "لوحة الإدارة" : "لوحة التحكم"}</span>
                     </Link>
 
-                    <Link to={profilePath} className="dropdown-item">
+                    <Link to={profilePath} className="header-dropdown-item">
                       <FaUser size={20} />
                       <span>الملف الشخصي</span>
                     </Link>
 
                     <button
-                      className="dropdown-item logout"
+                      className="header-dropdown-item logout"
                       onClick={handleLogout}
                     >
                       <FaSignOutAlt size={20} />
@@ -292,7 +292,7 @@ const Header: React.FC = () => {
               >
                 <FaCommentDots size={24} />
                 {unreadTotal > 0 && (
-                  <span className="notification-badge-header" />
+                  <span className="header-notification-badge" />
                 )}
                 <span>الرسائل</span>
               </Link>
@@ -304,7 +304,7 @@ const Header: React.FC = () => {
               >
                 <FaBell size={24} />
                 {unreadCount > 0 && (
-                  <span className="notification-badge-header" />
+                  <span className="header-notification-badge" />
                 )}
                 <span>الإشعارات</span>
               </Link>
@@ -337,7 +337,7 @@ const Header: React.FC = () => {
             <div className="mobile-auth">
               <Link
                 to={dashboardPath}
-                className="dropdown-item"
+                className="header-dropdown-item"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <FaThLarge size={20} />
@@ -346,14 +346,14 @@ const Header: React.FC = () => {
 
               <Link
                 to={profilePath}
-                className="dropdown-item"
+                className="header-dropdown-item"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <FaUser size={20} />
                 <span>الملف الشخصي</span>
               </Link>
 
-              <button className="dropdown-item logout" onClick={handleLogout}>
+              <button className="header-dropdown-item logout" onClick={handleLogout}>
                 <FaSignOutAlt size={20} />
                 <span>تسجيل الخروج</span>
               </button>

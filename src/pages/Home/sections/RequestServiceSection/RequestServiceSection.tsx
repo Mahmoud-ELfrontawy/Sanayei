@@ -20,7 +20,7 @@ const RequestServiceSection: React.FC = () => {
     /* ===============================
         Auth + Router
     ================================ */
-    const { isAuthenticated, user } = useAuth();
+    const { isAuthenticated, user, userType } = useAuth();
     const { addNotification } = useNotifications();
     const navigate = useNavigate();
 
@@ -92,6 +92,16 @@ const RequestServiceSection: React.FC = () => {
         if (!isAuthenticated) {
             toast.info("من فضلك سجل دخولك أولًا 🔐");
             navigate("/login", { state: { from: "request-service" } });
+            return;
+        }
+
+        // Restriction: Companies and Craftsmen cannot request service
+        if (userType === 'company' || userType === 'craftsman') {
+            toast.info(
+                userType === 'company'
+                    ? "عذراً، يجب التسجيل بحساب مستخدم عادي لطلب خدمات الصنايعية 🛠️"
+                    : "عذراً، لا يمكن للصنايعي طلب خدمة من صنايعي آخر بحسابه الحالي 👤"
+            );
             return;
         }
 

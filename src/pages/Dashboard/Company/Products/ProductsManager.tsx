@@ -105,17 +105,17 @@ const ProductsManager: React.FC = () => {
             main_image: null,
             gallery_images: [],
         });
-        
+
         // Handle previews for existing images
         if (prod.main_image) setMainPreview(getFullImageUrl(prod.main_image) || null);
         else setMainPreview(null);
-        
+
         if (prod.images && Array.isArray(prod.images)) {
             setGalleryPreviews(prod.images.map((img: string) => getFullImageUrl(img) || ""));
         } else {
             setGalleryPreviews([]);
         }
-        
+
         setShowAddForm(true);
     };
 
@@ -139,7 +139,7 @@ const ProductsManager: React.FC = () => {
         if (newProduct.origin_country) formData.append("origin_country", newProduct.origin_country);
         if (newProduct.warranty) formData.append("warranty", newProduct.warranty);
         if (newProduct.badge) formData.append("badge", newProduct.badge);
-        
+
         // Only append images if a new file was selected
         if (newProduct.main_image) {
             formData.append("main_image", newProduct.main_image);
@@ -153,7 +153,7 @@ const ProductsManager: React.FC = () => {
 
         try {
             setIsAdding(true);
-            const res = editingProduct 
+            const res = editingProduct
                 ? await (await import("../../../../Api/auth/Company/storeManagement.api")).updateStoreProduct(editingProduct.id, formData)
                 : await addStoreProduct(formData);
 
@@ -347,7 +347,7 @@ const ProductsManager: React.FC = () => {
                                 )}
                             </div>
 
-                             <div className="modal-actions">
+                            <div className="modal-actions">
                                 <button type="submit" className="save-btn" disabled={isAdding}>
                                     {isAdding ? "جاري الحفظ..." : (editingProduct ? "تحديث المنتج" : "حفظ المنتج")}
                                 </button>
@@ -407,7 +407,7 @@ const ProductsManager: React.FC = () => {
                                         </span>
                                     </td>
                                     <td data-label="القسم">{prod.category?.name || "عام"}</td>
-                                     <td data-label="الإجراءات">
+                                    <td data-label="الإجراءات">
                                         <div className="actions-row">
                                             <button className="edit-btn-mini" onClick={() => handleEditClick(prod)} title="تعديل">
                                                 <FiEdit />

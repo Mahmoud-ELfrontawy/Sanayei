@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { getPublicStoreProductDetails } from "../../Api/auth/Company/storeManagement.api";
 import { addToCart } from "../../Api/store/cart.api";
 import { getFullImageUrl } from "../../utils/imageUrl";
+import { useAuth } from "../../hooks/useAuth";
 import "./ProductDetails.css";
 
 interface ProductDetailsProps {
@@ -72,7 +73,14 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
             });
     }, [initialProduct?.id, mainImageSrc]);
 
+    const { userType } = useAuth();
+
     const handleAddToCart = async () => {
+        if (userType === 'company') {
+            toast.info("عذراً، يجب التسجيل بحساب مستخدم عادي أو صنايعي لإتمام عمليات الشراء من المتجر 🛒");
+            return;
+        }
+
         try {
             setAddingToCart(true);
             await addToCart(product.id, quantity);

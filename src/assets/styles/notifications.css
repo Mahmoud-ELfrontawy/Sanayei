@@ -92,8 +92,8 @@
 }
 
 /* Redesigned Notification Dropdown - Premium Look */
-.notification-dropdown {
-    width: 380px !important;
+.header-notification-dropdown {
+    width: 350px !important;
     padding: 0 !important;
     border-radius: 16px !important;
     overflow: hidden;
@@ -101,6 +101,9 @@
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     background: rgba(255, 255, 255, 0.95) !important;
     backdrop-filter: blur(10px);
+    opacity: 1 !important; /* Ensure it shows when class is present */
+    transform: translateY(0) !important;
+    pointer-events: auto !important;
 }
 
 .dropdown-header-notif {
@@ -262,7 +265,7 @@
     100% { transform: scale(2.5); opacity: 0; }
 }
 
-.has-new-notification .notification-badge-header::after {
+.has-new-notification .header-notification-badge::after {
     content: '';
     position: absolute;
     inset: 0;

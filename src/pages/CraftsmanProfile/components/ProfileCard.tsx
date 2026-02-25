@@ -1,6 +1,9 @@
 import React from "react";
 import { FaUserEdit } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useAuth } from "../../../hooks/useAuth";
 import type { CraftsmanProfileData } from "../../../types/craftsman";
 import defaultAvatar from "../../../assets/images/image5.png";
 import Button from "../../../components/ui/Button/Button";
@@ -11,6 +14,34 @@ interface Props {
 }
 
 const ProfileCard: React.FC<Props> = ({ craftsman, isOwnProfile }) => {
+  const { userType, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  const handleRequestService = () => {
+    if (!isAuthenticated) {
+      toast.info("من فضلك سجل دخولك أولاً 🔐");
+      navigate("/login", { state: { from: "request-service" } });
+      return;
+    }
+
+    if (userType === 'company' || userType === 'craftsman') {
+      toast.info(
+        userType === 'company'
+          ? "عذراً، يجب التسجيل بحساب مستخدم عادي لطلب خدمات الصنايعية 🛠️"
+          : "عذراً، لا يمكن للصنايعي طلب خدمة من صنايعي آخر بحسابه الحالي 👤"
+      );
+      return;
+    }
+
+    navigate("/request-service", {
+      state: {
+        industrial_type: craftsman.id?.toString(),
+        industrial_name: craftsman.name,
+        service_type: craftsman.jobTitle,
+        price: craftsman.priceRange,
+      }
+    });
+  };
   return (
     <div className="craftsman-card">
 
@@ -47,15 +78,8 @@ const ProfileCard: React.FC<Props> = ({ craftsman, isOwnProfile }) => {
         {!isOwnProfile ? (
           <>
             <Button
-              to="/request-service"
+              onClick={handleRequestService}
               variant="primary"
-              state={{
-                industrial_type: craftsman.id?.toString(),
-                industrial_name: craftsman.name,
-                // Assuming service info is available or handled by the form
-                service_type: craftsman.jobTitle,
-                price: craftsman.priceRange,
-              }}
             >
               طلب خدمة
             </Button>

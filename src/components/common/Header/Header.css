@@ -30,27 +30,38 @@
 .header-links {
     list-style: none;
     display: flex;
-    gap: 5px;
+    gap: 25px;
+    transition: var(--transition-fast);
 }
 
-.nav-link {
+.header-nav-link {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 20px; /* Slightly increased gap */
     font-size: 20px;
     line-height: 1.4;
     color: var(--color-text-main);
     text-decoration: none;
     transition: color var(--transition-fast);
+    padding: 10px 14px;
+    border-radius: 8px 0 0 8px; /* ✅ Straight on the right side for the indicator */
+    border-right: 4px solid transparent; 
 }
-.nav-link span{
+.header-nav-link span{
     transition: color var(--transition-fast);
 }
-.nav-link:hover span,
-.nav-link:hover svg,
-.nav-link.active span{
+.header-nav-link:hover span,
+.header-nav-link:hover svg,
+.header-nav-link.active span{
     color: var(--color-primary);
     font-weight: 600;
+}
+.header-nav-link:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+.header-nav-link.active {
+    background-color: rgba(95, 168, 211, 0.1);
+    border-right-color: var(--color-primary);
 }
 
 /* Actions */
@@ -106,7 +117,7 @@
 
 /* ================= Icons ================= */
 
-.icon-btn-login {
+.header-icon-btn {
     height: auto;
     background: transparent;
     border: none;
@@ -122,31 +133,31 @@
     border-radius: 12px;
 }
 
-.icon-btn-login:hover {
+.header-icon-btn:hover {
     background: rgba(0, 0, 0, 0.04);
     color: var(--color-primary);
 }
 
-.icon-btn-login span {
+.header-icon-btn span {
     font-size: 18px;
     font-weight: 500;
 }
 
-.icon-btn-login svg {
+.header-icon-btn svg {
     color: inherit;
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
     transition: color 0.2s ease;
     opacity: 0.7;
 }
 
-.icon-btn-login:hover svg {
+.header-icon-btn:hover svg {
     color: var(--color-primary);
 }
 
 /* ================= Dropdown ================= */
 
-.avatar-dropdown {
+.header-avatar-dropdown {
     position: relative;
 }
 
@@ -158,7 +169,7 @@
 }
 
 /* القائمة */
-.profile-dropdown {
+.header-profile-dropdown {
     position: absolute;
     top: 62px;
     left: 0;
@@ -181,7 +192,7 @@
     transition: 0.2s ease;
 }
 
-.profile-dropdown::before {
+.header-profile-dropdown::before {
     content: "";
     position: absolute;
     top: -8px;
@@ -199,7 +210,7 @@
 
 
 /* لما تكون مفتوحة */
-.avatar-dropdown .profile-dropdown {
+.header-avatar-dropdown .header-profile-dropdown {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
@@ -207,7 +218,7 @@
 
 /* ================= Dropdown Items ================= */
 
-.dropdown-item {
+.header-dropdown-item {
     padding: 14px 18px;
     display: flex;
     justify-content: center;
@@ -223,15 +234,15 @@
     text-decoration: none;
 }
 
-.dropdown-item:hover {
+.header-dropdown-item:hover {
     background: #f6f6f6;
 }
 
-.dropdown-item svg {
+.header-dropdown-item svg {
     opacity: 0.7;
 }
 
-.dropdown-item.logout {
+.header-dropdown-item.logout {
     color: #dc2626;
     border-top: 1px solid #eee;
 }
@@ -372,8 +383,9 @@
     .header-links{
         gap: 25px;
     }
-    .nav-link{
+    .header-nav-link{
         font-size: 17px;
+        padding: 8px 12px;
     }
     .btn-primary{
         padding: 15px 30px !important;
@@ -397,8 +409,9 @@
         gap: 24px;
     }
 
-    .nav-link {
+    .header-nav-link {
         font-size: 15px;
+        padding: 6px 10px;
     }
 
     .auto-login {

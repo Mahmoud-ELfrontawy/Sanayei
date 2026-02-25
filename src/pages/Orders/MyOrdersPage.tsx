@@ -196,7 +196,7 @@ function MyOrdersPage() {
         const config = statusConfig[order.status] || statusConfig.pending;
 
         return (
-            <div className="order-card">
+            <div className="orders-card-item">
                 {/* <button
                     onClick={() => handleDeleteRequest(order.id)}
                     className="trash-btn"
@@ -206,42 +206,42 @@ function MyOrdersPage() {
                 </button> */}
 
                 {/* Header: Service Name & Base Info */}
-                <div className="card-header">
-                    <div className="service-name-wrapper">
-                        <h3 className="service-name">{serviceName}</h3>
-                        <span className="order-date-label">
+                <div className="orders-card-header">
+                    <div className="orders-service-name-wrapper">
+                        <h3 className="orders-service-name">{serviceName}</h3>
+                        <span className="orders-date-label">
                             رقم الطلب: #{order.id}
                         </span>
                     </div>
-                    <div className={`order-status ${config.className}`}>
+                    <div className={`orders-status-badge ${config.className}`}>
                         {config.label}
                     </div>
                 </div>
 
                 {/* Body: Details */}
-                <div className="card-body">
-                    <div className="info-grid">
-                        <div className="info-item">
-                            <span className="info-label"><FaMapMarkerAlt /> الموقع</span>
-                            <span className="info-value">
+                <div className="orders-card-body">
+                    <div className="orders-info-grid">
+                        <div className="orders-info-item">
+                            <span className="orders-info-label"><FaMapMarkerAlt /> الموقع</span>
+                            <span className="orders-info-value">
                                 {order.governorate || order.city || order.province || order.address || "غير محدد"}
                             </span>
                         </div>
-                        <div className="info-item">
-                            <span className="info-label"><FaClock /> التوقيت المطلوب</span>
-                            <span className="info-value">
+                        <div className="orders-info-item">
+                            <span className="orders-info-label"><FaClock /> التوقيت المطلوب</span>
+                            <span className="orders-info-value">
                                 {order.date || "اليوم"} ، الساعة {order.time || "غير محدد"}
                             </span>
                         </div>
-                        <div className="info-item">
-                            <span className="info-label"><FaCalendarAlt /> تاريخ الطلب</span>
-                            <span className="info-value">
+                        <div className="orders-info-item">
+                            <span className="orders-info-label"><FaCalendarAlt /> تاريخ الطلب</span>
+                            <span className="orders-info-value">
                                 {order.created_at ? formatArabicDate(order.created_at) : "غير متاح"}
                             </span>
                         </div>
-                        <div className="info-item">
-                            <span className="info-label"><FaWallet /> التكلفة المتوقعة</span>
-                            <span className="info-value">
+                        <div className="orders-info-item">
+                            <span className="orders-info-label"><FaWallet /> التكلفة المتوقعة</span>
+                            <span className="orders-info-value">
                                 {order.price
                                     ? `${order.price} جنيه`
                                     : (order.craftsman?.price_range
@@ -251,21 +251,21 @@ function MyOrdersPage() {
                                 }
                             </span>
                         </div>
-                        <div className="info-item">
-                            <span className="info-label"><FaWallet /> طريقة الدفع</span>
-                            <span className="info-value">كاش</span>
+                        <div className="orders-info-item">
+                            <span className="orders-info-label"><FaWallet /> طريقة الدفع</span>
+                            <span className="orders-info-value">كاش</span>
                         </div>
-                        <div className="info-item">
-                            <span className="info-label"><FaUser /> {isCraftsman ? "العميل" : "الصنايعي"}</span>
+                        <div className="orders-info-item">
+                            <span className="orders-info-label"><FaUser /> {isCraftsman ? "العميل" : "الصنايعي"}</span>
                             {!isCraftsman && order.craftsman_id ? (
                                 <Link
                                     to={`/craftsman/${order.craftsman_id}`}
-                                    className="craftsman-name-link"
+                                    className="orders-craftsman-link"
                                 >
                                     {order.craftsman?.name || "صنايعي"}
                                 </Link>
                             ) : (
-                                <span className="info-value">
+                                <span className="orders-info-value">
                                     {isCraftsman ? (order.name || "عميل") : (order.craftsman?.name || "صنايعي")}
                                 </span>
                             )}
@@ -274,8 +274,8 @@ function MyOrdersPage() {
                 </div>
 
                 {/* Footer: Actions */}
-                <div className="card-footer">
-                    <div className="card-actions">
+                <div className="orders-card-footer">
+                    <div className="orders-card-actions">
                         {order.status === "accepted" && (
                             <>
                                 <button onClick={() => handleStartChat(order)} className="btn-premium btn-chat">
@@ -335,44 +335,44 @@ function MyOrdersPage() {
     };
 
     return (
-        <section className="orders-section">
-            <div className="orders-container">
-                <h1 className="orders-title">متابعة الطلبات</h1>
+        <section className="orders-page-section">
+            <div className="orders-page-container">
+                <h1 className="orders-page-title">متابعة الطلبات</h1>
 
-                <div className="tabs-container2">
+                <div className="orders-tabs-container">
                     <button
                         onClick={() => setActiveTab("all")}
-                        className={`tab-btn ${activeTab === "all" ? "active" : ""}`}
+                        className={`orders-tab-btn ${activeTab === "all" ? "active" : ""}`}
                     >
                         الكل ({stats.all})
                     </button>
                     <button
                         onClick={() => setActiveTab("pending")}
-                        className={`tab-btn ${activeTab === "pending" ? "active" : ""}`}
+                        className={`orders-tab-btn ${activeTab === "pending" ? "active" : ""}`}
                     >
                         قيد الانتظار ({stats.pending})
                     </button>
                     <button
                         onClick={() => setActiveTab("accepted")}
-                        className={`tab-btn ${activeTab === "accepted" ? "active" : ""}`}
+                        className={`orders-tab-btn ${activeTab === "accepted" ? "active" : ""}`}
                     >
                         المقبولة ({stats.accepted})
                     </button>
                     <button
                         onClick={() => setActiveTab("completed")}
-                        className={`tab-btn ${activeTab === "completed" ? "active" : ""}`}
+                        className={`orders-tab-btn ${activeTab === "completed" ? "active" : ""}`}
                     >
                         المكتملة ({stats.completed})
                     </button>
                     <button
                         onClick={() => setActiveTab("rejected")}
-                        className={`tab-btn ${activeTab === "rejected" ? "active" : ""}`}
+                        className={`orders-tab-btn ${activeTab === "rejected" ? "active" : ""}`}
                     >
                         الملغاة ({stats.rejected})
                     </button>
                 </div>
 
-                <div className="orders-list">
+                <div className="orders-page-list">
                     {loading ? (
                         <>
                             <OrderSkeleton />

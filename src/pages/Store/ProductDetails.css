@@ -28,6 +28,7 @@
 }
 
 .main-image-stage {
+    position: relative; /* ✅ Required for absolute positioned badges */
     width: 100%;
     max-height: 400px;
     aspect-ratio: 4 / 3;

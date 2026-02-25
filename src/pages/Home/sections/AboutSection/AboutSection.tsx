@@ -17,12 +17,21 @@ import "./AboutSection.css";
 const AboutSection: React.FC = () => {
 
     const navigate = useNavigate();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, userType } = useAuth();
 
     const handleRequestNow = () => {
         if (!isAuthenticated) {
             toast.info("من فضلك سجل دخولك أولًا 🔐");
             navigate("/login");
+            return;
+        }
+
+        if (userType === 'company' || userType === 'craftsman') {
+            toast.info(
+                userType === 'company'
+                    ? "عذراً، يجب التسجيل بحساب مستخدم عادي لطلب خدمات الصنايعية 🛠️"
+                    : "عذراً، لا يمكن للصنايعي طلب خدمة من صنايعي آخر بحسابه الحالي 👤"
+            );
             return;
         }
 

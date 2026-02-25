@@ -1,16 +1,16 @@
-.orders-section {
+.orders-page-section {
     background: #fdfdfd;
     padding: 60px 20px;
     direction: rtl;
     min-height: 100vh;
 }
 
-.orders-container {
+.orders-page-container {
     max-width: 1000px;
     margin: 0 auto;
 }
 
-.orders-title {
+.orders-page-title {
     font-size: 38px;
     font-weight: 900;
     color: #0f172a;
@@ -19,7 +19,7 @@
     padding-bottom: 15px;
 }
 
-.orders-title::after {
+.orders-page-title::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -33,7 +33,7 @@
 /* ================= TABS ================= */
 
 /* Tabs Container */
-.tabs-container2 {
+.orders-tabs-container {
     display: flex;
     justify-content: flex-start;
     gap: 12px;
@@ -44,42 +44,48 @@
     width: 100%;
 }
 
-.tab-btn {
-    min-width: 100px;
+.orders-tab-btn {
+    min-width: 120px;
     text-align: center;
-    background: #fff;
+    background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 10px 20px;
+    border-radius: 12px;
+    padding: 12px 24px;
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 600;
     color: #64748b;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
-.tab-btn:hover {
+.orders-tab-btn:hover {
     background-color: #f8fafc;
     border-color: #cbd5e1;
     color: #334155;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-.tab-btn.active {
+.orders-tab-btn.active {
+    background: var(--color-primary);
     border-color: var(--color-primary);
-    font-weight: 600;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    color: #ffffff;
+    font-weight: 700;
+    box-shadow: 0 8px 15px rgba(95, 168, 211, 0.25);
+    transform: translateY(-2px);
 }
 
 
 /* ================= CARD ================= */
 
-.orders-list {
+.orders-page-list {
     display: flex;
     flex-direction: column;
     gap: 24px;
 }
 
-.order-card {
+.orders-card-item {
     background: var(--color-bg-section);
     border-radius: 24px;
     padding: 0;
@@ -91,14 +97,14 @@
     position: relative;
 }
 
-.order-card:hover {
+.orders-card-item:hover {
     transform: translateY(-5px);
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
     border-color: #cbd5e1;
 }
 
 /* Card Header */
-.card-header {
+.orders-card-header {
     padding: 24px 30px;
     border-bottom: 1px dashed #e2e8f0;
     display: flex;
@@ -107,43 +113,43 @@
     background: #fafafb;
 }
 
-.service-name-wrapper {
+.orders-service-name-wrapper {
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
-.service-name {
+.orders-service-name {
     font-size: 28px;
     font-weight: 800;
     color: #1e293b;
 }
 
-.order-date-label {
+.orders-date-label {
     font-size: 15px;
     color: #94a3b8;
     font-weight: 500;
 }
 
 /* Card Body */
-.card-body {
+.orders-card-body {
     padding: 30px;
 }
 
 /* Info Grid */
-.info-grid {
+.orders-info-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 25px;
 }
 
-.info-item {
+.orders-info-item {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.info-label {
+.orders-info-label {
     font-size: 18px;
     font-weight: 700;
     color: #94a3b8;
@@ -154,7 +160,7 @@
     gap: 6px;
 }
 
-.info-value {
+.orders-info-value {
     font-size: 20px;
     font-weight: 700;
     color: #475569;
@@ -182,7 +188,7 @@
 }
 
 /* Craftsman Name Link */
-.craftsman-name-link {
+.orders-craftsman-link {
     font-size: 20px;
     font-weight: 700;
     color: var(--color-primary);
@@ -193,13 +199,14 @@
     padding: 8px 16px;
     background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
     border-radius: 12px;
+    width: fit-content; /* ✅ Take only content space as requested */
     border: 2px solid transparent;
     transition: all var(--transition-main);
     position: relative;
     overflow: hidden;
 }
 
-.craftsman-name-link::before {
+.orders-craftsman-link::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -209,24 +216,24 @@
     z-index: -1;
 }
 
-.craftsman-name-link:hover {
+.orders-craftsman-link:hover {
     color: #ffffff;
     border-color: var(--color-primary);
     transform: translateY(-2px);
     box-shadow: 0 8px 16px -4px rgba(95, 168, 211, 0.4);
 }
 
-.craftsman-name-link:hover::before {
+.orders-craftsman-link:hover::before {
     opacity: 1;
 }
 
-.craftsman-name-link:active {
+.orders-craftsman-link:active {
     transform: translateY(0);
 }
 /* =============================================
    🎯 Order Footer — Actions
    ============================================= */
-.card-footer {
+.orders-card-footer {
     padding: 20px 30px;
     border-top: 1px solid #e2e8f0;
     display: flex;
@@ -237,7 +244,7 @@
 /* =============================================
    📌 Status Badges — Chip with dot indicator
    ============================================= */
-.order-status {
+.orders-status-badge {
     padding: 8px 16px;
     border-radius: 100px;
     font-size: 14px;
@@ -251,7 +258,7 @@
 }
 
 /* Dot before status text */
-.order-status::before {
+.orders-status-badge::before {
     content: '';
     width: 8px;
     height: 8px;
@@ -259,43 +266,43 @@
     flex-shrink: 0;
 }
 
-.order-status.pending {
+.orders-status-badge.pending {
     background: #fffbeb;
     color: #b45309;
     border: 1.5px solid var(--color-warning);
 }
-.order-status.pending::before { background: var(--color-warning); }
+.orders-status-badge.pending::before { background: var(--color-warning); }
 
-.order-status.accepted {
+.orders-status-badge.accepted {
     background: #f0fdf4;
     color: #15803d;
     border: 1.5px solid var(--color-success);
 }
-.order-status.accepted::before { background: var(--color-success); }
+.orders-status-badge.accepted::before { background: var(--color-success); }
 
-.order-status.completed {
+.orders-status-badge.completed {
     background: #eff6ff;
     color: var(--color-primary);
     border: 1.5px solid var(--color-primary);
 }
-.order-status.completed::before { background: var(--color-primary); }
+.orders-status-badge.completed::before { background: var(--color-primary); }
 
-.order-status.rejected {
+.orders-status-badge.rejected {
     background: #fef2f2;
     color: #b91c1c;
     border: 1.5px solid var(--color-error);
 }
-.order-status.rejected::before { background: var(--color-error); }
+.orders-status-badge.rejected::before { background: var(--color-error); }
 
 /* =============================================
    🎬 Action Buttons — Premium style
    ============================================= */
-.card-actions {
+.orders-card-actions {
     display: flex;
+    flex-direction: column; /* ✅ Stack buttons vertically as requested */
     align-items: center;
     gap: 12px;
     width: 100%;
-    justify-content: space-between; 
 }
 
 .status-pending-actions {
@@ -450,56 +457,57 @@
 }
 
 @media (max-width: 768px) {
-    .orders-section {
+    .orders-page-section {
         padding: 40px 15px;
     }
 
-    .orders-title {
+    .orders-page-title {
         font-size: 28px;
         margin-bottom: 25px;
     }
 
-    .tabs-container2 {
+    .orders-tabs-container {
         gap: 8px;
         row-gap: 12px;
         margin-bottom: 1.5rem;
     }
 
-    .tab-btn {
+    .orders-tab-btn {
         min-width: calc(33.33% - 8px);
         padding: 8px 10px;
         font-size: 0.85rem;
+        border-radius: 10px;
         flex-grow: 1;
     }
 
-    .card-header {
+    .orders-card-header {
         padding: 20px;
     }
 
-    .service-name {
+    .orders-service-name {
         font-size: 22px;
     }
 
-    .card-body {
+    .orders-card-body {
         padding: 20px;
         grid-template-columns: 1fr;
         gap: 20px;
     }
 
-    .info-grid {
+    .orders-info-grid {
         grid-template-columns: 1fr;
         gap: 15px;
     }
 
-    .info-label {
+    .orders-info-label {
         font-size: 16px;
     }
 
-    .info-value {
+    .orders-info-value {
         font-size: 18px;
     }
 
-    .card-footer {
+    .orders-card-footer {
         padding: 15px 20px;
     }
 
@@ -516,7 +524,7 @@
 }
 
 @media (max-width: 480px) {
-    .tab-btn {
+    .orders-tab-btn {
         min-width: calc(50% - 8px);
     }
 }

@@ -24,7 +24,7 @@ const SORT_OPTIONS = [
 ];
 
 const StoreProductList: React.FC<StoreProductListProps> = ({ companyId, onBack, onProductClick, onCartCountChange }) => {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, userType } = useAuth();
 
     /* ── Products ── */
     const [products, setProducts] = useState<any[]>([]);
@@ -73,6 +73,12 @@ const StoreProductList: React.FC<StoreProductListProps> = ({ companyId, onBack, 
     const handleAddToCart = async (e: React.MouseEvent, productId: number) => {
         e.stopPropagation();
         if (!isAuthenticated) { toast.error("يجب تسجيل الدخول أولاً"); return; }
+
+        if (userType === 'company') {
+            toast.info("عذراً، يجب التسجيل بحساب مستخدم عادي أو صنايعي لإتمام عمليات الشراء من المتجر 🛒");
+            return;
+        }
+
         try {
             await addToCart(productId, 1);
             toast.success("تم إضافة المنتج للسلة ✅");
