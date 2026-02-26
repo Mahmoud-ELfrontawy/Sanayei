@@ -8,6 +8,36 @@ body {
     text-align: right;
     font-family: "Zain", sans-serif;
     font-style:normal;
+    cursor: url("../images/custom-cursor.svg"), auto;
+}
+
+/* =========================================
+   Professional "Calm" Scrollbar
+   ========================================= */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-bg-section);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(95, 168, 211, 0.3); /* --color-primary with low opacity */
+    border-radius: 20px;
+    border: 2px solid var(--color-bg-section);
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(95, 168, 211, 0.6);
+}
+
+/* For Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(95, 168, 211, 0.3) var(--color-bg-section);
 }
 
 button {

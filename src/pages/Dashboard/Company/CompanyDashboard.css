@@ -35,6 +35,9 @@
 }
 
 .header-actions .manage-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
     color: #fff;

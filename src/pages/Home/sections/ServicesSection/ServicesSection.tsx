@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 
 import { getServices } from "../../../../Api/services.api";
 import ServiceCard from "../../../../components/common/ServiceCard/ServiceCard";
@@ -31,6 +32,29 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ limit }) => {
         ? services.slice(0, limit)
         : services;
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.15,
+                delayChildren: 0.4
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 30 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.6,
+                ease: "easeOut"
+            }
+        }
+    };
+
     return (
         <section className="services-section" aria-labelledby="services-title">
             <div className="services-container">
@@ -52,27 +76,40 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ limit }) => {
 
                 {/* Services */}
                 {!loading && !error && (
-                    <div className="services-grid">
+                    <motion.div
+                        className="services-grid"
+                        variants={containerVariants}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, amount: 0.5 }}
+                    >
                         {visibleServices.map((service) => (
-                            <ServiceCard
-                                key={service.id}
-                                service={service}
-                                onRequestClick={handleServiceClick}
-                            />
+                            <motion.div key={service.id} variants={itemVariants}>
+                                <ServiceCard
+                                    service={service}
+                                    onRequestClick={handleServiceClick}
+                                />
+                            </motion.div>
                         ))}
-                    </div>
+                    </motion.div>
                 )}
 
                 {/* CTA */}
                 {limit && !loading && !error && (
-                    <div className="services-cta">
+                    <motion.div
+                        className="services-cta"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.5 }}
+                    >
                         <Link
                             to="/services"
                             className="btn-primary-service"
                         >
                             عرض كل الخدمات
                         </Link>
-                    </div>
+                    </motion.div>
                 )}
             </div>
         </section>

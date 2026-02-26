@@ -1,5 +1,5 @@
-// AboutSection.tsx
 import React from "react";
+import { motion } from "framer-motion";
 import { FiCheckCircle, FiClock } from "react-icons/fi";
 import { FaArrowLeft } from "react-icons/fa6";
 
@@ -11,11 +11,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../hooks/useAuth";
 import { toast } from "react-toastify";
 
-
 import "./AboutSection.css";
 
 const AboutSection: React.FC = () => {
-
     const navigate = useNavigate();
     const { isAuthenticated, userType } = useAuth();
 
@@ -38,11 +36,33 @@ const AboutSection: React.FC = () => {
         navigate("/choose");
     };
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.2
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 }
+    };
+
     return (
         <section className="about-section" aria-labelledby="about-title">
             <div className="about-container">
-
-                <div className="about-media" aria-hidden="true">
+                {/* Media - Sliding from Left (Negative X) */}
+                <motion.div
+                    className="about-media"
+                    aria-hidden="true"
+                    initial={{ opacity: 0, x: -100 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, amount: 0.5 }}
+                    transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
+                >
                     <div className="media-frame">
                         <img
                             src={bigImg}
@@ -51,7 +71,11 @@ const AboutSection: React.FC = () => {
                             loading="lazy"
                             decoding="async"
                         />
-                        <img
+                        <motion.img
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            whileInView={{ scale: 1, opacity: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.5, duration: 0.5 }}
                             src={smallImg}
                             alt=""
                             className="media-img media-img--small"
@@ -67,10 +91,16 @@ const AboutSection: React.FC = () => {
                         />
                         <div className="media-deco" />
                     </div>
-                </div>
+                </motion.div>
 
-
-                <div className="about-content">
+                {/* Content - Sliding from Right (Positive X) */}
+                <motion.div
+                    className="about-content"
+                    initial={{ opacity: 0, x: 100 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, amount: 0.5 }}
+                    transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
+                >
                     <p className="about-eyebrow">اعرف عنا</p>
 
                     <h2 id="about-title" className="about-title">
@@ -84,8 +114,14 @@ const AboutSection: React.FC = () => {
                         مع حجز سهل ومتابعة دقيقة لحد انتهاء المهمة.
                     </p>
 
-                    <ul className="about-features">
-                        <li>
+                    <motion.ul
+                        className="about-features"
+                        variants={containerVariants}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                    >
+                        <motion.li variants={itemVariants}>
                             <span className="icon">
                                 <FiCheckCircle />
                             </span>
@@ -96,9 +132,9 @@ const AboutSection: React.FC = () => {
                                     في الوطن العربي بجودة عالية وتجربة استخدام سهلة وآمنة.
                                 </p>
                             </div>
-                        </li>
+                        </motion.li>
 
-                        <li>
+                        <motion.li variants={itemVariants}>
                             <span className="icon">
                                 <FiClock />
                             </span>
@@ -109,10 +145,16 @@ const AboutSection: React.FC = () => {
                                     وجودة مضمونة.
                                 </p>
                             </div>
-                        </li>
-                    </ul>
+                        </motion.li>
+                    </motion.ul>
 
-                    <div className="about-cta mt-5">
+                    <motion.div
+                        className="about-cta mt-5"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.8 }}
+                    >
                         <button
                             type="button"
                             onClick={handleRequestNow}
@@ -121,10 +163,8 @@ const AboutSection: React.FC = () => {
                             اطلب الآن
                             <FaArrowLeft />
                         </button>
-
-                    </div>
-                </div>
-
+                    </motion.div>
+                </motion.div>
             </div>
         </section>
     );
