@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaUser, FaSignOutAlt, FaThLarge, FaBox, FaRegClock, FaCommentDots, FaBell } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { formatTimeAgo } from "../../../utils/timeAgo";
+import { getAvatarUrl } from "../../../utils/imageUrl";
 
 import { NAV_LINKS, type NavLinkItem } from "../../../constants/header";
 import logo from "../../../assets/images/final logo.png";
@@ -240,7 +241,13 @@ const Header: React.FC = () => {
               <div className="header-avatar-dropdown" ref={dropdownRef}>
                 <button className="profile-btn" onClick={toggleDropdown}>
                   <div className="avatar-wrapper-profile">
-                    <img src={user?.avatar || "/avatar.png"} alt="profile" />
+                    <img
+                      src={getAvatarUrl(user?.avatar, user?.name)}
+                      alt="profile"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = getAvatarUrl(null, user?.name);
+                      }}
+                    />
                     <span className="online-dot" />
                   </div>
                 </button>

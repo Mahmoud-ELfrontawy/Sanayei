@@ -2,7 +2,7 @@ const buildUiAvatar = (name?: string) => {
     const safeName = name && name.trim().length ? name : "User";
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(
         safeName
-    )}&background=FF8031&color=fff&bold=true`;
+    )}&background=5FA8D3&color=fff&bold=true`;
 };
 
 export const getFullImageUrl = (path?: string | null) => {

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { getFullImageUrl } from "../../../utils/imageUrl";
+import { getFullImageUrl, getAvatarUrl } from "../../../utils/imageUrl";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
-import defaultAvatar from "../../../assets/images/avatar1.jfif";
+// Removed static defaultAvatar import
 import MapPicker from "../../../components/MapPicker";
 import "./Profile.css";
 import { FaCamera } from "react-icons/fa6";
@@ -48,7 +48,7 @@ const ProfileFormBase = <T extends BaseProfileData>({
     data, setData, imageFile, setImageFile, onSave, onDelete, loading, isCraftsman = false, governorates
 }: Props<T>) => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-    const avatarSrc = imageFile ? URL.createObjectURL(imageFile) : data.avatar || defaultAvatar;
+    const avatarSrc = imageFile ? URL.createObjectURL(imageFile) : getAvatarUrl(data.avatar, data.name);
 
     const toggleWorkDay = (day: string) => {
         const days = data.work_days || [];
@@ -73,6 +73,11 @@ const ProfileFormBase = <T extends BaseProfileData>({
                             src={avatarSrc}
                             alt="Profile"
                             className="profile-preview-img"
+                            onError={(e) => {
+                                if (!imageFile) {
+                                    (e.currentTarget as HTMLImageElement).src = getAvatarUrl(null, data.name);
+                                }
+                            }}
                         />
                         <div className="camera-icon-badge">
                             <FaCamera size={16} />
@@ -118,7 +123,7 @@ const ProfileFormBase = <T extends BaseProfileData>({
                         {/* اختيار المحافظة */}
                         {governorates && (
                             <div className="form-group">
-                                
+
                                 <div className="input-line">
                                     <select
                                         value={data.governorate_id || ""}

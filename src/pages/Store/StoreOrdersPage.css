@@ -118,6 +118,8 @@
 }
 
 .btn-details-mini {
+    padding: 10px;
+    border-radius: 8px;
     background: var(--color-bg-section);
     color: var(--color-text-secondary);
     cursor: pointer;

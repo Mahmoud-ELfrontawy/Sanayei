@@ -177,13 +177,26 @@
 }
 
 .craftsmen-section__title {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--color-text-main);
-    border-bottom: 2px solid var(--color-border);
-    padding-bottom: 16px;
-    margin-bottom: 10px;
+    font-size: 32px;
+    font-weight: 800;
+    color: #5FA8D3;
+    padding-bottom: 12px;
+    margin: 40px auto 20px;
     text-align: center;
+    position: relative;
+    width: fit-content;
+}
+
+.craftsmen-section__title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: #5FA8D3;
+    border-radius: 10px;
 }
 
 .craftsmen-section__empty {

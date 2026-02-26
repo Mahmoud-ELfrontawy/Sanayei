@@ -9,7 +9,10 @@ import {
     FaUser,
     FaBoxOpen,
     FaShoppingCart,
-    FaLock
+    FaLock,
+    FaChevronRight,
+    FaChevronLeft,
+    FaChartLine
 } from "react-icons/fa";
 
 import { toast } from "react-toastify";
@@ -17,18 +20,11 @@ import { useAuth } from "../../../hooks/useAuth";
 import { useNotifications } from "../../../context/NotificationContext";
 import { useUserChat } from "../../../context/UserChatProvider";
 import { useCraftsmanChat } from "../../../context/CraftsmanChatProvider";
+import { getAvatarUrl } from "../../../utils/imageUrl";
 
 import "./Sidebar.css";
 
-/* ===== Helper: Avatar Fallback ===== */
-const buildAvatar = (avatar?: string | null, name?: string | null) => {
-    if (avatar && (avatar.startsWith("http") || avatar.startsWith("/"))) return avatar;
 
-    const safeName = name || "User";
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(
-        safeName
-    )}&background=FF8031&color=fff&bold=true`;
-};
 
 interface SidebarProps {
     isOpen?: boolean;
@@ -39,6 +35,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const { user, logout, userType } = useAuth();
     const isBlocked = user?.status === 'rejected';
     const { unreadCount } = useNotifications();
+
+    const [isCollapsed, setIsCollapsed] = useState(() => {
+        return localStorage.getItem("sidebarCollapsed") === "true";
+    });
+
+    const toggleSidebar = () => {
+        setIsCollapsed((prev) => {
+            const newState = !prev;
+            localStorage.setItem("sidebarCollapsed", String(newState));
+            return newState;
+        });
+    };
 
     // 🗑️ Removed localStorage.getItem("userType") to use context value
 
@@ -98,7 +106,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             badge: unreadCount,
             hasUnread: unreadCount > 0
         },
-        
+
         // Company-specific links
         ...(userType === "company" ? [
             {
@@ -111,25 +119,47 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 path: "/dashboard/company/orders",
                 icon: <FaShoppingCart size={20} />
             },
-        ] : [
+        ] : []),
+
+        // Craftsman-specific links
+        ...(userType === "craftsman" ? [
+            {
+                title: "الإحصائيات",
+                path: "/dashboard/craftsman/statistics",
+                icon: <FaChartLine size={20} />
+            },
+        ] : []),
+
+        ...(userType !== "company" ? [
             {
                 title: "طلباتي",
                 path: "/store-orders",
                 icon: <FaBoxOpen size={20} />
             },
-        ]),
+        ] : []),
     ];
 
     return (
-        <aside className={`dashboard-sidebar ${isOpen ? "open" : ""}`}>
+        <aside className={`dashboard-sidebar ${isOpen ? "open" : ""} ${isCollapsed ? "collapsed" : ""}`}>
             {/* ===== Header ===== */}
             <div className="sidebar-header">
+                <button
+                    className="sidebar-collapse-btn"
+                    onClick={toggleSidebar}
+                    aria-label="Toggle Sidebar"
+                    title={isCollapsed ? "توسيع القائمة" : "طي القائمة"}
+                >
+                    {isCollapsed ? <FaChevronLeft size={12} /> : <FaChevronRight size={12} />}
+                </button>
                 <div className="user-info">
                     <div className="avatar-wrapper">
                         <img
-                            src={buildAvatar(user?.avatar, user?.name)}
+                            src={getAvatarUrl(user?.avatar, user?.name)}
                             alt={user?.name || "User"}
                             className="sidebar-avatar"
+                            onError={(e) => {
+                                (e.currentTarget as HTMLImageElement).src = getAvatarUrl(null, user?.name);
+                            }}
                         />
                     </div>
 
@@ -169,6 +199,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                                 to={link.path}
                                 end={link.path === "/dashboard"}
                                 onClick={onClose}
+                                title={isCollapsed ? link.title : undefined}
                                 className={({ isActive }) =>
                                     `nav-link ${isActive ? "active" : ""} ${link.hasUnread ? "has-unread" : ""
                                     } ${link.path.includes("messages") && isNewMessage
@@ -205,7 +236,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                         window.location.href = "/";
                     }, 1000);
                     onClose?.();
-                }} className="logout-btn">
+                }} className="logout-btn" title={isCollapsed ? "تسجيل الخروج" : undefined}>
                     <FaSignOutAlt size={20} />
                     <span>تسجيل الخروج</span>
                 </button>

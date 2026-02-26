@@ -1,0 +1,355 @@
+.admin-stats-page {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+.stats-header {
+    margin-bottom: 1rem;
+}
+
+.stats-header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--color-text-accent);
+    margin: 0;
+}
+
+.stats-header p {
+    font-size: 16px;
+    color: var(--color-text-muted);
+    margin-top: 0.5rem;
+}
+
+/* Overview Cards */
+.admin-stats-grid-top {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.admin-stat-card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.admin-stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon-box {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.stat-icon-box.users { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+.stat-icon-box.craftsmen { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+.stat-icon-box.companies { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
+.stat-icon-box.orders { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+.stat-icon-box.products { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+
+.stat-info span {
+    font-size: 14px;
+    color: var(--color-text-muted);
+    display: block;
+    margin-bottom: 4px;
+}
+
+.stat-info h3 {
+    font-size: 28px;
+    font-weight: 800;
+    margin: 0;
+    color: var(--color-text-accent);
+}
+
+/* Charts Layout */
+.admin-charts-main-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.admin-chart-item {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 20px;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-chart-item.full-width {
+    grid-column: span 2;
+}
+
+.admin-chart-item h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-accent);
+}
+
+.admin-chart-item p {
+    font-size: 14px;
+    color: var(--color-text-muted);
+    margin-bottom: 2rem;
+}
+
+.admin-chart-container-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.admin-chart-container {
+    height: 400px;
+    position: relative;
+    width: 100%;
+}
+
+.admin-chart-container-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Custom Legend for Admin Pies */
+.admin-custom-legend {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding-top: 1.5rem;
+}
+
+.admin-legend-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.admin-legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.admin-legend-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+/* Loading/Empty States */
+.admin-chart-loading, .admin-chart-empty {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    background: #fcfdfe;
+    border: 1px dashed var(--color-border);
+    border-radius: 12px;
+}
+
+@media (max-width: 1024px) {
+    .admin-charts-main-grid {
+        grid-template-columns: 1fr;
+    }
+    .admin-chart-item.full-width {
+        grid-column: span 1;
+    }
+}
+@media (max-width: 768px) {
+    .admin-stats-page { padding: 1rem; }
+}
+
+/* ── Live Feed Section ── */
+.admin-live-feed {
+    margin-top: 0;
+}
+
+.admin-live-feed-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.admin-live-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.admin-live-title h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-text-accent);
+}
+
+.admin-live-bell {
+    color: var(--color-primary);
+    font-size: 20px;
+    animation: bell-ring 2s ease-in-out infinite;
+}
+
+@keyframes bell-ring {
+    0%, 100% { transform: rotate(0deg); }
+    10% { transform: rotate(-15deg); }
+    20% { transform: rotate(15deg); }
+    30% { transform: rotate(0deg); }
+}
+
+.admin-live-badge {
+    background: linear-gradient(135deg, var(--color-primary), #6366f1);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 50px;
+    animation: pulse-badge 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-badge {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.admin-live-mark-read {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-primary);
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.admin-live-mark-read:hover {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+/* Notifications List */
+.admin-notifications-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.admin-notif-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    border: 1px solid var(--color-border);
+    background: #fafbfc;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.admin-notif-row.unread {
+    background: #f0f7ff;
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.admin-notif-row:hover {
+    transform: translateX(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+}
+
+.admin-notif-row-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.admin-notif-row-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.admin-notif-row-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-text-accent);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.admin-notif-row-msg {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.admin-notif-row-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.admin-notif-row-tag {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 50px;
+    white-space: nowrap;
+}
+
+.admin-notif-row-time {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+}
+
+.admin-notif-unread-dot {
+    font-size: 8px;
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    animation: pulse-badge 1.5s ease-in-out infinite;
+}

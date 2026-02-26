@@ -14,7 +14,8 @@ import {
     FaBell,
     FaEdit,
     FaBuilding,
-    FaBoxOpen
+    FaBoxOpen,
+    FaChartBar
 } from 'react-icons/fa';
 import { useAuth } from '../hooks/useAuth';
 import { useAdminNotifications } from '../context/AdminNotificationContext';
@@ -65,6 +66,7 @@ const AdminLayout = () => {
 
     const menuItems = [
         { path: '/admin/dashboard', label: 'لوحة التحكم', icon: FaThLarge },
+        { path: '/admin/statistics', label: 'الإحصائيات', icon: FaChartBar },
         { path: '/admin/users', label: 'المستخدمين', icon: FaUsers },
         { path: '/admin/craftsmen', label: 'الصنايعية', icon: FaHardHat },
         { path: '/admin/companies', label: 'الشركات', icon: FaBuilding },

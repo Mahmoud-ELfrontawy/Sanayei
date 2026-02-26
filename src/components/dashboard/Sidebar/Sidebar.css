@@ -9,13 +9,53 @@
     top: 0;
     right: 0;
     z-index: 100;
-    transition: var(--transition-main);
+    transition: width 0.3s ease, var(--transition-main);
+}
+
+.dashboard-sidebar.collapsed {
+    width: 80px;
 }
 
 .sidebar-header {
     padding: 40px 20px;
     text-align: center;
     border-bottom: 1px solid var(--color-divider);
+    position: relative;
+    transition: padding 0.3s ease;
+}
+
+.dashboard-sidebar.collapsed .sidebar-header {
+    padding: 60px 10px 20px 10px;
+}
+
+.sidebar-collapse-btn {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: var(--color-bg-section);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s ease;
+}
+
+.sidebar-collapse-btn:hover {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    background-color: rgba(95, 168, 211, 0.1);
+}
+
+.dashboard-sidebar.collapsed .sidebar-collapse-btn {
+    left: 50%;
+    transform: translateX(-50%);
+    top: 15px;
 }
 
 .user-info {
@@ -33,6 +73,13 @@
     overflow: hidden;
     border: 3px solid var(--color-bg-section);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.dashboard-sidebar.collapsed .avatar-wrapper {
+    width: 45px;
+    height: 45px;
+    border-width: 2px;
 }
 
 .sidebar-avatar {
@@ -46,6 +93,17 @@
     font-weight: 600;
     color: var(--color-text-main);
     margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: opacity 0.3s ease, height 0.3s ease;
+}
+
+.dashboard-sidebar.collapsed .user-name,
+.dashboard-sidebar.collapsed .user-role-badge,
+.dashboard-sidebar.collapsed .blocked-status-badge,
+.dashboard-sidebar.collapsed .user-profile-btn {
+    display: none;
 }
 
 .user-meta {
@@ -148,8 +206,22 @@
     color: var(--color-text-secondary);
     text-decoration: none;
     font-weight: 500;
-    transition: var(--transition-fast);
+    transition: all 0.3s ease;
     border-right: 4px solid transparent;
+    position: relative;
+}
+
+.dashboard-sidebar.collapsed .nav-link {
+    padding: 12px;
+    justify-content: center;
+}
+
+.dashboard-sidebar.collapsed .link-title {
+    display: none;
+}
+
+.dashboard-sidebar.collapsed .link-icon {
+    font-size: 1.2rem;
 }
 
 .nav-link:hover {
@@ -217,13 +289,24 @@
     box-shadow: 0 0 5px rgba(239, 68, 68, 0.4);
 }
 
+.dashboard-sidebar.collapsed .sidebar-badge {
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    margin: 0;
+    padding: 2px 4px;
+    font-size: 9px;
+    min-width: 18px;
+    text-align: center;
+}
+
 .nav-link.has-unread .link-icon {
     position: relative;
 }
 .logout-btn{
     padding: 14px 18px;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     gap: 10px;
     width: 100%;
     background: transparent;
@@ -233,6 +316,20 @@
     cursor: pointer;
     text-decoration: none;
     color: #dc2626;
+    transition: all 0.3s ease;
+}
+
+.dashboard-sidebar.collapsed .logout-btn {
+    justify-content: center;
+    padding: 14px 0;
+}
+
+.dashboard-sidebar.collapsed .logout-btn span {
+    display: none;
+}
+
+.dashboard-sidebar.collapsed .logout-btn svg {
+    margin-right: 4px;
 }
 
 /* RTL Support is inherent as Sanayei is RTL */

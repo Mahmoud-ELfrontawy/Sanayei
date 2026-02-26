@@ -90,13 +90,13 @@
 
 .avatar-wrapper-profile {
     position: relative;
-    width: 44px;
-    height: 44px;
+    width: 50px;
+    height: 50px;
 }
 
 .avatar-wrapper-profile img {
-    width: 44px;
-    height: 44px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     object-fit: cover;
     border: 1px solid rgba(0,0,0,0.05); /* Softer border */
@@ -107,8 +107,8 @@
     position: absolute;
     bottom: -1px;
     right: -1px;
-    width: 14px;
-    height: 14px;
+    width: 15px;
+    height: 15px;
     background-color: #22c55e;
     border-radius: 50%;
     border: 2px solid #fff;

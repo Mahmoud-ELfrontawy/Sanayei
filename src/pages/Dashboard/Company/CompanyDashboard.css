@@ -130,26 +130,76 @@
 
 .chart-item {
     background: #fff;
-    padding: 2rem;
+    padding: 2.5rem;
     border-radius: var(--radius-card);
     border: 1px solid var(--color-border);
     box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .chart-item h3 {
     font-size: 22px;
     font-weight: 800;
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
     color: var(--color-text-accent);
 }
 
-.chart-placeholder {
-    height: 250px;
+.chart-container-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 2rem;
+}
+
+.chart-container {
+    flex: 1;
+    min-height: 400px;
+    position: relative;
+    width: 100%;
+}
+
+.custom-legend {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 3rem;
+    padding-bottom: 1rem;
+}
+
+.legend-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    min-width: 80px;
+}
+
+.legend-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.legend-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+}
+
+.chart-loading, .chart-empty {
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--color-bg-section);
+    font-size: 16px;
+    color: var(--color-text-muted);
+    background: #f8fafc;
     border-radius: var(--radius-sm);
+    border: 1px dashed var(--color-border);
 }
 
 /* 📱 Responsive */

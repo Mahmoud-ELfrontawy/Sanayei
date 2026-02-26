@@ -1,5 +1,6 @@
 import React from "react";
 import { useCraftsmanChat } from "../../../context/CraftsmanChatProvider";
+import { getAvatarUrl } from "../../../utils/imageUrl";
 
 const CraftsmanChatList: React.FC = () => {
     const { contacts, activeChat, setActiveChat } = useCraftsmanChat();
@@ -24,9 +25,12 @@ const CraftsmanChatList: React.FC = () => {
                             onClick={() => setActiveChat(c)}
                         >
                             <img
-                                src={c.avatar || "/default-avatar.png"}
+                                src={getAvatarUrl(c.avatar, c.name)}
                                 alt={c.name}
                                 className="contact-avatar"
+                                onError={(e) => {
+                                    (e.currentTarget as HTMLImageElement).src = getAvatarUrl(null, c.name);
+                                }}
                             />
 
                             <div className="contact-info">

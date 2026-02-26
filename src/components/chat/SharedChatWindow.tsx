@@ -9,7 +9,7 @@ import { type EmojiClickData } from "emoji-picker-react";
 
 // Lazy load EmojiPicker to improve performance
 const EmojiPicker = lazy(() => import("emoji-picker-react"));
-import { getFullImageUrl } from "../../utils/imageUrl";
+import { getFullImageUrl, getAvatarUrl } from "../../utils/imageUrl";
 import { toast } from "react-toastify";
 import "./Chat.css";
 
@@ -42,12 +42,7 @@ interface Props {
 
 /* ================= Helpers ================= */
 
-const buildFallbackAvatar = (name?: string) => {
-    const safeName = name && name.trim().length ? name : "User";
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(
-        safeName
-    )}&background=FF8031&color=fff&bold=true`;
-};
+
 
 /* ================= Component ================= */
 
@@ -243,8 +238,7 @@ const SharedChatWindow: React.FC<Props> = ({
         );
     }
 
-    const avatarSrc =
-        activeChat.avatar || buildFallbackAvatar(activeChat.name);
+    const avatarSrc = getAvatarUrl(activeChat.avatar, activeChat.name);
 
     return (
         <div className="chat-window">
@@ -264,6 +258,9 @@ const SharedChatWindow: React.FC<Props> = ({
                                     src={avatarSrc}
                                     alt={activeChat.name}
                                     className="contact-avatar"
+                                    onError={(e) => {
+                                        (e.currentTarget as HTMLImageElement).src = getAvatarUrl(null, activeChat.name);
+                                    }}
                                 />
                             </div>
                             <h4>{activeChat.name}</h4>
@@ -275,6 +272,9 @@ const SharedChatWindow: React.FC<Props> = ({
                                     src={avatarSrc}
                                     alt={activeChat.name}
                                     className="contact-avatar"
+                                    onError={(e) => {
+                                        (e.currentTarget as HTMLImageElement).src = getAvatarUrl(null, activeChat.name);
+                                    }}
                                 />
                             </div>
                             <h4>{activeChat.name}</h4>

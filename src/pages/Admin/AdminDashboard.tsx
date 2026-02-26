@@ -1,11 +1,12 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { FaUsers, FaHardHat, FaRegFileAlt, FaDollarSign, FaBell, FaUser, FaTools, FaMapMarkerAlt, FaTags, FaCommentAlt, FaBoxOpen } from 'react-icons/fa';
+import { FaUsers, FaHardHat, FaRegFileAlt, FaDollarSign, FaBell, FaUser, FaTools, FaMapMarkerAlt, FaTags, FaCommentAlt, FaBoxOpen, FaStar, FaCircle, FaFileAlt } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { adminApi } from '../../Api/admin/admin.api';
 import { adminUsersApi } from '../../Api/admin/adminUsers.api';
 import { adminCraftsmenApi } from '../../Api/admin/adminCraftsmen.api';
-import { adminReviewsApi } from '../../Api/admin/adminReviews.api';
+import { useAdminNotifications } from '../../context/AdminNotificationContext';
+import { formatTimeAgo } from '../../utils/timeAgo';
 import './AdminDashboard.css';
 
 interface DashboardStats {
@@ -16,20 +17,10 @@ interface DashboardStats {
     total_reviews: number;
 }
 
-interface ActivityItem {
-    id: number;
-    type: 'user' | 'craftsman' | 'review';
-    message: string;
-    time: string;
-    color: string;
-    icon: string;
-}
-
 const AdminDashboard = () => {
+    const { notifications, unreadCount, markAllAsRead } = useAdminNotifications();
     const [stats, setStats] = useState<DashboardStats | null>(null);
     const [loading, setLoading] = useState(true);
-    const [activity, setActivity] = useState<ActivityItem[]>([]);
-    const [activityLoading, setActivityLoading] = useState(true);
 
     /* ── Fetch Dashboard Stats ─────────────────────── */
     const fetchStats = useCallback(async () => {
@@ -58,72 +49,23 @@ const AdminDashboard = () => {
         }
     }, []);
 
-    /* ── Build Live Activity Feed ──────────────────── */
-    const fetchActivity = useCallback(async () => {
-        setActivityLoading(true);
-        const items: ActivityItem[] = [];
-        let id = 1;
-
-        try {
-            const res = await adminUsersApi.getAllUsers({ page: 1 });
-            const users: any[] = res.data?.data || res.data || [];
-            users.slice(0, 5).forEach((u: any) => {
-                items.push({
-                    id: id++,
-                    type: 'user',
-                    message: `مستخدم جديد: ${u.name || u.email || 'مجهول'}`,
-                    time: u.created_at ? new Date(u.created_at).toLocaleString('ar-EG') : '—',
-                    color: '#3b82f6',
-                    icon: '👤',
-                });
-            });
-        } catch { /* silent */ }
-
-        try {
-            const res = await adminCraftsmenApi.getAllCraftsmen({ page: 1 });
-            const craftsmen: any[] = res.data?.data || res.data || [];
-            craftsmen.slice(0, 5).forEach((c: any) => {
-                items.push({
-                    id: id++,
-                    type: 'craftsman',
-                    message: `صنايعي جديد: ${c.name || 'مجهول'} — ${c.service?.name || ''}`,
-                    time: c.created_at ? new Date(c.created_at).toLocaleString('ar-EG') : '—',
-                    color: '#f59e0b',
-                    icon: '🔧',
-                });
-            });
-        } catch { /* silent */ }
-
-        try {
-            const res = await adminReviewsApi.getAllReviews();
-            const reviews: any[] = res.data?.data || res.data || [];
-            reviews.slice(0, 5).forEach((r: any) => {
-                items.push({
-                    id: id++,
-                    type: 'review',
-                    message: `تقييم جديد ⭐${r.rating} من ${r.user?.name || 'مستخدم'} للصنايعي ${r.craftsman?.name || '—'}`,
-                    time: r.created_at ? new Date(r.created_at).toLocaleString('ar-EG') : '—',
-                    color: '#10b981',
-                    icon: '⭐',
-                });
-            });
-        } catch { /* silent */ }
-
-        // Sort by id descending (most recent last inserted = highest id based on our counter order)
-        setActivity(items.sort((a, b) => b.id - a.id).slice(0, 12));
-        setActivityLoading(false);
-    }, []);
-
     useEffect(() => {
         fetchStats();
-        fetchActivity();
-        // Auto-refresh every minute to catch new registrations
-        const interval = setInterval(() => {
-            fetchStats();
-            fetchActivity();
-        }, 60_000);
+        // Auto-refresh every minute
+        const interval = setInterval(() => fetchStats(), 60_000);
         return () => clearInterval(interval);
-    }, [fetchStats, fetchActivity]);
+    }, [fetchStats]);
+
+    // Map notification types to display info
+    const notifMeta: Record<string, { icon: React.ReactNode; color: string; label: string }> = {
+        new_registration: { icon: <FaUsers />, color: '#3b82f6', label: 'تسجيل جديد' },
+        new_review: { icon: <FaStar />, color: '#f59e0b', label: 'تقييم جديد' },
+        new_product: { icon: <FaBoxOpen />, color: '#8b5cf6', label: 'منتج جديد' },
+        new_request: { icon: <FaFileAlt />, color: '#10b981', label: 'طلب خدمة' },
+        profile_update: { icon: <FaUser />, color: '#6366f1', label: 'تحديث ملف' },
+        account_status_audit: { icon: <FaHardHat />, color: '#ef4444', label: 'تغيير حالة' },
+        system_alert: { icon: <FaBell />, color: '#ec4899', label: 'تنبيه نظام' },
+    };
 
     return (
         <div className="admin-dashboard-container">
@@ -134,7 +76,7 @@ const AdminDashboard = () => {
                         <p className="dashboard-subtitle">نظرة عامة على أداء منصة صنايعي</p>
                     </div>
                     <button
-                        onClick={() => { fetchStats(); fetchActivity(); toast.info('تم التحديث'); }}
+                        onClick={() => { fetchStats(); toast.info('تم التحديث'); }}
                         style={{ padding: '0.6rem 1.4rem', borderRadius: '50px', border: '1.5px solid var(--color-border)', background: 'white', cursor: 'pointer', fontWeight: 700, color: 'var(--color-primary)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
                     >
                         🔄 تحديث
@@ -195,42 +137,63 @@ const AdminDashboard = () => {
                 ))}
             </div>
 
-            {/* ── Activity Feed ─── */}
+            {/* ── Live Notifications Feed ─── */}
             <div className="dashboard-sections">
                 <div className="section-card">
                     <div className="section-header">
                         <h2 className="section-title">
                             <FaBell size={18} style={{ color: 'var(--color-primary)', marginLeft: '8px' }} />
-                            آخر النشاطات (اشعارات حية)
+                            آخر النشاطات (إشعارات حية)
                         </h2>
-                        <span className="adm-notif-badge">{activity.length}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                            {unreadCount > 0 && (
+                                <span className="adm-notif-badge" style={{ background: 'var(--color-primary)', color: '#fff', padding: '2px 10px', borderRadius: '50px', fontSize: '12px', fontWeight: 700 }}>
+                                    {unreadCount} جديد
+                                </span>
+                            )}
+                            {unreadCount > 0 && (
+                                <button
+                                    onClick={markAllAsRead}
+                                    style={{ fontSize: '12px', color: 'var(--color-primary)', background: 'transparent', border: 'none', cursor: 'pointer', fontWeight: 600 }}
+                                >
+                                    تعيين الكل مقروء
+                                </button>
+                            )}
+                        </div>
                     </div>
-                    {activityLoading ? (
-                        <div style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8' }}>⏳ جاري التحميل...</div>
-                    ) : activity.length === 0 ? (
-                        <div style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8' }}>📭 لا توجد نشاطات حديثة</div>
+
+                    {notifications.length === 0 ? (
+                        <div style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8' }}>
+                            📭 لا توجد إشعارات حتى الآن — ستظهر هنا فور حدوث أي نشاط جديد
+                        </div>
                     ) : (
                         <ul className="activity-list adm-feed-list">
-                            {activity.map(item => (
-                                <li key={item.id} className="activity-item adm-feed-item">
-                                    <div
-                                        className="activity-icon"
-                                        style={{ background: item.color + '22', color: item.color, borderRadius: '12px' }}
-                                    >
-                                        <span style={{ fontSize: '1.1rem' }}>{item.icon}</span>
-                                    </div>
-                                    <div className="activity-details">
-                                        <p className="activity-text">{item.message}</p>
-                                        <span className="activity-time">{item.time}</span>
-                                    </div>
-                                    <span
-                                        className="adm-feed-tag"
-                                        style={{ background: item.color + '22', color: item.color }}
-                                    >
-                                        {item.type === 'user' ? 'مستخدم' : item.type === 'craftsman' ? 'صنايعي' : 'تقييم'}
-                                    </span>
-                                </li>
-                            ))}
+                            {notifications.slice(0, 12).map(notif => {
+                                const meta = notifMeta[notif.type] || notifMeta.system_alert;
+                                return (
+                                    <li key={notif.id} className={`activity-item adm-feed-item${notif.status === 'unread' ? ' adm-notif-unread' : ''}`}>
+                                        <div
+                                            className="activity-icon"
+                                            style={{ background: meta.color + '22', color: meta.color, borderRadius: '12px' }}
+                                        >
+                                            {meta.icon}
+                                        </div>
+                                        <div className="activity-details">
+                                            <p className="activity-text">{notif.message}</p>
+                                            <span className="activity-time">{formatTimeAgo(notif.timestamp)}</span>
+                                        </div>
+                                        <span
+                                            className="adm-feed-tag"
+                                            style={{ background: meta.color + '22', color: meta.color }}
+                                        >
+                                            {meta.label}
+                                        </span>
+                                        {notif.status === 'unread' && (
+                                            <FaCircle style={{ fontSize: '8px', color: meta.color, flexShrink: 0 }} />
+                                        )}
+                                    </li>
+                                );
+                            })}
                         </ul>
                     )}
                 </div>

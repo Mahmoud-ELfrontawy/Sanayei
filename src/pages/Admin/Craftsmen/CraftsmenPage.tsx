@@ -17,6 +17,7 @@ import {
 import { toast } from 'react-toastify';
 import './CraftsmenPage.css';
 import { adminCraftsmenApi } from '../../../Api/admin/adminCraftsmen.api';
+import { getAvatarUrl } from '../../../utils/imageUrl';
 
 interface CraftsmanData {
     id: string;
@@ -223,8 +224,15 @@ const CraftsmenPage: React.FC = () => {
                             <tr key={craftsman.id} className={craftsman.status === 'pending' ? 'pending-row' : ''}>
                                 <td>
                                     <div className="artisan-info">
-                                        <div className="artisan-avatar">
-                                            {craftsman.name[0]}
+                                        <div className="artisan-avatar-wrapper">
+                                            <img
+                                                src={getAvatarUrl(craftsman.avatar, craftsman.name)}
+                                                alt={craftsman.name}
+                                                className="artisan-avatar-img"
+                                                onError={(e) => {
+                                                    (e.currentTarget as HTMLImageElement).src = getAvatarUrl(null, craftsman.name);
+                                                }}
+                                            />
                                         </div>
                                         <div className="artisan-details">
                                             <span className="name">{craftsman.name}</span>
@@ -306,7 +314,16 @@ const CraftsmenPage: React.FC = () => {
 
                         <div className="sidebar-content">
                             <div className="profile-hero">
-                                <div className="large-avatar">{selectedCraftsman.name[0]}</div>
+                                <div className="large-avatar-wrapper">
+                                    <img
+                                        src={getAvatarUrl(selectedCraftsman.avatar, selectedCraftsman.name)}
+                                        alt={selectedCraftsman.name}
+                                        className="large-avatar-img"
+                                        onError={(e) => {
+                                            (e.currentTarget as HTMLImageElement).src = getAvatarUrl(null, selectedCraftsman.name);
+                                        }}
+                                    />
+                                </div>
                                 <h4>{selectedCraftsman.name}</h4>
                                 <span className={`status-pill ${selectedCraftsman.status}`}>
                                     {selectedCraftsman.status === 'approved' ? 'حساب نشط' :

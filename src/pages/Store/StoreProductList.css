@@ -166,9 +166,9 @@
 }
 
 .add-to-cart-mini:hover {
-    background: #2563eb;
+    background: var(--color-primary);
     color: white;
-    border-color: #2563eb;
+    border-color: var(--color-primary);
 }
 
 .card-info-box {

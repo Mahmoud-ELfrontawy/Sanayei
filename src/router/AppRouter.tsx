@@ -33,6 +33,7 @@ const RegisterCompanyPage = lazy(() => import("../pages/Auth/Company/Register/Re
 
 const CraftsmanDashboardReviews = lazy(() => import("../pages/Dashboard/Craftsman/CraftsmanDashboardReviews"));
 const CraftsmanDashboard = lazy(() => import("../pages/Dashboard/Craftsman/CraftsmanDashboard"));
+const CraftsmanStatistics = lazy(() => import("../pages/Dashboard/Craftsman/CraftsmanStatistics"));
 const CompanyDashboard = lazy(() => import("../pages/Dashboard/Company/CompanyDashboard"));
 const CompanyProfilePage = lazy(() => import("../pages/Dashboard/Company/Profile/CompanyProfilePage"));
 const ProductsManager = lazy(() => import("../pages/Dashboard/Company/Products/ProductsManager"));
@@ -47,6 +48,7 @@ const CraftsmanProfilePage = lazy(() => import("../pages/CraftsmanProfile/Crafts
 const UserProfilePage = lazy(() => import("../pages/UserProfile/UserProfilePage"));
 const AdminLayout = lazy(() => import("../layouts/AdminLayout"));
 const AdminDashboard = lazy(() => import("../pages/Admin/AdminDashboard"));
+const AdminStatistics = lazy(() => import("../pages/Admin/AdminStatistics"));
 const UsersPage = lazy(() => import("../pages/Admin/Users/UsersPage"));
 const CraftsmenPage = lazy(() => import("../pages/Admin/Craftsmen/CraftsmenPage"));
 const AdminServicesPage = lazy(() => import("../pages/Admin/Services/ServicesPage"));
@@ -89,6 +91,7 @@ const AppRouter: React.FC = () => {
           >
             <Route index element={<AdminDashboard />} />
             <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="statistics" element={<AdminStatistics />} />
             <Route path="users" element={<UsersPage />} />
             <Route path="craftsmen" element={<CraftsmenPage />} />
             <Route path="companies" element={<AdminCompaniesPage />} />
@@ -148,7 +151,10 @@ const AppRouter: React.FC = () => {
             {/* ===== Dashboards ===== */}
             <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<DashboardIndex />} />
-              <Route path="craftsman" element={<CraftsmanDashboard />} />
+              <Route path="craftsman">
+                <Route index element={<CraftsmanDashboard />} />
+                <Route path="statistics" element={<CraftsmanStatistics />} />
+              </Route>
               <Route path="company">
                 <Route index element={<CompanyDashboard />} />
                 <Route path="profile" element={<CompanyProfilePage />} />

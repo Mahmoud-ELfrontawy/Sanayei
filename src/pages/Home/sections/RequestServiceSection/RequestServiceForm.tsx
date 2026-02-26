@@ -10,8 +10,6 @@ import { Link } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { getTechnicianById } from "../../../../Api/technicians.api";
 import { getAvatarUrl } from "../../../../utils/imageUrl";
-// @ts-ignore
-import defaultAvatar from "../../../../assets/images/image5.png";
 import { formatTimeAgo } from "../../../../utils/timeAgo";
 
 import {
@@ -346,7 +344,7 @@ const RequestServiceForm: React.FC<Props> = ({
                                     alt={selectedCraftsmanDetails.name}
                                     className="selected-craftsman-avatar"
                                     onError={(e) => {
-                                        (e.target as HTMLImageElement).src = defaultAvatar;
+                                        (e.currentTarget as HTMLImageElement).src = getAvatarUrl(null, selectedCraftsmanDetails.name);
                                     }}
                                 />
                                 <div className="selected-craftsman-details">
