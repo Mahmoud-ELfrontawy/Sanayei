@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 
 import { getServices } from "../../../../Api/services.api";
 import ServiceCard from "../../../../components/common/ServiceCard/ServiceCard";
@@ -32,7 +32,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ limit }) => {
         ? services.slice(0, limit)
         : services;
 
-    const containerVariants = {
+    const containerVariants: Variants = {
         hidden: { opacity: 0 },
         visible: {
             opacity: 1,
@@ -43,7 +43,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ limit }) => {
         }
     };
 
-    const itemVariants = {
+    const itemVariants: Variants = {
         hidden: { opacity: 0, y: 30 },
         visible: {
             opacity: 1,
