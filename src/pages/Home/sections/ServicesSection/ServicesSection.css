@@ -87,6 +87,8 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 16px;
         margin-top: 25px;
+        will-change: transform, opacity;
+        transform: translateZ(0); /* Force GPU */
     }
 
     /* Error */

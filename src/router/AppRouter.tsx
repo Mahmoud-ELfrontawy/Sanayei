@@ -78,7 +78,7 @@ const AppRouter: React.FC = () => {
     <BrowserRouter>
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
-          <Route path="/google-callback" element={<GoogleCallback />} />
+          <Route path="/auth/callback" element={<GoogleCallback />} />
 
           {/* ===== Admin Routes ===== */}
           <Route

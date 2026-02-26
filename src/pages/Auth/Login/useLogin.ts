@@ -18,7 +18,15 @@ export const useLogin = () => {
     const navigate = useNavigate();
 
     const form = useForm<LoginFormValues>();
-    const { login } = useAuth(); // Use the unified login function
+    const { login } = useAuth();
+
+    // Handle any error parameters from social login
+    useState(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("error") === "google_auth_failed") {
+            toast.error("فشل تسجيل الدخول عبر جوجل، يرجى المحاولة مرة أخرى.");
+        }
+    });
 
     const onSubmit = async (data: LoginFormValues) => {
         try {
