@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://sanay3i.net/api/:path*"
+    },
+    {
+      "source": "/storage/:path*",
+      "destination": "https://sanay3i.net/storage/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
