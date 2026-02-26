@@ -1,31 +1,26 @@
-.worker-card2 {
+/* ===== Worker Specific Overrides ===== */
+
+.worker-card-custom {
   max-width: 1100px;
-  transform: none !important;
-  transition: none !important;
-  background: var(--color-bg-section);
 }
 
-
-/* ===== الصورة - من فوق وكاملة ===== */
-.worker-illustration {
+.worker-illustration-container {
   width: 40%;
   display: flex;
-  align-items: flex-start; /* ✅ من فوق بدل center */
+  align-items: flex-start;
   justify-content: center;
   background: #fafafa;
   border-right: 1px solid var(--color-border);
-  padding: 30px 20px 40px; /* ✅ padding أقل من فوق */
+  padding: 30px 20px 40px;
   box-sizing: border-box;
-  overflow: visible;
 }
 
-.worker-illustration img {
+.worker-illustration-container img {
   width: 100%;
   height: auto;
-  max-width: 100%; /* ✅ العرض الكامل */
+  max-width: 100%;
   display: block;
   object-fit: contain;
-  margin-top: 0; /* ✅ من فوق مباشرة */
 }
 
 /* ===== Upload خاص بالصنايعي ===== */
@@ -40,6 +35,7 @@
   padding: 0 16px;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-size: 14px;
 }
 
 .worker-file-label:hover {
@@ -57,6 +53,7 @@
   flex-direction: column;
   gap: 12px;
   margin-top: 8px;
+  width: 100%;
 }
 
 .worker-checkbox {
@@ -65,11 +62,12 @@
   font-size: 14px;
   color: var(--color-text-secondary);
   align-items: flex-start;
+  text-align: right;
 }
 
 .worker-checkbox input {
   accent-color: var(--color-primary);
-  margin-top: 2px;
+  margin-top: 4px;
   cursor: pointer;
 }
 
@@ -82,74 +80,41 @@
   color: var(--color-primary);
   font-weight: 600;
   text-decoration: none;
-  transition: opacity 0.2s;
 }
 
 .worker-checkbox a:hover {
-  opacity: 0.8;
   text-decoration: underline;
 }
 
-/* ===== رسائل الخطأ ===== */
-.form-error {
-  display: block;
-  color: #dc3545;
-  font-size: 13px;
-  margin-top: 4px;
-  margin-bottom: 8px;
+/* Utility */
+.flex-1 {
+    flex: 1;
 }
 
 /* ===== Responsive ===== */
 @media (max-width: 1150px) {
-  .worker-card2 {
+  .worker-card-custom {
     max-width: 900px;
-    padding: 30px 40px;
   }
 }
 
 @media (max-width: 968px) {
-  .auth-card--split.worker-card2 {
-    flex-direction: column;
-    padding: 40px 30px;
-    max-width: 650px;
-  }
-
-  .worker-illustration {
+  .worker-illustration-container {
     width: 100%;
     order: -1;
     padding: 20px;
     border-right: none;
     border-bottom: 1px solid var(--color-border);
-    align-items: center;
-    justify-content: center;
   }
 
-  .worker-illustration img {
+  .worker-illustration-container img {
     max-width: 300px;
-  }
-
-  .auth-title {
-    text-align: center;
-    font-size: 24px;
   }
 }
 
 @media (max-width: 600px) {
-  .req-row {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .auth-card--split.worker-card2 {
-    padding: 30px 20px;
-  }
-
-  .worker-illustration img {
+  .worker-illustration-container img {
     display: none;
-  }
-
-  .social-buttons-container {
-    flex-direction: column;
   }
 }
 

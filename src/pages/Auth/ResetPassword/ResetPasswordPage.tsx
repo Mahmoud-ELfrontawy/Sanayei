@@ -46,93 +46,101 @@ const ResetPasswordPage = () => {
 
   return (
     <div className="auth-page-wrapper">
-      <div className="auth-card-reset">
+      <div className="auth-card reset-password-card">
         <div className="auth-form">
 
-          <h2 className="auth-title-password">
+          <h2 className="auth-title">
             تعيين كلمة مرور جديدة
           </h2>
 
-          <p className="auth-desc-password">
+          <p className="auth-subtitle">
             أدخل رمز التحقق المرسل إلى بريدك الإلكتروني
           </p>
 
-          <form onSubmit={handleSubmit(submit)}>
+          <form className="auth-form-element" onSubmit={handleSubmit(submit)}>
 
             {/* OTP */}
-            <input
-              className="login-input-password"
-              placeholder="رمز التحقق"
-              {...register("otp", {
-                required: "رمز التحقق مطلوب",
-              })}
-            />
-            {errors.otp && (
-              <span className="form-error">
-                {errors.otp.message}
-              </span>
-            )}
+            <div className="input-group">
+                <input
+                className="auth-input"
+                placeholder="رمز التحقق"
+                {...register("otp", {
+                    required: "رمز التحقق مطلوب",
+                })}
+                />
+                {errors.otp && (
+                <span className="form-error">
+                    {errors.otp.message}
+                </span>
+                )}
+            </div>
 
             {/* Password */}
-            <div className="password-wrapper">
-              <input
-                type={showPassword ? "text" : "password"}
-                className="login-input-password"
-                placeholder="كلمة المرور الجديدة"
-                {...register("password", {
-                  required: "كلمة المرور مطلوبة",
-                  minLength: {
-                    value: 6,
-                    message: "6 أحرف على الأقل",
-                  },
-                })}
-              />
+            <div className="input-group">
+                <div className="password-wrapper">
+                <input
+                    type={showPassword ? "text" : "password"}
+                    className="auth-input"
+                    placeholder="كلمة المرور الجديدة"
+                    {...register("password", {
+                    required: "كلمة المرور مطلوبة",
+                    minLength: {
+                        value: 6,
+                        message: "6 أحرف على الأقل",
+                    },
+                    })}
+                />
 
-              <span
-                className="eye-icon"
-                onClick={() => setShowPassword((prev) => !prev)}
-              >
-                {showPassword ? <FiEyeOff /> : <FiEye />}
-              </span>
+                <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                >
+                    {showPassword ? <FiEyeOff /> : <FiEye />}
+                </button>
+                </div>
+
+                {errors.password && (
+                <span className="form-error">
+                    {errors.password.message}
+                </span>
+                )}
             </div>
-
-            {errors.password && (
-              <span className="form-error">
-                {errors.password.message}
-              </span>
-            )}
 
             {/* Confirm Password */}
-            <div className="password-wrapper">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                className="login-input-password"
-                placeholder="تأكيد كلمة المرور"
-                {...register("confirmPassword", {
-                  validate: (value) =>
-                    value === passwordValue ||
-                    "كلمتا المرور غير متطابقتين",
-                })}
-              />
+            <div className="input-group">
+                <div className="password-wrapper">
+                <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    className="auth-input"
+                    placeholder="تأكيد كلمة المرور"
+                    {...register("confirmPassword", {
+                    validate: (value) =>
+                        value === passwordValue ||
+                        "كلمتا المرور غير متطابقتين",
+                    })}
+                />
 
-              <span
-                className="eye-icon"
-                onClick={() =>
-                  setShowConfirmPassword((prev) => !prev)
-                }
-              >
-                {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
-              </span>
+                <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() =>
+                    setShowConfirmPassword((prev) => !prev)
+                    }
+                >
+                    {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+                </button>
+                </div>
+
+                {errors.confirmPassword && (
+                <span className="form-error">
+                    {errors.confirmPassword.message}
+                </span>
+                )}
             </div>
 
-            {errors.confirmPassword && (
-              <span className="form-error">
-                {errors.confirmPassword.message}
-              </span>
-            )}
-
             <button
-              className="login-btn"
+              className="auth-btn"
               disabled={isSubmitting}
             >
               {isSubmitting

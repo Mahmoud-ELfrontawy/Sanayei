@@ -1,6 +1,7 @@
-.company-card {
+/* ===== Company Specific Overrides ===== */
+
+.company-card-custom {
   max-width: 1200px;
-  background: var(--color-bg-section);
 }
 
 .company-register-form {
@@ -14,7 +15,7 @@
   flex-direction: column;
   gap: 16px;
   padding: 20px;
-  background: #fff;
+  background: var(--color-bg-main);
   border-radius: var(--radius-card);
   border: 1px solid var(--color-border);
 }
@@ -26,6 +27,7 @@
   margin-bottom: 8px;
   padding-bottom: 8px;
   border-bottom: 2px solid var(--color-bg-secondary);
+  text-align: right;
 }
 
 .input-group {
@@ -34,7 +36,7 @@
   gap: 4px;
 }
 
-.company-illustration {
+.company-illustration-container {
   width: 35%;
   display: flex;
   align-items: flex-start;
@@ -44,7 +46,7 @@
   padding: 40px 20px;
 }
 
-.company-illustration img {
+.company-illustration-container img {
   width: 100%;
   max-width: 400px;
   object-fit: contain;
@@ -54,20 +56,25 @@
   color: var(--color-text-secondary);
   margin-bottom: 24px;
   font-size: 15px;
+  text-align: center;
 }
 
-textarea.login-input {
+textarea.auth-input {
   min-height: 100px;
   padding-top: 12px;
   resize: vertical;
 }
 
+.flex-1 {
+    flex: 1;
+}
+
 @media (max-width: 1024px) {
-  .company-card {
+  .company-card-custom {
     flex-direction: column;
     max-width: 800px;
   }
-  .company-illustration {
+  .company-illustration-container {
     width: 100%;
     border-right: none;
     border-bottom: 1px solid var(--color-border);
@@ -78,9 +85,5 @@ textarea.login-input {
 @media (max-width: 600px) {
   .form-section {
     padding: 15px;
-  }
-  .req-row {
-    flex-direction: column;
-    gap: 16px;
   }
 }

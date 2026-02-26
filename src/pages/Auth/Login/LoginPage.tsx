@@ -9,6 +9,7 @@ import {
 import img1 from "../../../assets/images/cuate (2) 1.png";
 import { useLogin } from "./useLogin";
 
+import "../AuthShared.css";
 import "./Login.css";
 import { RequestServiceInputSkeleton } from "../../Home/sections/RequestServiceSection/RequestServiceSkeleton";
 
@@ -24,61 +25,65 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="auth-page-wrapper">
-      <div className="login-card">
-        <div className="login-card-decoration">
+      <div className="auth-card login-card-custom">
+        <div className="login-content-wrapper">
 
-          <h2 className="login-title">تسجيل الدخول</h2>
+          <h2 className="auth-title">تسجيل الدخول</h2>
 
-          <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
+          <form className="auth-form-element" onSubmit={handleSubmit(onSubmit)}>
 
 
             {/* Phone Number or Email */}
             {isSubmitting ? (
               <RequestServiceInputSkeleton />
             ) : (
-              <input
-                type="text"
-                placeholder="رقم الهاتف أو البريد الإلكتروني"
-                className="login-input"
-                {...register("email", {
-                  required: "رقم الهاتف أو البريد الإلكتروني مطلوب"
-                })}
-              />
-            )}
-            {errors.email && (
-              <span className="form-error">{errors.email.message}</span>
+              <div className="input-group">
+                <input
+                  type="text"
+                  placeholder="رقم الهاتف أو البريد الإلكتروني"
+                  className="auth-input"
+                  {...register("email", {
+                    required: "رقم الهاتف أو البريد الإلكتروني مطلوب"
+                  })}
+                />
+                {errors.email && (
+                  <span className="form-error">{errors.email.message}</span>
+                )}
+              </div>
             )}
 
             {/* Password */}
-            <div className="password-wrapper">
-              {isSubmitting ? (
-                <RequestServiceInputSkeleton />
-              ) : (
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="كلمة المرور"
-                  className="login-input"
-                  {...register("password", {
-                    required: "كلمة المرور مطلوبة",
-                  })}
-                />
-              )}
+            <div className="input-group">
+              <div className="password-wrapper">
+                {isSubmitting ? (
+                  <RequestServiceInputSkeleton />
+                ) : (
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="كلمة المرور"
+                    className="auth-input"
+                    {...register("password", {
+                      required: "كلمة المرور مطلوبة",
+                    })}
+                  />
+                )}
 
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword((p) => !p)}
-              >
-                {showPassword ? <FaEye /> : <FaEyeSlash />}
-              </button>
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword((p) => !p)}
+                >
+                  {showPassword ? <FaEye /> : <FaEyeSlash />}
+                </button>
+              </div>
+
+              {errors.password && (
+                <span className="form-error">{errors.password.message}</span>
+              )}
             </div>
 
-            {errors.password && (
-              <span className="form-error">{errors.password.message}</span>
-            )}
-
             <div className="login-options">
-              <Link to="/forgot-password" className="forgot-password">
+              <Link to="/forgot-password-options" className="forgot-password">
                 نسيت كلمة المرور؟
               </Link>
 
@@ -90,20 +95,20 @@ const LoginPage: React.FC = () => {
 
             <button
               type="submit"
-              className="login-btn"
+              className="auth-btn"
               disabled={isSubmitting}
             >
               {isSubmitting ? "جاري تسجيل الدخول..." : "سجل الآن"}
             </button>
           </form>
 
-          <div className="login-divider">
+          <div className="auth-divider">
             <span>أو</span>
           </div>
 
           {/* Social login */}
-          <div className="social-buttons-container">
-            <button type="button" className="social-btn"
+          <div className="auth-social-container">
+            <button type="button" className="auth-social-btn"
               onClick={() => {
                 window.location.href =
                   "/api/auth/google-login";
@@ -113,13 +118,13 @@ const LoginPage: React.FC = () => {
               <span>عن طريق جوجل</span>
             </button>
 
-            <button type="button" className="social-btn">
+            <button type="button" className="auth-social-btn">
               <FaFacebookF />
               <span>عن طريق فيسبوك</span>
             </button>
           </div>
 
-          <div className="login-register">
+          <div className="auth-footer-link">
             <span>ليس لديك حساب؟</span>
             <Link to="/join"> أنشئ حساب جديد</Link>
           </div>

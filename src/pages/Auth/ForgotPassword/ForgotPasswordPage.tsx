@@ -49,28 +49,28 @@ const ForgotPasswordPage: React.FC = () => {
 
   return (
     <div className="auth-page-wrapper">
-      <div className="auth-card-password">
+      <div className="auth-card forgot-password-card">
 
         {/* Form */}
         <div className="auth-form">
 
-          <h2 className="auth-title-password">
+          <h2 className="auth-title">
             نسيت كلمة المرور؟
           </h2>
 
-          <p className="auth-desc-password">
+          <p className="auth-subtitle">
             أدخل بريدك الإلكتروني وسنرسل لك رمز التحقق
           </p>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form className="auth-form-element" onSubmit={handleSubmit(onSubmit)}>
 
             {isSubmitting ? (
               <RequestServiceInputSkeleton />
             ) : (
-              <>
+              <div className="input-group">
                 <input
                   type="email"
-                  className="login-input-password"
+                  className="auth-input"
                   placeholder="البريد الإلكتروني"
                   {...register("email", {
                     required: "البريد الإلكتروني مطلوب",
@@ -86,12 +86,12 @@ const ForgotPasswordPage: React.FC = () => {
                     {errors.email.message}
                   </span>
                 )}
-              </>
+              </div>
             )}
 
             <button
               type="submit"
-              className="login-btn"
+              className="auth-btn"
               disabled={isSubmitting}
             >
               {isSubmitting
@@ -100,7 +100,7 @@ const ForgotPasswordPage: React.FC = () => {
             </button>
           </form>
 
-          <div className="login-register-password mt-4">
+          <div className="auth-footer-link mt-4">
             <Link to="/login">
               الرجوع لتسجيل الدخول
             </Link>
@@ -108,7 +108,7 @@ const ForgotPasswordPage: React.FC = () => {
         </div>
 
         {/* Illustration */}
-        <div className="auth-illustration-password">
+        <div className="auth-illustration forgot-illustration">
           <img src={img} alt="Forgot password" />
         </div>
       </div>

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 import imgWorker from "../../../../assets/images/image-register.png";
 import { useRegisterWorker } from "./useRegisterWorker";
+import "../../AuthShared.css";
 import "./RegisterWorker.css";
 
 const RegisterWorkerPage: React.FC = () => {
@@ -26,15 +27,15 @@ const RegisterWorkerPage: React.FC = () => {
 
   return (
     <div className="auth-page-wrapper worker-page">
-      <div className="auth-card auth-card--split worker-card2">
+      <div className="auth-card auth-card--split worker-card-custom">
         <div className="auth-form">
           <h2 className="auth-title">انضم كصنايعي محترف</h2>
 
-          <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
+          <form className="auth-form-element" onSubmit={handleSubmit(onSubmit)}>
             {/* الاسم */}
-            <div>
+            <div className="input-group">
               <input
-                className="login-input"
+                className="auth-input"
                 placeholder="الاسم بالكامل"
                 {...register("name", {
                   required: "الاسم مطلوب",
@@ -47,9 +48,9 @@ const RegisterWorkerPage: React.FC = () => {
             </div>
 
             {/* البريد */}
-            <div>
+            <div className="input-group">
               <input
-                className="login-input"
+                className="auth-input"
                 type="email"
                 placeholder="البريد الإلكتروني"
                 {...register("email", {
@@ -67,9 +68,9 @@ const RegisterWorkerPage: React.FC = () => {
 
 
             {/* الهاتف */}
-            <div>
+            <div className="input-group">
               <input
-                className="login-input"
+                className="auth-input"
                 type="tel"
                 placeholder="رقم الهاتف"
                 maxLength={11}
@@ -89,9 +90,9 @@ const RegisterWorkerPage: React.FC = () => {
               )}
             </div>
             {/* نطاق الأسعار */}
-            <div>
+            <div className="input-group">
               <input
-                className="login-input"
+                className="auth-input"
                 placeholder="نطاق الأسعار (مثال: 1000-3000)"
                 {...register("price_range", {
                   required: "نطاق الأسعار مطلوب",
@@ -118,10 +119,10 @@ const RegisterWorkerPage: React.FC = () => {
 
 
             {/* المهنة - ✅ نستخدم service_id */}
-            <div className="req-row">
-              <div>
+            <div className="auth-row">
+              <div className="input-group flex-1">
                 <select
-                  className="login-input"
+                  className="auth-input"
                   {...register("service_id", { required: "اختر المهنة" })}
                   disabled={isLoadingData}
                 >
@@ -140,9 +141,9 @@ const RegisterWorkerPage: React.FC = () => {
               </div>
 
               {/* المحافظة */}
-              <div>
+              <div className="input-group flex-1">
                 <select
-                  className="login-input"
+                  className="auth-input"
                   {...register("governorate_id", { required: "اختر المحافظة" })}
                   disabled={isLoadingData}
                 >
@@ -164,8 +165,8 @@ const RegisterWorkerPage: React.FC = () => {
             </div>
 
             {/* بطاقة أمام */}
-            <div className="req-row">
-              <div>
+            <div className="auth-row">
+              <div className="input-group flex-1">
                 <label
                   className={`worker-file-label ${frontFile?.length ? "has-file" : ""}`}
                 >
@@ -210,7 +211,7 @@ const RegisterWorkerPage: React.FC = () => {
               </div>
 
               {/* بطاقة خلف */}
-              <div>
+              <div className="input-group flex-1">
                 <label
                   className={`worker-file-label ${backFile?.length ? "has-file" : ""}`}
                 >
@@ -254,12 +255,12 @@ const RegisterWorkerPage: React.FC = () => {
             </div>
 
             {/* Password */}
-            <div className="req-row">
-              <div>
+            <div className="auth-row">
+              <div className="input-group flex-1">
                 <div className="password-wrapper">
                   <input
                     type={showPassword ? "text" : "password"}
-                    className="login-input"
+                    className="auth-input"
                     placeholder="كلمة المرور"
                     {...register("password", {
                       required: "كلمة المرور مطلوبة",
@@ -284,11 +285,11 @@ const RegisterWorkerPage: React.FC = () => {
               </div>
 
               {/* Confirm Password */}
-              <div>
+              <div className="input-group flex-1">
                 <div className="password-wrapper">
                   <input
                     type={showPassword ? "text" : "password"}
-                    className="login-input"
+                    className="auth-input"
                     placeholder="تأكيد كلمة المرور"
                     {...register("password_confirmation", {
                       required: "تأكيد كلمة المرور مطلوب",
@@ -336,32 +337,32 @@ const RegisterWorkerPage: React.FC = () => {
             </div>
 
             <button
-              className="login-btn"
+              className="auth-btn"
               disabled={isSubmitting || isLoadingData}
             >
               {isSubmitting ? "جاري التسجيل..." : "انضم لفريق العمل"}
             </button>
           </form>
 
-          <div className="login-divider">
+          <div className="auth-divider">
             <span>أو</span>
           </div>
 
-          <div className="social-buttons-container">
-            <button className="social-btn" type="button">
+          <div className="auth-social-container">
+            <button className="auth-social-btn" type="button">
               <FaGoogle /> <span>عن طريق جوجل</span>
             </button>
-            <button className="social-btn" type="button">
+            <button className="auth-social-btn" type="button">
               <FaFacebookF /> <span>عن طريق فيسبوك</span>
             </button>
           </div>
 
-          <div className="login-register">
+          <div className="auth-footer-link">
             لديك حساب بالفعل؟ <Link to="/login">تسجيل الدخول</Link>
           </div>
         </div>
 
-        <div className="worker-illustration">
+        <div className="worker-illustration-container">
           <img src={imgWorker} alt="صنايعي محترف" />
         </div>
       </div>
