@@ -2,9 +2,15 @@ import React, { useState, useEffect } from "react";
 import { FiPlus, FiTrash2, FiTag } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { getStoreCategories, addStoreCategory, deleteStoreCategory } from "../../../../Api/auth/Company/storeManagement.api";
+import { useAuth } from "../../../../hooks/useAuth";
+import { FiAlertCircle } from "react-icons/fi";
 import "./CategoriesManager.css";
 
 const CategoriesManager: React.FC = () => {
+    const { user } = useAuth();
+    const isApproved = user?.status === 'approved';
+    const isBlocked = user?.status === 'rejected';
+
     const [categories, setCategories] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);
@@ -24,6 +30,17 @@ const CategoriesManager: React.FC = () => {
 
     const handleAdd = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (isBlocked) {
+            toast.error("حسابك محظور، يرجى التواصل مع الدعم الفني لحل المشكلة.");
+            return;
+        }
+
+        if (!isApproved) {
+            toast.info("بانتظار اعتماد الحساب لتتمكن من إضافة أقسام");
+            return;
+        }
+
         if (!newCategory.name.trim()) return;
 
         try {
@@ -42,6 +59,16 @@ const CategoriesManager: React.FC = () => {
     };
 
     const handleDelete = async (id: number) => {
+        if (isBlocked) {
+            toast.error("حسابك محظور، يرجى التواصل مع الدعم الفني لحل المشكلة.");
+            return;
+        }
+
+        if (!isApproved) {
+            toast.error("لا يمكنك حذف الأقسام إلا بعد اعتماد حسابك.");
+            return;
+        }
+
         if (!window.confirm("هل أنت متأكد من حذف هذا القسم؟ قد يؤثر ذلك على المنتجات المرتبطة به.")) return;
 
         try {
@@ -65,6 +92,20 @@ const CategoriesManager: React.FC = () => {
                 <h2>إدارة أقسام المتجر</h2>
                 <p>قم بتنظيم منتجاتك في أقسام ليسهل على العملاء العثور عليها</p>
             </div>
+
+            {isBlocked && (
+                <div className="approval-warning-banner blocked" style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <FiAlertCircle />
+                    <span>حسابك محظور من قبل الإدارة. يرجى التواصل مع الدعم الفني لحل المشكلة.</span>
+                </div>
+            )}
+
+            {!isApproved && !isBlocked && (
+                <div className="approval-warning-banner" style={{ background: '#fffbeb', border: '1px solid #fef3c7', color: '#92400e', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <FiAlertCircle />
+                    <span>حسابك قيد المراجعة. لا يمكنك إضافة أقسام جديدة أو حذف الأقسام الحالية حتى يتم اعتماد الحساب.</span>
+                </div>
+            )}
 
             <div className="manager-content">
                 {/* Add Category Form */}

@@ -10,6 +10,8 @@ import {
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { adminServicesApi } from '../../../Api/admin/adminServices.api';
+import { getFullImageUrl } from '../../../utils/imageUrl';
+import '../AdminPremium.css';
 import './ServicesPage.css';
 
 interface ServiceData {
@@ -33,12 +35,18 @@ const ServicesPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
     const [selectedService, setSelectedService] = useState<ServiceData | null>(null);
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<{
+        name: string;
+        description: string;
+        price: number;
+        icon: string | File;
+    }>({
         name: '',
         description: '',
         price: 0,
-        icon: 'Wrench' // Default icon name
+        icon: ''
     });
+    const [iconPreview, setIconPreview] = useState<string | null>(null);
 
     const fetchServices = async () => {
         setLoading(true);
@@ -71,17 +79,31 @@ const ServicesPage = () => {
                 name: service.name,
                 description: service.description || '',
                 price: service.price || 0,
-                icon: service.icon || 'Wrench'
+                icon: service.icon || ''
             });
+            setIconPreview((service.icon ? getFullImageUrl(service.icon) : null) as string | null);
         } else {
             setFormData({
                 name: '',
                 description: '',
                 price: 0,
-                icon: 'Wrench'
+                icon: ''
             });
+            setIconPreview(null);
         }
         setIsModalOpen(true);
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setFormData({ ...formData, icon: file });
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setIconPreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     const handleCloseModal = () => {
@@ -91,18 +113,37 @@ const ServicesPage = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        const data = new FormData();
+        data.append('name', formData.name);
+        data.append('description', formData.description);
+        data.append('price', formData.price.toString());
+
+        // إرفاق الأيقونة فقط إذا تم اختيار ملف جديد أو كان نصاً (في حالة الـ update بدون تغيير الصورة)
+        if (formData.icon instanceof File) {
+            data.append('icon', formData.icon);
+        }
+
         try {
             if (modalMode === 'create') {
-                await adminServicesApi.createService(formData);
-                toast.success("تم إضافة الخدمة بنجاح");
+                await adminServicesApi.createService(data);
+                toast.success("تم إضافة الخدمة بنجاح ✅");
             } else if (selectedService) {
-                await adminServicesApi.updateService(selectedService.id, formData);
-                toast.success("تم تحديث الخدمة بنجاح");
+                await adminServicesApi.updateService(selectedService.id, data);
+                toast.success("تم تحديث الخدمة بنجاح ✅");
             }
             handleCloseModal();
             fetchServices();
-        } catch (err) {
-            toast.error("حدث خطأ أثناء حفظ البيانات");
+        } catch (error: any) {
+            console.error("Service Save Error:", error);
+            const msg = error.response?.data?.message || "حدث خطأ أثناء حفظ البيانات";
+            const errs = error.response?.data?.errors;
+
+            if (errs) {
+                Object.values(errs).flat().forEach((m: any) => toast.error(m));
+            } else {
+                toast.error(msg);
+            }
         }
     };
 
@@ -169,7 +210,11 @@ const ServicesPage = () => {
                                 <tr key={service.id}>
                                     <td>
                                         <div className="service-icon-cell">
-                                            <FaLayerGroup size={24} />
+                                            {service.icon ? (
+                                                <img src={getFullImageUrl(service.icon)} alt={service.name} className="service-icon-img" />
+                                            ) : (
+                                                <FaLayerGroup size={24} />
+                                            )}
                                         </div>
                                     </td>
                                     <td>
@@ -261,13 +306,30 @@ const ServicesPage = () => {
                                 />
                             </div>
                             <div className="form-group-service2 full">
-                                <label>اسم الأيقونة (Lucide Icon)</label>
-                                <input
-                                    type="text"
-                                    value={formData.icon}
-                                    onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                                    placeholder="مثال: Wrench, Zap, Tool..."
-                                />
+                                <label>أيقونة الخدمة (صورة)</label>
+                                <div className="icon-upload-wrapper">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleFileChange}
+                                        id="icon-upload"
+                                        className="file-input-hidden"
+                                    />
+                                    <label htmlFor="icon-upload" className="custom-file-btn">
+                                        <FaPlus /> اختر صورة
+                                    </label>
+                                    {iconPreview && (
+                                        <div className="icon-preview-container">
+                                            <img src={iconPreview} alt="Preview" />
+                                            <button type="button" className="remove-preview" onClick={() => {
+                                                setIconPreview(null);
+                                                setFormData({ ...formData, icon: '' });
+                                            }}>
+                                                <FaTimes />
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </form>
                         <div className="modal-footer">

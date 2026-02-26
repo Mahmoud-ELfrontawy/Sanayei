@@ -5,6 +5,7 @@ export interface User {
   name: string;
   email: string;
   avatar?: string;
+  status?: 'approved' | 'pending' | 'rejected';
 }
 
 export interface AuthState {

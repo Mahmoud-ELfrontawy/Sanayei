@@ -12,7 +12,7 @@ export const initializeEcho = (token: string) => {
   try {
     const apiUrl = import.meta.env.VITE_API_URL || '';
     const authEndpoint = apiUrl
-      ? `${apiUrl.replace(/\/$/, '')}/broadcasting/auth`
+      ? `${apiUrl.split('/api')[0]}/api/broadcasting/auth`
       : '/api/broadcasting/auth';
 
     echoInstance = new Echo<any>({

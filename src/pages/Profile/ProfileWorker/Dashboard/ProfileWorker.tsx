@@ -15,6 +15,8 @@ import { toUiDate } from "../../../../utils/dateApiHelper";
 import { getGovernorates } from "../../../../Api/serviceRequest/governorates.api";
 import FormSkeleton from "../../base/FormSkeleton";
 import { setToastAfterReload } from "../../../../utils/toastAfterReload";
+import { FiAlertCircle } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 /* ================= Types ================= */
 
@@ -88,7 +90,9 @@ const DEFAULT_LOCATION = {
 /* ================= Component ================= */
 
 const ProfileWorker = () => {
-    const { refreshUser } = useAuth();
+    const { user, refreshUser } = useAuth();
+    const isApproved = user?.status === 'approved';
+    const isBlocked = user?.status === 'rejected';
 
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(true);
@@ -165,6 +169,11 @@ const ProfileWorker = () => {
     /* ================= Save ================= */
 
     const handleSave = async () => {
+        if (isBlocked) {
+            toast.error("حسابك محظور، لا يمكنك تعديل البيانات حالياً.");
+            return;
+        }
+
         if (!craftsman.id) return;
 
         try {
@@ -215,6 +224,11 @@ const ProfileWorker = () => {
     /* ================= Delete ================= */
 
     const handleDeleteAccount = async () => {
+        if (isBlocked) {
+            toast.error("حسابك محظور، يرجى التواصل مع الإدارة بخصوص الحساب.");
+            return;
+        }
+
         try {
             await deleteCraftsmanAccount();
 
@@ -238,17 +252,33 @@ const ProfileWorker = () => {
     }
 
     return (
-        <ProfileFormBase
-            isCraftsman
-            data={craftsman}
-            setData={setCraftsman}
-            imageFile={imageFile}
-            setImageFile={setImageFile}
-            onSave={handleSave}
-            onDelete={handleDeleteAccount}
-            loading={loading}
-            governorates={governorates}
-        />
+        <div className="profile-worker-page">
+            {isBlocked && (
+                <div className="approval-warning-banner blocked" style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <FiAlertCircle />
+                    <span>حسابك محظور من قبل الإدارة. يرجى التواصل مع <Link to="/contact" style={{ textDecoration: 'underline' }}>الدعم الفني</Link> لحل المشكلة.</span>
+                </div>
+            )}
+
+            {!isApproved && !isBlocked && (
+                <div className="approval-warning-banner" style={{ background: '#fffbeb', border: '1px solid #fef3c7', color: '#92400e', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <FiAlertCircle />
+                    <span>حسابك قيد المراجعة حالياً. سيتم اعتماد التعديلات فور موافقة الإدارة.</span>
+                </div>
+            )}
+
+            <ProfileFormBase
+                isCraftsman
+                data={craftsman}
+                setData={setCraftsman}
+                imageFile={imageFile}
+                setImageFile={setImageFile}
+                onSave={handleSave}
+                onDelete={handleDeleteAccount}
+                loading={loading}
+                governorates={governorates}
+            />
+        </div>
     );
 };
 

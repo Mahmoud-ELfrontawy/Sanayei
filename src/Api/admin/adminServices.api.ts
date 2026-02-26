@@ -3,7 +3,7 @@ import { authStorage } from '../../context/auth/auth.storage';
 
 const BASE_URL = '/api';
 
-const getAuthHeader = () => {
+export const getAuthHeader = () => {
     const token = authStorage.getToken();
     return { 
         Authorization: `Bearer ${token}`,
@@ -27,14 +27,26 @@ export const adminServicesApi = {
         return axios.get(`${BASE_URL}/admin/services/${id}`, { headers: getAuthHeader() });
     },
 
-    // Create a new service
-    createService: async (data: { name: string; description?: string; icon?: string; price?: number }) => {
-        return axios.post(`${BASE_URL}/admin/services`, data, { headers: getAuthHeader() });
+    // Create a new service (supports FormData for icon upload)
+    createService: async (data: FormData) => {
+        return axios.post(`${BASE_URL}/admin/services`, data, { 
+            headers: {
+                ...getAuthHeader(),
+                "Content-Type": "multipart/form-data" 
+            } 
+        });
     },
 
-    // Update an existing service
-    updateService: async (id: string, data: { name?: string; description?: string; icon?: string; price?: number }) => {
-        return axios.put(`${BASE_URL}/admin/services/${id}`, data, { headers: getAuthHeader() });
+    // Update an existing service (supports FormData)
+    // Note: We use POST with _method=PUT because PHP has issues with PUT multipart data
+    updateService: async (id: string, data: FormData) => {
+        data.append('_method', 'PUT');
+        return axios.post(`${BASE_URL}/admin/services/${id}`, data, { 
+            headers: {
+                ...getAuthHeader(),
+                "Content-Type": "multipart/form-data" 
+            } 
+        });
     },
 
     // Delete a service

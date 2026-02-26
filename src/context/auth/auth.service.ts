@@ -23,6 +23,7 @@ interface ProfileApiResponse {
   craftsman?: ProfileApiResponse;
   company?: ProfileApiResponse;
   data?: ProfileApiResponse;
+  status?: 'approved' | 'pending' | 'rejected';
 }
 
 class AuthService {
@@ -89,7 +90,8 @@ class AuthService {
       id,
       name: u.name || u.company_name || "",
       email: u.email || u.company_email || "",
-      avatar: getFullImageUrl(u.profile_photo || u.company_logo || u.profile_image_url || u.avatar)
+      avatar: getFullImageUrl(u.profile_photo || u.company_logo || u.profile_image_url || u.avatar),
+      status: u.status
     };
   }
 
@@ -123,7 +125,12 @@ class AuthService {
           const userData = data.user || data.craftsman || data.company || data.data?.user || data.data || {};
           const user = this.normalizeUser(userData as ProfileApiResponse);
 
-          if (user) return { success: true, data: { token, user, role } };
+          if (user) {
+            if (user.status === 'rejected') {
+              return { success: false, error: "تم حظر هذا الحساب من قبل الإدارة. يرجى التواصل مع الدعم الفني." };
+            }
+            return { success: true, data: { token, user, role } };
+          }
         }
       } catch (error: unknown) {
         lastError = error as AxiosError<AuthResponse>;
@@ -172,7 +179,12 @@ class AuthService {
       const endpoint = type === "craftsman" ? "/craftsmen/profile/me" : 
                        type === "company"   ? "/company/me" : "/user/me";
       const { data } = await this.api.get<ProfileApiResponse>(endpoint);
-      return this.normalizeUser(data);
+      const user = this.normalizeUser(data);
+      if (user && user.status === 'rejected') {
+          // Force logout for rejected accounts
+          throw { response: { status: 403, data: { message: "Account banned" } } } as AxiosError;
+      }
+      return user;
     } catch (err) { 
       // Important: Re-throw if it's an auth error so AuthProvider can handle it
       if (axios.isAxiosError(err) && (err.response?.status === 401 || err.response?.status === 403)) {

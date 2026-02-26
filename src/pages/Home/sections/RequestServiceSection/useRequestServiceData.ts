@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getServices } from "../../../../Api/services.api";
 import { getGovernorates } from "../../../../Api/serviceRequest/governorates.api";
@@ -19,11 +20,19 @@ export const useRequestServiceData = () => {
         queryFn: getSanaei 
     });
 
-    return {
-        services: servicesQuery.data ?? [],
-        governorates: governoratesQuery.data ?? [],
-        sanaei: (sanaeiQuery.data ?? []).filter((w: any) => w.status === 'approved'),
+    const services = servicesQuery.data ?? [];
+    const governorates = governoratesQuery.data ?? [];
+    
+    // Stable filter for sanaei
+    const sanaei = useMemo(() => {
+        return (sanaeiQuery.data ?? []).filter((w: any) => w.status === 'approved');
+    }, [sanaeiQuery.data]);
+
+    return useMemo(() => ({
+        services,
+        governorates,
+        sanaei,
         loading: servicesQuery.isLoading || governoratesQuery.isLoading || sanaeiQuery.isLoading,
         isError: servicesQuery.isError || governoratesQuery.isError || sanaeiQuery.isError,
-    };
+    }), [services, governorates, sanaei, servicesQuery.isLoading, governoratesQuery.isLoading, sanaeiQuery.isLoading, servicesQuery.isError, governoratesQuery.isError, sanaeiQuery.isError]);
 };

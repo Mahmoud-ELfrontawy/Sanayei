@@ -37,6 +37,37 @@
     box-shadow: 0 5px 20px rgba(95, 168, 211, 0.3);
 }
 
+.add-btn-premium.disabled {
+    background: #cbd5e1 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.add-btn-premium.disabled:hover {
+    background: #cbd5e1 !important;
+}
+
+.approval-warning-banner {
+    background: #fff7ed;
+    border: 1px solid #ffedd5;
+    border-right: 4px solid #f97316;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #9a3412;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.approval-warning-banner svg {
+    color: #f97316;
+    flex-shrink: 0;
+}
+
 /* 📋 Products Table Layout */
 .table-wrapper {
     background: #fff;

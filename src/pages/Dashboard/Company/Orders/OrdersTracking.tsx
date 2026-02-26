@@ -7,11 +7,11 @@ import { useAuth } from "../../../../hooks/useAuth";
 import "./OrdersTracking.css";
 
 const statusMap: Record<string, { label: string, icon: any, color: string }> = {
-    pending:    { label: "قيد الانتظار", icon: <FiClock />, color: "#ff9800" },
+    pending: { label: "قيد الانتظار", icon: <FiClock />, color: "#ff9800" },
     processing: { label: "جاري التجهيز", icon: <FiPackage />, color: "#2196f3" },
-    shipped:    { label: "تم الشحن",     icon: <FiTruck />, color: "#9c27b0" },
-    delivered:  { label: "تم التوصيل",  icon: <FiCheckCircle />, color: "#4caf50" },
-    cancelled:  { label: "ملغي",         icon: <FiXCircle />, color: "#f44336" },
+    shipped: { label: "تم الشحن", icon: <FiTruck />, color: "#9c27b0" },
+    delivered: { label: "تم التوصيل", icon: <FiCheckCircle />, color: "#4caf50" },
+    cancelled: { label: "ملغي", icon: <FiXCircle />, color: "#f44336" },
 };
 
 const OrdersTracking: React.FC = () => {
@@ -35,6 +35,11 @@ const OrdersTracking: React.FC = () => {
     };
 
     const handleUpdateStatus = async (orderId: number) => {
+        if (user?.status === 'rejected') {
+            toast.error("حسابك محظور، يرجى التواصل مع الدعم الفني لحل المشكلة.");
+            return;
+        }
+
         const newStatus = updatingStatus[orderId];
         if (!newStatus) return;
 

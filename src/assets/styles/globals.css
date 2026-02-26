@@ -14,9 +14,20 @@ button {
     cursor: pointer;
 }
 .Toastify__toast {
-    font-size: 19px;
-    padding: 20px 22px;
-    border-radius: var(--radius-card-sm);
+    font-size: 17px;
+    padding: 16px 20px;
+    border-radius: 14px;
+    line-height: 1.6;
+    min-width: 320px;
+    max-width: 500px;
+    width: fit-content;
+}
+
+@media only screen and (max-width: 480px) {
+    .Toastify__toast {
+        min-width: 90vw;
+        margin: 10px auto;
+    }
 }
 
 .Toastify__toast--success {

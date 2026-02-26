@@ -35,7 +35,7 @@ interface NotificationContextType {
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
 export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const { user, userType } = useAuth();
+    const { user, userType, refreshUser } = useAuth();
 
     const [allNotifications, setAllNotifications] = useState<Notification[]>(() => {
         const saved = localStorage.getItem("app_notifications");
@@ -53,6 +53,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     const isFirstUserOrdersFetch = useRef(true);
     const prevCraftsmanOrdersRef = useRef<Record<number, string>>({}); // { orderId: status } — Craftsman only
     const isFirstCraftsmanOrdersFetch = useRef(true);
+    const prevStatusRef = useRef<string | undefined>(undefined);
 
     /* ================= LocalStorage Sync ================= */
 
@@ -178,7 +179,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
             if (currentCount > prevCompanyOrderCountRef.current) {
                 const newCount = currentCount - prevCompanyOrderCountRef.current;
                 const newestOrder = currentOrders[0]; // API returns latest first
-                
+
                 // Backend returns user_type as full class name: e.g. "App\\Models\\Craftsman"
                 const isCraftsmanOrder = newestOrder?.user_type?.includes('Craftsman');
                 const emoji = isCraftsmanOrder ? "🛠️" : "🛒";
@@ -399,6 +400,61 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
 
     /* ================= Polling Fallback ================= */
 
+    // ── Update Logic Watcher (Detect Status Change) ──
+    useEffect(() => {
+        if (!user) {
+            prevStatusRef.current = undefined;
+            return;
+        }
+
+        if (prevStatusRef.current === undefined) {
+            prevStatusRef.current = user.status;
+            return;
+        }
+
+        // Detect Status Change
+        if (prevStatusRef.current !== user.status) {
+            const isApproved = user.status === 'approved';
+            const isRejected = user.status === 'rejected';
+            const oldStatus = prevStatusRef.current;
+
+            if (isApproved && oldStatus === 'pending') {
+                const title = "تهانينا! تم اعتماد حسابك 🎉";
+                const message = userType === 'company'
+                    ? "تمت مراجعة بيانات متجرك والموافقة عليها. يمكنك الآن البدء في إضافة منتجاتك."
+                    : (userType === 'craftsman' ? "تمت مراجعة بياناتك المهنية والموافقة عليها. يمكنك الآن استقبال طلبات العملاء." : "تم تفعيل حسابك بنجاح.");
+
+                addNotification({
+                    title,
+                    message,
+                    type: "order_status",
+                    orderId: 0,
+                    recipientId: user.id,
+                    recipientType: userType as any,
+                    variant: "success",
+                });
+                toast.success(title, { autoClose: 10000, position: "top-center" });
+            }
+            else if (isRejected) {
+                const title = "تنبيه: تم حظر الحساب ⚠️";
+                const message = "تم حظر حسابك من قبل الإدارة. يرجى التواصل مع الدعم الفني لمزيد من التفاصيل.";
+
+                addNotification({
+                    title,
+                    message,
+                    type: "order_status",
+                    orderId: 0,
+                    recipientId: user.id,
+                    recipientType: userType as any,
+                    variant: "error",
+                });
+                toast.error(message, { autoClose: false, position: "top-center", closeOnClick: false, draggable: false });
+            }
+        }
+
+        prevStatusRef.current = user.status;
+    }, [user, userType, addNotification]);
+
     useEffect(() => {
         if (!user) return;
 
@@ -410,217 +466,151 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         } else if (userType === "craftsman") {
             fetchCraftsmanStoreOrders();
         }
-
-        // Polling every 30s: reduced from 12s to mitigate 429 Too Many Requests
-        const intervalId = setInterval(() => {
-            fetchServiceStatus();
-            if (userType === "company") {
-                fetchCompanyOrders();
-            } else if (userType === "user") {
-                fetchUserStoreOrders();
-            } else if (userType === "craftsman") {
-                fetchCraftsmanStoreOrders();
-            }
-        }, 30000);
-
-        return () => clearInterval(intervalId);
     }, [user, userType, fetchServiceStatus, fetchCompanyOrders, fetchUserStoreOrders, fetchCraftsmanStoreOrders]);
 
     /* ================= Real-Time via Laravel Echo ================= */
 
     useEffect(() => {
-        if (!user || !userType) return;
+        // ── 1. AGGRESSIVE EXCLUSION (Admins have AdminNotificationContext) ──
+        if (!user || !userType || userType === 'admin') {
+            if (userType === 'admin') console.log("🛡️ [Echo] Skipping NotificationContext for Admin role");
+            return;
+        }
 
         const echo = getEcho() as any;
         if (!echo) return;
 
-        // ── Channel names per role ──
-        // Company backend broadcasts to: notifications.user.{company_id} (via SBroadcastOn)
-        // User/Craftsman: notifications.user.{id} or notifications.worker.{id}
-        const notifPrefix = userType === "craftsman" ? "worker" : "user";
+        // ── 2. Channel Selection ──
+        let notifPrefix = "user";
+        if (userType === "craftsman") notifPrefix = "worker";
+        else if (userType === "company") notifPrefix = "company";
+
         const primaryChannelName = `notifications.${notifPrefix}.${user.id}`;
-
         console.log(`🔌 [Echo] PRIMARY: ${primaryChannelName} | Role: ${userType}`);
-        const primaryChannel = echo.private(primaryChannelName);
+        const c = echo.private(primaryChannelName);
 
-        // Secondary fallback channels (extra aliases the backend might use)
-        let fallbackChannel: any = null;      // craftsman: notifications.craftsman.{id}
-        let clientFallbackChannel: any = null; // user: notifications.client.{id}
-        let companyChannel: any = null;        // company: notifications.company.{id} (if backend supports)
-        // NOTE: We do NOT open notifications.user.{id} AGAIN for company — it's already primaryChannel
+        // ── 3. Role-Specific Generic Listeners ──
+        const listenerMap: Record<string, string> = {
+            user: '.UserNotification',
+            craftsman: '.CraftsmanNotification',
+            company: '.CompanyNotification'
+        };
 
-        if (userType === "craftsman") {
-            fallbackChannel = echo.private(`notifications.craftsman.${user.id}`);
-        } else if (userType === "user") {
-            clientFallbackChannel = echo.private(`notifications.client.${user.id}`);
-        } else if (userType === "company") {
-            // Secondary channel - only if backend also supports notifications.company.{id}
-            companyChannel = echo.private(`notifications.company.${user.id}`);
-            console.log(`🏢 [Echo] COMPANY secondary: notifications.company.${user.id}`);
+        const genericEvent = listenerMap[userType];
+        if (genericEvent) {
+            c.listen(genericEvent, (e: any) => {
+                console.log(`📡 [Echo] ${userType} Generic Notification:`, e);
+                addNotification({
+                    title: e.title || "تنبيه جديد",
+                    message: e.message || "لديك إشعار جديد في حسابك",
+                    type: userType === 'craftsman' ? "order_request" : (userType === 'company' ? "store_order" : "order_status"),
+                    orderId: e.id || e.order_id || 0,
+                    recipientId: user.id,
+                    recipientType: userType as any
+                });
+            });
         }
 
-        const handleNewMessage = (event: any) => {
-            console.log('📨 [RealTime] .new-message', event);
+        // ── 4. Shared Functional Listeners ──
+        const handleNewMessage = (e: any) => {
             addNotification({
                 title: "رسالة جديدة",
-                message: event.notification_text || (event.sender_name ? `رسالة جديدة من ${event.sender_name}` : "لديك رسالة جديدة"),
+                message: e.notification_text || "لديك رسالة جديدة",
                 type: "chat",
-                orderId: event.message_id || event.id || 0,
+                orderId: e.message_id || 0,
                 recipientId: user.id,
                 recipientType: userType as any,
             });
         };
 
-        const handleRequestCreated = (event: any) => {
-            console.log('👷 Service Request Created:', event);
-            addNotification({
-                title: "طلب خدمة جديد",
-                message: event.notification_text || `طلب خدمة جديد من ${event.user_name || "عميل"}`,
-                type: "order_request",
-                orderId: event.request_id || event.id,
-                recipientId: user.id,
-                recipientType: "craftsman",
-            });
-        };
+        ['.new-message', 'NewMessage', '.NewMessage'].forEach(evt => c.listen(evt, handleNewMessage));
 
-        const handleRequestUpdated = (event: any) => {
-            if (userType === "craftsman") return;
-            const statusMap: Record<string, string> = {
-                accepted: "مقبول", rejected: "مرفوض", completed: "مكتمل", pending: "قيد الانتظار",
+        // Account status refresh (for all roles)
+        [
+            '.company.approved', '.company.rejected', '.company.status.updated',
+            '.user.approved', '.user.rejected', '.user.status.updated',
+            '.worker.approved', '.worker.rejected', '.worker.status.updated',
+            'CompanyApproved', 'CompanyStatusUpdated',
+            'UserApproved', 'UserStatusUpdated',
+            'WorkerApproved', 'WorkerStatusUpdated',
+            'UserStatusUpdated', '.UserStatusUpdated'
+        ].forEach(evt => c.listen(evt, () => refreshUser()));
+
+        // ── 5. User/Craftsman Store Order Status Listeners ──
+        if (userType === "user") {
+            c.listen('.UserRequestStatusUpdated', (e: any) => {
+                console.log("📡 [Echo] User Store Order Status Updated:", e);
+                addNotification({
+                    title: "تحديث حالة طلبك ✅",
+                    message: e.notification_text || `تم تحديث طلبك إلى ${e.status_arabic} من قبل ${e.company_name}`,
+                    type: "order_status",
+                    orderId: e.request_id || 0,
+                    recipientId: user.id,
+                    recipientType: "user",
+                    variant: e.status_arabic?.includes("ملغي") ? "error" : "success"
+                });
+            });
+        }
+
+        if (userType === "craftsman") {
+            c.listen('.CraftsmanRequestStatusUpdated', (e: any) => {
+                console.log("📡 [Echo] Craftsman Store Order Status Updated:", e);
+                addNotification({
+                    title: "تحديث طلبك (صنايعي) 🛠️",
+                    message: e.notification_text || `تم تحديث طلبك إلى ${e.status_arabic} من قبل ${e.company_name}`,
+                    type: "order_status",
+                    orderId: e.request_id || 0,
+                    recipientId: user.id,
+                    recipientType: "craftsman",
+                    variant: e.status_arabic?.includes("ملغي") ? "error" : "success"
+                });
+            });
+        }
+
+        // ── 6. Company-Specific Functional Listeners (Order Receiving) ──
+        if (userType === "company") {
+            const companyChannel = echo.private(`company.notifications.${user.id}`);
+            console.log(`🔌 [Echo] Company Dedicated Channel: company.notifications.${user.id}`);
+
+            const processCompanyEvent = (callback: (data: any) => void) => (e: any) => {
+                const actualData = e.data || e;
+                callback(actualData);
             };
-            const status = event.new_status || event.status;
-            const arabicStatus = statusMap[status] || status;
-            let msg = `تم تحديث حالة طلبك إلى ${arabicStatus} ✅`;
-            if (status === "accepted") msg = "تم قبول طلبك للخدمة بنجاح ✅";
-            else if (status === "rejected") msg = "نعتذر، تم رفض طلب الخدمة الخاص بك ❌";
-            else if (status === "completed") msg = "تم إتمام الخدمة بنجاح ✨";
-            addNotification({
-                title: "تحديث طلب الخدمة",
-                message: event.notification_text || msg,
-                type: "order_status",
-                orderId: event.request_id || event.id,
-                recipientId: user.id,
-                recipientType: userType as any,
-                variant: status === "rejected" ? "error" : "success",
-            });
-        };
 
-        const handleNewReview = (event: any) => {
-            addNotification({
-                title: "تقييم جديد",
-                message: event.notification_text || `تقييم جديد: ${event.rating} نجوم`,
-                type: "order_status",
-                orderId: event.review_id || event.id,
-                recipientId: user.id,
-                recipientType: "craftsman",
-            });
-        };
+            // New Request from User or Craftsman
+            companyChannel.listen('.CompanyNewRequest', processCompanyEvent((data: any) => {
+                console.log("📡 [Echo] Company New Request:", data);
+                addNotification({
+                    title: "طلب جديد للمنتجات 🛒",
+                    message: data.message || `قام ${data.user_name} بطلب منتجات من شركتكم`,
+                    type: "store_order",
+                    orderId: data.request_id || 0,
+                    recipientId: user.id,
+                    recipientType: "company"
+                });
+            }));
 
-        const handleNewStoreOrder = (event: any) => {
-            console.log('🛒 [Echo] New Store Order Arrival:', event);
-            // The event might be nested under 'order' or direct
-            const orderData = event.order || event;
-            const buyer = event.user || event.buyer || {};
-            
-            addNotification({
-                title: "طلب منتج جديد 🛒",
-                message: event.notification_text || `طلب جديد من ${orderData.customer_name || buyer.name || "عميل"} – الإجمالي: ${orderData.total_amount ? Number(orderData.total_amount).toLocaleString() + ' ج.م' : 'غير محدد'}`,
-                type: "store_order",
-                orderId: orderData.order_id || orderData.id || 0,
-                recipientId: user.id,
-                recipientType: "company",
-                variant: "success",
-            });
-        };
-
-        const handleStoreOrderStatusUpdated = (event: any) => {
-            console.log('📦 [Echo] Store Order Status Change:', event);
-            // This event is for the buyer (user/craftsman) — company does not need it
-            if (userType === "company") return;
-
-            const statusMap: Record<string, string> = {
-                pending: "قيد الانتظار",
-                processing: "جاري التجهيز",
-                shipped: "تم الشحن",
-                delivered: "تم التوصيل",
-                cancelled: "تم الإلغاء",
-            };
-            const orderData = event.order || event;
-            const status = orderData.status || orderData.new_status;
-            const arabicStatus = statusMap[status] || status;
-
-            // Set recipientType to actual role so the notification guard passes correctly
-            const isCraftsman = userType === "craftsman";
-            const notifTitle = isCraftsman ? "تحديث طلبك (صنايعي) 🛠️" : "تحديث حالة طلبك ✅";
-            const notifRecipient = isCraftsman ? "craftsman" : "user";
-
-            addNotification({
-                title: notifTitle,
-                message: event.notification_text || `تم تحديث حالة طلبك رقم #${orderData.order_id || orderData.id} إلى ${arabicStatus} ✨`,
-                type: "order_status",
-                orderId: orderData.order_id || orderData.id || 0,
-                recipientId: user.id,
-                recipientType: notifRecipient as any,
-                variant: status === "cancelled" ? "error" : (status === "delivered" ? "success" : "info"),
-            });
-        };
-
-        // ── Build the unique channels array ──
-        // IMPORTANT: Avoid subscribing to the same channel twice (e.g. company primaryChannel IS notifications.user.{id})
-        const activeChannels = [primaryChannel, fallbackChannel, clientFallbackChannel, companyChannel].filter(Boolean);
-
-        activeChannels.forEach(c => {
-            const channelName = (c as any).name || 'private channel';
-            console.log(`📡 [Echo] Binding listeners to channel: ${channelName}`);
-
-            // ── Chat messages (all roles) ──
-            ['.new-message', 'NewMessage', '.NewMessage'].forEach(evt => c.listen(evt, handleNewMessage));
-
-            // ── Store order status update (User / Craftsman who placed the order) ──
-            if (userType === "user" || userType === "craftsman") {
-                ['.store-order.updated', 'store-order.updated', 'StoreOrderStatusNotification'].forEach(evt => c.listen(evt, handleStoreOrderStatusUpdated));
-                ['.service-request.updated', 'ServiceRequestUpdated', '.service-status-updated'].forEach(evt => c.listen(evt, handleRequestUpdated));
-            }
-
-            // ── Craftsman-specific events ──
-            if (userType === "craftsman") {
-                ['.service-request.created', 'ServiceRequestCreated', '.new-service-request'].forEach(evt => c.listen(evt, handleRequestCreated));
-                ['.new-review', 'NewReview'].forEach(evt => c.listen(evt, handleNewReview));
-            }
-
-            // ── Company: new store orders ──
-            if (userType === "company") {
-                // The backend broadcasts 'store-order.created' via broadcastAs()
-                // It goes to: private-notifications.user.{company_id}
-                [
-                    '.store-order.created',     // ← This is what broadcastAs() returns (with dot prefix)
-                    'store-order.created',       // without dot
-                    'StoreOrderNotification',    // class-based name
-                    'App\\Events\\StoreOrderNotification',
-                ].forEach(evt => c.listen(evt, handleNewStoreOrder));
-            }
-
-            // ── Generic Laravel Notification fallback ──
-            c.listen(".Illuminate\\Notifications\\Events\\BroadcastNotificationCreated", (e: any) => {
-                console.log('🔔 [Echo] Generic Broadcast:', e);
-                if (e.type?.includes('ServiceRequest')) {
-                    if (userType === "craftsman") handleRequestCreated(e);
-                    else handleRequestUpdated(e);
-                } else if (e.type?.includes('StoreOrder')) {
-                    if (userType === "company") handleNewStoreOrder(e);
-                    else handleStoreOrderStatusUpdated(e);
-                }
-            });
-        });
+            // Order Status Updated
+            companyChannel.listen('.CompanyStatusUpdated', processCompanyEvent((data: any) => {
+                addNotification({
+                    title: "تحديث حالة الطلب 📈",
+                    message: data.message || `تم تحديث حالة الطلب #${data.request_id} إلى ${data.status_arabic}`,
+                    type: "store_order",
+                    orderId: data.request_id || 0,
+                    recipientId: user.id,
+                    recipientType: "company"
+                });
+            }));
+        }
 
         return () => {
-            console.log(`🔌 [Echo] Leaving channels for user: ${user.id}`);
+            console.log(`🔌 [Echo] Leaving ${primaryChannelName}`);
             echo.leave(primaryChannelName);
-            if (fallbackChannel) echo.leave(`notifications.craftsman.${user.id}`);
-            if (clientFallbackChannel) echo.leave(`notifications.client.${user.id}`);
-            if (companyChannel) echo.leave(`notifications.company.${user.id}`);
+            if (userType === "company") {
+                echo.leave(`company.notifications.${user.id}`);
+            }
         };
-    }, [user?.id, userType, addNotification]);
+    }, [user?.id, userType, addNotification, refreshUser]);
 
     /* ================= Derived Data ================= */
 

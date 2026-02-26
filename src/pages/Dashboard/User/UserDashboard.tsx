@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import DashboardSkeleton from "../DashboardSkeleton";
 import { useUserChat } from "../../../context/UserChatProvider";
 import ReviewModal from "../../../components/ui/ReviewModal/ReviewModal";
+import { useAuth } from "../../../hooks/useAuth";
+import { FiClock, FiAlertCircle } from "react-icons/fi";
 import "./Dashboard.css";
 
 const UserDashboard: React.FC = () => {
@@ -14,6 +16,9 @@ const UserDashboard: React.FC = () => {
     const [showReviewModal, setShowReviewModal] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
     const { contacts } = useUserChat();
+    const { user } = useAuth();
+    const isBlocked = user?.status === 'rejected';
+    const isApproved = user?.status === 'approved';
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -75,7 +80,20 @@ const UserDashboard: React.FC = () => {
             {loading ? (
                 <DashboardSkeleton withSidebar={false} />
             ) : (
-                <>
+                <div className="max-w-7xl mx-auto px-4 -mt-12 relative z-20">
+                    {isBlocked && (
+                        <div className="approval-warning-banner blocked" style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <FiAlertCircle />
+                            <span>حسابك محظور من قبل الإدارة. يرجى التواصل مع <Link to="/contact" style={{ textDecoration: 'underline' }}>الدعم الفني</Link> لحل المشكلة.</span>
+                        </div>
+                    )}
+
+                    {!isApproved && !isBlocked && (
+                        <div className="approval-warning-banner" style={{ background: '#fffbeb', border: '1px solid #fef3c7', color: '#92400e', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <FiClock />
+                            <span>حسابك قيد المراجعة حالياً. سيتم تفعيل كامل الصلاحيات فور اعتماد حسابك من قبل الإدارة.</span>
+                        </div>
+                    )}
 
                     <div className="stats-grid">
                         <StatCard
@@ -181,7 +199,7 @@ const UserDashboard: React.FC = () => {
                             }}
                         />
                     )}
-                </>
+                </div>
             )}
         </div>
     );

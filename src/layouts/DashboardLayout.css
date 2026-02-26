@@ -119,3 +119,100 @@
         padding: 20px;
     }
 }
+/* Global Blocked Banner */
+.global-blocked-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    color: white;
+    padding: 12px 20px;
+    z-index: 1000;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    animation: slideDown 0.4s ease-out;
+}
+
+.banner-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-weight: 500;
+}
+
+.banner-link {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 6px 16px;
+    border-radius: 20px;
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.banner-link:hover {
+    background: white;
+    color: #ef4444;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
+}
+
+/* Blocked State Lock */
+.dashboard-container.is-blocked {
+    padding-top: 50px; /* Offset for banner */
+}
+
+.dashboard-container.is-blocked .dashboard-inner-content {
+    position: relative;
+    cursor: not-allowed;
+}
+
+/* 🔒 Global Read-Only Guard: Disable all "Action" elements */
+.dashboard-container.is-blocked .dashboard-inner-content button,
+.dashboard-container.is-blocked .dashboard-inner-content input,
+.dashboard-container.is-blocked .dashboard-inner-content select,
+.dashboard-container.is-blocked .dashboard-inner-content textarea,
+.dashboard-container.is-blocked .dashboard-inner-content [role="button"],
+.dashboard-container.is-blocked .dashboard-inner-content .btn,
+.dashboard-container.is-blocked .dashboard-inner-content .action-btn,
+.dashboard-container.is-blocked .dashboard-inner-content .delete-btn,
+.dashboard-container.is-blocked .dashboard-inner-content .save-btn,
+.dashboard-container.is-blocked .dashboard-inner-content .add-btn {
+    pointer-events: none !important;
+    filter: grayscale(1) !important;
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}
+
+/* Allow navigation links to browse */
+.dashboard-container.is-blocked .dashboard-inner-content a {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* Dim the content slightly to show it's locked */
+.dashboard-container.is-blocked .dashboard-inner-content {
+    filter: contrast(0.8) brightness(1.05);
+}
+
+/* Exceptions to the lock */
+.dashboard-container.is-blocked .dashboard-sidebar,
+.dashboard-container.is-blocked .dashboard-mobile-header,
+.dashboard-container.is-blocked .global-blocked-banner {
+    pointer-events: auto !important;
+}
+
+@media (max-width: 1024px) {
+    .dashboard-container.is-blocked {
+        padding-top: 120px; /* Banner + Mobile Header */
+    }
+}

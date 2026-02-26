@@ -34,6 +34,7 @@ export const useAuth = () => {
                 localStorage.setItem("user_name", user.name);
                 localStorage.setItem("user_id", user.id.toString());
                 localStorage.setItem("userType", role);
+                localStorage.setItem("user_status", user.status || "");
 
                 // 3. React Query Cache seeding
                 queryClient.setQueryData(["authUser"], user);

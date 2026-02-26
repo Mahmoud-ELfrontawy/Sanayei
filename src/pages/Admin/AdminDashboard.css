@@ -321,3 +321,63 @@
   border: 1px solid #fee2e2;
 }
 
+
+/* -- Quick Links Grid --------------------------------------- */
+.adm-quick-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.adm-quick-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.25rem 0.75rem;
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--link-color, var(--color-primary));
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+.adm-quick-link:hover {
+  border-color: var(--link-color, var(--color-primary));
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.07);
+}
+.adm-ql-icon {
+  font-size: 1.2rem;
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 12px;
+}
+.adm-ql-label { color: #374151; }
+
+/* -- Notification Badge ------------------------------------- */
+.adm-notif-badge {
+  background: var(--color-primary, #5fa8d3);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.1rem 0.6rem;
+  border-radius: 50px;
+}
+
+/* -- Feed items --------------------------------------------- */
+.adm-feed-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+}
+.adm-feed-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.65rem;
+  border-radius: 50px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}

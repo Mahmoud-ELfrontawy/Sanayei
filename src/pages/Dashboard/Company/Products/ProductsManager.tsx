@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FiPlus, FiTrash2, FiPackage, FiImage, FiX, FiEdit } from "react-icons/fi";
+import { FiPlus, FiTrash2, FiPackage, FiImage, FiX, FiEdit, FiAlertCircle } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { getStoreProducts, addStoreProduct, getStoreCategories, deleteStoreProduct } from "../../../../Api/auth/Company/storeManagement.api";
 import { getFullImageUrl } from "../../../../utils/imageUrl";
+import { useAuth } from "../../../../hooks/useAuth";
 import "./ProductsManager.css";
 
 const EMPTY_PRODUCT = {
@@ -16,12 +17,15 @@ const EMPTY_PRODUCT = {
     origin_country: "",
     warranty: "",
     badge: "",
-    is_active: true,
+    is_active: false,
     main_image: null as File | null,
     gallery_images: [] as File[],
 };
 
 const ProductsManager: React.FC = () => {
+    const { user } = useAuth();
+    const isApproved = user?.status === 'approved';
+
     const [products, setProducts] = useState<any[]>([]);
     const [categories, setCategories] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -121,6 +125,15 @@ const ProductsManager: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!isApproved) {
+            const msg = user?.status === 'rejected'
+                ? "حسابك محظور، يرجى التواصل مع الدعم الفني لحل المشكلة."
+                : "عذراً، يجب أن يكون حسابك معتمداً لتتمكن من إضافة أو تعديل المنتجات.";
+            toast.error(msg);
+            return;
+        }
+
         if (!newProduct.name || !newProduct.price) {
             toast.warning("يرجى ملء الحقول الأساسية (الاسم والسعر)");
             return;
@@ -176,6 +189,13 @@ const ProductsManager: React.FC = () => {
     };
 
     const handleDeleteProduct = async (id: number) => {
+        if (!isApproved) {
+            const msg = user?.status === 'rejected'
+                ? "حسابك محظور، يرجى التواصل مع الدعم الفني لحل المشكلة."
+                : "لا يمكنك حذف المنتجات إلا بعد اعتماد حسابك.";
+            toast.error(msg);
+            return;
+        }
         if (!window.confirm("هل أنت متأكد من حذف هذا المنتج؟")) return;
         try {
             const res = await deleteStoreProduct(id);
@@ -197,11 +217,37 @@ const ProductsManager: React.FC = () => {
                     <h1>إدارة المنتجات</h1>
                     <p>أضف منتجاتك الجديدة وقم بتحديث المخزون والأسعار</p>
                 </div>
-                <button className="add-btn-premium" onClick={() => setShowAddForm(!showAddForm)}>
+                <button
+                    className={`add-btn-premium ${!isApproved ? 'disabled' : ''}`}
+                    onClick={() => {
+                        if (user?.status === 'rejected') {
+                            toast.error("حسابك محظور، يرجى التواصل مع الدعم الفني لحل المشكلة.");
+                        } else if (user?.status === 'pending') {
+                            toast.info("بانتظار اعتماد الحساب لتتمكن من إضافة منتجات");
+                        } else {
+                            setShowAddForm(!showAddForm);
+                        }
+                    }}
+                    title={!isApproved ? "يجب اعتماد الحساب أولاً" : ""}
+                >
                     <FiPlus />
                     {showAddForm ? "إغلاق النموذج" : "إضافة منتج جديد"}
                 </button>
             </div>
+
+            {user?.status === 'rejected' && (
+                <div className="approval-warning-banner blocked" style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b' }}>
+                    <FiAlertCircle />
+                    <span>حسابك محظور من قبل الإدارة. يرجى التواصل مع الدعم الفني لحل المشكلة.</span>
+                </div>
+            )}
+
+            {user?.status === 'pending' && (
+                <div className="approval-warning-banner">
+                    <FiAlertCircle />
+                    <span>حسابك قيد المراجعة. لا يمكنك إضافة منتجات جديدة أو تعديل المنتجات الحالية حتى يتم اعتماد الحساب من قبل الإدارة.</span>
+                </div>
+            )}
 
             {/* ===== ADD PRODUCT FORM ===== */}
             {showAddForm && (
@@ -243,17 +289,19 @@ const ProductsManager: React.FC = () => {
                                     <label>الكمية المتوفرة *</label>
                                     <input type="number" min="0" value={newProduct.stock} onChange={handleChange("stock")} />
                                 </div>
-                                <div className="input-field">
-                                    <label>الحالة</label>
-                                    <label className="toggle-label">
-                                        <input
-                                            type="checkbox"
-                                            checked={newProduct.is_active}
-                                            onChange={(e) => setNewProduct(p => ({ ...p, is_active: e.target.checked }))}
-                                        />
-                                        <span>{newProduct.is_active ? "متاح للبيع" : "غير متاح"}</span>
-                                    </label>
-                                </div>
+                                {editingProduct && (
+                                    <div className="input-field">
+                                        <label>الحالة</label>
+                                        <label className="toggle-label">
+                                            <input
+                                                type="checkbox"
+                                                checked={newProduct.is_active}
+                                                onChange={(e) => setNewProduct(p => ({ ...p, is_active: e.target.checked }))}
+                                            />
+                                            <span>{newProduct.is_active ? "متاح للبيع" : "غير متاح"}</span>
+                                        </label>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="input-field full-width">

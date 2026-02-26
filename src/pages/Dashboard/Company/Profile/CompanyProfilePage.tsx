@@ -1,9 +1,12 @@
 import React from "react";
-import { FiUpload, FiSave, FiInfo } from "react-icons/fi";
+import { FiUpload, FiSave, FiInfo, FiCheckCircle, FiClock, FiAlertCircle } from "react-icons/fi";
+import { toast } from "react-toastify";
 import { useCompanyProfile } from "./useCompanyProfile";
+import { useAuth } from "../../../../hooks/useAuth";
 import "./CompanyProfile.css";
 
 const CompanyProfilePage: React.FC = () => {
+    const { user } = useAuth();
     const {
         register,
         handleSubmit,
@@ -32,6 +35,32 @@ const CompanyProfilePage: React.FC = () => {
             </div>
 
             <form onSubmit={handleSubmit(handleUpdate)} className="profile-edit-form">
+
+                {/* --- Status Card --- */}
+                <div className={`profile-card status-display-card ${user?.status || 'pending'}`}>
+                    <div className="status-icon-box">
+                        {user?.status === 'approved' && <FiCheckCircle size={32} />}
+                        {user?.status === 'rejected' && <FiAlertCircle size={32} />}
+                        {(user?.status === 'pending' || !user?.status) && <FiClock size={32} />}
+                    </div>
+                    <div className="status-text-content">
+                        <h3>
+                            {user?.status === 'approved' ? 'حساب معتمد' :
+                                user?.status === 'rejected' ? 'الحساب محظور' : 'الحساب قيد المراجعة'}
+                        </h3>
+                        <p>
+                            {user?.status === 'approved' ? 'حسابك مفعل الآن ويمكنك رفع المنتجات واستخدام كافة الميزات.' :
+                                user?.status === 'rejected' ? (
+                                    <>
+                                        نأسف، تم حظر حسابك من قبل الإدارة. يرجى التواصل مع الدعم الفني لحل المشكلة:
+                                        <br />
+                                        <a href="https://wa.me/201026605030" target="_blank" rel="noreferrer" style={{ color: '#dc2626', fontWeight: 'bold', textDecoration: 'underline' }}>تواصل عبر واتساب</a>
+                                    </>
+                                ) :
+                                    'جاري مراجعة بياناتك من قبل الإدارة، ستتمكن من رفع المنتجات فور اعتماد الحساب.'}
+                        </p>
+                    </div>
+                </div>
 
                 {/* --- Logo Section --- */}
                 <div className="profile-card logo-card">
@@ -109,7 +138,17 @@ const CompanyProfilePage: React.FC = () => {
                 </div>
 
                 <div className="form-actions">
-                    <button type="submit" className="save-btn" disabled={isSubmitting}>
+                    <button
+                        type="submit"
+                        className={`save-btn ${user?.status === 'rejected' ? 'disabled' : ''}`}
+                        disabled={isSubmitting}
+                        onClick={(e) => {
+                            if (user?.status === 'rejected') {
+                                e.preventDefault();
+                                toast.error("حسابك محظور، يرجى التواصل مع الدعم الفني لحل المشكلة.");
+                            }
+                        }}
+                    >
                         <FiSave />
                         {isSubmitting ? "جاري الحفظ..." : "حفظ التغييرات"}
                     </button>

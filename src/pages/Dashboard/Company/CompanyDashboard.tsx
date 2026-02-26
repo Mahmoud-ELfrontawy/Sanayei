@@ -3,9 +3,15 @@ import { Link } from "react-router-dom";
 import StatCard from "../../../components/dashboard/StatCard/StatCard";
 import { FaBox, FaShoppingCart, FaChartLine, FaStore } from "react-icons/fa";
 import { getStoreProducts, getStoreOrders } from "../../../Api/auth/Company/storeManagement.api";
+import { useAuth } from "../../../hooks/useAuth";
+import { FiAlertCircle } from "react-icons/fi";
 import "./CompanyDashboard.css";
 
 const CompanyDashboard: React.FC = () => {
+    const { user } = useAuth();
+    const isApproved = user?.status === 'approved';
+    const isBlocked = user?.status === 'rejected';
+
     const [stats, setStats] = useState({
         totalProducts: 0,
         newOrders: 0,
@@ -62,6 +68,20 @@ const CompanyDashboard: React.FC = () => {
                     </Link>
                 </div>
             </header>
+
+            {isBlocked && (
+                <div className="approval-warning-banner blocked" style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <FiAlertCircle />
+                    <span>حسابك محظور من قبل الإدارة. يرجى التواصل مع الدعم الفني لحل المشكلة.</span>
+                </div>
+            )}
+
+            {!isApproved && !isBlocked && (
+                <div className="approval-warning-banner" style={{ background: '#fffbeb', border: '1px solid #fef3c7', color: '#92400e', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <FiAlertCircle />
+                    <span>حسابك قيد المراجعة. لا يمكنك إدارة المنتجات أو معالجة الطلبات حتى يتم اعتماد الحساب من قبل الإدارة.</span>
+                </div>
+            )}
 
             <div className="stats-grid">
                 <StatCard

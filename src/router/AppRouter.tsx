@@ -2,7 +2,8 @@ import { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import MainLayout from "../layouts/MainLayout";
-import Home from "../pages/Home"; // Eagerly loaded for LCP
+import Home from "../pages/Home";
+import { AdminNotificationProvider } from "../context/AdminNotificationContext";
 
 // Lazy load pages for better performance
 const ServicesPage = lazy(() => import("../pages/Services/ServicesPage"));
@@ -50,8 +51,11 @@ const UsersPage = lazy(() => import("../pages/Admin/Users/UsersPage"));
 const CraftsmenPage = lazy(() => import("../pages/Admin/Craftsmen/CraftsmenPage"));
 const AdminServicesPage = lazy(() => import("../pages/Admin/Services/ServicesPage"));
 const GovernoratesPage = lazy(() => import("../pages/Admin/Governorates/GovernoratesPage"));
+const AdminCategoriesPage = lazy(() => import("../pages/Admin/Categories/CategoriesPage"));
 const ServiceRequestsPage = lazy(() => import("../pages/Admin/ServiceRequests/ServiceRequestsPage"));
 const ReviewsPage = lazy(() => import("../pages/Admin/Reviews/ReviewsPage"));
+const AdminCompaniesPage = lazy(() => import("../pages/Admin/Companies/CompaniesPage"));
+const ProductsPage = lazy(() => import("../pages/Admin/Products/ProductsPage"));
 
 const LoadingFallback = () => (
   <div style={{
@@ -75,15 +79,25 @@ const AppRouter: React.FC = () => {
           <Route path="/google-callback" element={<GoogleCallback />} />
 
           {/* ===== Admin Routes ===== */}
-          <Route path="/admin" element={<AdminLayout />}>
+          <Route
+            path="/admin"
+            element={
+              <AdminNotificationProvider>
+                <AdminLayout />
+              </AdminNotificationProvider>
+            }
+          >
             <Route index element={<AdminDashboard />} />
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="users" element={<UsersPage />} />
             <Route path="craftsmen" element={<CraftsmenPage />} />
+            <Route path="companies" element={<AdminCompaniesPage />} />
             <Route path="services" element={<AdminServicesPage />} />
             <Route path="governorates" element={<GovernoratesPage />} />
+            <Route path="categories" element={<AdminCategoriesPage />} />
             <Route path="requests" element={<ServiceRequestsPage />} />
             <Route path="reviews" element={<ReviewsPage />} />
+            <Route path="products" element={<ProductsPage />} />
           </Route>
 
           {/* ===== Main Layout ===== */}

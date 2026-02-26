@@ -17,7 +17,7 @@ export const useRegisterCompany = () => {
     try {
       const res = await registerCompany(data);
       if (res.success) {
-        toast.success("تم تسجيل المتجر بنجاح! يمكنك تسجيل الدخول الآن.");
+        toast.success("تم تسجيل المتجر بنجاح! طلبك قيد المراجعة الآن من قبل الإدارة، وسنوافيك بإشعار فور الاعتماد.");
         navigate("/login");
       } else {
         toast.error(res.message || "فشل تسجيل المتجر");

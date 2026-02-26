@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { FaBars, FaTimes, FaLock, FaEnvelope } from "react-icons/fa";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import Sidebar from "../components/dashboard/Sidebar/Sidebar";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { useAuth } from "../hooks/useAuth";
 import logo from "../assets/images/final logo.png";
 import "./DashboardLayout.css";
 
@@ -9,9 +10,22 @@ function DashboardLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const location = useLocation();
     const isMessagesPage = location.pathname.includes("/dashboard/messages");
+    const { user } = useAuth();
+    const isBlocked = user?.status === 'rejected';
 
     return (
-        <div className={`dashboard-container ${isSidebarOpen ? "sidebar-open" : ""} ${isMessagesPage ? "is-messages-page" : ""}`}>
+        <div className={`dashboard-container ${isSidebarOpen ? "sidebar-open" : ""} ${isMessagesPage ? "is-messages-page" : ""} ${isBlocked ? "is-blocked" : ""}`}>
+            {isBlocked && (
+                <div className="global-blocked-banner">
+                    <div className="banner-content">
+                        <FaLock className="lock-icon" />
+                        <span className="banner-text">هذا الحساب محظور حالياً. يمكنك تصفح البيانات فقط، للتفعيل يرجى: </span>
+                        <Link to="/contact" className="banner-link">
+                            <FaEnvelope /> تواصل معنا
+                        </Link>
+                    </div>
+                </div>
+            )}
             {/* Mobile Header */}
             <header className="dashboard-mobile-header">
                 <button

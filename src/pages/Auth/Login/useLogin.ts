@@ -27,7 +27,14 @@ export const useLogin = () => {
             
             if (success) {
                 const name = localStorage.getItem('user_name') || "مرحباً";
-                toast.success(`تم تسجيل الدخول بنجاح، مرحباً ${name}`);
+                const role = localStorage.getItem('userType');
+                const status = localStorage.getItem('user_status');
+
+                if (role === 'company' && status === 'pending') {
+                    toast.info(`مرحباً ${name}، حسابك قيد المراجعة حالياً وسيتم تفعيله قريباً.`);
+                } else {
+                    toast.success(`تم تسجيل الدخول بنجاح، مرحباً ${name}`);
+                }
                 
                 // Navigate manually based on user role
                 setTimeout(() => {
@@ -38,8 +45,8 @@ export const useLogin = () => {
                 }, 100);
                 
             } else {
-                // If login returns false without throwing
-                toast.error("فشل تسجيل الدخول، يرجى التحقق من البيانات");
+                // Specific errors (like Blocked or Pending) are handled inside useAuth.login toast
+                // We don't need a generic toast here unless we want to catch specific logic.
             }
         } catch (error) {
             console.error("Login Error:", error);

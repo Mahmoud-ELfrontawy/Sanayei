@@ -8,7 +8,8 @@ import {
     FaWallet,
     FaUser,
     FaBoxOpen,
-    FaShoppingCart
+    FaShoppingCart,
+    FaLock
 } from "react-icons/fa";
 
 import { toast } from "react-toastify";
@@ -36,6 +37,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const { user, logout, userType } = useAuth();
+    const isBlocked = user?.status === 'rejected';
     const { unreadCount } = useNotifications();
 
     // 🗑️ Removed localStorage.getItem("userType") to use context value
@@ -96,6 +98,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             badge: unreadCount,
             hasUnread: unreadCount > 0
         },
+        
         // Company-specific links
         ...(userType === "company" ? [
             {
@@ -138,6 +141,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                         <span className={`user-role-badge ${userType || "user"}`}>
                             {roleLabels[userType as keyof typeof roleLabels] || "مستخدم"}
                         </span>
+
+                        {isBlocked && (
+                            <span className="blocked-status-badge">
+                                <FaLock size={12} /> محظور
+                            </span>
+                        )}
 
                         <NavLink
                             to={userType === "craftsman" ? "/craftsman/profile" : (userType === "company" ? "/dashboard/company/profile" : (userType === "admin" ? "/admin/profile" : "/user/profile"))}

@@ -92,8 +92,10 @@ const RequestServiceForm: React.FC<Props> = ({
 
         if (!service) return;
 
-        setValue("service_name", service.name);
-    }, [serviceId, services, setValue]);
+        if (watch("service_name") !== service.name) {
+            setValue("service_name", service.name);
+        }
+    }, [serviceId, services, setValue, watch]);
 
     /* ===============================
         فلترة الصنايعية
@@ -129,18 +131,25 @@ const RequestServiceForm: React.FC<Props> = ({
 
             autoSelectedRef.current = true;
 
-            setValue("industrial_type", String(worker.id));
-            setValue("industrial_name", worker.name);
+            if (watch("industrial_type") !== String(worker.id)) {
+                setValue("industrial_type", String(worker.id));
+            }
+            if (watch("industrial_name") !== worker.name) {
+                setValue("industrial_name", worker.name);
+            }
 
+            let newPrice = "غير محدد";
             if (worker.price_range) {
-                setValue("price", worker.price_range);
+                newPrice = worker.price_range;
             } else if (worker.price) {
-                setValue("price", String(worker.price));
-            } else {
-                setValue("price", "غير محدد");
+                newPrice = String(worker.price);
+            }
+
+            if (watch("price") !== newPrice) {
+                setValue("price", newPrice);
             }
         }
-    }, [serviceId, filteredSanaei, setValue]);
+    }, [serviceId, filteredSanaei, setValue, watch]);
 
     /* ===============================
         Reset عند تغيير الخدمة
@@ -152,10 +161,10 @@ const RequestServiceForm: React.FC<Props> = ({
             return;
         }
 
-        setValue("industrial_type", "");
-        setValue("industrial_name", "");
-        setValue("price", "");
-    }, [serviceId, setValue]);
+        if (watch("industrial_type") !== "") setValue("industrial_type", "");
+        if (watch("industrial_name") !== "") setValue("industrial_name", "");
+        if (watch("price") !== "") setValue("price", "");
+    }, [serviceId, setValue, watch]);
 
     /* ===============================
         اختيار صنايعي يدوي
@@ -170,16 +179,21 @@ const RequestServiceForm: React.FC<Props> = ({
 
         if (!worker) return;
 
-        setValue("industrial_name", worker.name);
-
-        if (worker.price_range) {
-            setValue("price", worker.price_range);
-        } else if (worker.price) {
-            setValue("price", String(worker.price));
-        } else {
-            setValue("price", "غير محدد");
+        if (watch("industrial_name") !== worker.name) {
+            setValue("industrial_name", worker.name);
         }
-    }, [workerId, sanaei, setValue]);
+
+        let newPrice = "غير محدد";
+        if (worker.price_range) {
+            newPrice = worker.price_range;
+        } else if (worker.price) {
+            newPrice = String(worker.price);
+        }
+
+        if (watch("price") !== newPrice) {
+            setValue("price", newPrice);
+        }
+    }, [workerId, sanaei, setValue, watch]);
 
     return (
         <>

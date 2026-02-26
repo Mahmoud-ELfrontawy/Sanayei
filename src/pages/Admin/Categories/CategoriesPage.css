@@ -1,0 +1,208 @@
+/* ============================================================
+   CategoriesPage.css – Admin Categories Management
+============================================================ */
+.cat-page {
+    width: 100%;
+    padding-bottom: 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    direction: rtl;
+}
+
+/* Header */
+.cat-header {
+    background: linear-gradient(135deg, var(--color-text-accent, #1e3a5f), var(--color-primary, #5fa8d3), #4389b1);
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(95, 168, 211, 0.2);
+}
+
+.cat-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.cat-header h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 0 0 0.3rem;
+    display: flex;
+    align-items: center;
+}
+
+.cat-header p {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.8);
+    margin: 0;
+}
+
+.cat-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.6rem;
+    border-radius: 50px;
+    border: none;
+    background: #fff;
+    color: var(--color-primary, #5fa8d3);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.cat-add-btn:hover {
+    background: #e9f4fb;
+    transform: translateY(-2px);
+}
+
+/* Controls */
+.cat-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.cat-search {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 0.7rem 1.2rem;
+    transition: border-color 0.2s;
+}
+
+.cat-search:focus-within { border-color: var(--color-primary, #5fa8d3); }
+.cat-search-icon { color: #94a3b8; }
+.cat-search input { border: none; outline: none; width: 100%; font-size: 0.95rem; direction: rtl; }
+
+.cat-refresh-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 1.5px solid #e2e8f0;
+    background: #fff;
+    color: #64748b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.cat-refresh-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+/* Table */
+.cat-table-wrapper {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    overflow-x: auto;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+}
+
+.cat-table {
+    width: 100%;
+    border-collapse: collapse;
+    direction: rtl;
+}
+
+.cat-table thead tr {
+    background: #f8fafc;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.cat-table th {
+    padding: 1rem 1.2rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #64748b;
+    text-align: right;
+}
+
+.cat-table tbody tr {
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.15s;
+}
+
+.cat-table tbody tr:hover { background: #f8fafc; }
+.cat-table tbody tr:last-child { border-bottom: none; }
+.cat-table td { padding: 0.9rem 1.2rem; font-size: 0.9rem; color: #374151; vertical-align: middle; }
+
+.cat-name { font-weight: 700; color: #1e293b; display: flex; align-items: center; }
+.cat-tag-icon { color: var(--color-primary); margin-left: 8px; }
+.cat-desc { color: #94a3b8; }
+.cat-count { background: #e0f2fe; color: #0369a1; padding: 0.2rem 0.7rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600; }
+
+.cat-actions { display: flex; gap: 0.5rem; }
+
+.cat-btn-edit, .cat-btn-del {
+    width: 34px; height: 34px; border-radius: 8px; border: none;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; transition: all 0.2s;
+}
+
+.cat-btn-edit { background: #eff6ff; color: #3b82f6; }
+.cat-btn-edit:hover { background: #3b82f6; color: #fff; transform: scale(1.1); }
+.cat-btn-del { background: #fff1f2; color: #ef4444; }
+.cat-btn-del:hover { background: #ef4444; color: #fff; transform: scale(1.1); }
+
+.cat-state { text-align: center; padding: 4rem 2rem; color: #94a3b8; font-size: 1rem; }
+
+/* Modal */
+.cat-modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999; padding: 1rem; backdrop-filter: blur(4px);
+}
+
+.cat-modal {
+    background: #fff; border-radius: 20px; padding: 2.5rem;
+    width: 100%; max-width: 480px; box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+    direction: rtl; animation: catModalIn 0.25s ease;
+}
+
+@keyframes catModalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.cat-modal h2 { font-size: 1.4rem; font-weight: 800; color: #1e293b; margin: 0 0 1.5rem; }
+
+.cat-field { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.2rem; }
+
+.cat-field label { font-size: 0.88rem; font-weight: 600; color: #374151; }
+
+.cat-field input, .cat-field textarea {
+    padding: 0.75rem 1rem; border: 1.5px solid #e2e8f0; border-radius: 10px;
+    font-size: 0.95rem; color: #1e293b; outline: none; direction: rtl; width: 100%;
+}
+
+.cat-field input:focus, .cat-field textarea:focus { border-color: var(--color-primary); }
+
+.cat-modal-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
+
+.cat-btn-cancel {
+    padding: 0.75rem 2rem; border-radius: 50px; border: 1.5px solid #e2e8f0;
+    background: #fff; color: #64748b; font-size: 0.95rem; font-weight: 600; cursor: pointer;
+}
+
+.cat-btn-save {
+    padding: 0.75rem 2.5rem; border-radius: 50px; border: none;
+    background: var(--color-primary, #5fa8d3); color: #fff; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
+}
+
+.cat-btn-save:hover:not(:disabled) { background: var(--color-text-accent, #1e3a5f); transform: translateY(-2px); }
+.cat-btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
+
+@media (max-width: 768px) {
+    .cat-header-content { flex-direction: column; text-align: center; }
+    .cat-table th, .cat-table td { padding: 0.7rem 0.8rem; font-size: 0.82rem; }
+}

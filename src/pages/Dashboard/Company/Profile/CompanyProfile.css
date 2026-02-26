@@ -48,6 +48,67 @@
     font-size: 1.1rem;
 }
 
+/* Status Card Styling */
+.status-display-card {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem 2rem;
+    border: none;
+    background: #fff;
+    transition: all 0.3s ease;
+}
+
+.status-display-card.approved {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border-right: 5px solid #22c55e;
+}
+
+.status-display-card.pending {
+    background: linear-gradient(135deg, #fffaf5 0%, #fff7ed 100%);
+    border-right: 5px solid #f97316;
+}
+
+.status-display-card.rejected {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    border-right: 5px solid #ef4444;
+}
+
+.status-icon-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.approved .status-icon-box { color: #22c55e; }
+.pending .status-icon-box { color: #f97316; }
+.rejected .status-icon-box { color: #ef4444; }
+
+.status-text-content h3 {
+    margin: 0 0 0.3rem 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.approved .status-text-content h3 { color: #166534; }
+.pending .status-text-content h3 { color: #9a3412; }
+.rejected .status-text-content h3 { color: #991b1b; }
+
+.status-text-content p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.approved .status-text-content p { color: #15803d; }
+.pending .status-text-content p { color: #c2410c; }
+.rejected .status-text-content p { color: #b91c1c; }
+
 /* Logo Upload Section */
 .logo-upload-wrapper {
     display: flex;

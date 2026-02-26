@@ -11,7 +11,8 @@ import { toUiDate } from "../../../utils/dateApiHelper";
 import { useAuth } from "../../../hooks/useAuth";
 import { useEffect, useState } from "react";
 import FormSkeleton from "../base/FormSkeleton";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { FiAlertCircle, FiClock } from "react-icons/fi";
 
 interface UserState {
     name: string;
@@ -30,7 +31,9 @@ interface ApiErrorResponse {
 }
 
 const ProfileUser = () => {
-    const { refreshUser, userType } = useAuth();
+    const { user: authUser, refreshUser, userType } = useAuth();
+    const isBlocked = authUser?.status === 'rejected';
+    const isApproved = authUser?.status === 'approved';
     const navigate = useNavigate();
 
     // 🛑 Redirect if Company
@@ -95,6 +98,11 @@ const ProfileUser = () => {
 
     /* ================= Save ================= */
     const handleSave = async () => {
+        if (isBlocked) {
+            toast.error("حسابك محظور، لا يمكنك تعديل البيانات حالياً.");
+            return;
+        }
+
         // ✅ Frontend validation
         if (!user.name.trim()) {
             toast.error("الاسم مطلوب ❗");
@@ -141,6 +149,11 @@ const ProfileUser = () => {
 
     /* ================= Delete Account ================= */
     const handleDeleteAccount = async () => {
+        if (isBlocked) {
+            toast.error("حسابك محظور، يرجى التواصل مع الإدارة بخصوص الحساب.");
+            return;
+        }
+
         try {
             await deleteUserAccount();
 
@@ -162,15 +175,31 @@ const ProfileUser = () => {
     }
 
     return (
-        <ProfileFormBase
-            data={user}
-            setData={setUser}
-            imageFile={imageFile}
-            setImageFile={setImageFile}
-            onSave={handleSave}
-            onDelete={handleDeleteAccount}
-            loading={loading}
-        />
+        <div className="profile-user-page">
+            {isBlocked && (
+                <div className="approval-warning-banner blocked" style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <FiAlertCircle />
+                    <span>حسابك محظور من قبل الإدارة. يرجى التواصل مع <Link to="/contact" style={{ textDecoration: 'underline' }}>الدعم الفني</Link> لحل المشكلة.</span>
+                </div>
+            )}
+
+            {!isApproved && !isBlocked && (
+                <div className="approval-warning-banner" style={{ background: '#fffbeb', border: '1px solid #fef3c7', color: '#92400e', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <FiClock />
+                    <span>حسابك قيد المراجعة حالياً. سيتم اعتماد التعديلات فور موافقة الإدارة.</span>
+                </div>
+            )}
+
+            <ProfileFormBase
+                data={user}
+                setData={setUser}
+                imageFile={imageFile}
+                setImageFile={setImageFile}
+                onSave={handleSave}
+                onDelete={handleDeleteAccount}
+                loading={loading}
+            />
+        </div>
     );
 };
 export default ProfileUser;
