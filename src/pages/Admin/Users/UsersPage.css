@@ -194,13 +194,17 @@
     background: var(--color-bg-main);
     border-radius: var(--radius-card);
     border: 1px solid var(--color-border);
-    overflow: hidden;
+    overflow-x: auto;
+    width: 100%;
+    display: block;
+    -webkit-overflow-scrolling: touch;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
 }
 
 .users-table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 900px;
 }
 
 .users-table th {
@@ -264,9 +268,9 @@
     justify-content: center;
 }
 
-.status-badge-modern.active { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-.status-badge-modern.banned { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-.status-badge-modern.inactive { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; }
+.status-badge-modern.active { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; white-space: nowrap; }
+.status-badge-modern.banned { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; white-space: nowrap; }
+.status-badge-modern.inactive { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; white-space: nowrap; }
 
 .date-display {
     font-weight: 600;
@@ -324,9 +328,9 @@
     font-weight: 700;
 }
 
-.role-badge.admin { background: #f1f5f9; color: var(--color-text-accent); border: 1px solid var(--color-divider); }
-.role-badge.craftsman { background: #e0f2fe; color: #0369a1; }
-.role-badge.user { background: #f8fafc; color: #64748b; }
+.role-badge.admin { background: #f1f5f9; color: var(--color-text-accent); border: 1px solid var(--color-divider); white-space: nowrap; }
+.role-badge.craftsman { background: #e0f2fe; color: #0369a1; white-space: nowrap; }
+.role-badge.user { background: #f8fafc; color: #64748b; white-space: nowrap; }
 
 /* Verification Button */
 .verify-btn {
@@ -1240,4 +1244,40 @@
     .user-detail-sidebar {
         width: 100%;
     }
+}
+/* Responsive Overrides for UsersPage */
+@media (max-width: 1024px) {
+    .users-container { padding: 1.5rem; }
+    .title-area h1 { font-size: 2rem; }
+    .stat-premium-card { min-width: 180px; padding: 1rem; }
+    .user-detail-sidebar.large { width: 450px; }
+}
+
+@media (max-width: 768px) {
+    .users-premium-header { padding: 1.5rem; }
+    .header-glass-content { flex-direction: column; text-align: center; }
+    .header-stats-grid { flex-direction: column; width: 100%; gap: 1rem; }
+    .stat-premium-card { width: 100%; }
+    
+    .users-controls { flex-direction: column; gap: 1rem; }
+    .filters-grid { display: grid; grid-template-columns: 1fr; width: 100%; gap: 0.8rem; }
+    
+    .users-table-wrapper { overflow-x: auto; }
+    .users-table th, .users-table td { padding: 0.8rem 1rem; font-size: 0.85rem; }
+    
+    .user-main-info { max-width: 150px; }
+
+    .user-detail-sidebar.large { width: 100%; }
+    .detail-avatar.xlarge { width: 80px; height: 80px; font-size: 2rem; }
+    
+    .admin-user-modal { width: 95%; max-height: 90vh; overflow-y: auto; }
+    .form-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+    .title-area h1 { font-size: 1.5rem; }
+    .header-actions { width: 100%; }
+    .add-user-btn, .export-action-btn, .refresh-action-btn { width: 100%; justify-content: center; }
+    
+    .pagination-container { flex-direction: column; gap: 1rem; }
 }

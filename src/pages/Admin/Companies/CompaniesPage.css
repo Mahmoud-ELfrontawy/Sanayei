@@ -85,13 +85,17 @@
     background: var(--color-bg-main);
     border-radius: var(--radius-card);
     border: 1px solid var(--color-border);
-    overflow: hidden;
+    overflow-x: auto;
+    width: 100%;
+    display: block;
+    -webkit-overflow-scrolling: touch;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
 }
 
 .services-table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 900px;
 }
 
 .services-table th {
@@ -257,16 +261,19 @@
 .admin-badge.success {
     background: #dcfce7;
     color: #166534;
+    white-space: nowrap;
 }
 
 .admin-badge.warning {
     background: #fef3c7;
     color: #92400e;
+    white-space: nowrap;
 }
 
 .admin-badge.danger {
     background: #fee2e2;
     color: #991b1b;
+    white-space: nowrap;
 }
 
 /* Specific button style for toggle */
@@ -704,19 +711,45 @@
 .full-reject-btn.danger-variant { color: #dc2626; border-color: #fecaca; }
 .full-reject-btn.danger-variant:hover { background: #fef2f2; border-color: #ef4444; }
 
-@media (max-width: 768px) {
-    .artisan-sidebar {
-        width: 100%;
-        height: 90vh;
-        top: 10vh;
-        left: 0;
-        animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
+@media (max-width: 1024px) {
+    .services-container { padding: 1.5rem; }
+    .title-area h1 { font-size: 2rem; }
+    .details-modal { width: 90% !important; }
+}
 
-@keyframes slideInUp {
-        from { transform: translateY(100%); }
-        to { transform: translateY(0); }
+@media (max-width: 768px) {
+    .services-premium-header { padding: 1.5rem; margin-bottom: 1.5rem; }
+    .header-glass-content { flex-direction: column; text-align: center; }
+    
+    .services-controls { flex-direction: column; padding: 1rem; gap: 1rem; }
+    .search-wrapper { width: 100%; }
+    .companies-status-filter { width: 100%; }
+    
+    .services-table-wrapper { overflow-x: auto; }
+    .services-table th, .services-table td { padding: 1rem; font-size: 0.85rem; }
+    
+    .company-info-text { max-width: 150px; }
+
+    .details-header-info { flex-direction: column; text-align: center; gap: 1rem; }
+    .details-logo-lg { margin: 0 auto; }
+    .details-grid-premium { grid-template-columns: 1fr; }
+    .info-item-premium.full-width { grid-column: span 1; }
+    .form-section-separator { grid-column: span 1; }
+
+    .artisan-sidebar {
+        width: 100% !important;
+        height: 100vh;
+        top: 0;
+        left: 0;
     }
+}
+
+@media (max-width: 480px) {
+    .title-area h1 { font-size: 1.5rem; }
+    .services-container { padding: 1rem; }
+    
+    .company-primary-name { font-size: 0.9rem; }
+    .actions-cell { flex-wrap: wrap; }
 }
 
 /* Edit Mode Styling in Sidebar */

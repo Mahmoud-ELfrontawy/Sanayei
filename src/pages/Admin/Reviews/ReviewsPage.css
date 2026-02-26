@@ -65,13 +65,21 @@
     background: var(--color-bg-main);
     border-radius: var(--radius-card);
     border: 1px solid var(--color-border);
-    overflow: hidden;
+    overflow-x: auto;
+    width: 100%;
+    display: block;
+    -webkit-overflow-scrolling: touch;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
 }
 
 .reviews-table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 700px;
+}
+
+.entity-name, .customer-name {
+    white-space: nowrap;
 }
 
 .reviews-table th {

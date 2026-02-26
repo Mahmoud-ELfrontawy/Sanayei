@@ -15,7 +15,8 @@ import {
     FaEdit,
     FaBuilding,
     FaBoxOpen,
-    FaChartBar
+    FaChartBar,
+    FaBars
 } from 'react-icons/fa';
 import { useAuth } from '../hooks/useAuth';
 import { useAdminNotifications } from '../context/AdminNotificationContext';
@@ -119,6 +120,13 @@ const AdminLayout = () => {
             <div className="admin-main-wrapper">
                 <header className="admin-header">
                     <div className="admin-header-actions">
+                        <button
+                            className="admin-menu-toggle md:hidden"
+                            onClick={() => setIsSidebarOpen(true)}
+                        >
+                            <FaBars size={22} />
+                        </button>
+
                         <div className="admin-notif-container" ref={notifRef}>
                             <button className="admin-bell-btn" onClick={() => setNotifOpen(!notifOpen)}>
                                 <FaBell size={20} />

@@ -181,8 +181,42 @@
         grid-column: span 1;
     }
 }
+
 @media (max-width: 768px) {
-    .admin-stats-page { padding: 1rem; }
+    .admin-stats-page { padding: 1rem; gap: 1.5rem; }
+    .stats-header h1 { font-size: 24px; }
+    .stat-info h3 { font-size: 20px; }
+    .admin-chart-item { padding: 1.25rem; }
+    .admin-chart-container { height: 300px; }
+    .admin-custom-legend { gap: 1rem; }
+    
+    .admin-live-feed-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .admin-live-mark-read { width: 100%; text-align: center; }
+
+    .admin-notif-row {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-bottom: 2.5rem;
+    }
+    
+    .admin-notif-row-meta {
+        position: absolute;
+        bottom: 0.75rem;
+        left: 1rem;
+        flex-direction: row;
+        gap: 1rem;
+        width: calc(100% - 2rem);
+        justify-content: space-between;
+    }
+
+    .admin-notif-row-body { width: 100%; }
+    .admin-notif-row-title, .admin-notif-row-msg { white-space: normal; }
+}
+
+@media (max-width: 480px) {
+    .admin-stats-grid-top {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* ── Live Feed Section ── */

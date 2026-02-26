@@ -65,13 +65,17 @@
     background: var(--color-bg-main);
     border-radius: var(--radius-card);
     border: 1px solid var(--color-border);
-    overflow: hidden;
+    overflow-x: auto;
+    width: 100%;
+    display: block;
+    -webkit-overflow-scrolling: touch;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
 }
 
 .requests-table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 900px;
 }
 
 .requests-table th {
@@ -97,10 +101,14 @@
     font-weight: 700;
 }
 
-.request-status-badge.pending { background: #fef3c7; color: #92400e; }
-.request-status-badge.accepted { background: #dcfce7; color: #166534; }
-.request-status-badge.rejected { background: #fee2e2; color: #991b1b; }
-.request-status-badge.completed { background: #eff6ff; color: #1e40af; }
+.request-status-badge.pending { background: #fef3c7; color: #92400e; white-space: nowrap; }
+.request-status-badge.accepted { background: #dcfce7; color: #166534; white-space: nowrap; }
+.request-status-badge.rejected { background: #fee2e2; color: #991b1b; white-space: nowrap; }
+.request-status-badge.completed { background: #eff6ff; color: #1e40af; white-space: nowrap; }
+
+.service-tag {
+    white-space: nowrap;
+}
 
 .customer-info {
     display: flex;

@@ -85,13 +85,17 @@
     background: var(--color-bg-main);
     border-radius: var(--radius-card);
     border: 1px solid var(--color-border);
-    overflow: hidden;
+    overflow-x: auto;
+    width: 100%;
+    display: block;
+    -webkit-overflow-scrolling: touch;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
 }
 
 .services-table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 900px; /* Prevent squashing */
 }
 
 .services-table th {
@@ -144,13 +148,102 @@
     background: white;
 }
 
+.status-badge,
+.role-badge,
+.specialty-badge,
+.admin-badge,
+.tag-badge {
+    white-space: nowrap !important;
+}
+
 @media (max-width: 1024px) {
     .services-container { padding: 1.5rem; }
-    .title-area h1 { font-size: 2rem; }
+    .title-area h1 { font-size: 1.8rem; }
+    .header-glass-content { gap: 1.5rem; }
+}
+
+@media (max-width: 992px) {
+    .header-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        width: 100%;
+        margin-top: 1rem;
+    }
 }
 
 @media (max-width: 768px) {
-    .header-glass-content { flex-direction: column; text-align: center; }
-    .services-controls { flex-direction: column; }
-    .services-table-wrapper { overflow-x: auto; }
+    .services-premium-header {
+        padding: 1.5rem;
+    }
+
+    .header-glass-content { 
+        flex-direction: column; 
+        text-align: center;
+        align-items: center;
+    }
+
+    .services-controls { 
+        flex-direction: column; 
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .search-wrapper {
+        width: 100%;
+    }
+
+    .filters-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        width: 100%;
+        gap: 0.8rem;
+    }
+
+    .header-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    .header-actions button {
+        padding: 0.6rem;
+        font-size: 0.85rem;
+        justify-content: center;
+    }
+
+    .add-user-btn {
+        grid-column: span 2;
+    }
+
+    .services-table-wrapper { 
+        overflow-x: auto; 
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .services-table th, .services-table td {
+        padding: 0.8rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .user-main-info {
+        max-width: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-actions {
+        grid-template-columns: 1fr;
+    }
+    
+    .header-actions button {
+        grid-column: span 1;
+    }
+
+    .title-area h1 {
+        font-size: 1.5rem;
+    }
+
+    .services-container {
+        padding: 1rem;
+    }
 }

@@ -75,7 +75,10 @@
     background: white;
     border-radius: 20px;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
+    overflow-x: auto;
+    width: 100%;
+    display: block;
+    -webkit-overflow-scrolling: touch;
     border: 1px solid #f1f5f9;
 }
 
@@ -83,6 +86,7 @@
     width: 100%;
     border-collapse: collapse;
     text-align: right;
+    min-width: 900px;
 }
 
 .admin-products-table th {
@@ -153,11 +157,17 @@
 .admin-stock-badge.in-stock {
     background: #ecfdf5;
     color: #059669;
+    white-space: nowrap;
 }
 
 .admin-stock-badge.out-stock {
     background: #fef2f2;
     color: #dc2626;
+    white-space: nowrap;
+}
+
+.admin-company-badge {
+    white-space: nowrap;
 }
 
 .admin-action-btn {

@@ -3,6 +3,7 @@
   height: 100vh;
   background-color: var(--color-bg-section);
   direction: rtl;
+  overflow-x: hidden;
 }
 
 .admin-sidebar {
@@ -14,10 +15,10 @@
   bottom: 0;
   right: 0;
   transform: translateX(100%);
-  transition: 0.3s;
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
-  z-index: 50;
+  z-index: 1000;
 }
 
 .admin-sidebar.open {
@@ -87,6 +88,8 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 .admin-header {
@@ -100,8 +103,47 @@
 
 .admin-header-actions {
   display: flex;
+  justify-content: space-between;
   gap: 1rem;
   margin-right: auto;
+  align-items: center;
+  width: 100%;
+}
+
+.admin-menu-toggle {
+  background: none;
+  border: none;
+  color: var(--color-text-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .admin-header {
+    padding: 0 1rem;
+  }
+  
+  .admin-username {
+    display: none;
+  }
+
+  .admin-notif-dropdown {
+    width: calc(100vw - 2rem);
+    max-width: 350px;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%);
+    position: fixed;
+    top: 72px;
+  }
+
+  .admin-notif-dropdown::before {
+    display: none;
+  }
 }
 
 .admin-user-profile {
@@ -178,19 +220,33 @@
 .admin-notif-dropdown {
   position: absolute;
   top: calc(100% + 15px);
-  left: 0;
+  right: 0;
   width: 350px;
   background: white;
   border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.05);
   border: 1px solid var(--color-border);
-  z-index: 100;
+  z-index: 1100;
   overflow: hidden;
-  animation: slideDown 0.3s ease-out;
+  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-notif-dropdown::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: 15px;
+  width: 12px;
+  height: 12px;
+  background: #f8f9fa;
+  transform: rotate(45deg);
+  border-top: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
+  z-index: -1;
 }
 
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
