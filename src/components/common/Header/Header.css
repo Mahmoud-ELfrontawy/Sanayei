@@ -529,7 +529,7 @@ html[data-theme="dark"] .online-dot {
 /* Dark mode toggle button – moon/sun accent color */
 .header-dropdown-item.dark-mode-toggle {
     color: #8b5cf6;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--color-border);
 }
 
 html[data-theme="dark"] .header-dropdown-item.dark-mode-toggle {

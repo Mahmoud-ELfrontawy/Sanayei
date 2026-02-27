@@ -651,7 +651,7 @@ html[data-theme="dark"] .orders-tab-btn {
 }
 
 html[data-theme="dark"] .orders-tab-btn:hover {
-    background-color: var(--color-bg-alt);
+    background-color: var(--color-bg-dark);
     color: var(--color-text-main);
 }
 
@@ -702,7 +702,7 @@ html[data-theme="dark"] .btn-reject:hover {
 }
 
 html[data-theme="dark"] .loading-skeleton {
-    background: linear-gradient(to right, #1e293b 0%, #334155 20%, #1e293b 40%, #1e293b 100%);
+    background: linear-gradient(to right, var(--color-bg-section) 0%, var(--color-bg-dark) 20%, var(--color-bg-section) 40%, var(--color-bg-section) 100%);
 }
 
 html[data-theme="dark"] .empty-state {
@@ -711,15 +711,15 @@ html[data-theme="dark"] .empty-state {
 }
 
 html[data-theme="dark"] .confirm-box {
-    background: #1e293b;
+    background: var(--color-bg-section);
     border: 1px solid var(--color-border);
 }
 
 html[data-theme="dark"] .confirm-box h4 { color: var(--color-text-main); }
 html[data-theme="dark"] .confirm-box p { color: var(--color-text-secondary); }
 html[data-theme="dark"] .btn-cancel-delete {
-    background: #334155;
+    background: var(--color-bg-dark);
     color: var(--color-text-main);
 }
-html[data-theme="dark"] .btn-cancel-delete:hover { background: #475569; }
+html[data-theme="dark"] .btn-cancel-delete:hover { background: var(--color-border); }
 

@@ -230,3 +230,41 @@
         padding: 80px 0 50px;
     }
 }
+
+/* =========================================
+   🌙 How It Works Dark Mode
+   ========================================= */
+html[data-theme="dark"] .hiw-hero-section {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, var(--color-bg-main) 100%);
+}
+
+html[data-theme="dark"] .hiw-hero-badge {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .hiw-tabs-inner-container {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .hiw-tab-trigger-btn {
+    color: var(--color-text-muted);
+}
+
+html[data-theme="dark"] .hiw-tab-trigger-btn.active {
+    color: white !important;
+}
+
+html[data-theme="dark"] .hiw-individual-step-card {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .hiw-step-bg-number {
+    color: rgba(95, 168, 211, 0.03);
+}
+
+html[data-theme="dark"] .hiw-individual-step-card p {
+    color: var(--color-text-secondary);
+}

@@ -189,27 +189,26 @@ const CompanyDashboard: React.FC = () => {
                                         },
                                         tooltip: {
                                             container: {
-                                                background: '#ffffff',
+                                                background: 'var(--color-bg-section)',
                                                 color: 'var(--color-text-main)',
                                                 fontSize: 12,
                                                 borderRadius: '8px',
-                                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                                                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                                                border: '1px solid var(--color-border)'
                                             }
                                         }
                                     }}
-                                    margin={{ top: 20, right: 80, bottom: 40, left: 80 }}
+                                    margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
                                     innerRadius={0.6}
                                     padAngle={2}
                                     cornerRadius={8}
                                     activeOuterRadiusOffset={10}
                                     colors={['var(--color-primary)', 'var(--color-success)', 'var(--color-warning)', 'var(--color-error)', '#A855F7']}
-                                    borderWidth={0}
-                                    arcLinkLabelsSkipAngle={10}
-                                    arcLinkLabelsTextColor="var(--color-text-muted)"
-                                    arcLinkLabelsThickness={2}
-                                    arcLinkLabelsColor={{ from: 'color' }}
+                                    borderWidth={2}
+                                    borderColor="var(--color-bg-section)"
+                                    enableArcLinkLabels={false}
                                     arcLabelsSkipAngle={10}
-                                    arcLabelsTextColor={{ from: 'color', modifiers: [['darker', 2]] }}
+                                    arcLabelsTextColor={{ from: 'color', modifiers: [['darker', 3]] }}
                                     legends={[]}
                                 />
                             ) : (
@@ -218,18 +217,25 @@ const CompanyDashboard: React.FC = () => {
                         </div>
                         {!stats.loading && stats.pieData.length > 0 && (
                             <div className="custom-legend">
-                                {stats.pieData.map((item, index) => {
+                                {(() => {
+                                    const total = stats.pieData.reduce((sum, item) => sum + item.value, 0);
                                     const colors = ['var(--color-primary)', 'var(--color-success)', 'var(--color-warning)', 'var(--color-error)', '#A855F7'];
-                                    return (
-                                        <div key={item.id} className="legend-item">
-                                            <span
-                                                className="legend-dot"
-                                                style={{ backgroundColor: colors[index % colors.length] }}
-                                            />
-                                            <span className="legend-label">{item.label}</span>
-                                        </div>
-                                    );
-                                })}
+                                    
+                                    return stats.pieData.map((item, index) => {
+                                        const percentage = total > 0 ? Math.round((item.value / total) * 100) : 0;
+                                        return (
+                                            <div key={item.id} className="legend-item">
+                                                <span
+                                                    className="legend-dot"
+                                                    style={{ backgroundColor: colors[index % colors.length] }}
+                                                />
+                                                <span className="legend-label">
+                                                    {item.label} ({percentage}%)
+                                                </span>
+                                            </div>
+                                        );
+                                    });
+                                })()}
                             </div>
                         )}
                     </div>
@@ -263,6 +269,16 @@ const CompanyDashboard: React.FC = () => {
                                                 fontSize: 11,
                                                 fill: 'var(--color-text-muted)'
                                             }
+                                        }
+                                    },
+                                    tooltip: {
+                                        container: {
+                                            background: 'var(--color-bg-section)',
+                                            color: 'var(--color-text-main)',
+                                            fontSize: 12,
+                                            borderRadius: '8px',
+                                            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                                            border: '1px solid var(--color-border)'
                                         }
                                     }
                                 }}

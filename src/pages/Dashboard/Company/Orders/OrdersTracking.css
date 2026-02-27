@@ -102,8 +102,52 @@
     .tracking-table-card { overflow-x: auto; }
 }
 
-@media (max-width: 768px) {
-    .orders-tracking-container {
-        padding: 1rem;
-    }
+/* =========================================
+   🌙 Orders Tracking Dark Mode
+   ========================================= */
+html[data-theme="dark"] .tracking-table-card {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] .tracking-table th {
+    background: var(--color-bg-dark);
+    color: var(--color-text-secondary);
+    border-bottom-color: var(--color-border);
+}
+
+html[data-theme="dark"] .tracking-table td {
+    border-bottom-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .status-select-premium {
+    background: var(--color-bg-dark);
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .status-select-premium:focus {
+    background: var(--color-bg-dark);
+    border-color: var(--color-primary);
+}
+
+html[data-theme="dark"] .status-select-premium option {
+    background: var(--color-bg-section);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .loading-state {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .user-type-badge.user {
+    background: rgba(25, 118, 210, 0.15);
+    color: #90caf9;
+}
+
+html[data-theme="dark"] .user-type-badge.craftsman {
+    background: rgba(123, 31, 162, 0.15);
+    color: #e1bee7;
 }

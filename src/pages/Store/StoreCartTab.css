@@ -297,3 +297,32 @@
     .cart-tab-container { margin: 1rem auto; padding: 0 1rem 2rem; }
     .cart-tab-item-img  { width: 60px; height: 60px; }
 }
+
+/* =========================================
+   🌙 StoreCartTab Dark Mode
+   ========================================= */
+html[data-theme="dark"] .cart-tab-count {
+    background: rgba(95, 168, 211, 0.12);
+}
+
+html[data-theme="dark"] .cart-tab-remove-btn {
+    background: rgba(244, 67, 54, 0.08);
+    border-color: rgba(244, 67, 54, 0.2);
+}
+
+html[data-theme="dark"] .cart-tab-btn-outline {
+    background: transparent;
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+html[data-theme="dark"] .cart-tab-btn-outline:hover {
+    background: var(--color-primary);
+    color: white;
+}
+
+html[data-theme="dark"] .cart-payment-opt.active {
+    border-color: var(--color-primary);
+    background: rgba(95, 168, 211, 0.1);
+    color: var(--color-primary);
+}

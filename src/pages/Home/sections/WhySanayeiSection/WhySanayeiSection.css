@@ -371,7 +371,7 @@
    🌙 Why Sanayei Section Dark Mode
    ========================================= */
 html[data-theme="dark"] .why-icon {
-    background: rgba(95, 168, 211, 0.15);
+    background: var(--color-bg-dark);
 }
 
 html[data-theme="dark"] .why-divider {

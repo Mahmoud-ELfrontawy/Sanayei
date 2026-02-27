@@ -420,7 +420,7 @@
    🌙 About Section Dark Mode
    ========================================= */
 html[data-theme="dark"] .media-img--small {
-    background: #1e293b;
+    background: var(--color-bg-section);
 }
 
 html[data-theme="dark"] .media-deco {

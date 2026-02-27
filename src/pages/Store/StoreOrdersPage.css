@@ -195,29 +195,38 @@
    🌙 Store Orders Dark Mode Refinements
    ========================================= */
 html[data-theme="dark"] .order-item-card-premium {
-    background: #1e293b;
-    border-color: #334155;
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
 }
 
 html[data-theme="dark"] .order-main-info {
-    border-color: #334155;
+    border-color: var(--color-border);
 }
 
 html[data-theme="dark"] .order-id-date h3 {
     color: var(--color-text-main);
 }
 
+html[data-theme="dark"] .order-id-date span {
+    color: var(--color-text-muted);
+}
+
 html[data-theme="dark"] .order-status-pill.pending { background: rgba(255, 152, 0, 0.15); color: #ffb74d; }
 html[data-theme="dark"] .order-status-pill.processing { background: rgba(33, 150, 243, 0.15); color: #64b5f6; }
 html[data-theme="dark"] .order-status-pill.shipped { background: rgba(156, 39, 176, 0.15); color: #ba68c8; }
 html[data-theme="dark"] .order-status-pill.completed { background: rgba(76, 175, 80, 0.15); color: #81c784; }
+html[data-theme="dark"] .order-status-pill.cancelled { background: rgba(244, 67, 54, 0.15); color: #ef9a9a; }
 
 html[data-theme="dark"] .summary-row strong {
     color: var(--color-text-main);
 }
 
+html[data-theme="dark"] .summary-row span:first-child {
+    color: var(--color-text-muted);
+}
+
 html[data-theme="dark"] .btn-details-mini {
-    background: #0f172a;
+    background: var(--color-bg-dark);
     color: var(--color-text-secondary);
 }
 
@@ -226,3 +235,6 @@ html[data-theme="dark"] .btn-details-mini:hover {
     color: #fff;
 }
 
+html[data-theme="dark"] .orders-empty-state {
+    background: var(--color-bg-section);
+}

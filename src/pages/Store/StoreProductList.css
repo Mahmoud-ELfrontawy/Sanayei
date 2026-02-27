@@ -322,6 +322,167 @@
 .skeleton-line.w-50 { width: 50%; }
 .skeleton-line.w-40 { width: 40%; }
 
+/* =========================================
+   🌙 StoreProductList Dark Mode
+   ========================================= */
+html[data-theme="dark"] .list-header-sticky {
+    background: rgba(15, 17, 23, 0.9);
+    border-bottom-color: var(--color-border);
+}
+
+html[data-theme="dark"] .back-btn-glass {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .company-name-list {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .results-badge {
+    color: var(--color-text-muted);
+}
+
+html[data-theme="dark"] .filter-chip {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .filter-chip:hover {
+    background: var(--color-bg-dark);
+    border-color: var(--color-primary);
+}
+
+html[data-theme="dark"] .filter-chip.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #0b1e33; /* Dark text for better contrast on light primary color */
+    font-weight: 800;
+}
+
+html[data-theme="dark"] .add-to-cart-mini {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .skeleton-img,
+html[data-theme="dark"] .skeleton-line {
+    background: #2d3748;
+}
+
+html[data-theme="dark"] .drawer-header {
+    border-bottom-color: var(--color-border);
+}
+
+html[data-theme="dark"] .drawer-header h2 {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .drawer-close-btn {
+    background: var(--color-bg-section);
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .drawer-item {
+    background: var(--color-bg-dark);
+}
+
+html[data-theme="dark"] .drawer-item-name {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .drawer-item-price {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .drawer-remove-btn {
+    background: var(--color-bg-section);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+html[data-theme="dark"] .drawer-footer {
+    border-top-color: var(--color-border);
+}
+
+html[data-theme="dark"] .drawer-total-row {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .drawer-total-amount {
+    color: var(--color-primary);
+}
+
+html[data-theme="dark"] .drawer-checkout-btn {
+    background: var(--color-primary);
+}
+
+html[data-theme="dark"] .drawer-checkout-btn:hover {
+    background: var(--color-primary-hover);
+}
+
+html[data-theme="dark"] .back-to-cart-btn {
+    color: var(--color-primary);
+}
+
+html[data-theme="dark"] .checkout-field-group label {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .checkout-field-group input,
+html[data-theme="dark"] .checkout-field-group textarea {
+    background: var(--color-bg-dark);
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .checkout-field-group input:focus,
+html[data-theme="dark"] .checkout-field-group textarea:focus {
+    border-color: var(--color-primary);
+}
+
+html[data-theme="dark"] .payment-opt {
+    border-color: var(--color-border);
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .payment-opt.active {
+    border-color: var(--color-primary);
+    background: rgba(95, 168, 211, 0.1);
+    color: var(--color-primary);
+}
+
+html[data-theme="dark"] .drawer-order-summary {
+    background: var(--color-bg-dark);
+}
+
+html[data-theme="dark"] .summary-item-row {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .summary-item-row.total-row {
+    border-top-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .drawer-empty {
+    color: var(--color-text-muted);
+}
+
+html[data-theme="dark"] .drawer-empty p {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .drawer-success h3 {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .drawer-success p {
+    color: var(--color-text-secondary);
+}
+
 @keyframes skeleton-pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }

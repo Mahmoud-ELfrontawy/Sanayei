@@ -205,14 +205,14 @@
 html[data-theme="dark"] .image-home__overlay {
     background: linear-gradient(to right,
             rgba(15, 17, 23, 0) 0%,
-            rgba(15, 17, 23, 0.9) 70%,
-            rgba(15, 17, 23, 1) 100%);
+            var(--color-bg-dark) 70%,
+            var(--color-bg-main) 100%);
 }
 
 @media (max-width: 992px) {
     html[data-theme="dark"] .image-home__overlay {
         background: radial-gradient(circle,
                 rgba(15, 17, 23, 0.7) 0%,
-                rgba(15, 17, 23, 0.95) 100%);
+                var(--color-bg-dark) 100%);
     }
 }

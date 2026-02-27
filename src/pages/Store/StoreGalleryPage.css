@@ -549,13 +549,13 @@
    🌙 Store Gallery Dark Mode Refinements
    ========================================= */
 html[data-theme="dark"] .categories-pills-container {
-    background: rgba(30, 41, 59, 0.8);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(26, 29, 39, 0.8);
+    border-color: rgba(255, 255, 255, 0.08);
 }
 
 html[data-theme="dark"] .pill-btn {
-    background: #0f172a;
-    border-color: #334155;
+    background: var(--color-bg-dark);
+    border-color: var(--color-border);
     color: var(--color-text-secondary);
 }
 
@@ -566,25 +566,34 @@ html[data-theme="dark"] .pill-btn:hover {
 
 html[data-theme="dark"] .pill-btn.active {
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+    border-color: var(--color-primary);
+    color: white;
     box-shadow: 0 12px 24px rgba(95, 168, 211, 0.25);
 }
 
 html[data-theme="dark"] .store-company-card-premium {
-    background: #1e293b;
-    border-color: #334155;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 html[data-theme="dark"] .company-card-media {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-section) 100%);
+}
+
+html[data-theme="dark"] .product-category-label {
+    background-color: rgba(26, 29, 39, 0.9);
+    color: var(--color-text-secondary);
 }
 
 html[data-theme="dark"] .view-company-products-btn {
-    background: #0f172a;
-    border-color: #334155;
+    background: var(--color-bg-dark);
+    border-color: var(--color-border);
+    color: var(--color-text-secondary);
 }
 
-html[data-theme="dark"] .view-company-products-btn:hover {
+html[data-theme="dark"] .store-company-card-premium:hover .view-company-products-btn {
     background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
 }
-

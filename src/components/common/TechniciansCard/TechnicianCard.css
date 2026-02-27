@@ -317,18 +317,18 @@
    🌙 Technician Card Dark Mode
    ========================================= */
 html[data-theme="dark"] .tech-card {
-    background: #1e293b;
-    border-color: #334155;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 html[data-theme="dark"] .tech-card__avatar-wrap {
-    background: #1e293b;
-    border-color: #1e293b;
+    background: var(--color-bg-section);
+    border-color: var(--color-bg-section);
 }
 
 html[data-theme="dark"] .tech-card__avatar-wrap.online::after {
-    border-color: #1e293b;
+    border-color: var(--color-bg-section);
 }
 
 html[data-theme="dark"] .tech-card__name {
@@ -336,15 +336,15 @@ html[data-theme="dark"] .tech-card__name {
 }
 
 html[data-theme="dark"] .tech-card__service {
-    background: rgba(95, 168, 211, 0.15);
-    color: #60a5fa;
-    border-color: rgba(95, 168, 211, 0.3);
+    background: rgba(95, 168, 211, 0.12);
+    color: var(--color-primary);
+    border-color: rgba(95, 168, 211, 0.2);
 }
 
 html[data-theme="dark"] .tech-card__rating {
-    background: rgba(245, 158, 11, 0.1);
+    background: rgba(251, 191, 36, 0.1);
     color: #fcd34d;
-    border-color: rgba(245, 158, 11, 0.2);
+    border-color: rgba(251, 191, 36, 0.2);
 }
 
 html[data-theme="dark"] .tech-card__bio {
@@ -352,7 +352,7 @@ html[data-theme="dark"] .tech-card__bio {
 }
 
 html[data-theme="dark"] .tech-card__footer {
-    border-top-color: #334155;
+    border-top-color: var(--color-border);
 }
 
 html[data-theme="dark"] .tech-card__price {
@@ -360,12 +360,12 @@ html[data-theme="dark"] .tech-card__price {
 }
 
 html[data-theme="dark"] .tech-card__btn--outline {
-    border-color: #334155;
+    border-color: var(--color-border);
     color: var(--color-text-secondary);
 }
 
 html[data-theme="dark"] .tech-card__btn--outline:hover {
-    background: #0f172a;
+    background: var(--color-bg-dark);
     color: var(--color-primary);
     border-color: var(--color-primary);
 }

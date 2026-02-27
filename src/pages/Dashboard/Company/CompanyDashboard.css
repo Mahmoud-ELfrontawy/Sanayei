@@ -217,3 +217,61 @@
     .header-content p { font-size: 17px; }
     .charts-grid { grid-template-columns: 1fr; }
 }
+
+/* =========================================
+   🌙 Company Dashboard Dark Mode
+   ========================================= */
+html[data-theme="dark"] .dashboard-header-premium {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="dark"] .action-card-inner {
+    background: #1a1d27; /* Matching var(--color-bg-section) */
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .action-icon {
+    background: #060810; /* Matching var(--color-bg-dark) */
+    color: var(--color-primary);
+}
+
+html[data-theme="dark"] .action-info h4 {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .action-info p {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .chart-item {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="dark"] .chart-item h3 {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .legend-label {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .chart-loading,
+html[data-theme="dark"] .chart-empty {
+    background: var(--color-bg-dark);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .header-actions .manage-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+html[data-theme="dark"] .header-actions .manage-btn:hover {
+    background: var(--color-primary);
+    color: #0b1e33;
+    border-color: var(--color-primary);
+}

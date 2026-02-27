@@ -255,3 +255,22 @@
         height: 40px;
     }
 }
+
+/* =========================================
+   🌙 Footer Dark Mode Refinements
+   ========================================= */
+html[data-theme="dark"] footer.footer {
+    background: #091a2b; /* Slightly darker than light mode footer */
+}
+
+html[data-theme="dark"] .footer-divider {
+    border-top-color: rgba(255, 255, 255, 0.05);
+}
+
+html[data-theme="dark"] .social-btn-footer {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+html[data-theme="dark"] .social-btn-footer:hover {
+    background: var(--color-primary);
+}

@@ -244,9 +244,17 @@
    🌙 Service Card Dark Mode
    ========================================= */
 html[data-theme="dark"] .service-card {
-    background: #1e293b;
-    border-color: #334155;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .service-card::after {
+    background: linear-gradient(135deg, rgba(95, 168, 211, 0.1), transparent);
+}
+
+html[data-theme="dark"] .service-card:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
 }
 
 html[data-theme="dark"] .service-icon {
@@ -254,11 +262,11 @@ html[data-theme="dark"] .service-icon {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-html[data-theme="dark"] .service-title {
+html[data-theme="dark"] .service-card__title {
     color: var(--color-text-main);
 }
 
-html[data-theme="dark"] .service-desc {
+html[data-theme="dark"] .service-card__description {
     color: var(--color-text-secondary);
 }
 

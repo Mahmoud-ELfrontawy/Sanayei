@@ -307,3 +307,38 @@
     gap: 16px;
   }
 }
+
+/* =========================================
+   🌙 Auth Pages Dark Mode
+   ========================================= */
+html[data-theme="dark"] .auth-card {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="dark"] .auth-input {
+    background: var(--color-bg-dark);
+    border-bottom-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .auth-input::placeholder {
+    color: var(--color-text-muted);
+}
+
+html[data-theme="dark"] .auth-input:focus {
+    border-color: var(--color-primary);
+    background: var(--color-bg-dark);
+}
+
+html[data-theme="dark"] .auth-social-btn {
+    background: var(--color-bg-dark);
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .auth-social-btn:hover {
+    border-color: var(--color-primary);
+    background: rgba(95, 168, 211, 0.08);
+}

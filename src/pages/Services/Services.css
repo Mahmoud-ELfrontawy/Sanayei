@@ -98,20 +98,45 @@
    🌙 Services Page Dark Mode
    ========================================= */
 html[data-theme="dark"] .services-filters-container {
-    background: #1e293b;
+    background: var(--color-bg-section);
     border-color: var(--color-border);
 }
 
 html[data-theme="dark"] .filter-input-wrapper input,
 html[data-theme="dark"] .filter-select-wrapper select {
-    background: #0f172a;
-    border-color: #334155;
+    background: var(--color-bg-dark);
+    border-color: var(--color-border);
     color: var(--color-text-main);
 }
 
 html[data-theme="dark"] .filter-input-wrapper input:focus,
 html[data-theme="dark"] .filter-select-wrapper select:focus {
     border-color: var(--color-primary);
+}
+
+html[data-theme="dark"] .services-search {
+    background: var(--color-bg-section);
+    border-color: var(--color-primary);
+}
+
+html[data-theme="dark"] .services-search input {
+    background: transparent;
+    color: var(--color-primary);
+}
+
+html[data-theme="dark"] .services-select {
+    background-color: var(--color-bg-section);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+html[data-theme="dark"] .craftsmen-section__empty {
+    background: var(--color-bg-section);
+}
+
+html[data-theme="dark"] select option {
+    background-color: var(--color-bg-section);
+    color: var(--color-text-main);
 }
 
 /* أيقونة السهم */

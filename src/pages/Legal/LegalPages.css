@@ -92,3 +92,20 @@
         font-size: 1.2rem;
     }
 }
+
+/* =========================================
+   🌙 Legal Pages Dark Mode
+   ========================================= */
+html[data-theme="dark"] .lp-hero {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, var(--color-bg-main) 100%);
+}
+
+html[data-theme="dark"] .lp-content section {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="dark"] .lp-content h2 {
+    border-bottom-color: var(--color-bg-main);
+}

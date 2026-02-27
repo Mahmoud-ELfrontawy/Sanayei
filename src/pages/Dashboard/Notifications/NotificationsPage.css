@@ -146,4 +146,12 @@ html[data-theme="dark"] .notification-card.unread {
     background: #1e2227;
 }
 
+html[data-theme="dark"] .notif-time {
+    color: var(--color-text-muted);
+}
+
+html[data-theme="dark"] .empty-notifications {
+    color: var(--color-text-muted);
+}
+
 

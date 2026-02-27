@@ -81,20 +81,20 @@ button {
    🌙 Dark Mode Global Overrides
    ========================================= */
 html[data-theme="dark"] ::-webkit-scrollbar-track {
-    background: #1a1d27;
+    background: var(--color-bg-dark);
 }
 
 html[data-theme="dark"] ::-webkit-scrollbar-thumb {
-    background: rgba(126, 200, 240, 0.25);
-    border-color: #1a1d27;
+    background: rgba(126, 200, 240, 0.2);
+    border-color: var(--color-bg-dark);
 }
 
 html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
-    background: rgba(126, 200, 240, 0.5);
+    background: rgba(126, 200, 240, 0.4);
 }
 
 html[data-theme="dark"] * {
-    scrollbar-color: rgba(126, 200, 240, 0.25) #1a1d27;
+    scrollbar-color: rgba(126, 200, 240, 0.2) var(--color-bg-dark);
 }
 
 /* الحجم الحقيقي للـ Lottie */

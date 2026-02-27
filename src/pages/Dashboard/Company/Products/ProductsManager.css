@@ -499,14 +499,139 @@
     margin-right: 8px;
 }
 
-@media (max-width: 768px) {
-    .manager-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1.5rem;
-    }
-    .products-table thead { display: none; }
-    .products-table td { display: block; text-align: left; padding: 0.5rem 1rem; border: none; }
-    .products-table td::before { content: attr(data-label); font-weight: 800; float: right; }
-    .products-table tr { display: block; border-bottom: 2px solid var(--color-divider); padding: 1rem 0; }
+/* =========================================
+   🌙 Products Manager Dark Mode
+   ========================================= */
+html[data-theme="dark"] .table-wrapper {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] .products-table th {
+    background: var(--color-bg-dark);
+    border-bottom-color: var(--color-border);
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .products-table td {
+    border-bottom-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .products-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+html[data-theme="dark"] .product-img-mini {
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .add-product-modal {
+    background: var(--color-bg-section);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+html[data-theme="dark"] .modal-header-row h3 {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .form-section-title {
+    color: var(--color-text-muted);
+    border-bottom-color: var(--color-border);
+}
+
+html[data-theme="dark"] .input-field label {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .input-field input,
+html[data-theme="dark"] .input-field select,
+html[data-theme="dark"] .input-field textarea {
+    background: var(--color-bg-dark);
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .input-field input:focus,
+html[data-theme="dark"] .input-field select:focus,
+html[data-theme="dark"] .input-field textarea:focus {
+    border-color: var(--color-primary);
+}
+
+html[data-theme="dark"] .image-upload-zone {
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .image-upload-zone:hover {
+    background: var(--color-bg-dark);
+    border-color: var(--color-primary);
+}
+
+html[data-theme="dark"] .upload-label {
+    color: var(--color-text-muted);
+}
+
+html[data-theme="dark"] .gallery-upload-section {
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .gallery-label {
+    color: var(--color-text-muted);
+}
+
+html[data-theme="dark"] .gallery-preview-item {
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .cancel-btn {
+    background: var(--color-bg-dark);
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .close-modal-btn {
+    background: var(--color-bg-dark);
+    color: var(--color-text-muted);
+}
+
+html[data-theme="dark"] .toggle-label {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .stock-badge.in-stock {
+    background: rgba(44, 122, 123, 0.15);
+    color: #81e6d9;
+}
+
+html[data-theme="dark"] .stock-badge.out-stock {
+    background: rgba(229, 62, 62, 0.15);
+    color: #feb2b2;
+}
+
+html[data-theme="dark"] .edit-btn-mini {
+    background: rgba(37, 99, 235, 0.15);
+    color: #60a5fa;
+}
+
+html[data-theme="dark"] .delete-btn {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+}
+
+html[data-theme="dark"] .approval-warning-banner {
+    background: rgba(249, 115, 22, 0.1) !important;
+    border-color: rgba(249, 115, 22, 0.2) !important;
+    color: #fdba74;
+}
+
+html[data-theme="dark"] .table-badge-tag {
+    background: rgba(37, 99, 235, 0.15);
+    border-color: rgba(37, 99, 235, 0.2);
+    color: #60a5fa;
+}
+
+/* Fix dropdown options contrast */
+html[data-theme="dark"] select option {
+    background-color: var(--color-bg-section);
+    color: var(--color-text-main);
 }
