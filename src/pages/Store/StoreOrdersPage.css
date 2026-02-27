@@ -190,3 +190,39 @@
     .order-main-info { flex-direction: column; gap: 10px; }
     .order-details-summary { grid-template-columns: 1fr 1fr; gap: 10px; }
 }
+
+/* =========================================
+   🌙 Store Orders Dark Mode Refinements
+   ========================================= */
+html[data-theme="dark"] .order-item-card-premium {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+html[data-theme="dark"] .order-main-info {
+    border-color: #334155;
+}
+
+html[data-theme="dark"] .order-id-date h3 {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .order-status-pill.pending { background: rgba(255, 152, 0, 0.15); color: #ffb74d; }
+html[data-theme="dark"] .order-status-pill.processing { background: rgba(33, 150, 243, 0.15); color: #64b5f6; }
+html[data-theme="dark"] .order-status-pill.shipped { background: rgba(156, 39, 176, 0.15); color: #ba68c8; }
+html[data-theme="dark"] .order-status-pill.completed { background: rgba(76, 175, 80, 0.15); color: #81c784; }
+
+html[data-theme="dark"] .summary-row strong {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .btn-details-mini {
+    background: #0f172a;
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .btn-details-mini:hover {
+    background: var(--color-primary);
+    color: #fff;
+}
+

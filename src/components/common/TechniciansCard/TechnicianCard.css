@@ -309,8 +309,64 @@
     .tech-card__bio     { font-size: 14px; }
     .tech-card__banner  { height: 70px; }
     .tech-card__avatar-wrap { width: 68px; height: 68px; }
-    .tech-card__btn     { font-size: 16px; height: 44px; }
-    .tech-card__service { font-size: 13px; }
     .tech-card__rating  { font-size: 13px; }
     .tech-card__price   { font-size: 17px; }
 }
+
+/* =========================================
+   🌙 Technician Card Dark Mode
+   ========================================= */
+html[data-theme="dark"] .tech-card {
+    background: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] .tech-card__avatar-wrap {
+    background: #1e293b;
+    border-color: #1e293b;
+}
+
+html[data-theme="dark"] .tech-card__avatar-wrap.online::after {
+    border-color: #1e293b;
+}
+
+html[data-theme="dark"] .tech-card__name {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .tech-card__service {
+    background: rgba(95, 168, 211, 0.15);
+    color: #60a5fa;
+    border-color: rgba(95, 168, 211, 0.3);
+}
+
+html[data-theme="dark"] .tech-card__rating {
+    background: rgba(245, 158, 11, 0.1);
+    color: #fcd34d;
+    border-color: rgba(245, 158, 11, 0.2);
+}
+
+html[data-theme="dark"] .tech-card__bio {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .tech-card__footer {
+    border-top-color: #334155;
+}
+
+html[data-theme="dark"] .tech-card__price {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .tech-card__btn--outline {
+    border-color: #334155;
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .tech-card__btn--outline:hover {
+    background: #0f172a;
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+

@@ -2,13 +2,14 @@ import { NavLink, Link, useLocation } from "react-router-dom";
 import { IoIosArrowDown } from "react-icons/io";
 import { FiMenu, FiX } from "react-icons/fi";
 import { useEffect, useRef, useState } from "react";
-import { FaUser, FaSignOutAlt, FaThLarge, FaBox, FaRegClock, FaCommentDots, FaBell } from "react-icons/fa";
+import { FaUser, FaSignOutAlt, FaThLarge, FaBox, FaRegClock, FaCommentDots, FaBell, FaMoon, FaSun } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { formatTimeAgo } from "../../../utils/timeAgo";
 import { getAvatarUrl } from "../../../utils/imageUrl";
 
 import { NAV_LINKS, type NavLinkItem } from "../../../constants/header";
 import logo from "../../../assets/images/final logo.png";
+import logoDark from "../../../assets/images/logo image dark 1.png";
 import "./Header.css";
 import "./Header_Notifications.css";
 
@@ -17,6 +18,7 @@ import { useAuth } from "../../../hooks/useAuth";
 import { useNotifications } from "../../../context/NotificationContext";
 import { useUserChat } from "../../../context/UserChatProvider";
 import { useCraftsmanChat } from "../../../context/CraftsmanChatProvider";
+import { useTheme } from "../../../context/ThemeContext";
 
 
 /* ================= TYPES ================= */
@@ -28,6 +30,7 @@ const Header: React.FC = () => {
   // ✅ Use userType from context for reactivity
   const { user, isAuthenticated, logout, userType } = useAuth();
   const location = useLocation();
+  const { isDark, toggleTheme } = useTheme();
 
   // Check if we are in dashboard or admin area
   const isDashboardRoute = location.pathname.startsWith("/dashboard") || location.pathname.startsWith("/admin");
@@ -129,7 +132,7 @@ const Header: React.FC = () => {
       <nav className="header-nav">
         {/* Logo */}
         <Link to="/" className={`header-logo ${isDashboardRoute ? "is-dashboard" : ""}`}>
-          <img src={logo} alt="Sanayei Logo" />
+          <img src={isDark ? logoDark : logo} alt="Sanayei Logo" />
         </Link>
 
         {/* ================= DESKTOP NAV ================= */}
@@ -265,6 +268,14 @@ const Header: React.FC = () => {
                     </Link>
 
                     <button
+                      className="header-dropdown-item dark-mode-toggle"
+                      onClick={toggleTheme}
+                    >
+                      {isDark ? <FaSun size={20} /> : <FaMoon size={20} />}
+                      <span>{isDark ? "الوضع الفاتح" : "الوضع المظلم"}</span>
+                    </button>
+
+                    <button
                       className="header-dropdown-item logout"
                       onClick={handleLogout}
                     >
@@ -359,6 +370,14 @@ const Header: React.FC = () => {
                 <FaUser size={20} />
                 <span>الملف الشخصي</span>
               </Link>
+
+              <button
+                className="header-dropdown-item dark-mode-toggle"
+                onClick={toggleTheme}
+              >
+                {isDark ? <FaSun size={20} /> : <FaMoon size={20} />}
+                <span>{isDark ? "الوضع الفاتح" : "الوضع المظلم"}</span>
+              </button>
 
               <button className="header-dropdown-item logout" onClick={handleLogout}>
                 <FaSignOutAlt size={20} />

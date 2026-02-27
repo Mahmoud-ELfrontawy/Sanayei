@@ -70,3 +70,32 @@
         --transition-fast: 0.2s ease;
         --transition-main: 0.3s ease;
     }
+
+/* ============================= */
+/* 🌙 Dark Mode Variables       */
+/* ============================= */
+html[data-theme="dark"] {
+    /* Primary – slightly lighter for contrast on dark bg */
+    --color-primary: #7ec8f0;
+    --color-primary-hover: #5FA8D3;
+
+    /* Text */
+    --color-text-main: #e2e8f0;
+    --color-text-secondary: #94a3b8;
+    --color-text-accent: #cbd5e1;
+    --color-text-muted: #64748b;
+
+    /* Backgrounds */
+    --color-bg-main: #0f1117;
+    --color-bg-section: #1a1d27;
+    --color-bg-dark: #060810;
+
+    /* Borders */
+    --color-border: #2d3748;
+    --color-divider: #2d3748;
+
+    /* Status colors remain the same */
+    --color-success: #4CAF50;
+    --color-warning: #FFC107;
+    --color-error: #F44336;
+}

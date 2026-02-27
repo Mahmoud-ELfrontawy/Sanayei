@@ -344,3 +344,54 @@
   font-size: 0.75rem;
   color: #adb5bd;
 }
+
+/* =========================================
+   🌙 Admin Dark Mode Overrides
+   ========================================= */
+html[data-theme="dark"] .admin-bell-btn {
+  background: #1e2435;
+  color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .admin-bell-btn:hover {
+  background: #2d3748;
+}
+
+html[data-theme="dark"] .admin-notif-dropdown {
+  background: #1a1d27;
+  border-color: #2d3748;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+}
+
+html[data-theme="dark"] .admin-notif-dropdown::before {
+  background: #1e2435;
+  border-color: #2d3748;
+}
+
+html[data-theme="dark"] .admin-notif-header {
+  background: #1e2435;
+  border-color: #2d3748;
+  color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .admin-notif-item {
+  border-color: #2d3748;
+}
+
+html[data-theme="dark"] .admin-notif-item:hover {
+  background: #1e2435;
+}
+
+html[data-theme="dark"] .admin-notif-item.unread {
+  background: rgba(126, 200, 240, 0.06);
+}
+
+html[data-theme="dark"] .admin-notif-time {
+  color: #64748b;
+}
+
+html[data-theme="dark"] .admin-notif-icon.new_registration { background: #1e3a5f; color: #7ec8f0; }
+html[data-theme="dark"] .admin-notif-icon.new_review { background: #3d2f00; color: #fbc02d; }
+html[data-theme="dark"] .admin-notif-icon.new_request { background: #1a3a20; color: #4caf50; }
+html[data-theme="dark"] .admin-notif-icon.new_product { background: #2d1a3e; color: #ce93d8; }
+html[data-theme="dark"] .admin-notif-icon.profile_update { background: #3e1a10; color: #ff8a65; }

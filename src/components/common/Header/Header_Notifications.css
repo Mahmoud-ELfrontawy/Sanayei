@@ -60,7 +60,53 @@
     to { transform: scale(1); }
 }
 
-.mobile-icon-btn .header-notification-badge {
-    top: -4px;
-    right: 5px;
+/* =========================================
+   🌙 Header Notifications Dark Mode
+   ========================================= */
+html[data-theme="dark"] .header-notification-badge {
+    border-color: #1e293b;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
 }
+
+html[data-theme="dark"] .header-notification-dropdown {
+    background: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="dark"] .dropdown-header-notif {
+    border-bottom-color: #334155;
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .notification-item {
+    border-bottom-color: #334155;
+}
+
+html[data-theme="dark"] .notification-item:hover {
+    background-color: #0f172a;
+}
+
+html[data-theme="dark"] .notification-item.unread {
+    background-color: rgba(95, 168, 211, 0.08);
+}
+
+html[data-theme="dark"] .notif-item-title {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .notif-item-message {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .empty-notif {
+    color: var(--color-text-muted);
+}
+
+html[data-theme="dark"] .view-all-notif {
+    border-top-color: #334155;
+    background: #0f172a;
+    color: var(--color-primary);
+}
+
+

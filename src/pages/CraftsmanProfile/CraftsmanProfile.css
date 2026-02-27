@@ -619,3 +619,81 @@
       font-size: 17px;
   }
 }
+
+/* =========================================
+   🌙 Craftsman Profile Public View Dark Mode
+   ========================================= */
+html[data-theme="dark"] .profile-page-wrapper {
+    background-color: var(--color-bg-main);
+}
+
+html[data-theme="dark"] .craftsman-card,
+html[data-theme="dark"] .profile-content-area,
+html[data-theme="dark"] .dashboard-reviews-container {
+    background: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] .craftsman-img-wrapper {
+    background-color: #1e293b;
+    border-color: var(--color-primary);
+}
+
+html[data-theme="dark"] .craftsman-name,
+html[data-theme="dark"] .info-text-val,
+html[data-theme="dark"] .reviewer-name {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .info-list li {
+    background: #0f172a;
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .description-text {
+    background: #0f172a;
+    border-color: #334155;
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .info-section.half {
+    background: #0f172a;
+    border-color: #334155;
+}
+
+html[data-theme="dark"] .profile-tabs {
+    border-right: none; /* If it was using border-right for title */
+    border-bottom-color: #334155;
+}
+
+html[data-theme="dark"] .tab-btn {
+    color: #64748b;
+}
+
+html[data-theme="dark"] .review-card {
+    background: #0f172a;
+    border-color: #334155;
+}
+
+html[data-theme="dark"] .review-text {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .review-quote-icon {
+    color: #1e293b;
+}
+
+html[data-theme="dark"] .reviews-count {
+    background: #0f172a;
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .no-reviews-msg {
+    background: #0f172a;
+}
+
+html[data-theme="dark"] .portfolio-item {
+    border-color: #334155;
+}
+

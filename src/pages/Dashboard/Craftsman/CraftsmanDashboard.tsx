@@ -124,7 +124,7 @@ const CraftsmanDashboard: React.FC = () => {
     /* ================= UI ================= */
 
     return (
-        <div className="dashboard-page bg-[#F8FAFC]">
+        <div className="dashboard-page">
             {/* Header */}
             {/* Header */}
             <header className="dashboard-header-premium" dir="rtl">
@@ -152,14 +152,14 @@ const CraftsmanDashboard: React.FC = () => {
             {/* Content */}
             <div className="max-w-7xl mx-auto px-4 -mt-12 relative z-20">
                 {isBlocked && (
-                    <div className="approval-warning-banner blocked" style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div className="approval-warning-banner blocked">
                         <FaClock />
-                        <span>حسابك محظور من قبل الإدارة. لا يمكنك قبول طلبات جديدة أو التواصل مع العملاء حتى يتم حل المشكلة. <Link to="/contact" style={{ textDecoration: 'underline' }}>تواصل مع الدعم</Link></span>
+                        <span>حسابك محظور من قبل الإدارة. لا يمكنك قبول طلبات جديدة أو التواصل مع العملاء حتى يتم حل المشكلة. <Link to="/contact">تواصل مع الدعم</Link></span>
                     </div>
                 )}
 
                 {!isApproved && !isBlocked && (
-                    <div className="approval-warning-banner" style={{ background: '#fffbeb', border: '1px solid #fef3c7', color: '#92400e', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div className="approval-warning-banner pending">
                         <FaClock />
                         <span>حسابك قيد المراجعة حالياً. سيتم تفعيل كامل الصلاحيات فور اعتماد حسابك من قبل الإدارة.</span>
                     </div>

@@ -4,6 +4,8 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import Sidebar from "../components/dashboard/Sidebar/Sidebar";
 import { useAuth } from "../hooks/useAuth";
 import logo from "../assets/images/final logo.png";
+import logoDark from "../assets/images/logo image dark 1.png";
+import { useTheme } from "../context/ThemeContext";
 import "./DashboardLayout.css";
 
 function DashboardLayout() {
@@ -11,6 +13,7 @@ function DashboardLayout() {
     const location = useLocation();
     const isMessagesPage = location.pathname.includes("/dashboard/messages");
     const { user } = useAuth();
+    const { isDark } = useTheme();
     const isBlocked = user?.status === 'rejected';
 
     return (
@@ -36,7 +39,7 @@ function DashboardLayout() {
                     {isSidebarOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
                 </button>
                 <div className="mobile-logo-wrapper">
-                    <img src={logo} alt="Sanayei" className="mobile-dashboard-logo" />
+                    <img src={isDark ? logoDark : logo} alt="Sanayei" className="mobile-dashboard-logo" />
                 </div>
             </header>
 

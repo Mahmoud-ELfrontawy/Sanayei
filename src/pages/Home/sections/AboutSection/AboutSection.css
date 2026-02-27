@@ -416,6 +416,22 @@
     }
 }
 
+/* =========================================
+   🌙 About Section Dark Mode
+   ========================================= */
+html[data-theme="dark"] .media-img--small {
+    background: #1e293b;
+}
+
+html[data-theme="dark"] .media-deco {
+    background: rgba(95, 168, 211, 0.1);
+}
+
+html[data-theme="dark"] .about-features .icon {
+    background: rgba(95, 168, 211, 0.15);
+}
+
+
 /* ========================================
    🖥️ LARGE SCREENS (1400px+)
    ======================================== */

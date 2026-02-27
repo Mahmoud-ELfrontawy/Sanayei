@@ -94,6 +94,26 @@
     color: var(--color-text-main);
 }
 
+/* =========================================
+   🌙 Services Page Dark Mode
+   ========================================= */
+html[data-theme="dark"] .services-filters-container {
+    background: #1e293b;
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .filter-input-wrapper input,
+html[data-theme="dark"] .filter-select-wrapper select {
+    background: #0f172a;
+    border-color: #334155;
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .filter-input-wrapper input:focus,
+html[data-theme="dark"] .filter-select-wrapper select:focus {
+    border-color: var(--color-primary);
+}
+
 /* أيقونة السهم */
 .select-arrow {
     position: absolute;

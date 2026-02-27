@@ -382,3 +382,70 @@
         gap: 1rem;
     }
 }
+
+/* =========================================
+   🌙 Product Details Dark Mode Refinements
+   ========================================= */
+html[data-theme="dark"] .product-details-premium {
+    background: var(--color-bg-main);
+}
+
+html[data-theme="dark"] .details-container {
+    background: #1e293b;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="dark"] .main-image-stage,
+html[data-theme="dark"] .thumb-box {
+    background: #0f172a;
+}
+
+html[data-theme="dark"] .product-full-name {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .main-price .amount {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .description-box h3,
+html[data-theme="dark"] .spec-value {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .product-long-description {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .spec-item-card {
+    background: #0f172a;
+    border-color: #334155;
+}
+
+html[data-theme="dark"] .quantity-selector {
+    background: #0f172a;
+}
+
+html[data-theme="dark"] .quantity-selector button {
+    background: #1e293b;
+    color: var(--color-text-main);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="dark"] .add-to-cart-premium-btn {
+    background: var(--color-primary);
+}
+
+html[data-theme="dark"] .add-to-cart-premium-btn:hover {
+    background: var(--color-primary-hover);
+}
+
+html[data-theme="dark"] .price-tag-section,
+html[data-theme="dark"] .trust-badges-row {
+    border-color: #334155;
+}
+
+html[data-theme="dark"] .trust-item span {
+    color: var(--color-text-secondary);
+}
+

@@ -632,3 +632,94 @@
     from { opacity: 0; transform: scale(0.9); }
     to { opacity: 1; transform: scale(1); }
 }
+
+/* =========================================
+   🌙 Orders Page Dark Mode Refinements
+   ========================================= */
+html[data-theme="dark"] .orders-page-section {
+    background: var(--color-bg-main);
+}
+
+html[data-theme="dark"] .orders-page-title {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .orders-tab-btn {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    color: var(--color-text-muted);
+}
+
+html[data-theme="dark"] .orders-tab-btn:hover {
+    background-color: var(--color-bg-alt);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .orders-tab-btn.active {
+    background: var(--color-primary);
+    color: white;
+}
+
+html[data-theme="dark"] .orders-card-item {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .orders-card-header {
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom-color: var(--color-border);
+}
+
+html[data-theme="dark"] .orders-service-name {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .orders-info-value {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .orders-card-footer {
+    border-top-color: var(--color-border);
+}
+
+html[data-theme="dark"] .orders-status-badge.pending { background: rgba(255, 193, 7, 0.1); }
+html[data-theme="dark"] .orders-status-badge.accepted { background: rgba(76, 175, 80, 0.1); }
+html[data-theme="dark"] .orders-status-badge.completed { background: rgba(95, 168, 211, 0.1); }
+html[data-theme="dark"] .orders-status-badge.rejected { background: rgba(244, 67, 54, 0.1); }
+
+html[data-theme="dark"] .orders-craftsman-link {
+    background: rgba(95, 168, 211, 0.15);
+}
+
+html[data-theme="dark"] .btn-reject {
+    color: var(--color-text-muted);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .btn-reject:hover {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--color-error);
+}
+
+html[data-theme="dark"] .loading-skeleton {
+    background: linear-gradient(to right, #1e293b 0%, #334155 20%, #1e293b 40%, #1e293b 100%);
+}
+
+html[data-theme="dark"] .empty-state {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .confirm-box {
+    background: #1e293b;
+    border: 1px solid var(--color-border);
+}
+
+html[data-theme="dark"] .confirm-box h4 { color: var(--color-text-main); }
+html[data-theme="dark"] .confirm-box p { color: var(--color-text-secondary); }
+html[data-theme="dark"] .btn-cancel-delete {
+    background: #334155;
+    color: var(--color-text-main);
+}
+html[data-theme="dark"] .btn-cancel-delete:hover { background: #475569; }
+

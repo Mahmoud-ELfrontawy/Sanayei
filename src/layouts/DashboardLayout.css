@@ -216,3 +216,10 @@
         padding-top: 120px; /* Banner + Mobile Header */
     }
 }
+
+/* =========================================
+   🌙 Dashboard Dark Mode Overrides
+   ========================================= */
+html[data-theme="dark"] .dashboard-container.is-blocked .dashboard-inner-content {
+    filter: contrast(0.85) brightness(0.95);
+}

@@ -520,6 +520,92 @@
   }
 }
 
+/* =========================================
+   🌙 Profile Dark Mode Refinements
+   ========================================= */
+html[data-theme="dark"] .tabs-container,
+html[data-theme="dark"] .profile-card,
+html[data-theme="dark"] .confirm-modal {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+html[data-theme="dark"] .tab-item {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .tab-item.active {
+    background: var(--color-primary);
+    color: white;
+}
+
+html[data-theme="dark"] .card-title,
+html[data-theme="dark"] .avatar-info h3,
+html[data-theme="dark"] .sub-title,
+html[data-theme="dark"] .custom-input,
+html[data-theme="dark"] .spec-value {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .card-header {
+    border-color: #334155;
+}
+
+html[data-theme="dark"] .avatar-card {
+    background: linear-gradient(to left, #1e293b, #0f172a);
+}
+
+html[data-theme="dark"] .profile-preview-img,
+html[data-theme="dark"] .camera-icon-badge {
+    border-color: #1e293b;
+}
+
+html[data-theme="dark"] .input-line,
+html[data-theme="dark"] .work-day-checkbox span,
+html[data-theme="dark"] .gender-btn,
+html[data-theme="dark"] .photo-add-square,
+html[data-theme="dark"] .btn-confirm-cancel {
+    background: #0f172a;
+    border-color: #334155;
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .input-line:focus-within {
+    background: #0f172a;
+    border-color: var(--color-primary);
+}
+
+html[data-theme="dark"] .input-label {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .work-day-checkbox input:checked + span,
+html[data-theme="dark"] .gender-btn.active {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+html[data-theme="dark"] .photo-square {
+    border-color: #334155;
+}
+
+html[data-theme="dark"] .map-wrapper {
+    border-color: #334155;
+}
+
+html[data-theme="dark"] .btn-delete-profile {
+    background: rgba(220, 38, 38, 0.1);
+    border-color: rgba(220, 38, 38, 0.2);
+    color: #f87171;
+}
+
+html[data-theme="dark"] .btn-delete-profile:hover {
+    background: #dc2626;
+    color: white;
+}
+
+
 @media (max-width: 480px) {
   .work-days-grid {
     display: grid;

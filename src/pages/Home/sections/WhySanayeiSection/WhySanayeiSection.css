@@ -366,3 +366,18 @@
         row-gap: 50px;
     }
 }
+
+/* =========================================
+   🌙 Why Sanayei Section Dark Mode
+   ========================================= */
+html[data-theme="dark"] .why-icon {
+    background: rgba(95, 168, 211, 0.15);
+}
+
+html[data-theme="dark"] .why-divider {
+    background: var(--color-border);
+}
+
+html[data-theme="dark"] .why-heading span {
+    color: var(--color-text-muted);
+}

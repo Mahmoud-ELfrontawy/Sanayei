@@ -240,4 +240,32 @@
     }
 }
 
+/* =========================================
+   🌙 Service Card Dark Mode
+   ========================================= */
+html[data-theme="dark"] .service-card {
+    background: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] .service-icon {
+    border-color: rgba(95, 168, 211, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="dark"] .service-title {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .service-desc {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .skeleton-icon-service,
+html[data-theme="dark"] .skeleton-line-service {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+
 

@@ -367,3 +367,105 @@
     }
 }
 
+/* =========================================
+   🌙 Craftsman Dashboard Dark Mode
+   ========================================= */
+html[data-theme="dark"] .order-card-premium {
+    background: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+html[data-theme="dark"] .order-card-premium:hover {
+    border-color: var(--color-primary);
+}
+
+html[data-theme="dark"] .order-icon-box {
+    background-color: #0f172a;
+    color: #60a5fa;
+}
+
+html[data-theme="dark"] .order-details h4 {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .order-details p {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .order-details p .client-label {
+    color: #4b5563;
+}
+
+html[data-theme="dark"] .status-badge-mini.accepted { background: rgba(22, 163, 74, 0.1); color: #4ade80; border-color: rgba(74, 222, 128, 0.2); }
+html[data-theme="dark"] .status-badge-mini.completed { background: rgba(37, 99, 235, 0.1); color: #60a5fa; border-color: rgba(96, 165, 250, 0.2); }
+html[data-theme="dark"] .status-badge-mini.pending { background: rgba(234, 88, 12, 0.1); color: #fb923c; border-color: rgba(251, 146, 60, 0.2); }
+
+html[data-theme="dark"] .btn-reject-mini {
+    background: #0f172a;
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .request-item-card {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+html[data-theme="dark"] .request-icon-box {
+    background: rgba(95, 168, 211, 0.15);
+}
+
+html[data-theme="dark"] .empty-requests {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+@media (max-width: 768px) {
+    html[data-theme="dark"] .order-actions-area {
+        border-color: #334155;
+    }
+}
+
+/* =========================================
+   Banners
+   ========================================= */
+.approval-warning-banner {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+.approval-warning-banner.pending {
+    background: #fffbeb;
+    border: 1px solid #fef3c7;
+    color: #92400e;
+}
+
+.approval-warning-banner.blocked {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+}
+
+.approval-warning-banner.blocked a {
+    text-decoration: underline;
+    color: inherit;
+    font-weight: 700;
+}
+
+html[data-theme="dark"] .approval-warning-banner.pending {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.2);
+    color: #fcd34d;
+}
+
+html[data-theme="dark"] .approval-warning-banner.blocked {
+    background: rgba(220, 38, 38, 0.1);
+    border-color: rgba(220, 38, 38, 0.2);
+    color: #fca5a5;
+}
+

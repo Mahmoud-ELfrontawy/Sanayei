@@ -9,6 +9,9 @@ body {
     font-family: "Zain", sans-serif;
     font-style:normal;
     cursor: url("../images/custom-cursor.svg"), auto;
+    background-color: var(--color-bg-main);
+    color: var(--color-text-main);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* =========================================
@@ -72,6 +75,26 @@ button {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/* =========================================
+   🌙 Dark Mode Global Overrides
+   ========================================= */
+html[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: #1a1d27;
+}
+
+html[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: rgba(126, 200, 240, 0.25);
+    border-color: #1a1d27;
+}
+
+html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: rgba(126, 200, 240, 0.5);
+}
+
+html[data-theme="dark"] * {
+    scrollbar-color: rgba(126, 200, 240, 0.25) #1a1d27;
 }
 
 /* الحجم الحقيقي للـ Lottie */

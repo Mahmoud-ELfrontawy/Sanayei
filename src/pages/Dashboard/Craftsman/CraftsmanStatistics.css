@@ -212,3 +212,48 @@
     .chart-item { padding: 1.5rem; }
     .summary-card { padding: 1.5rem; }
 }
+
+/* =========================================
+   🌙 Craftsman Statistics Dark Mode
+   ========================================= */
+html[data-theme="dark"] .summary-card,
+html[data-theme="dark"] .chart-item {
+    background: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+html[data-theme="dark"] .summary-info span {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .summary-info h3,
+html[data-theme="dark"] .chart-item h3 {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .chart-loading, 
+html[data-theme="dark"] .chart-empty {
+    background: #0f172a;
+    border-color: #334155;
+}
+
+html[data-theme="dark"] .legend-label {
+    color: var(--color-text-secondary);
+}
+
+/* Adjust Chart Grids and Tooltips if possible via CSS (mostly Recharts uses SVG attributes, but some use CSS) */
+html[data-theme="dark"] .recharts-cartesian-grid-horizontal line,
+html[data-theme="dark"] .recharts-cartesian-grid-vertical line {
+    stroke: #334155;
+}
+
+html[data-theme="dark"] .recharts-default-tooltip {
+    background-color: #0f172a !important;
+    border: 1px solid #334155 !important;
+}
+
+html[data-theme="dark"] .recharts-tooltip-label {
+    color: var(--color-text-main) !important;
+}
+

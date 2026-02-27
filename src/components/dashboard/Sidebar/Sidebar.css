@@ -361,3 +361,20 @@
         padding: 12px 25px;
     }
 }
+
+/* =========================================
+   🌙 Sidebar Dark Mode Overrides
+   ========================================= */
+html[data-theme="dark"] .blocked-status-badge {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.2);
+}
+
+html[data-theme="dark"] .link-icon .notification-badge-header {
+    border-color: var(--color-bg-main);
+}
+
+html[data-theme="dark"] .nav-link.has-unread {
+    background: rgba(244, 67, 54, 0.08);
+}
+

@@ -131,3 +131,35 @@
         height: 40px;
     }
 }
+
+/* =========================================
+   🌙 CardsRow (Homepage Features) Dark Mode
+   ========================================= */
+html[data-theme="dark"] .cards-row {
+    background: #1e293b;
+    box-shadow: 0 0 16px 2px rgba(0, 0, 0, 0.5);
+}
+
+html[data-theme="dark"] .card-title-home {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .card-text {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .card-icon {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 1024px) {
+    html[data-theme="dark"] .card {
+        background: rgba(255, 255, 255, 0.03);
+    }
+}
+
+@media (max-width: 768px) {
+    html[data-theme="dark"] .card {
+        border-color: rgba(255, 255, 255, 0.05);
+    }
+}

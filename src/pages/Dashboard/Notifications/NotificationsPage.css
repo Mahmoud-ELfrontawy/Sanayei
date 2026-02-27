@@ -120,3 +120,30 @@
     }
 }
 
+/* =========================================
+   🌙 Notifications Dark Mode Refinements
+   ========================================= */
+html[data-theme="dark"] .notification-card {
+    background: #1a1d21;
+    border-color: var(--color-border);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="dark"] .notif-icon-box {
+    background: rgba(95, 168, 211, 0.15);
+}
+
+html[data-theme="dark"] .notif-content h3 {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .notif-content p {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .notification-card.unread {
+    border-right-color: var(--color-primary);
+    background: #1e2227;
+}
+
+

@@ -778,4 +778,109 @@
     }
 }
 
+@media (max-width: 360px) {
+    .send-btn {
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+    }
+}
 
+/* =========================================
+   🌙 Chat Dark Mode Refinements
+   ========================================= */
+html[data-theme="dark"] .chat-list {
+    background: #1a1d21;
+    border-left-color: var(--color-border);
+}
+
+html[data-theme="dark"] .chat-list-header {
+    background: #1a1d21;
+    border-bottom-color: var(--color-border);
+}
+
+html[data-theme="dark"] .contact-item {
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+html[data-theme="dark"] .contact-item:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+html[data-theme="dark"] .contact-item.active {
+    background-color: rgba(95, 168, 211, 0.15);
+}
+
+html[data-theme="dark"] .contact-name {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .chat-window {
+    background-color: #0f111a;
+}
+
+html[data-theme="dark"] .chat-window-header {
+    background: #1a1d21;
+    border-bottom-color: var(--color-border);
+}
+
+html[data-theme="dark"] .chat-header-link:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+html[data-theme="dark"] .message-bubble.received {
+    background-color: #242731;
+    color: var(--color-text-main);
+    border-color: #313540;
+}
+
+html[data-theme="dark"] .chat-input-area {
+    background: #1a1d21;
+    border-top-color: var(--color-border);
+}
+
+html[data-theme="dark"] .chat-input {
+    background: #242731;
+    border-color: #313540;
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .chat-input:focus {
+    background: #242731;
+    border-color: var(--color-primary);
+}
+
+html[data-theme="dark"] .mobile-actions-toggle {
+    background: #242731;
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .icon-btn {
+    background: #242731;
+    border-color: #313540;
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .icon-btn:hover {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+html[data-theme="dark"] .chat-locked-message {
+    background-color: rgba(146, 64, 14, 0.1);
+    border-top-color: rgba(146, 64, 14, 0.2);
+    color: #fbd38d;
+}
+
+html[data-theme="dark"] .contacts-scroll::-webkit-scrollbar-thumb,
+html[data-theme="dark"] .messages-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+    html[data-theme="dark"] .chat-actions {
+        background: #1a1d21;
+        border-color: var(--color-border);
+    }
+}

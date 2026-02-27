@@ -273,3 +273,58 @@
     border-radius: 50%;
     animation: ring-pulse 1.5s infinite;
 }
+
+/* =========================================
+   🌙 Notifications Dark Mode
+   ========================================= */
+html[data-theme="dark"] .header-notification-dropdown {
+    background: rgba(30, 41, 59, 0.98) !important;
+    border-color: #334155 !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2) !important;
+}
+
+html[data-theme="dark"] .dropdown-header-notif {
+    background: transparent;
+    border-bottom-color: #334155;
+}
+
+html[data-theme="dark"] .dropdown-header-notif span {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .notification-item {
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+html[data-theme="dark"] .notification-item:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+html[data-theme="dark"] .notification-item.unread {
+    background-color: rgba(95, 168, 211, 0.08);
+}
+
+html[data-theme="dark"] .notif-item-title {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .notif-item-message {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .notification-time {
+    color: var(--color-text-muted);
+}
+
+html[data-theme="dark"] .view-all-notif {
+    background: transparent;
+    border-top: 1px solid #334155;
+}
+
+html[data-theme="dark"] .view-all-notif:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+html[data-theme="dark"] .empty-notif {
+    color: var(--color-text-muted);
+}

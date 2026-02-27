@@ -8,6 +8,7 @@ import "leaflet/dist/leaflet.css";
 import App from "./App.tsx";
 
 import { AuthProvider } from "./context/auth/AuthProvider.tsx";
+import { ThemeProvider } from "./context/ThemeContext.tsx";
 import { NotificationProvider } from "./context/NotificationContext.tsx";
 
 // ✅ Providers الجديدة بعد تقسيم الشات
@@ -28,19 +29,21 @@ const queryClient = new QueryClient({
 /* ================= Render App ================= */
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <NotificationProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <NotificationProvider>
 
-          {/* ✅ لف التطبيق بالاتنين علشان يدعم user + craftsman */}
-          <UserChatProvider>
-            <CraftsmanChatProvider>
-              <App />
-            </CraftsmanChatProvider>
-          </UserChatProvider>
+            {/* ✅ لف التطبيق بالاتنين علشان يدعم user + craftsman */}
+            <UserChatProvider>
+              <CraftsmanChatProvider>
+                <App />
+              </CraftsmanChatProvider>
+            </UserChatProvider>
 
-        </NotificationProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+          </NotificationProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   </StrictMode>
 );

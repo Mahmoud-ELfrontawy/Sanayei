@@ -656,3 +656,67 @@
         height: 40px;
     }
 }
+
+/* =========================================
+   🌙 Request Service Section Dark Mode
+   ========================================= */
+html[data-theme="dark"] .request-wrap::after {
+    background: rgba(15, 23, 42, 0.9);
+}
+
+html[data-theme="dark"] .req-card {
+    background: #1e293b;
+    border: 1px solid var(--color-border);
+}
+
+html[data-theme="dark"] .req-input,
+html[data-theme="dark"] .req-select select {
+    background: #0f172a;
+    border-color: #334155;
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .req-input::placeholder {
+    color: #64748b;
+}
+
+html[data-theme="dark"] .req-title {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .req-text {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .selected-craftsman-card {
+    background: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] .selected-craftsman-name {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .meta-item-badge.rating {
+    background: rgba(251, 191, 36, 0.1);
+    color: #fcd34d;
+    border-color: rgba(251, 191, 36, 0.2);
+}
+
+html[data-theme="dark"] .meta-item-badge.status {
+    color: var(--color-text-secondary);
+}
+
+/* Fix dropdown options contrast */
+html[data-theme="dark"] select option {
+    background-color: #1e293b;
+    color: #fff;
+}
+
+html[data-theme="dark"] .req-input:disabled {
+    background-color: #0f172a !important;
+    color: #4b5563 !important;
+}
+
+
