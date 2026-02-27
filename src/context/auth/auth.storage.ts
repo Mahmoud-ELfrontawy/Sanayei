@@ -36,7 +36,9 @@ export const authStorage = {
       if (c.indexOf(name) === 0) return c.substring(name.length, c.length);
     }
     // 2. Check localStorage
-    return localStorage.getItem(TOKEN_KEY) || localStorage.getItem("token");
+    const token = localStorage.getItem(TOKEN_KEY) || localStorage.getItem("token");
+    if (token === "null" || token === "undefined") return null;
+    return token;
   },
 
   setRefreshToken: (token: string) => {

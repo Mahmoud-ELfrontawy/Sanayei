@@ -1,14 +1,18 @@
 import axios from "axios";
 import { authStorage } from "../context/auth/auth.storage";
 
-const BASE_URL = "/api/wallet";
+const BASE_URL = "/api";
 
 const getHeaders = () => {
     const token = authStorage.getToken();
-    return {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
+    const headers: any = {
+        "Accept": "application/json",
     };
+    // Ensure token is valid and not a string "null" or "undefined"
+    if (token && token !== "null" && token !== "undefined") {
+        headers["Authorization"] = `Bearer ${token}`;
+    }
+    return headers;
 };
 
 export interface Transaction {
@@ -36,18 +40,25 @@ export interface WalletOverview {
  * Get wallet balance and recent transactions
  */
 export const getWalletOverview = async (): Promise<WalletOverview> => {
-    const response = await axios.get(BASE_URL, {
-        headers: getHeaders(),
-    });
-    // ✅ Extract data safely from Laravel's response wrapper if it exists
-    return response.data.data || response.data;
+    try {
+        const response = await axios.get(`${BASE_URL}/wallet`, {
+            headers: getHeaders(),
+        });
+        // ✅ Extract data safely from Laravel's response wrapper if it exists
+        return response.data.data || response.data;
+    } catch (error: any) {
+        if (error.response?.status === 401) {
+            console.warn("Wallet API: Unauthorized (401). Check if user is logged in correctly.");
+        }
+        throw error;
+    }
 };
 
 /**
  * Get paginated transactions
  */
 export const getTransactions = async (params?: any) => {
-    const response = await axios.get(`${BASE_URL}/transactions`, {
+    const response = await axios.get(`${BASE_URL}/wallet/transactions`, {
         params,
         headers: getHeaders(),
     });
@@ -59,7 +70,7 @@ export const getTransactions = async (params?: any) => {
  */
 export const addFunds = async (amount: number, method: "card" | "wallet") => {
     const response = await axios.post(
-        `${BASE_URL}/add-funds`,
+        `${BASE_URL}/wallet/add-funds`,
         { amount, method },
         { headers: getHeaders() }
     );
@@ -74,7 +85,7 @@ export const withdraw = async (data: {
     payout_method: "bank" | "mobile_wallet";
     payout_details: any;
 }) => {
-    const response = await axios.post(`${BASE_URL}/withdraw`, data, {
+    const response = await axios.post(`${BASE_URL}/wallet/withdraw`, data, {
         headers: getHeaders(),
     });
     return response.data;
@@ -84,7 +95,7 @@ export const withdraw = async (data: {
  * Manually create a wallet for the current user
  */
 export const createWallet = async () => {
-    const response = await axios.post(`${BASE_URL}/create`, {}, {
+    const response = await axios.post(`${BASE_URL}/wallet/create`, {}, {
         headers: getHeaders(),
     });
     return response.data.data || response.data;

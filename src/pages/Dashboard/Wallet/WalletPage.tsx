@@ -18,9 +18,12 @@ import {
     type WalletOverview,
     type Transaction
 } from "../../../Api/wallet.api";
+import { useAuth } from "../../../hooks/useAuth";
+import { authStorage } from "../../../context/auth/auth.storage";
 import "./WalletPage.css";
 
 const WalletPage: React.FC = () => {
+    const { isAuthenticated, isLoading: authLoading } = useAuth();
     const [data, setData] = useState<WalletOverview | null>(null);
     const [loading, setLoading] = useState(true);
     const [showWithdrawModal, setShowWithdrawModal] = useState(false);
@@ -39,19 +42,34 @@ const WalletPage: React.FC = () => {
     const [addAmount, setAddAmount] = useState("");
     const [addFundsMethod, setAddFundsMethod] = useState<"card" | "wallet">("card");
 
-    const fetchData = async () => {
+    const fetchData = async (isRetry = false) => {
+        const token = authStorage.getToken();
+        if (!isAuthenticated || !token) {
+            setLoading(false);
+            return;
+        }
+
         try {
             setLoading(true);
             const overview = await getWalletOverview();
             setData(overview);
         } catch (error: any) {
+            // Handle 401 gracefully, especially right after redirect
+            if (error.response?.status === 401 && !isRetry) {
+                console.warn("Retrying wallet fetch after 401...");
+                setTimeout(() => fetchData(true), 1500);
+                return;
+            }
+
             console.error("Failed to fetch wallet data", error);
-            // If the error indicates no wallet, we set data to null and loading to false
-            // which will trigger the "No Wallet" view
             if (error.response?.status === 404 || error.response?.data?.message?.includes("wallet")) {
                 setData(null);
             } else {
-                toast.error("فشل في تحميل بيانات المحفظة");
+                // Don't toast 401 immediately after redirect as it might be a temporary state
+                if (error.response?.status !== 401) {
+                    toast.error("فشل في تحميل بيانات المحفظة");
+                }
+                setData(null);
             }
         } finally {
             setLoading(false);
@@ -71,23 +89,29 @@ const WalletPage: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchData();
+        // Only run when auth state is determined
+        if (authLoading) return;
 
-        // ✅ Handle payment redirection status (success/failed)
         const params = new URLSearchParams(window.location.search);
         const status = params.get("status");
 
-        if (status === "success") {
-            toast.success("تم شحن الرصيد بنجاح! سيتم تحديث رصيدك خلال ثوانٍ.");
-            // Clean the URL parameters without reloading the page
-            window.history.replaceState({}, document.title, window.location.pathname);
-            // Refresh data to show the updated balance
-            fetchData();
-        } else if (status === "failed") {
-            toast.error("فشلت عملية الدفع. يرجى التأكد من بياناتك والمحاولة مرة أخرى.");
-            window.history.replaceState({}, document.title, window.location.pathname);
+        if (isAuthenticated) {
+            if (status === "success") {
+                toast.success("تم شحن الرصيد بنجاح! يتم الآن تحديث محفظتك...");
+                window.history.replaceState({}, document.title, window.location.pathname);
+                // Give the webhook a moment to finish before fetching
+                setTimeout(() => fetchData(), 2000);
+            } else {
+                fetchData();
+                if (status === "failed") {
+                    toast.error("فشلت عملية الدفع. يرجى المحاولة مرة أخرى.");
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            }
+        } else {
+            setLoading(false);
         }
-    }, []);
+    }, [isAuthenticated, authLoading]);
 
     const handleWithdraw = async (e: React.FormEvent) => {
         e.preventDefault();
