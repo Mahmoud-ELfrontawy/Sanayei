@@ -15,6 +15,7 @@ import {
     addFunds,
     withdraw,
     createWallet,
+    transferFunds,
     type WalletOverview,
     type Transaction
 } from "../../../Api/wallet.api";
@@ -23,11 +24,12 @@ import { authStorage } from "../../../context/auth/auth.storage";
 import "./WalletPage.css";
 
 const WalletPage: React.FC = () => {
-    const { isAuthenticated, isLoading: authLoading } = useAuth();
+    const { isAuthenticated, isLoading: authLoading, userType: activeRole } = useAuth();
     const [data, setData] = useState<WalletOverview | null>(null);
     const [loading, setLoading] = useState(true);
     const [showWithdrawModal, setShowWithdrawModal] = useState(false);
     const [showAddFundsModal, setShowAddFundsModal] = useState(false);
+    const [showTransferModal, setShowTransferModal] = useState(false);
 
     // Form States
     const [withdrawAmount, setWithdrawAmount] = useState("");
@@ -41,6 +43,10 @@ const WalletPage: React.FC = () => {
 
     const [addAmount, setAddAmount] = useState("");
     const [addFundsMethod, setAddFundsMethod] = useState<"card" | "wallet">("card");
+
+    const [transferAmount, setTransferAmount] = useState("");
+    const [targetWalletId, setTargetWalletId] = useState("");
+    const [transferDescription, setTransferDescription] = useState("");
 
     const fetchData = async (isRetry = false) => {
         const token = authStorage.getToken();
@@ -155,6 +161,54 @@ const WalletPage: React.FC = () => {
         }
     };
 
+    const handleTransfer = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // 1. إعادة جلب البيانات فوراً قبل التحويل للتأكد من الرصيد اللحظي
+        await fetchData();
+
+        const amount = Number(transferAmount);
+        const currentBalance = Number(data?.wallet.balance || 0);
+
+        console.log("� [Final Check Before Transfer]", {
+            transfer_amount: amount,
+            actual_balance_on_screen: currentBalance,
+            sender_id: data?.wallet.id,
+            role: activeRole
+        });
+
+        if (amount < 0.5) {
+            toast.error("الحد الأدنى للتحويل هو 0.5 ج.م");
+            return;
+        }
+
+        if (amount > currentBalance) {
+            toast.error(`عفواً، رصيدك اللحظي (${currentBalance}) غير كافٍ. قد تحتاج لإعادة تسجيل الدخول بالرتبة الصحيحة.`);
+            return;
+        }
+
+        try {
+            setLoading(true);
+            const res = await transferFunds({
+                wallet_id: Number(targetWalletId),
+                amount: amount,
+                description: transferDescription
+            });
+
+            toast.success(res.message || "تم التحويل بنجاح");
+            setShowTransferModal(false);
+            setTransferAmount("");
+            setTargetWalletId("");
+            fetchData();
+        } catch (error: any) {
+            console.error("❌ [Server rejected transfer]", error.response?.data);
+            const errorMessage = error.response?.data?.message || "رصيدك في قاعدة البيانات غير كافٍ لهذا الحساب.";
+            toast.error(errorMessage);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     if (loading && !data) {
         return (
             <div className="wallet-loading-screen">
@@ -190,6 +244,16 @@ const WalletPage: React.FC = () => {
                         <h2 className="balance-amount">
                             {data?.wallet.balance.toLocaleString()} <span>ج.م</span>
                         </h2>
+                        <div className="wallet-meta">
+                            {data?.wallet.id && (
+                                <div className="wallet-id-badge">
+                                    المحفظة: <strong>#{data.wallet.id}</strong>
+                                </div>
+                            )}
+                            <div className={`role-badge ${activeRole}`}>
+                                {activeRole === 'craftsman' ? 'صنايعي' : activeRole === 'company' ? 'شركة' : 'حساب مستخدم'}
+                            </div>
+                        </div>
                     </div>
                     <div className="balance-icon">
                         <FaWallet size={40} />
@@ -201,6 +265,9 @@ const WalletPage: React.FC = () => {
                         </button>
                         <button className="btn-action withdraw" onClick={() => setShowWithdrawModal(true)}>
                             <FaArrowDown /> سحب الأرباح
+                        </button>
+                        <button className="btn-action transfer" onClick={() => setShowTransferModal(true)}>
+                            <FaArrowUp /> تحويل أموال
                         </button>
                     </div>
                 </div>
@@ -369,6 +436,53 @@ const WalletPage: React.FC = () => {
                             <div className="modal-actions">
                                 <button type="submit" className="btn-confirm">متابعة للدفع</button>
                                 <button type="button" className="btn-cancel" onClick={() => setShowAddFundsModal(false)}>إلغاء</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+            {/* Transfer Modal */}
+            {showTransferModal && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h3>تحويل أموال</h3>
+                        <form onSubmit={handleTransfer}>
+                            <div className="form-group">
+                                <label>رقم المحفظة المستلمة (Wallet ID)</label>
+                                <input
+                                    type="number"
+                                    value={targetWalletId}
+                                    onChange={(e) => setTargetWalletId(e.target.value)}
+                                    placeholder="أدخل رقم المحفظة (مثال: 5)"
+                                    required
+                                />
+                                <small className="info-text">يمكنك الحصول على رقم المحفظة من صاحب الحساب الآخر.</small>
+                            </div>
+
+                            <div className="form-group">
+                                <label>المبلغ المراد تحويله</label>
+                                <input
+                                    type="number"
+                                    value={transferAmount}
+                                    onChange={(e) => setTransferAmount(e.target.value)}
+                                    placeholder="0.00"
+                                    required
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label>ملاحظات (اختياري)</label>
+                                <input
+                                    type="text"
+                                    value={transferDescription}
+                                    onChange={(e) => setTransferDescription(e.target.value)}
+                                    placeholder="مثال: تحويل الدفعة الأولى"
+                                />
+                            </div>
+
+                            <div className="modal-actions">
+                                <button type="submit" className="btn-confirm">تأكيد التحويل</button>
+                                <button type="button" className="btn-cancel" onClick={() => setShowTransferModal(false)}>إلغاء</button>
                             </div>
                         </form>
                     </div>
