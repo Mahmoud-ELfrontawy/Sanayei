@@ -106,7 +106,6 @@ const HeroSection: React.FC = () => {
                     {/* Action Buttons */}
                     <div className="flex gap-3 mt-6">
                         <motion.button
-                            whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={handleRequestNow}
                             className="btn-hero"
@@ -115,7 +114,6 @@ const HeroSection: React.FC = () => {
                         </motion.button>
 
                         <motion.button
-                            whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => navigate("/choose")}
                             className="btn-outline-herosection"

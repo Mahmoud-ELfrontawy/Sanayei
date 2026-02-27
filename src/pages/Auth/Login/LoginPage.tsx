@@ -118,7 +118,12 @@ const LoginPage: React.FC = () => {
               <span>عن طريق جوجل</span>
             </button>
 
-            <button type="button" className="auth-social-btn">
+            <button type="button" className="auth-social-btn"
+              onClick={() => {
+                window.location.href =
+                  "/api/auth/facebook";
+              }}
+            >
               <FaFacebookF />
               <span>عن طريق فيسبوك</span>
             </button>

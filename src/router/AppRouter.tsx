@@ -20,6 +20,7 @@ const ForgotPasswordPage = lazy(() => import("../pages/Auth/ForgotPassword/Forgo
 const ResetPasswordPage = lazy(() => import("../pages/Auth/ResetPassword/ResetPasswordPage"));
 const RegisterPage = lazy(() => import("../pages/Auth/Register/RegisterPage"));
 const GoogleCallback = lazy(() => import("../pages/Auth/google-callback/GoogleCallback"));
+const FacebookCallback = lazy(() => import("../pages/Auth/facebook-callback/FacebookCallback"));
 const ProfileMe = lazy(() => import("../pages/Profile/ProfileUser/ProfileMe"));
 const ProfileWorker = lazy(() => import("../pages/Profile/ProfileWorker/Dashboard/ProfileWorker"));
 const ProfileReviews = lazy(() => import("../pages/Profile/Reviews/ProfileReviews"));
@@ -79,6 +80,7 @@ const AppRouter: React.FC = () => {
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
           <Route path="/auth/callback" element={<GoogleCallback />} />
+          <Route path="/auth/facebook-callback" element={<FacebookCallback />} />
 
           {/* ===== Admin Routes ===== */}
           <Route
