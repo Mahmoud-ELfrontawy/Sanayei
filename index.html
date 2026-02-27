@@ -16,6 +16,26 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- ✅ Google OAuth Token Interceptor - runs BEFORE any JS module -->
+    <script>
+      (function() {
+        try {
+          var params = new URLSearchParams(window.location.search);
+          var token = params.get('token') || params.get('access_token');
+          if (token && (window.location.pathname === '/auth/callback' || window.location.pathname.indexOf('/auth/') === 0)) {
+            // Save token to all keys AuthProvider checks
+            localStorage.setItem('auth_token', token);
+            localStorage.setItem('token', token);
+            localStorage.setItem('userType', 'user');
+            // Set cookie for 7 days
+            var expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
+            document.cookie = 'auth_token=' + token + ';expires=' + expires + ';path=/;SameSite=Lax';
+            // Clean redirect - removes token from URL for security
+            window.location.replace('/');
+          }
+        } catch(e) {}
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

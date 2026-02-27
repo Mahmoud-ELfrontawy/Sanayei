@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { authStorage } from "../../../context/auth/auth.storage";
@@ -6,13 +6,16 @@ import { authService } from "../../../context/auth/auth.service";
 
 const GoogleCallback: React.FC = () => {
     const [searchParams] = useSearchParams();
+    const [statusMsg, setStatusMsg] = useState("جاري التحقق من الحساب...");
 
     useEffect(() => {
         const handleLogin = async () => {
             const token = searchParams.get("token") || searchParams.get("access_token");
+            console.log("🔍 GoogleCallback: Token received:", token ? "Yes (starts with " + token.substring(0, 5) + "...)" : "No");
 
             if (!token) {
                 const error = searchParams.get("error");
+                console.error("❌ GoogleCallback: No token found. Error:", error);
                 toast.error(error === "google_auth_failed" ? "فشل تسجيل الدخول عبر جوجل ❌" : "حدث خطأ في المصادقة");
                 setTimeout(() => {
                     window.location.href = "/login";
@@ -21,37 +24,51 @@ const GoogleCallback: React.FC = () => {
             }
 
             try {
-                // 1. Physical Storage of token
-                authStorage.setToken(token);
-                localStorage.setItem("token", token); // Compatibility key
+                setStatusMsg("جاري حفظ بيانات الدخول...");
 
-                // 2. Default to 'user' type as per backend logic
-                authStorage.setUserType("user");
+                // 1. Direct LocalStorage Sync (Deep Sync)
+                // We set multiple keys to ensure compatibility with different service/storage patterns
+                localStorage.setItem("auth_token", token);
+                localStorage.setItem("token", token);
                 localStorage.setItem("userType", "user");
 
-                // 3. Fetch user profile to complete the login state synchronization
-                // This ensures Header and other components have data immediately
-                const user = await authService.fetchProfile("user");
+                // Storage Utility Sync
+                authStorage.setToken(token);
+                authStorage.setUserType("user" as any);
 
-                if (user) {
-                    authStorage.setUser(user);
-                    localStorage.setItem("user_name", user.name);
-                    localStorage.setItem("user_id", user.id.toString());
-                    localStorage.setItem("user_status", user.status || "");
+                console.log("✅ GoogleCallback: Storage synced. Tokens and Type 'user' set.");
 
-                    toast.success(`مرحباً ${user.name} 🎉`);
-                } else {
-                    toast.success("تم تسجيل الدخول بنجاح! جاري تحويلك... 🎉");
+                // 2. Profile Hydration
+                setStatusMsg("جاري جلب بيانات الملف الشخصي...");
+                try {
+                    const user = await authService.fetchProfile("user");
+                    if (user) {
+                        console.log("👤 GoogleCallback: Profile fetched successfully:", user.name);
+                        authStorage.setUser(user);
+                        localStorage.setItem("user_name", user.name);
+                        localStorage.setItem("user_id", user.id.toString());
+                        localStorage.setItem("user_status", user.status || "");
+                        toast.success(`مرحباً ${user.name} 🎉`);
+                    } else {
+                        console.warn("⚠️ GoogleCallback: Profile fetched but data was null.");
+                    }
+                } catch (profileErr) {
+                    console.error("❌ GoogleCallback: Profile fetch failed:", profileErr);
+                    // We don't block the login if profile fetch fails here, 
+                    // the AuthProvider will try again on the home page.
                 }
 
-                // 4. Force a full redirect to ensure the AuthProvider re-initializes with the new state
+                setStatusMsg("تم بنجاح! جاري تحويلك...");
+
+                // 3. Final Redirect
                 setTimeout(() => {
+                    console.log("🚀 GoogleCallback: Redirecting to Home...");
                     window.location.href = "/";
-                }, 500);
+                }, 800);
 
             } catch (err) {
-                console.error("Google Callback Error:", err);
-                // Fallback: reload home if we have a token even if profile fetch fails
+                console.error("🚨 GoogleCallback: Critical Error during sync:", err);
+                toast.error("حدث خطأ أثناء إعداد الجلسة");
                 window.location.href = "/";
             }
         };
@@ -70,7 +87,8 @@ const GoogleCallback: React.FC = () => {
             background: 'var(--color-bg-light)'
         }}>
             <div className="spinner-mini" style={{ width: '50px', height: '50px', borderTopColor: 'var(--color-primary)' }}></div>
-            <p style={{ fontWeight: '600', color: 'var(--color-primary)', fontSize: '1.2rem' }}>جاري التحقق من الحساب...</p>
+            <p style={{ fontWeight: '600', color: 'var(--color-primary)', fontSize: '1.2rem' }}>{statusMsg}</p>
+            <p style={{ color: '#888', fontSize: '0.9rem' }}>يمكنك مراجعة الـ Console للتفاصيل في حالة حدوث مشكلة</p>
         </div>
     );
 };

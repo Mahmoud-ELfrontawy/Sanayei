@@ -42,11 +42,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     // Handle profile fetch failure (401/403)
+    // NOTE: We only clear auth if we're sure the token is stale.
+    // A freshly issued Google OAuth token should not be cleared on first try.
     useEffect(() => {
         if (profileError && axios.isAxiosError(fetchError)) {
             const status = fetchError.response?.status;
             if (status === 401 || status === 403) {
-                console.warn("🔐 AuthProvider: Stale token detected, clearing auth.");
+                console.warn("🔐 AuthProvider: Profile fetch failed with 401/403. Clearing auth.");
+                console.warn("   Token used:", authStorage.getToken()?.substring(0, 10) + "...");
                 authStorage.clearAuth();
                 setState({
                     user: null,
