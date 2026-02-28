@@ -16,7 +16,10 @@ import {
     FaBuilding,
     FaBoxOpen,
     FaChartBar,
-    FaBars
+    FaBars,
+    FaWallet,
+    FaChevronDown,
+    FaChevronUp
 } from 'react-icons/fa';
 import { useAuth } from '../hooks/useAuth';
 import { useAdminNotifications } from '../context/AdminNotificationContext';
@@ -30,6 +33,15 @@ const AdminLayout = () => {
     const navigate = useNavigate();
     const { notifications, unreadCount, markAsRead, markAllAsRead } = useAdminNotifications();
     const [notifOpen, setNotifOpen] = useState(false);
+    const [openSubMenus, setOpenSubMenus] = useState<string[]>(() => {
+        // Keep Wallet open if we are in any wallet-related path
+        if (location.pathname.includes('/admin/wallets') || 
+            location.pathname.includes('/admin/withdrawals') || 
+            location.pathname.includes('/admin/transfers')) {
+            return ['wallet'];
+        }
+        return [];
+    });
     const notifRef = useRef<HTMLDivElement>(null);
 
     // Guard: Only allow admins
@@ -57,6 +69,12 @@ const AdminLayout = () => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    const toggleSubMenu = (key: string) => {
+        setOpenSubMenus(prev => 
+            prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]
+        );
+    };
+
     if (isLoading) {
         return <div className="admin-loading">جاري التحميل...</div>;
     }
@@ -76,6 +94,16 @@ const AdminLayout = () => {
         { path: '/admin/categories', label: 'التصنيفات', icon: FaTags },
         { path: '/admin/requests', label: 'الطلبات', icon: FaFileAlt },
         { path: '/admin/products', label: 'المنتجات', icon: FaBoxOpen },
+        { 
+            key: 'wallet', 
+            label: 'محفظة', 
+            icon: FaWallet,
+            subItems: [
+                { path: '/admin/wallets', label: 'كافة المحافظ' },
+                { path: '/admin/withdrawals', label: 'طلبات السحب' },
+                { path: '/admin/transfers', label: 'التحويلات' },
+            ]
+        },
         { path: '/admin/reviews', label: 'التقييمات', icon: FaStar },
     ];
 
@@ -91,19 +119,53 @@ const AdminLayout = () => {
                 </div>
 
                 <nav className="admin-sidebar-nav">
-                    {menuItems.map((item) => {
+                    {menuItems.map((item: any) => {
                         const Icon = item.icon;
-                        const isActive = location.pathname === item.path;
+                        const isSubMenuOpen = item.key && openSubMenus.includes(item.key);
+                        
+                        // Handle Regular Items
+                        if (!item.subItems) {
+                            const isActive = location.pathname === item.path;
+                            return (
+                                <Link
+                                    key={item.path}
+                                    to={item.path}
+                                    className={`admin-nav-item ${isActive ? 'active' : ''}`}
+                                    onClick={() => setIsSidebarOpen(false)}
+                                >
+                                    <Icon size={20} />
+                                    <span>{item.label}</span>
+                                </Link>
+                            );
+                        }
+
+                        // Handle Items with Sub-menu
+                        const isAnyChildActive = item.subItems.some((sub: any) => location.pathname === sub.path);
                         return (
-                            <Link
-                                key={item.path}
-                                to={item.path}
-                                className={`admin-nav-item ${isActive ? 'active' : ''}`}
-                                onClick={() => setIsSidebarOpen(false)}
-                            >
-                                <Icon size={20} />
-                                <span>{item.label}</span>
-                            </Link>
+                            <div key={item.key} className="admin-menu-dropdown">
+                                <button 
+                                    className={`admin-nav-item submenu-trigger ${isAnyChildActive ? 'child-active' : ''}`}
+                                    onClick={() => toggleSubMenu(item.key)}
+                                >
+                                    <Icon size={20} />
+                                    <span>{item.label}</span>
+                                    {isSubMenuOpen ? <FaChevronUp className="ms-auto" size={12} /> : <FaChevronDown className="ms-auto" size={12} />}
+                                </button>
+                                {isSubMenuOpen && (
+                                    <div className="admin-submenu-list">
+                                        {item.subItems.map((sub: any) => (
+                                            <Link
+                                                key={sub.path}
+                                                to={sub.path}
+                                                className={`admin-submenu-item ${location.pathname === sub.path ? 'active' : ''}`}
+                                                onClick={() => setIsSidebarOpen(false)}
+                                            >
+                                                {sub.label}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                         );
                     })}
                 </nav>

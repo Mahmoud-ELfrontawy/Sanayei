@@ -65,6 +65,8 @@ const AdminDashboard = () => {
         profile_update: { icon: <FaUser />, color: '#6366f1', label: 'تحديث ملف' },
         account_status_audit: { icon: <FaHardHat />, color: '#ef4444', label: 'تغيير حالة' },
         system_alert: { icon: <FaBell />, color: '#ec4899', label: 'تنبيه نظام' },
+        wallet_transaction: { icon: <FaDollarSign />, color: '#10b981', label: 'معاملة مالية' },
+        withdrawal_request: { icon: <FaDollarSign />, color: '#f59e0b', label: 'طلب سحب' },
     };
 
     return (
@@ -129,6 +131,9 @@ const AdminDashboard = () => {
                     { to: '/admin/reviews', icon: <FaCommentAlt />, label: 'التقييمات', color: '#ef4444' },
                     { to: '/admin/requests', icon: <FaRegFileAlt />, label: 'الطلبات', color: '#f97316' },
                     { to: '/admin/products', icon: <FaBoxOpen />, label: 'المنتجات', color: '#6366f1' },
+                    { to: '/admin/wallets', icon: <FaDollarSign />, label: 'المحافظ', color: '#10b981' },
+                    { to: '/admin/withdrawals', icon: <FaDollarSign />, label: 'طلبات السحب', color: '#f59e0b' },
+                    { to: '/admin/transfers', icon: <FaRegFileAlt />, label: 'التحويلات', color: '#6366f1' },
                 ].map(item => (
                     <Link key={item.to} to={item.to} className="adm-quick-link" style={{ '--link-color': item.color } as any}>
                         <span className="adm-ql-icon">{item.icon}</span>

@@ -1,0 +1,223 @@
+.wallet-details-container {
+    padding: 2rem;
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 2rem;
+    align-items: start;
+}
+
+@media (max-width: 1024px) {
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Sidebar Info Card */
+.wallet-info-card {
+    background: white;
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 2rem;
+}
+
+.user-profile-large {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.avatar-large {
+    width: 100px;
+    height: 100px;
+    border-radius: 30px;
+    background: #e2e8f0;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #475569;
+}
+
+.user-name-large {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    display: block;
+}
+
+.wallet-balance-display {
+    background: #f1f5f9;
+    border-radius: 20px;
+    padding: 1.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.balance-label {
+    font-size: 0.875rem;
+    color: #64748b;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.balance-val {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.balance-val small {
+    font-size: 1rem;
+    color: #64748b;
+    margin-right: 4px;
+}
+
+/* Forms Section */
+.adjustment-forms {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-card {
+    background: #f8fafc;
+    border: 1.5px dashed #e2e8f0;
+    padding: 1.5rem;
+    border-radius: 20px;
+}
+
+.form-card.credit { border-color: #10b981; background: #f0fdf4; }
+.form-card.debit { border-color: #ef4444; background: #fef2f2; }
+
+.form-card h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-card.credit h3 { color: #065f46; }
+.form-card.debit h3 { color: #991b1b; }
+
+.adj-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.adj-input {
+    padding: 0.75rem 1rem;
+    border: 1.5px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    background: white;
+}
+
+.adj-btn {
+    padding: 0.75rem;
+    border-radius: 12px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: white;
+}
+
+.adj-btn.credit { background: #10b981; }
+.adj-btn.debit { background: #ef4444; }
+
+.adj-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* Transactions Table */
+.transactions-main-card {
+    background: white;
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.tx-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.tx-header h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.history-table th {
+    text-align: right;
+    padding: 1rem;
+    color: #64748b;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.history-table td {
+    padding: 1.25rem 1rem;
+    border-bottom: 1px solid #f8fafc;
+}
+
+.tx-type-tag {
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.tx-type-tag.credit { background: #dcfce7; color: #15803d; }
+.tx-type-tag.debit { background: #fee2e2; color: #b91c1c; }
+
+.tx-amount-val {
+    font-weight: 800;
+}
+
+.tx-amount-val.credit { color: #10b981; }
+.tx-amount-val.debit { color: #ef4444; }
+
+.tx-desc-cell {
+    max-width: 300px;
+}
+
+.tx-desc-text {
+    font-size: 0.9rem;
+    color: #475569;
+    display: block;
+}
+
+.tx-meta {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #64748b;
+    text-decoration: none;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s;
+}
+
+.btn-back:hover {
+    color: #0f172a;
+}

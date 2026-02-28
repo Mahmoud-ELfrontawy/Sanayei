@@ -59,6 +59,10 @@ const ServiceRequestsPage = lazy(() => import("../pages/Admin/ServiceRequests/Se
 const ReviewsPage = lazy(() => import("../pages/Admin/Reviews/ReviewsPage"));
 const AdminCompaniesPage = lazy(() => import("../pages/Admin/Companies/CompaniesPage"));
 const ProductsPage = lazy(() => import("../pages/Admin/Products/ProductsPage"));
+const WalletsIndex = lazy(() => import("../pages/Admin/Wallets/WalletsIndex"));
+const WalletDetails = lazy(() => import("../pages/Admin/Wallets/WalletDetails"));
+const TransfersTracker = lazy(() => import("../pages/Admin/Wallets/TransfersTracker"));
+const WithdrawalsManager = lazy(() => import("../pages/Admin/Wallets/WithdrawalsManager"));
 
 const LoadingFallback = () => (
   <div style={{
@@ -103,6 +107,10 @@ const AppRouter: React.FC = () => {
             <Route path="requests" element={<ServiceRequestsPage />} />
             <Route path="reviews" element={<ReviewsPage />} />
             <Route path="products" element={<ProductsPage />} />
+            <Route path="wallets" element={<WalletsIndex />} />
+            <Route path="wallets/:id" element={<WalletDetails />} />
+            <Route path="transfers" element={<TransfersTracker />} />
+            <Route path="withdrawals" element={<WithdrawalsManager />} />
           </Route>
 
           {/* ===== Main Layout ===== */}
