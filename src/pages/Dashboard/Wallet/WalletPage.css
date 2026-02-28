@@ -574,3 +574,99 @@ html[data-theme="dark"] .no-wallet-card h2 {
 html[data-theme="dark"] .empty-transactions {
     color: var(--color-text-muted);
 }
+
+/* =========================================
+   ✨ New Enhancements (Tabs & Badges)
+   ========================================= */
+
+.wallet-meta {
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.wallet-id-badge {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 6px 16px;
+    border-radius: 99px;
+    font-size: 0.9rem;
+    color: #f8f9fa;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.role-badge {
+    padding: 6px 16px;
+    border-radius: 99px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Role Colors */
+.role-badge.user { background-color: #4CAF50; color: white; }
+.role-badge.craftsman { background-color: #FF9800; color: white; }
+.role-badge.company { background-color: #2196F3; color: white; }
+
+/* Tab Switcher */
+.tab-switcher {
+    display: flex;
+    background-color: var(--color-bg-section);
+    padding: 6px;
+    border-radius: var(--radius-btn);
+    gap: 8px;
+    border: 1px solid var(--color-border);
+}
+
+.tab-btn {
+    padding: 10px 24px;
+    border-radius: var(--radius-btn);
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tab-btn.active {
+    background-color: var(--color-primary);
+    color: #fff !important;
+    box-shadow: 0 6px 15px rgba(95, 168, 211, 0.25);
+}
+
+.tab-btn:hover:not(.active) {
+    background-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+/* Withdrawal Specific Item */
+.withdrawal-req .tx-status.approved { background: rgba(33, 150, 243, 0.1); color: #2196F3; }
+.withdrawal-req .tx-status.rejected { background: rgba(244, 67, 54, 0.1); color: var(--color-error); }
+
+/* Dark Mode Extra */
+html[data-theme="dark"] .tab-switcher {
+    background-color: var(--color-bg-dark);
+}
+
+html[data-theme="dark"] .tab-btn:hover:not(.active) {
+    background-color: var(--color-bg-section);
+}
+
+@media (max-width: 500px) {
+    .tab-switcher {
+        width: 100%;
+        flex-direction: column;
+    }
+    .tab-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

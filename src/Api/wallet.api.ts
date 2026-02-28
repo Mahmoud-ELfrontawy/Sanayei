@@ -28,6 +28,16 @@ export interface WalletOverview {
     recentTransactions: Transaction[];
 }
 
+export interface WithdrawalRequest {
+    id: number;
+    amount: number;
+    status: 'pending' | 'approved' | 'rejected' | 'completed';
+    payout_method: string;
+    payout_details: any;
+    reason?: string;
+    created_at: string;
+}
+
 /**
  * Get wallet balance and recent transactions
  */
@@ -74,6 +84,14 @@ export const transferFunds = async (data: {
 }) => {
     const response = await api.post(`${getPrefix()}/transfer`, data);
     return response.data;
+};
+
+/**
+ * Get the current user's withdrawal requests
+ */
+export const getMyWithdrawalRequests = async () => {
+    const response = await api.get(`${getPrefix()}/my-requests`);
+    return response.data.data || response.data;
 };
 
 /**

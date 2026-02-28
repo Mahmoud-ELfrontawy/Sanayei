@@ -16,8 +16,10 @@ import {
     withdraw,
     createWallet,
     transferFunds,
+    getMyWithdrawalRequests,
     type WalletOverview,
-    type Transaction
+    type Transaction,
+    type WithdrawalRequest
 } from "../../../Api/wallet.api";
 import { useAuth } from "../../../hooks/useAuth";
 import { authStorage } from "../../../context/auth/auth.storage";
@@ -26,6 +28,8 @@ import "./WalletPage.css";
 const WalletPage: React.FC = () => {
     const { isAuthenticated, isLoading: authLoading, userType: activeRole } = useAuth();
     const [data, setData] = useState<WalletOverview | null>(null);
+    const [withdrawalRequests, setWithdrawalRequests] = useState<WithdrawalRequest[]>([]);
+    const [activeTab, setActiveTab] = useState<"transactions" | "withdrawals">("transactions");
     const [loading, setLoading] = useState(true);
     const [showWithdrawModal, setShowWithdrawModal] = useState(false);
     const [showAddFundsModal, setShowAddFundsModal] = useState(false);
@@ -57,8 +61,12 @@ const WalletPage: React.FC = () => {
 
         try {
             setLoading(true);
-            const overview = await getWalletOverview();
+            const [overview, requests] = await Promise.all([
+                getWalletOverview(),
+                getMyWithdrawalRequests()
+            ]);
             setData(overview);
+            setWithdrawalRequests(requests);
         } catch (error: any) {
             // Handle 401 gracefully, especially right after redirect
             if (error.response?.status === 401 && !isRetry) {
@@ -275,35 +283,74 @@ const WalletPage: React.FC = () => {
 
             <section className="transactions-section">
                 <div className="section-header">
-                    <h3 className="section-title">
-                        <FaHistory /> آخر العمليات
-                    </h3>
+                    <div className="tab-switcher">
+                        <button
+                            className={`tab-btn ${activeTab === "transactions" ? "active" : ""}`}
+                            onClick={() => setActiveTab("transactions")}
+                        >
+                            <FaHistory /> آخر العمليات
+                        </button>
+                        <button
+                            className={`tab-btn ${activeTab === "withdrawals" ? "active" : ""}`}
+                            onClick={() => setActiveTab("withdrawals")}
+                        >
+                            <FaArrowDown /> طلبات السحب
+                        </button>
+                    </div>
                 </div>
 
                 <div className="transactions-list">
-                    {data?.recentTransactions && data.recentTransactions.length > 0 ? (
-                        data.recentTransactions.map((tx: Transaction) => (
-                            <div key={tx.id} className="transaction-item">
-                                <div className={`tx-icon ${tx.type}`}>
-                                    {tx.type === "credit" ? <FaArrowUp /> : <FaArrowDown />}
+                    {activeTab === "transactions" ? (
+                        data?.recentTransactions && data.recentTransactions.length > 0 ? (
+                            data.recentTransactions.map((tx: Transaction) => (
+                                <div key={tx.id} className="transaction-item">
+                                    <div className={`tx-icon ${tx.type}`}>
+                                        {tx.type === "credit" ? <FaArrowUp /> : <FaArrowDown />}
+                                    </div>
+                                    <div className="tx-details">
+                                        <h4 className="tx-desc">{tx.description}</h4>
+                                        <span className="tx-date">
+                                            {new Date(tx.created_at).toLocaleDateString("ar-EG")}
+                                        </span>
+                                    </div>
+                                    <div className={`tx-amount ${tx.type}`}>
+                                        {tx.type === "credit" ? "+" : "-"}
+                                        {tx.amount.toLocaleString()} ج.م
+                                    </div>
+                                    <div className={`tx-status ${tx.status}`}>
+                                        {tx.status === "completed" ? "مكتمل" : (tx.status === "pending" ? "قيد الانتظار" : "فاشل")}
+                                    </div>
                                 </div>
-                                <div className="tx-details">
-                                    <h4 className="tx-desc">{tx.description}</h4>
-                                    <span className="tx-date">
-                                        {new Date(tx.created_at).toLocaleDateString("ar-EG")}
-                                    </span>
-                                </div>
-                                <div className={`tx-amount ${tx.type}`}>
-                                    {tx.type === "credit" ? "+" : "-"}
-                                    {tx.amount.toLocaleString()} ج.م
-                                </div>
-                                <div className={`tx-status ${tx.status}`}>
-                                    {tx.status === "completed" ? "مكتمل" : (tx.status === "pending" ? "قيد الانتظار" : "فاشل")}
-                                </div>
-                            </div>
-                        ))
+                            ))
+                        ) : (
+                            <div className="empty-transactions">لا توجد عمليات سابقة</div>
+                        )
                     ) : (
-                        <div className="empty-transactions">لا توجد عمليات سابقة</div>
+                        withdrawalRequests && withdrawalRequests.length > 0 ? (
+                            withdrawalRequests.map((req: WithdrawalRequest) => (
+                                <div key={req.id} className="transaction-item withdrawal-req">
+                                    <div className={`tx-icon debit`}>
+                                        <FaArrowDown />
+                                    </div>
+                                    <div className="tx-details">
+                                        <h4 className="tx-desc">طلب سحب {req.payout_method === 'bank' ? 'بنكي' : 'محفظة'}</h4>
+                                        <span className="tx-date">
+                                            {new Date(req.created_at).toLocaleDateString("ar-EG")}
+                                        </span>
+                                    </div>
+                                    <div className="tx-amount debit">
+                                        {req.amount.toLocaleString()} ج.م
+                                    </div>
+                                    <div className={`tx-status ${req.status}`}>
+                                        {req.status === "completed" ? "تم التحويل" :
+                                            req.status === "approved" ? "تم القبول" :
+                                                req.status === "rejected" ? "مرفوض" : "قيد المراجعة"}
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="empty-transactions">لا توجد طلبات سحب حالية</div>
+                        )
                     )}
                 </div>
             </section>
