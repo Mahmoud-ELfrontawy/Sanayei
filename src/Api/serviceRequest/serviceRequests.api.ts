@@ -126,3 +126,33 @@ export const createServiceRequest = async (payload: any) => {
         throw handleError(error);
     }
 };
+
+/**
+ * Check if there's an accepted service request between a user and craftsman.
+ * Used by chat providers to determine if messaging is allowed.
+ * @param role - 'user' fetches from /user/service-requests, 'craftsman' from /craftsmen/service-requests
+ * @param otherId - The ID of the other party (craftsman_id for user, user_id for craftsman)
+ */
+export const getActiveServiceRequest = async (
+    role: 'user' | 'craftsman',
+    otherId: number
+): Promise<{ status: 'accepted' | 'completed' | 'pending' | 'rejected' | null }> => {
+    try {
+        let requests: any[] = [];
+
+        if (role === 'user') {
+            const res = await getMyServiceRequests();
+            requests = Array.isArray(res.data) ? res.data : (Array.isArray(res) ? res : []);
+            const match = requests.find((r: any) => r.craftsman_id === otherId);
+            return { status: match?.status ?? null };
+        } else {
+            const res = await getIncomingServiceRequests();
+            requests = Array.isArray(res.data) ? res.data : (Array.isArray(res) ? res : []);
+            const match = requests.find((r: any) => r.user_id === otherId || r.user?.id === otherId);
+            return { status: match?.status ?? null };
+        }
+    } catch {
+        return { status: null };
+    }
+};
+

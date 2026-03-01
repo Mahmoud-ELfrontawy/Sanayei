@@ -14,6 +14,8 @@ export interface StoreRegisterPayload {
   company_logo?: FileList | File | null;
   tax_card?: FileList | File | null;
   commercial_register?: FileList | File | null;
+  terms: boolean;
+  pledge: boolean;
 }
 
 export const registerCompany = async (data: StoreRegisterPayload) => {

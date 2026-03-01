@@ -1,11 +1,14 @@
 import api from "./api";
 import { authStorage } from "../context/auth/auth.storage";
 
-const getPrefix = () => {
-    const role = authStorage.getUserType();
-    if (role === "craftsman") return "/craft/wallet";
-    return "/wallet";
+const getPrefix = (role?: string | null) => {
+    const r = role ?? authStorage.getUserType();
+    if (r === "craftsman") return "craft/wallet";
+    if (r === "company") return "company/wallet";
+    return "wallet";
 };
+
+export const getPrefixForRole = getPrefix;
 
 export interface Transaction {
     id: number;
@@ -41,24 +44,24 @@ export interface WithdrawalRequest {
 /**
  * Get wallet balance and recent transactions
  */
-export const getWalletOverview = async (): Promise<WalletOverview> => {
-    const response = await api.get(getPrefix());
+export const getWalletOverview = async (role?: string | null): Promise<WalletOverview> => {
+    const response = await api.get(getPrefix(role));
     return response.data.data || response.data;
 };
 
 /**
  * Get paginated transactions
  */
-export const getTransactions = async (params?: any) => {
-    const response = await api.get(`${getPrefix()}/transactions`, { params });
+export const getTransactions = async (role?: string | null, params?: any) => {
+    const response = await api.get(`${getPrefix(role)}/transactions`, { params });
     return response.data.data || response.data;
 };
 
 /**
  * Initiate adding funds via Paymob
  */
-export const addFunds = async (amount: number, method: "card" | "wallet") => {
-    const response = await api.post(`${getPrefix()}/add-funds`, { amount, method });
+export const addFunds = async (amount: number, method: "card" | "wallet", role?: string | null) => {
+    const response = await api.post(`${getPrefix(role)}/add-funds`, { amount, method });
     return response.data;
 };
 

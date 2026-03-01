@@ -20,7 +20,7 @@ const ForgotPasswordPage = lazy(() => import("../pages/Auth/ForgotPassword/Forgo
 const ResetPasswordPage = lazy(() => import("../pages/Auth/ResetPassword/ResetPasswordPage"));
 const RegisterPage = lazy(() => import("../pages/Auth/Register/RegisterPage"));
 const GoogleCallback = lazy(() => import("../pages/Auth/google-callback/GoogleCallback"));
-const FacebookCallback = lazy(() => import("../pages/Auth/facebook-callback/FacebookCallback"));
+
 const ProfileMe = lazy(() => import("../pages/Profile/ProfileUser/ProfileMe"));
 const ProfileWorker = lazy(() => import("../pages/Profile/ProfileWorker/Dashboard/ProfileWorker"));
 const ProfileReviews = lazy(() => import("../pages/Profile/Reviews/ProfileReviews"));
@@ -63,6 +63,7 @@ const WalletsIndex = lazy(() => import("../pages/Admin/Wallets/WalletsIndex"));
 const WalletDetails = lazy(() => import("../pages/Admin/Wallets/WalletDetails"));
 const TransfersTracker = lazy(() => import("../pages/Admin/Wallets/TransfersTracker"));
 const WithdrawalsManager = lazy(() => import("../pages/Admin/Wallets/WithdrawalsManager"));
+const ContactMessages = lazy(() => import("../pages/Admin/Contact/ContactMessages"));
 
 const LoadingFallback = () => (
   <div style={{
@@ -84,7 +85,7 @@ const AppRouter: React.FC = () => {
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
           <Route path="/auth/callback" element={<GoogleCallback />} />
-          <Route path="/auth/facebook-callback" element={<FacebookCallback />} />
+
 
           {/* ===== Admin Routes ===== */}
           <Route
@@ -111,6 +112,7 @@ const AppRouter: React.FC = () => {
             <Route path="wallets/:id" element={<WalletDetails />} />
             <Route path="transfers" element={<TransfersTracker />} />
             <Route path="withdrawals" element={<WithdrawalsManager />} />
+            <Route path="contact-messages" element={<ContactMessages />} />
           </Route>
 
           {/* ===== Main Layout ===== */}

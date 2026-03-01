@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../api";
 
 export interface CompanyLoginPayload {
   company_email: string;
@@ -6,8 +6,8 @@ export interface CompanyLoginPayload {
 }
 
 export const loginCompany = async (data: CompanyLoginPayload) => {
-  const res = await axios.post(
-    "/api/companies/login",
+  const res = await api.post(
+    "companies/login",
     data,
     {
       headers: { Accept: "application/json" },

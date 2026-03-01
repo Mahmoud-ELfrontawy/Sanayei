@@ -54,15 +54,25 @@ const WalletPage: React.FC = () => {
 
     const fetchData = async (isRetry = false) => {
         const token = authStorage.getToken();
-        if (!isAuthenticated || !token) {
+        if (!token) {
             setLoading(false);
+            return;
+        }
+
+        // Get role: prefer context value, fallback to storage (handles hydration timing gap)
+        const role = activeRole || authStorage.getUserType();
+
+        if (!role) {
+            // Role not loaded yet — retry shortly
+            if (!isRetry) setTimeout(() => fetchData(true), 1500);
+            else setLoading(false);
             return;
         }
 
         try {
             setLoading(true);
             const [overview, requests] = await Promise.all([
-                getWalletOverview(),
+                getWalletOverview(role),
                 getMyWithdrawalRequests()
             ]);
             setData(overview);
@@ -71,7 +81,7 @@ const WalletPage: React.FC = () => {
             // Handle 401 gracefully, especially right after redirect
             if (error.response?.status === 401 && !isRetry) {
                 console.warn("Retrying wallet fetch after 401...");
-                setTimeout(() => fetchData(true), 1500);
+                setTimeout(() => fetchData(true), 2000);
                 return;
             }
 
@@ -79,7 +89,6 @@ const WalletPage: React.FC = () => {
             if (error.response?.status === 404 || error.response?.data?.message?.includes("wallet")) {
                 setData(null);
             } else {
-                // Don't toast 401 immediately after redirect as it might be a temporary state
                 if (error.response?.status !== 401) {
                     toast.error("فشل في تحميل بيانات المحفظة");
                 }
@@ -113,8 +122,8 @@ const WalletPage: React.FC = () => {
             if (status === "success") {
                 toast.success("تم شحن الرصيد بنجاح! يتم الآن تحديث محفظتك...");
                 window.history.replaceState({}, document.title, window.location.pathname);
-                // Give the webhook a moment to finish before fetching
-                setTimeout(() => fetchData(), 2000);
+                // Give the webhook and auth profile retry enough time to finish before fetching
+                setTimeout(() => fetchData(), 3500);
             } else {
                 fetchData();
                 if (status === "failed") {
@@ -123,7 +132,13 @@ const WalletPage: React.FC = () => {
                 }
             }
         } else {
-            setLoading(false);
+            // Token exists but isAuthenticated not set yet — wait briefly
+            const token = authStorage.getToken();
+            if (token) {
+                setTimeout(() => fetchData(), 1500);
+            } else {
+                setLoading(false);
+            }
         }
     }, [isAuthenticated, authLoading]);
 
@@ -155,8 +170,9 @@ const WalletPage: React.FC = () => {
             return;
         }
 
+        const role = activeRole || authStorage.getUserType();
         try {
-            const res = await addFunds(Number(addAmount), addFundsMethod);
+            const res = await addFunds(Number(addAmount), addFundsMethod, role);
             if (res.redirect_url) {
                 window.location.href = res.redirect_url;
             } else {

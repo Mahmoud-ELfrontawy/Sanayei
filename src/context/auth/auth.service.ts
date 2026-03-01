@@ -2,8 +2,7 @@ import axios, { type AxiosInstance, AxiosError, type InternalAxiosRequestConfig 
 import { authStorage } from "./auth.storage";
 import type { AuthResponse, User, UserRole, LoginResult } from "./auth.types";
 import { getFullImageUrl } from "../../utils/imageUrl";
-
-const BASE_URL = "/api";
+import { BASE_URL } from "../../Api/api";
 
 interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -101,10 +100,10 @@ class AuthService {
     
     // Define all possible login strategies
     const strategies = [
-      { url: `/admin/login`, payload: { email: phoneOrEmail, password }, type: 'admin' as UserRole, condition: isEmail },
-      { url: `/companies/login`, payload: { company_email: phoneOrEmail, company_password: password }, type: 'company' as UserRole, condition: isEmail },
-      { url: `/craftsmen/login`, payload: { login: phoneOrEmail, password }, type: 'craftsman' as UserRole, condition: true },
-      { url: `/auth/login`, payload: { email: phoneOrEmail, login: phoneOrEmail, password }, type: 'user' as UserRole, condition: true }
+      { url: `admin/login`, payload: { email: phoneOrEmail, password }, type: 'admin' as UserRole, condition: isEmail },
+      { url: `companies/login`, payload: { company_email: phoneOrEmail, company_password: password }, type: 'company' as UserRole, condition: isEmail },
+      { url: `craftsmen/login`, payload: { login: phoneOrEmail, password }, type: 'craftsman' as UserRole, condition: true },
+      { url: `auth/login`, payload: { email: phoneOrEmail, login: phoneOrEmail, password }, type: 'user' as UserRole, condition: true }
     ].filter(s => s.condition);
 
     // Prioritize the last successful role to minimize failed requests
@@ -162,7 +161,7 @@ class AuthService {
     const refreshToken = authStorage.getRefreshToken();
     if (!refreshToken) return false;
     try {
-      const { data } = await axios.post<{ token: string; refresh_token?: string }>(`${BASE_URL}/auth/refresh`, {
+      const { data } = await axios.post<{ token: string; refresh_token?: string }>(`${BASE_URL}auth/refresh`, {
         refresh_token: refreshToken
       });
       if (data.token) {
@@ -176,8 +175,8 @@ class AuthService {
 
   async fetchProfile(type: UserRole): Promise<User | null> {
     try {
-      const endpoint = type === "craftsman" ? "/craftsmen/profile/me" : 
-                       type === "company"   ? "/company/me" : "/user/me";
+      const endpoint = type === "craftsman" ? "craftsmen/profile/me" : 
+                       type === "company"   ? "company/me" : "user/me";
       const { data } = await this.api.get<ProfileApiResponse>(endpoint);
       const user = this.normalizeUser(data);
       if (user && user.status === 'rejected') {

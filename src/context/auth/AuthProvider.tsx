@@ -36,30 +36,40 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         enabled: !!state.token && !!state.userType,
         staleTime: 1000 * 60 * 10,
         retry: (count, error) => {
-            if (axios.isAxiosError(error) && [401, 403].includes(error.response?.status || 0)) return false;
+            // Allow 1 retry on 401 to handle transient cases (e.g. after Paymob redirect)
+            if (axios.isAxiosError(error) && error.response?.status === 403) return false;
+            if (axios.isAxiosError(error) && error.response?.status === 401) return count < 1;
             return count < 1;
-        }
+        },
+        retryDelay: 2000,
     });
 
-    // Handle profile fetch failure (401/403)
-    // NOTE: We only clear auth if we're sure the token is stale.
-    // A freshly issued Google OAuth token should not be cleared on first try.
+    
     useEffect(() => {
         if (profileError && axios.isAxiosError(fetchError)) {
             const status = fetchError.response?.status;
             if (status === 401 || status === 403) {
-                console.warn("🔐 AuthProvider: Profile fetch failed with 401/403. Clearing auth.");
+                console.warn("🔐 AuthProvider: Profile fetch failed with 401/403. Will clear auth in 3s if no recovery...");
                 console.warn("   Token used:", authStorage.getToken()?.substring(0, 10) + "...");
-                authStorage.clearAuth();
-                setState({
-                    user: null,
-                    token: null,
-                    userType: null,
-                    isAuthenticated: false,
-                    isLoading: false,
-                });
-                queryClient.removeQueries({ queryKey: ["authUser"] });
-                disconnectEcho();
+                const timer = setTimeout(() => {
+                    // Double-check token still invalid before clearing
+                    const currentToken = authStorage.getToken();
+                    if (!currentToken) {
+                        console.warn("🔐 AuthProvider: Token already cleared, skipping.");
+                        return;
+                    }
+                    authStorage.clearAuth();
+                    setState({
+                        user: null,
+                        token: null,
+                        userType: null,
+                        isAuthenticated: false,
+                        isLoading: false,
+                    });
+                    queryClient.removeQueries({ queryKey: ["authUser"] });
+                    disconnectEcho();
+                }, 3000);
+                return () => clearTimeout(timer);
             }
         }
     }, [profileError, fetchError, queryClient]);

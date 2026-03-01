@@ -5,6 +5,8 @@ import imgCompany from "../../../../assets/images/Rectangle 31.png";
 import { useRegisterCompany } from "./useRegisterCompany";
 import "../../AuthShared.css";
 import "./RegisterCompany.css";
+import TermsModal from "../../../../components/ui/TermsModal/TermsModal";
+import { useState } from "react";
 
 const RegisterCompanyPage: React.FC = () => {
     const {
@@ -15,7 +17,11 @@ const RegisterCompanyPage: React.FC = () => {
         showPassword,
         setShowPassword,
         onSubmit,
+        setValue,
     } = useRegisterCompany();
+
+    const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+    const [hasReadTerms, setHasReadTerms] = useState(false);
 
     const logoFile = watch("company_logo") as unknown as FileList;
     const taxFile = watch("tax_card") as unknown as FileList;
@@ -194,6 +200,39 @@ const RegisterCompanyPage: React.FC = () => {
                             </div>
                         </div>
 
+                        {/* Terms & Agreements */}
+                        <div className="auth-terms-wrapper" style={{ marginBottom: '20px' }}>
+                            <label className={`auth-checkbox-label ${!hasReadTerms ? "terms-locked" : ""}`}>
+                                <input
+                                    type="checkbox"
+                                    disabled={!hasReadTerms}
+                                    {...register("terms" as any, { required: "يجب الموافقة على الشروط" })}
+                                />
+                                <span>
+                                    أوافق على <Link to="/terms" target="_blank">الشروط والأحكام</Link> و <Link to="/privacy" target="_blank">سياسة الخصوصية</Link> للمتاجر
+                                </span>
+                            </label>
+                            {!hasReadTerms && (
+                                <button
+                                    type="button"
+                                    className="read-terms-btn"
+                                    onClick={() => setIsTermsModalOpen(true)}
+                                >
+                                    يرجى قراءة تعليمات المنصة أولاً لتفعيل الموافقة
+                                </button>
+                            )}
+                            {(errors as any).terms && <span className="form-error">{(errors as any).terms.message}</span>}
+
+                            <label className="auth-checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    {...register("pledge" as any, { required: "يجب التعهد بصحة البيانات" })}
+                                />
+                                <span>أتعهد بصحة جميع بيانات المتجر المرفقة</span>
+                            </label>
+                            {(errors as any).pledge && <span className="form-error">{(errors as any).pledge.message}</span>}
+                        </div>
+
                         <button type="submit" className="auth-btn" disabled={isSubmitting}>
                             {isSubmitting ? "جاري تسجيل البيانات..." : "تسجيل المتجر"}
                         </button>
@@ -208,6 +247,15 @@ const RegisterCompanyPage: React.FC = () => {
                     <img src={imgCompany} alt="Store Illustration" />
                 </div>
             </div>
+
+            <TermsModal
+                isOpen={isTermsModalOpen}
+                onClose={() => setIsTermsModalOpen(false)}
+                onAgree={() => {
+                    setHasReadTerms(true);
+                    setValue("terms", true);
+                }}
+            />
         </div>
     );
 };

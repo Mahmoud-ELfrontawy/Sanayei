@@ -582,6 +582,58 @@
     font-weight: 500;
 }
 
+/* Chat locked banner — shown above input when no accepted service request */
+.chat-locked-banner {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: linear-gradient(to right, #fffbeb, #fef3c7);
+    border-top: 1px solid #fcd34d;
+    border-bottom: 1px solid #fcd34d;
+    color: #92400e;
+    font-size: 0.85rem;
+    font-weight: 600;
+    z-index: 10;
+    animation: slideIn 0.25s ease;
+}
+
+.chat-locked-banner svg {
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    color: #b45309;
+}
+
+.chat-input.locked {
+    background: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
+    border-color: #e2e8f0;
+}
+
+.chat-input.locked::placeholder {
+    color: #94a3b8;
+}
+
+.icon-btn.disabled,
+.icon-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.mobile-actions-toggle.disabled,
+.mobile-actions-toggle:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+
 /* Hidden input for file upload */
 .hidden {
     display: none;

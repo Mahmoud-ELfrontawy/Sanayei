@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { getCompanyProfile, updateCompanyProfile } from "../../../../Api/auth/Company/profileCompany.api";
+import { useAuth } from "../../../../hooks/useAuth";
 
 export const useCompanyProfile = () => {
     const [loading, setLoading] = useState(true);
     const form = useForm();
     const { reset } = form;
+    const { refreshUser } = useAuth();
 
     const fetchProfileData = async () => {
         try {
@@ -27,8 +29,10 @@ export const useCompanyProfile = () => {
         try {
             const res = await updateCompanyProfile(data);
             if (res.success) {
-                toast.info("جاري مراجعة البيانات وسيتم الموافقة عليها ⏳");
-                fetchProfileData(); // Reload
+                toast.info("تم تحديث البيانات بنجاح ✅\nحسابك أُعيد إلى حالة المراجعة — سيتم تفعيله بعد موافقة الأدمن.");
+                // Refresh auth context so the new `pending` status is reflected immediately
+                await refreshUser();
+                fetchProfileData();
             } else {
                 toast.error(res.message || "فشل تحديث البيانات");
             }
@@ -50,3 +54,4 @@ export const useCompanyProfile = () => {
         refresh: fetchProfileData,
     };
 };
+

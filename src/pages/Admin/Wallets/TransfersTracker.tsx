@@ -1,32 +1,41 @@
 import { useState, useEffect } from 'react';
-import { 
-    FaExchangeAlt, 
-    FaArrowRight, 
+import {
+    FaExchangeAlt,
     FaSyncAlt
 } from 'react-icons/fa';
 import { adminWalletsApi } from '../../../Api/admin/adminWallets.api';
 import { toast } from 'react-toastify';
 import './TransfersTracker.css';
 
+interface Participant {
+    id: number | null;
+    name: string;
+    type: string;
+}
+
 interface Transfer {
     id: number;
     amount: number;
     description: string;
     created_at: string;
-    meta: {
-        transfer_from?: { id: number; name: string };
-        transfer_to?: { id: number; name: string };
-    };
-    wallet?: {
-        id: number;
-        walletable?: { name: string };
-    };
+    sender: Participant;
+    receiver: Participant;
+    status: string;
+}
+
+const getRoleLabel = (role: string) => {
+    switch (role?.toLowerCase()) {
+        case 'user': return 'مستخدم';
+        case 'craftsman': return 'صنايعي';
+        case 'company': return 'شركة';
+        case 'admin': return 'مسؤول';
+        default: return role || 'مجهول';
+    }
 }
 
 const TransfersTracker = () => {
     const [transfers, setTransfers] = useState<Transfer[]>([]);
     const [loading, setLoading] = useState(true);
-    const [direction, setDirection] = useState<'incoming' | 'outgoing' | 'all'>('all');
     const [page, setPage] = useState(1);
     const [lastPage, setLastPage] = useState(1);
 
@@ -34,17 +43,27 @@ const TransfersTracker = () => {
         setLoading(true);
         try {
             const response = await adminWalletsApi.getTransfersTracker({
-                page,
-                direction: direction === 'all' ? undefined : direction
+                page
             });
             const result = response.data;
+            console.log("🔍 Transfers API Response:", result);
+
             if (result.status && result.data) {
+                // Determine where the transfers data is (handle nested response)
                 const innerData = result.data;
                 const txData = innerData.transfers || innerData;
-                setTransfers(Array.isArray(txData.data) ? txData.data : (Array.isArray(txData) ? txData : []));
+
+                // Set based on the detected structure (handle array or paginated object)
+                const items = Array.isArray(txData.data) ? txData.data : (Array.isArray(txData) ? txData : []);
+                console.log("📊 Processed Transfers Items:", items.length, items);
+
+                setTransfers(items);
                 setLastPage(txData.last_page || 1);
+            } else {
+                console.warn("⚠️ API returned success:false or missing data branch:", result);
             }
         } catch (err) {
+            console.error("❌ Failed to fetch transfers:", err);
             toast.error('فشل تحميل سجل التحويلات');
         } finally {
             setLoading(false);
@@ -53,40 +72,28 @@ const TransfersTracker = () => {
 
     useEffect(() => {
         fetchTransfers();
-    }, [page, direction]);
+    }, [page]);
 
     return (
         <div className="transfers-container">
             <header className="transfers-header-premium">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
-                        <h1><FaExchangeAlt /> متتبع التحويلات الداخلية</h1>
-                        <p>عرض حركة الأموال بين محافظ المستخدمين بشكل حي</p>
+                        <h1><FaExchangeAlt /> سجل التحويلات المالية</h1>
+                        <p>تتبع حركة الأموال بين جميع أطراف المنصة (إيداع - خصم - تحويل)</p>
                     </div>
+                    <button className="action-btn" onClick={fetchTransfers} style={{ background: 'var(--color-primary)', color: '#fff', border: 'none', borderRadius: '8px', padding: '10px 15px' }}>
+                        <FaSyncAlt /> تحديث البيانات
+                    </button>
                 </div>
             </header>
 
             <div className="transfers-table-card">
-                <div className="tx-header" style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', alignItems: 'center' }}>
-                    <div className="filter-group">
-                        <select 
-                            className="filter-select" 
-                            style={{ margin: 0 }}
-                            value={direction}
-                            onChange={(e) => { setDirection(e.target.value as any); setPage(1); }}
-                        >
-                            <option value="all">كل التحويلات</option>
-                            <option value="incoming">الواردة فقط</option>
-                            <option value="outgoing">الصادرة فقط</option>
-                        </select>
-                    </div>
-                    <button className="action-btn" onClick={fetchTransfers}><FaSyncAlt /></button>
-                </div>
-
                 <table className="history-table">
                     <thead>
                         <tr>
-                            <th>مسار التحويل</th>
+                            <th>المرسل</th>
+                            <th>المستلم</th>
                             <th>المبلغ</th>
                             <th>الوصف</th>
                             <th>التاريخ</th>
@@ -95,34 +102,31 @@ const TransfersTracker = () => {
                     </thead>
                     <tbody>
                         {loading ? (
-                            <tr><td colSpan={5} style={{ textAlign: 'center', padding: '3rem' }}>جاري التحميل...</td></tr>
+                            <tr><td colSpan={6} style={{ textAlign: 'center', padding: '3rem' }}>جاري التحميل...</td></tr>
                         ) : transfers.length === 0 ? (
-                            <tr><td colSpan={5} style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>لا توجد عمليات تحويل مسجلة</td></tr>
+                            <tr><td colSpan={6} style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>لا توجد عمليات تحويل مسجلة</td></tr>
                         ) : (
                             transfers.map(t => (
                                 <tr key={t.id}>
                                     <td>
-                                        <div className="transfer-path">
-                                            <div className="wallet-ref">
-                                                <span className="name">{(t as any).sender_name || t.wallet?.walletable?.name || 'مجهول'}</span>
-                                                <span className="id">المرسل</span>
-                                            </div>
-                                            <div className="path-arrow-box">
-                                                <FaArrowRight className="path-arrow" />
-                                            </div>
-                                            <div className="wallet-ref">
-                                                <span className="name">{(t as any).receiver_name || t.meta.transfer_to?.name || 'مجهول'}</span>
-                                                <span className="id">المستلم</span>
-                                            </div>
+                                        <div className="participant-info">
+                                            <span className="name">{t.sender?.name || 'مجهول'}</span>
+                                            <span className="role-badge">{getRoleLabel(t.sender?.type)}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div className="participant-info">
+                                            <span className="name">{t.receiver?.name || 'مجهول'}</span>
+                                            <span className="role-badge">{getRoleLabel(t.receiver?.type)}</span>
                                         </div>
                                     </td>
                                     <td>
                                         <div className="amount-high">
-                                            {t.amount.toLocaleString()} <small>ج.م</small>
+                                            {Number(t.amount).toLocaleString()} <small>ج.م</small>
                                         </div>
                                     </td>
                                     <td>
-                                        <span className="tx-desc-text" style={{ fontSize: '0.9rem' }}>{t.description}</span>
+                                        <span className="tx-desc-text">{t.description}</span>
                                     </td>
                                     <td>
                                         <span className="tx-meta">
@@ -130,7 +134,9 @@ const TransfersTracker = () => {
                                         </span>
                                     </td>
                                     <td>
-                                        <span className="status-badge-tx">مكتمل</span>
+                                        <span className={`status-badge-tx ${t.status}`}>
+                                            {t.status === 'completed' ? 'ناجح' : (t.status === 'pending' ? 'معلق' : t.status)}
+                                        </span>
                                     </td>
                                 </tr>
                             ))

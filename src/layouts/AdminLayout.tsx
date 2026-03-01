@@ -19,7 +19,8 @@ import {
     FaBars,
     FaWallet,
     FaChevronDown,
-    FaChevronUp
+    FaChevronUp,
+    FaEnvelope
 } from 'react-icons/fa';
 import { useAuth } from '../hooks/useAuth';
 import { useAdminNotifications } from '../context/AdminNotificationContext';
@@ -35,8 +36,8 @@ const AdminLayout = () => {
     const [notifOpen, setNotifOpen] = useState(false);
     const [openSubMenus, setOpenSubMenus] = useState<string[]>(() => {
         // Keep Wallet open if we are in any wallet-related path
-        if (location.pathname.includes('/admin/wallets') || 
-            location.pathname.includes('/admin/withdrawals') || 
+        if (location.pathname.includes('/admin/wallets') ||
+            location.pathname.includes('/admin/withdrawals') ||
             location.pathname.includes('/admin/transfers')) {
             return ['wallet'];
         }
@@ -70,7 +71,7 @@ const AdminLayout = () => {
     }, []);
 
     const toggleSubMenu = (key: string) => {
-        setOpenSubMenus(prev => 
+        setOpenSubMenus(prev =>
             prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]
         );
     };
@@ -94,9 +95,9 @@ const AdminLayout = () => {
         { path: '/admin/categories', label: 'التصنيفات', icon: FaTags },
         { path: '/admin/requests', label: 'الطلبات', icon: FaFileAlt },
         { path: '/admin/products', label: 'المنتجات', icon: FaBoxOpen },
-        { 
-            key: 'wallet', 
-            label: 'محفظة', 
+        {
+            key: 'wallet',
+            label: 'محفظة',
             icon: FaWallet,
             subItems: [
                 { path: '/admin/wallets', label: 'كافة المحافظ' },
@@ -104,6 +105,7 @@ const AdminLayout = () => {
                 { path: '/admin/transfers', label: 'التحويلات' },
             ]
         },
+        { path: '/admin/contact-messages', label: 'الشكاوي والاقتراحات', icon: FaEnvelope },
         { path: '/admin/reviews', label: 'التقييمات', icon: FaStar },
     ];
 
@@ -122,7 +124,7 @@ const AdminLayout = () => {
                     {menuItems.map((item: any) => {
                         const Icon = item.icon;
                         const isSubMenuOpen = item.key && openSubMenus.includes(item.key);
-                        
+
                         // Handle Regular Items
                         if (!item.subItems) {
                             const isActive = location.pathname === item.path;
@@ -143,7 +145,7 @@ const AdminLayout = () => {
                         const isAnyChildActive = item.subItems.some((sub: any) => location.pathname === sub.path);
                         return (
                             <div key={item.key} className="admin-menu-dropdown">
-                                <button 
+                                <button
                                     className={`admin-nav-item submenu-trigger ${isAnyChildActive ? 'child-active' : ''}`}
                                     onClick={() => toggleSubMenu(item.key)}
                                 >

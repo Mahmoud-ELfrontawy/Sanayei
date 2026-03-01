@@ -26,44 +26,68 @@ const GoogleCallback: React.FC = () => {
             try {
                 setStatusMsg("جاري حفظ بيانات الدخول...");
 
-                // 1. Direct LocalStorage Sync (Deep Sync)
-                // We set multiple keys to ensure compatibility with different service/storage patterns
-                localStorage.setItem("auth_token", token);
-                localStorage.setItem("token", token);
-                localStorage.setItem("userType", "user");
-
-                // Storage Utility Sync
+                // 1. Storage Utility Sync
                 authStorage.setToken(token);
-                authStorage.setUserType("user" as any);
+                // Try to get role from URL first (if backend provides it), otherwise default and update later
+                const queryRole = searchParams.get("role") as any;
+                if (queryRole) {
+                    authStorage.setUserType(queryRole);
+                    localStorage.setItem("userType", queryRole);
+                }
 
-                console.log("✅ GoogleCallback: Storage synced. Tokens and Type 'user' set.");
+                console.log("✅ GoogleCallback: Initial Token set.");
 
                 // 2. Profile Hydration
                 setStatusMsg("جاري جلب بيانات الملف الشخصي...");
-                try {
-                    const user = await authService.fetchProfile("user");
-                    if (user) {
-                        console.log("👤 GoogleCallback: Profile fetched successfully:", user.name);
-                        authStorage.setUser(user);
-                        localStorage.setItem("user_name", user.name);
-                        localStorage.setItem("user_id", user.id.toString());
-                        localStorage.setItem("user_status", user.status || "");
-                        toast.success(`مرحباً ${user.name} 🎉`);
-                    } else {
-                        console.warn("⚠️ GoogleCallback: Profile fetched but data was null.");
+
+                // We don't know the role yet if it's not in the URL, 
+                // so we try "user" first as a base, but we should really 
+                // have an endpoint that doesn't require the role to just get the profile.
+                // However, based on authService, we need a type.
+
+                const rolesToTry: any[] = queryRole ? [queryRole] : ["user", "craftsman", "company"];
+                let detectedUser = null;
+                let detectedRole = queryRole || "user";
+
+                for (const r of rolesToTry) {
+                    try {
+                        const user = await authService.fetchProfile(r);
+                        if (user) {
+                            detectedUser = user;
+                            detectedRole = r;
+                            break;
+                        }
+                    } catch (e) {
+                        continue;
                     }
-                } catch (profileErr) {
-                    console.error("❌ GoogleCallback: Profile fetch failed:", profileErr);
-                    // We don't block the login if profile fetch fails here, 
-                    // the AuthProvider will try again on the home page.
+                }
+
+                if (detectedUser) {
+                    console.log("👤 GoogleCallback: Profile fetched successfully:", detectedUser.name, "Role:", detectedRole);
+                    authStorage.setUserType(detectedRole);
+                    localStorage.setItem("userType", detectedRole);
+                    authStorage.setUser(detectedUser);
+                    localStorage.setItem("user_name", detectedUser.name);
+                    localStorage.setItem("user_id", detectedUser.id.toString());
+                    localStorage.setItem("token", token);
+                    localStorage.setItem("user_status", detectedUser.status || "");
+                    toast.success(`مرحباً ${detectedUser.name} 🎉`);
+                } else {
+                    console.warn("⚠️ GoogleCallback: Could not fetch profile or detect role.");
                 }
 
                 setStatusMsg("تم بنجاح! جاري تحويلك...");
 
                 // 3. Final Redirect
                 setTimeout(() => {
-                    console.log("🚀 GoogleCallback: Redirecting to Home...");
-                    window.location.href = "/";
+                    const finalRole = authStorage.getUserType() || "user";
+                    console.log("🚀 GoogleCallback: Redirecting to Dashboard... Role:", finalRole);
+
+                    // Redirect to the correct dashboard based on role
+                    if (finalRole === 'admin') window.location.href = "/admin/dashboard";
+                    else if (finalRole === 'company') window.location.href = "/dashboard/company";
+                    else if (finalRole === 'craftsman') window.location.href = "/dashboard/craftsman";
+                    else window.location.href = "/dashboard";
                 }, 800);
 
             } catch (err) {

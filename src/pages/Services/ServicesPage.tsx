@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
+import { IoIosArrowDown } from "react-icons/io";
 import { useLocation } from "react-router-dom";
 import { useRequestServiceData } from "../Home/sections/RequestServiceSection/useRequestServiceData";
 import { getTechnicians } from "../../Api/technicians.api";
@@ -155,6 +156,7 @@ const ServicesPage: React.FC = () => {
                                 <option value="mid">متوسط (500 - 1000)</option>
                                 <option value="high">مرتفع (أكثر من 1000)</option>
                             </select>
+                            <IoIosArrowDown className="select-arrow" />
                         </div>
                     )}
                 </ServicesFilters>

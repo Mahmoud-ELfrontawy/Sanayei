@@ -1,7 +1,10 @@
 import axios from "axios";
 import { authStorage } from "../context/auth/auth.storage";
 
-const BASE_URL = "/api";
+const RAW_BASE_URL = import.meta.env.VITE_API_URL || "https://sanay3i.net/api";
+export const BASE_URL = RAW_BASE_URL.endsWith("/") ? RAW_BASE_URL : `${RAW_BASE_URL}/`;
+
+console.log("🌐 API Base URL:", BASE_URL);
 
 const api = axios.create({
     baseURL: BASE_URL,

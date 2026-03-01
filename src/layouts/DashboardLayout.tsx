@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaBars, FaTimes, FaLock, FaEnvelope } from "react-icons/fa";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "../components/dashboard/Sidebar/Sidebar";
 import { useAuth } from "../hooks/useAuth";
 import logo from "../assets/images/final logo.png";
@@ -11,10 +11,22 @@ import "./DashboardLayout.css";
 function DashboardLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
     const isMessagesPage = location.pathname.includes("/dashboard/messages");
     const { user } = useAuth();
     const { isDark } = useTheme();
     const isBlocked = user?.status === 'rejected';
+
+    // 🔒 Security/UX: Ensure payment redirects from Paymob always land back in the Wallet
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const hasPaymentStatus = params.has("status") || params.has("id") || params.has("txn_response_code");
+
+        if (hasPaymentStatus && !location.pathname.includes("/dashboard/wallet")) {
+            console.log("💳 [DashboardLayout] Payment callback detected on wrong page. Redirecting to Wallet...");
+            navigate("/dashboard/wallet" + window.location.search, { replace: true });
+        }
+    }, [location, navigate]);
 
     return (
         <div className={`dashboard-container ${isSidebarOpen ? "sidebar-open" : ""} ${isMessagesPage ? "is-messages-page" : ""} ${isBlocked ? "is-blocked" : ""}`}>

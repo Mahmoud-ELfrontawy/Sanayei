@@ -1,12 +1,13 @@
 import React from "react";
 import { FiEye, FiEyeOff, FiUpload } from "react-icons/fi";
-import { FaGoogle, FaFacebookF } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 import imgWorker from "../../../../assets/images/image-register.png";
 import { useRegisterWorker } from "./useRegisterWorker";
 import "../../AuthShared.css";
 import "./RegisterWorker.css";
+import TermsModal from "../../../../components/ui/TermsModal/TermsModal";
+import { useState } from "react";
 
 const RegisterWorkerPage: React.FC = () => {
   const {
@@ -20,7 +21,11 @@ const RegisterWorkerPage: React.FC = () => {
     governorates,
     services,
     isLoadingData,
+    setValue,
   } = useRegisterWorker();
+
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+  const [hasReadTerms, setHasReadTerms] = useState(false);
 
   const frontFile = watch("front_identity_photo");
   const backFile = watch("back_identity_photo");
@@ -308,16 +313,27 @@ const RegisterWorkerPage: React.FC = () => {
 
             {/* Terms */}
             <div className="worker-terms-wrapper">
-              <label className="worker-checkbox">
+              <label className={`worker-checkbox ${!hasReadTerms ? "terms-locked" : ""}`}>
                 <input
                   type="checkbox"
+                  disabled={!hasReadTerms}
                   {...register("terms", { required: "يجب الموافقة على الشروط" })}
                 />
                 <span>
-                  أوافق على <Link to="/terms">الشروط والأحكام</Link> و{" "}
-                  <Link to="/privacy">سياسة الخصوصية</Link>
+                  أوافق على <Link to="/terms" target="_blank">الشروط والأحكام</Link> و{" "}
+                  <Link to="/privacy" target="_blank">سياسة الخصوصية</Link>
                 </span>
               </label>
+              {!hasReadTerms && (
+                <button
+                  type="button"
+                  className="read-terms-btn"
+                  onClick={() => setIsTermsModalOpen(true)}
+                  style={{ fontSize: '13px' }}
+                >
+                  يرجى قراءة تعليمات المنصة أولاً لتفعيل الموافقة
+                </button>
+              )}
               {errors.terms && (
                 <span className="form-error">{errors.terms.message}</span>
               )}
@@ -344,18 +360,7 @@ const RegisterWorkerPage: React.FC = () => {
             </button>
           </form>
 
-          <div className="auth-divider">
-            <span>أو</span>
-          </div>
 
-          <div className="auth-social-container">
-            <button className="auth-social-btn" type="button">
-              <FaGoogle /> <span>عن طريق جوجل</span>
-            </button>
-            <button className="auth-social-btn" type="button">
-              <FaFacebookF /> <span>عن طريق فيسبوك</span>
-            </button>
-          </div>
 
           <div className="auth-footer-link">
             لديك حساب بالفعل؟ <Link to="/login">تسجيل الدخول</Link>
@@ -366,6 +371,15 @@ const RegisterWorkerPage: React.FC = () => {
           <img src={imgWorker} alt="صنايعي محترف" />
         </div>
       </div>
+
+      <TermsModal
+        isOpen={isTermsModalOpen}
+        onClose={() => setIsTermsModalOpen(false)}
+        onAgree={() => {
+          setHasReadTerms(true);
+          setValue("terms", true);
+        }}
+      />
     </div>
   );
 };

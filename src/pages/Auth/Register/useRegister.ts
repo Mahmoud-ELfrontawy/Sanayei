@@ -11,6 +11,8 @@ export interface RegisterFormValues {
     phone: string;
     password: string;
     password_confirmation: string;
+    terms: boolean;
+    pledge: boolean;
 }
 
 export const useRegister = () => {

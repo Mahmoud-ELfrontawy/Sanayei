@@ -7,7 +7,7 @@ import DashboardSkeleton from "../DashboardSkeleton";
 import { useUserChat } from "../../../context/UserChatProvider";
 import ReviewModal from "../../../components/ui/ReviewModal/ReviewModal";
 import { useAuth } from "../../../hooks/useAuth";
-import { FiClock, FiAlertCircle } from "react-icons/fi";
+import { FiAlertCircle } from "react-icons/fi";
 import "./Dashboard.css";
 
 const UserDashboard: React.FC = () => {
@@ -18,7 +18,6 @@ const UserDashboard: React.FC = () => {
     const { contacts } = useUserChat();
     const { user } = useAuth();
     const isBlocked = user?.status === 'rejected';
-    const isApproved = user?.status === 'approved';
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -88,12 +87,7 @@ const UserDashboard: React.FC = () => {
                         </div>
                     )}
 
-                    {!isApproved && !isBlocked && (
-                        <div className="approval-warning-banner" style={{ background: '#fffbeb', border: '1px solid #fef3c7', color: '#92400e', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <FiClock />
-                            <span>حسابك قيد المراجعة حالياً. سيتم تفعيل كامل الصلاحيات فور اعتماد حسابك من قبل الإدارة.</span>
-                        </div>
-                    )}
+
 
                     <div className="stats-grid">
                         <StatCard

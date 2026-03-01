@@ -2,7 +2,7 @@ import React, { useState, useRef, useMemo, useEffect, Suspense, lazy } from "rea
 import {
     HiPhotograph,
 } from "react-icons/hi";
-import { FaArrowRight, FaMicrophone, FaPaperPlane, FaPlus, FaUserCircle } from "react-icons/fa";
+import { FaArrowRight, FaLock, FaMicrophone, FaPaperPlane, FaPlus, FaUserCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { BsEmojiSmile } from "react-icons/bs";
 import { type EmojiClickData } from "emoji-picker-react";
@@ -38,6 +38,7 @@ interface Props {
     sendAudio?: (file: Blob) => Promise<void>;
     profileLink?: string;
     onBack?: () => void;
+    canSendMessage?: boolean;
 }
 
 /* ================= Helpers ================= */
@@ -54,6 +55,7 @@ const SharedChatWindow: React.FC<Props> = ({
     sendAudio,
     profileLink,
     onBack,
+    canSendMessage = true,
 }) => {
     const [text, setText] = useState("");
     const [isRecording, setIsRecording] = useState(false);
@@ -330,11 +332,20 @@ const SharedChatWindow: React.FC<Props> = ({
             {/* ===== Input Area ===== */}
             <div className={`chat-input-area ${showMobileActions ? "actions-expanded" : ""}`}>
 
+                {/* Chat Locked Banner */}
+                {!canSendMessage && (
+                    <div className="chat-locked-banner">
+                        <FaLock />
+                        <span>المحادثة متاحة فقط عند قبول طلب الخدمة، وتُغلق بعد اكتمالها.</span>
+                    </div>
+                )}
+
                 {/* زر الإضافة للموبايل */}
                 <button
-                    className={`mobile-actions-toggle ${showMobileActions ? "active" : ""}`}
-                    onClick={() => setShowMobileActions(!showMobileActions)}
+                    className={`mobile-actions-toggle ${showMobileActions ? "active" : ""} ${!canSendMessage ? "disabled" : ""}`}
+                    onClick={() => canSendMessage && setShowMobileActions(!showMobileActions)}
                     title="المزيد من الخيارات"
+                    disabled={!canSendMessage}
                 >
                     <FaPlus />
                 </button>
@@ -342,29 +353,32 @@ const SharedChatWindow: React.FC<Props> = ({
                 {/* أزرار جانبية */}
                 <div className="chat-actions">
                     <button
-                        onClick={() => fileInputRef.current?.click()}
+                        onClick={() => canSendMessage && fileInputRef.current?.click()}
                         className="icon-btn"
                         title="إرسال صورة"
+                        disabled={!canSendMessage}
                     >
                         <HiPhotograph />
                     </button>
 
                     <button
-                        onClick={() => setShowEmojiPicker((prev) => !prev)}
+                        onClick={() => canSendMessage && setShowEmojiPicker((prev) => !prev)}
                         className="icon-btn"
                         title="إيموجي"
+                        disabled={!canSendMessage}
                     >
                         <BsEmojiSmile />
                     </button>
 
                     <button
-                        onMouseDown={(e) => startRecording(e)}
-                        onMouseUp={(e) => stopRecording(e)}
+                        onMouseDown={(e) => canSendMessage && startRecording(e)}
+                        onMouseUp={(e) => canSendMessage && stopRecording(e)}
                         onMouseLeave={(e) => isRecording && stopRecording(e)}
-                        onTouchStart={(e) => startRecording(e)}
-                        onTouchEnd={(e) => stopRecording(e)}
-                        className={`icon-btn mic-btn-feedback ${isRecording ? "recording" : ""}`}
+                        onTouchStart={(e) => canSendMessage && startRecording(e)}
+                        onTouchEnd={(e) => canSendMessage && stopRecording(e)}
+                        className={`icon-btn mic-btn-feedback ${isRecording ? "recording" : ""} ${!canSendMessage ? "disabled" : ""}`}
                         title="تسجيل صوتي"
+                        disabled={!canSendMessage}
                     >
                         <FaMicrophone />
                     </button>
@@ -412,15 +426,17 @@ const SharedChatWindow: React.FC<Props> = ({
                         <input
                             type="text"
                             value={text}
-                            onChange={(e) => setText(e.target.value)}
+                            onChange={(e) => canSendMessage && setText(e.target.value)}
                             onKeyDown={(e) => {
-                                if (e.key === "Enter" && !e.shiftKey) {
+                                if (e.key === "Enter" && !e.shiftKey && canSendMessage) {
                                     e.preventDefault();
                                     handleSendText();
                                 }
                             }}
-                            placeholder="اكتب رسالتك هنا..."
-                            className="chat-input"
+                            placeholder={canSendMessage ? "اكتب رسالتك هنا..." : "المحادثة مغلقة حالياً..."}
+                            className={`chat-input ${!canSendMessage ? "locked" : ""}`}
+                            disabled={!canSendMessage}
+                            readOnly={!canSendMessage}
                         />
                     )}
                 </div>
@@ -428,8 +444,8 @@ const SharedChatWindow: React.FC<Props> = ({
                 {/* إرسال */}
                 <button
                     onClick={handleSendText}
-                    disabled={!text.trim()}
-                    className={`send-btn ${!text.trim() ? "disabled" : ""}`}
+                    disabled={!text.trim() || !canSendMessage}
+                    className={`send-btn ${(!text.trim() || !canSendMessage) ? "disabled" : ""}`}
                     title="إرسال"
                 >
                     <FaPaperPlane />

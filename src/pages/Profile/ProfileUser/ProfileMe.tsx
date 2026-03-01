@@ -12,7 +12,7 @@ import { useAuth } from "../../../hooks/useAuth";
 import { useEffect, useState } from "react";
 import FormSkeleton from "../base/FormSkeleton";
 import { useNavigate, Link } from "react-router-dom";
-import { FiAlertCircle, FiClock } from "react-icons/fi";
+import { FiAlertCircle } from "react-icons/fi";
 
 interface UserState {
     name: string;
@@ -33,7 +33,6 @@ interface ApiErrorResponse {
 const ProfileUser = () => {
     const { user: authUser, refreshUser, userType } = useAuth();
     const isBlocked = authUser?.status === 'rejected';
-    const isApproved = authUser?.status === 'approved';
     const navigate = useNavigate();
 
     // 🛑 Redirect if Company
@@ -183,12 +182,7 @@ const ProfileUser = () => {
                 </div>
             )}
 
-            {!isApproved && !isBlocked && (
-                <div className="approval-warning-banner" style={{ background: '#fffbeb', border: '1px solid #fef3c7', color: '#92400e', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <FiClock />
-                    <span>حسابك قيد المراجعة حالياً. سيتم اعتماد التعديلات فور موافقة الإدارة.</span>
-                </div>
-            )}
+
 
             <ProfileFormBase
                 data={user}

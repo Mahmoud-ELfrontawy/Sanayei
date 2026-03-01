@@ -6,8 +6,10 @@ import { useRegister } from "./useRegister";
 
 import "../AuthShared.css";
 import "./Register.css";
-import { FaFacebookF, FaGoogle } from "react-icons/fa6";
+import { FaGoogle } from "react-icons/fa6";
 import { RequestServiceInputSkeleton } from "../../Home/sections/RequestServiceSection/RequestServiceSkeleton";
+import TermsModal from "../../../components/ui/TermsModal/TermsModal";
+import { useState } from "react";
 
 const RegisterPage: React.FC = () => {
   const {
@@ -18,7 +20,11 @@ const RegisterPage: React.FC = () => {
     showPassword,
     setShowPassword,
     onSubmit,
+    setValue,
   } = useRegister();
+
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+  const [hasReadTerms, setHasReadTerms] = useState(false);
 
   return (
     <div className="auth-page-wrapper">
@@ -162,6 +168,39 @@ const RegisterPage: React.FC = () => {
               )}
             </div>
 
+            {/* Terms & Pledge */}
+            <div className="auth-terms-wrapper">
+              <label className={`auth-checkbox-label ${!hasReadTerms ? "terms-locked" : ""}`}>
+                <input
+                  type="checkbox"
+                  disabled={!hasReadTerms}
+                  {...register("terms", { required: "يجب الموافقة على الشروط" })}
+                />
+                <span>
+                  أوافق على <Link to="/terms" target="_blank">الشروط والأحكام</Link> و <Link to="/privacy" target="_blank">سياسة الخصوصية</Link>
+                </span>
+              </label>
+              {!hasReadTerms && (
+                <button
+                  type="button"
+                  className="read-terms-btn"
+                  onClick={() => setIsTermsModalOpen(true)}
+                >
+                  يرجى قراءة تعليمات المنصة أولاً لتفعيل الموافقة
+                </button>
+              )}
+              {errors.terms && <span className="form-error">{errors.terms.message}</span>}
+
+              <label className="auth-checkbox-label">
+                <input
+                  type="checkbox"
+                  {...register("pledge", { required: "يجب التعهد بصحة البيانات" })}
+                />
+                <span>أتعهد بأن جميع البيانات المدخلة صحيحة وتخصني</span>
+              </label>
+              {errors.pledge && <span className="form-error">{errors.pledge.message}</span>}
+            </div>
+
             <button
               type="submit"
               className="auth-btn"
@@ -177,7 +216,7 @@ const RegisterPage: React.FC = () => {
 
           {/* Social */}
           <div className="auth-social-container">
-            <button type="button" className="auth-social-btn"
+            <button type="button" className="auth-social-btn full-width"
               onClick={() => {
                 window.location.href =
                   "/api/auth/google";
@@ -185,11 +224,6 @@ const RegisterPage: React.FC = () => {
             >
               <FaGoogle />
               <span>عن طريق جوجل</span>
-            </button>
-
-            <button type="button" className="auth-social-btn">
-              <FaFacebookF />
-              <span>عن طريق فيسبوك</span>
             </button>
           </div>
 
@@ -204,6 +238,15 @@ const RegisterPage: React.FC = () => {
         </div>
 
       </div>
+
+      <TermsModal
+        isOpen={isTermsModalOpen}
+        onClose={() => setIsTermsModalOpen(false)}
+        onAgree={() => {
+          setHasReadTerms(true);
+          setValue("terms", true);
+        }}
+      />
     </div>
   );
 };

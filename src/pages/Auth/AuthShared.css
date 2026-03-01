@@ -242,7 +242,63 @@
     width: 100%;
 }
 
-/* ===== Row Utilities ===== */
+
+/* ===== Terms & Agreements ===== */
+.auth-terms-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.auth-checkbox-label {
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  align-items: flex-start;
+  text-align: right;
+  cursor: pointer;
+  user-select: none;
+}
+
+.auth-checkbox-label input {
+  accent-color: var(--color-primary);
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  background: white !important;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+}
+
+.auth-checkbox-label span {
+  flex: 1;
+  line-height: 1.5;
+}
+
+.auth-checkbox-label a, .read-terms-btn {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.auth-checkbox-label a:hover, .read-terms-btn:hover {
+  color: var(--color-primary-hover);
+}
+
+.terms-locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Row Utilities */
 .auth-row {
   display: flex;
   gap: 16px;
@@ -251,6 +307,10 @@
 
 .flex-1 {
     flex: 1;
+}
+
+.full-width {
+    width: 100%;
 }
 
 /* ===== Responsive ===== */
@@ -341,4 +401,29 @@ html[data-theme="dark"] .auth-social-btn {
 html[data-theme="dark"] .auth-social-btn:hover {
     border-color: var(--color-primary);
     background: rgba(95, 168, 211, 0.08);
+}
+
+/* Worker/Company File Upload Fix for Dark Mode */
+html[data-theme="dark"] .worker-file-label {
+    background: var(--color-bg-dark);
+    border-color: var(--color-border);
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .worker-file-label:hover {
+    border-color: var(--color-primary);
+}
+
+html[data-theme="dark"] .worker-file-label.has-file {
+    background: rgba(var(--color-primary-rgb), 0.1);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+html[data-theme="dark"] .worker-file-label svg {
+    color: var(--color-text-muted);
+}
+
+html[data-theme="dark"] .worker-file-label.has-file svg {
+    color: var(--color-primary);
 }

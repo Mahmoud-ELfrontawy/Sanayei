@@ -5,6 +5,7 @@ import { useAuth } from "../hooks/useAuth";
 import { getFullImageUrl } from "../utils/imageUrl";
 import { normalizeArray } from "../utils/normalizeResponse";
 import { useNotifications } from "./NotificationContext";
+import { getActiveServiceRequest } from "../Api/serviceRequest/serviceRequests.api";
 
 /* ===================================================== */
 /* ======================= TYPES ======================= */
@@ -51,6 +52,7 @@ interface Ctx {
   contacts: ChatContact[];
   activeChat: ChatContact | null;
   messages: ChatMessage[];
+  canSendMessage: boolean;
   setActiveChat: (contact: ChatContact | null) => void;
   sendMessage: (text: string) => Promise<void>;
   sendImage: (file: File) => Promise<void>;
@@ -67,6 +69,7 @@ export const CraftsmanChatProvider: React.FC<{ children: React.ReactNode }> = ({
   const { user, userType } = useAuth();
   const qc = useQueryClient();
   const [activeChat, setActiveChat] = useState<ChatContact | null>(null);
+  const [canSendMessage, setCanSendMessage] = useState(true);
   const prevTotalUnreadRef = useRef<number>(0);
 
   const contactsQuery = useQuery({
@@ -154,6 +157,19 @@ export const CraftsmanChatProvider: React.FC<{ children: React.ReactNode }> = ({
     },
   });
 
+  /* ================= Chat Access Check ================= */
+
+  useEffect(() => {
+    if (!activeChat || !user?.id) {
+      setCanSendMessage(true);
+      return;
+    }
+    setCanSendMessage(true); // Optimistic — reset while checking
+    getActiveServiceRequest('craftsman', activeChat.id).then(({ status }) => {
+      setCanSendMessage(status === 'accepted');
+    });
+  }, [activeChat?.id, user?.id]);
+
   useEffect(() => {
     if (!activeChat || !user?.id) return;
 
@@ -174,8 +190,16 @@ export const CraftsmanChatProvider: React.FC<{ children: React.ReactNode }> = ({
     contacts: contactsQuery.data ?? [],
     activeChat,
     messages: messagesQuery.data ?? [],
+    canSendMessage,
     setActiveChat,
-    sendMessage: async (t) => sendTextMutation.mutateAsync(t),
+    sendMessage: async (t) => {
+      try {
+        await sendTextMutation.mutateAsync(t);
+      } catch (err: any) {
+        if (err?.response?.status === 403) setCanSendMessage(false);
+        throw err;
+      }
+    },
     sendImage: async (f) => sendImageMutation.mutateAsync(f),
     sendAudio: async (b) => sendAudioMutation.mutateAsync(b),
   };

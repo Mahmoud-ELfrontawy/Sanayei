@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   FaEye,
   FaEyeSlash,
   FaGoogle,
-  FaFacebookF,
 } from "react-icons/fa";
+import { FiClock } from "react-icons/fi";
 
 import img1 from "../../../assets/images/cuate (2) 1.png";
 import { useLogin } from "./useLogin";
@@ -14,6 +14,9 @@ import "./Login.css";
 import { RequestServiceInputSkeleton } from "../../Home/sections/RequestServiceSection/RequestServiceSkeleton";
 
 const LoginPage: React.FC = () => {
+  const location = useLocation();
+  const isPendingCompany = (location.state as any)?.pendingCompany === true;
+
   const {
     register,
     handleSubmit,
@@ -27,6 +30,22 @@ const LoginPage: React.FC = () => {
     <div className="auth-page-wrapper">
       <div className="auth-card login-card-custom">
         <div className="login-content-wrapper">
+
+          {/* Pending Company Banner */}
+          {isPendingCompany && (
+            <div style={{
+              display: 'flex', alignItems: 'flex-start', gap: '10px',
+              background: '#fffbeb', border: '1px solid #fcd34d',
+              borderRadius: '12px', padding: '14px 16px',
+              marginBottom: '20px', color: '#92400e', fontSize: '0.88rem'
+            }}>
+              <FiClock style={{ flexShrink: 0, marginTop: '2px', fontSize: '1.1rem', color: '#b45309' }} />
+              <div>
+                <strong style={{ display: 'block', marginBottom: '4px' }}>حسابك قيد المراجعة</strong>
+                تم تسجيل بيانات شركتك بنجاح. لن تتمكن من تسجيل الدخول حتى يتم اعتماد حسابك من قبل الإدارة — سنتواصل معك قريباً.
+              </div>
+            </div>
+          )}
 
           <h2 className="auth-title">تسجيل الدخول</h2>
 
@@ -83,7 +102,7 @@ const LoginPage: React.FC = () => {
             </div>
 
             <div className="login-options">
-              <Link to="/forgot-password-options" className="forgot-password">
+              <Link to="/forgot-password" className="forgot-password">
                 نسيت كلمة المرور؟
               </Link>
 
@@ -108,7 +127,7 @@ const LoginPage: React.FC = () => {
 
           {/* Social login */}
           <div className="auth-social-container">
-            <button type="button" className="auth-social-btn"
+            <button type="button" className="auth-social-btn full-width"
               onClick={() => {
                 window.location.href =
                   "/api/auth/google";
@@ -116,16 +135,6 @@ const LoginPage: React.FC = () => {
             >
               <FaGoogle />
               <span>عن طريق جوجل</span>
-            </button>
-
-            <button type="button" className="auth-social-btn"
-              onClick={() => {
-                window.location.href =
-                  "/api/auth/facebook";
-              }}
-            >
-              <FaFacebookF />
-              <span>عن طريق فيسبوك</span>
             </button>
           </div>
 
