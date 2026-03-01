@@ -395,9 +395,19 @@ html[data-theme="dark"] .details-container {
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
-html[data-theme="dark"] .main-image-stage,
+html[data-theme="dark"] .main-image-stage {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--color-border);
+}
+
 html[data-theme="dark"] .thumb-box {
-    background: var(--color-bg-dark);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--color-border);
+}
+
+html[data-theme="dark"] .thumb-box img {
+    padding: 4px;
+    object-fit: contain;
 }
 
 html[data-theme="dark"] .product-full-name {

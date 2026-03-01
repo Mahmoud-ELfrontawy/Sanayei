@@ -720,3 +720,7 @@ html[data-theme="dark"] .req-input:disabled {
 }
 
 
+html[data-theme="dark"] .req-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+

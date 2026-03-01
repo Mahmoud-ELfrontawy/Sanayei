@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
-    FiArrowRight, FiShoppingCart, FiStar, FiFilter
+    FiArrowRight, FiShoppingCart, FiStar, FiChevronDown
 } from "react-icons/fi";
+import { ArrowDownWideNarrow } from "lucide-react";
 import { toast } from "react-toastify";
 import { getPublicStoreProducts } from "../../Api/auth/Company/storeManagement.api";
 import { addToCart, getCartItems } from "../../Api/store/cart.api";
@@ -30,6 +31,7 @@ const StoreProductList: React.FC<StoreProductListProps> = ({ companyId, onBack, 
     const [products, setProducts] = useState<any[]>([]);
     const [productsLoading, setProductsLoading] = useState(true);
     const [activeSortIdx, setActiveSortIdx] = useState(0);
+    const [isSortOpen, setIsSortOpen] = useState(false);
 
     /* ── Cart State ── */
     const [cartCount, setCartCount] = useState(0);
@@ -112,16 +114,37 @@ const StoreProductList: React.FC<StoreProductListProps> = ({ companyId, onBack, 
                 </div>
 
                 <div className="list-filters-bar">
-                    <FiFilter style={{ color: "#94a3b8", flexShrink: 0 }} />
-                    {SORT_OPTIONS.map((opt, idx) => (
-                        <div
-                            key={idx}
-                            className={`filter-chip ${activeSortIdx === idx ? "active" : ""}`}
-                            onClick={() => setActiveSortIdx(idx)}
+                    <div className="sort-selector-wrapper">
+                        <button 
+                            className={`sort-trigger-btn ${isSortOpen ? 'active' : ''}`} 
+                            onClick={() => setIsSortOpen(!isSortOpen)}
                         >
-                            <span>{opt.label}</span>
-                        </div>
-                    ))}
+                            <ArrowDownWideNarrow size={18} className="sort-icon-main" />
+                            <span className="current-sort-label">{SORT_OPTIONS[activeSortIdx].label}</span>
+                            <FiChevronDown className={`chevron-sort ${isSortOpen ? 'rotate' : ''}`} />
+                        </button>
+
+                        {isSortOpen && (
+                            <>
+                                <div className="sort-dropdown-overlay" onClick={() => setIsSortOpen(false)} />
+                                <div className="sort-dropdown-menu">
+                                    {SORT_OPTIONS.map((opt, idx) => (
+                                        <div
+                                            key={idx}
+                                            className={`sort-option-item ${activeSortIdx === idx ? "active" : ""}`}
+                                            onClick={() => {
+                                                setActiveSortIdx(idx);
+                                                setIsSortOpen(false);
+                                            }}
+                                        >
+                                            <span className="option-label">{opt.label}</span>
+                                            {activeSortIdx === idx && <div className="active-dot" />}
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
 

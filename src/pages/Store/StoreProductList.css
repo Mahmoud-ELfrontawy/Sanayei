@@ -68,34 +68,113 @@
 
 .list-filters-bar {
     display: flex;
-    gap: 1rem;
-    overflow-x: auto;
+    align-items: center;
     padding-bottom: 0.5rem;
 }
 
-.filter-chip {
-    padding: 0.5rem 1rem;
-    background: white;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 8px;
-    font-size: 0.9rem;
-    color: #475569;
-    cursor: pointer;
+.sort-selector-wrapper {
+    position: relative;
+    width: 280px;
+}
+
+.sort-trigger-btn {
+    width: 100%;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    white-space: nowrap;
-    transition: all 0.2s ease;
+    gap: 12px;
+    padding: 0.75rem 1.25rem;
+    background: white;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #334155;
 }
 
-.filter-chip:hover {
+.sort-trigger-btn:hover {
+    border-color: var(--color-primary);
+    background: #f8fafc;
+}
+
+.sort-trigger-btn.active {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px rgba(95, 168, 211, 0.1);
+}
+
+.sort-icon-main {
+    color: var(--color-primary);
+    flex-shrink: 0;
+}
+
+.current-sort-label {
+    flex: 1;
+    text-align: right;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.chevron-sort {
+    transition: transform 0.3s ease;
+    color: #94a3b8;
+}
+
+.chevron-sort.rotate {
+    transform: rotate(180deg);
+}
+
+.sort-dropdown-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+}
+
+.sort-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 100%;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    z-index: 1001;
+    animation: slideDownFade 0.2s ease;
+}
+
+@keyframes slideDownFade {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.sort-option-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #475569;
+}
+
+.sort-option-item:hover {
     background: #f1f5f9;
+    color: var(--color-primary);
 }
 
-.filter-chip.active {
-    background: var(--color-text-accent, #0B1E33);
-    color: white;
-    border-color: var(--color-text-accent, #0B1E33);
+.sort-option-item.active {
+    background: rgba(95, 168, 211, 0.08);
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+.active-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 8px var(--color-primary);
 }
 
 /* Product Grid */
@@ -344,22 +423,35 @@ html[data-theme="dark"] .results-badge {
     color: var(--color-text-muted);
 }
 
-html[data-theme="dark"] .filter-chip {
+html[data-theme="dark"] .sort-trigger-btn {
     background: var(--color-bg-section);
     border-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .sort-trigger-btn:hover {
+    background: var(--color-bg-main);
+    border-color: var(--color-primary);
+}
+
+html[data-theme="dark"] .sort-dropdown-menu {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] .sort-option-item {
     color: var(--color-text-secondary);
 }
 
-html[data-theme="dark"] .filter-chip:hover {
-    background: var(--color-bg-dark);
-    border-color: var(--color-primary);
+html[data-theme="dark"] .sort-option-item:hover {
+    background: var(--color-bg-main);
+    color: var(--color-primary);
 }
 
-html[data-theme="dark"] .filter-chip.active {
-    background: var(--color-primary);
-    border-color: var(--color-primary);
-    color: #0b1e33; /* Dark text for better contrast on light primary color */
-    font-weight: 800;
+html[data-theme="dark"] .sort-option-item.active {
+    background: rgba(126, 200, 240, 0.1);
+    color: var(--color-primary);
 }
 
 html[data-theme="dark"] .add-to-cart-mini {
