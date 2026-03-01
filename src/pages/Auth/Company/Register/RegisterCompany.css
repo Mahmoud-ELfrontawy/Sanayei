@@ -1,89 +1,304 @@
-/* ===== Company Specific Overrides ===== */
+/* ===== Company Registration - Centered Card Layout ===== */
 
-.company-card-custom {
-  max-width: 1200px;
+.company-card-centered {
+  max-width: 900px;
+  width: 95%;
+  margin: 40px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 50px;
+  background: var(--color-bg-section);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+}
+
+.auth-form-content {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.auth-form-content .auth-title,
+.auth-form-content .auth-subtitle {
+  text-align: center;
+  width: 100%;
 }
 
 .company-register-form {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 25px;
+  width: 100%;
+}
+
+.auth-row {
+  display: flex;
+  gap: 25px;
+  width: 100%;
+  align-items: flex-start;
+}
+
+.flex-1 {
+  flex: 1;
 }
 
 .form-section {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 20px;
+  padding: 24px;
   background: var(--color-bg-main);
   border-radius: var(--radius-card);
   border: 1px solid var(--color-border);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-section:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
 .section-title {
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 700;
   color: var(--color-primary);
-  margin-bottom: 8px;
-  padding-bottom: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
   border-bottom: 2px solid var(--color-bg-secondary);
   text-align: right;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-}
-
-.company-illustration-container {
-  width: 35%;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  background: #fafafa;
-  border-right: 1px solid var(--color-border);
-  padding: 40px 20px;
-}
-
-.company-illustration-container img {
+  gap: 6px;
   width: 100%;
-  max-width: 400px;
-  object-fit: contain;
 }
 
-.auth-subtitle {
-  color: var(--color-text-secondary);
-  margin-bottom: 24px;
-  font-size: 15px;
-  text-align: center;
+.auth-input {
+  font-size: 19px !important;
+  padding: 16px 18px !important;
 }
 
-textarea.auth-input {
-  min-height: 100px;
-  padding-top: 12px;
-  resize: vertical;
+/* ===== Stepper UI ===== */
+.stepper-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  margin: 20px 0 40px;
+  padding: 0 5px;
+  width: 100%;
 }
 
-.flex-1 {
-    flex: 1;
+.stepper-container::before {
+  content: "";
+  position: absolute;
+  top: 21px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-border);
+  z-index: 1;
 }
 
-@media (max-width: 1024px) {
-  .company-card-custom {
+.stepper-progress {
+  position: absolute;
+  top: 21px;
+  right: 0;
+  height: 2px;
+  background: var(--color-primary);
+  z-index: 2;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 3;
+  gap: 10px;
+  flex: 1;
+}
+
+.step-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-bg-section);
+  border: 2px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--color-text-muted);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 0 5px var(--color-bg-section);
+}
+
+.step-item.active .step-circle {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(var(--color-primary-rgb), 0.25);
+}
+
+.step-item.completed .step-circle {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+.step-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  transition: color 0.3s ease;
+  white-space: nowrap;
+}
+
+.step-item.active .step-label,
+.step-item.completed .step-label {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+/* ===== Stepper Navigation ===== */
+.stepper-navigation {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 5px;
+}
+
+.stepper-btn {
+  flex: 1;
+  height: 52px;
+  border-radius: var(--radius-btn);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.next-btn {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 10px rgba(var(--color-primary-rgb), 0.2);
+}
+
+.next-btn:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(var(--color-primary-rgb), 0.3);
+}
+
+.prev-btn {
+  background: transparent;
+  color: var(--color-text-main);
+  border: 1.5px solid var(--color-border);
+}
+
+.prev-btn:hover {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-text-muted);
+}
+
+.submit-btn {
+  background: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);
+}
+
+/* ===== Footer Link ===== */
+.company-footer-link {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
+  font-size: 1.1rem !important;
+  margin-top: 15px !important;
+  padding: 12px 0 !important;
+  color: var(--color-text-secondary) !important;
+  gap: 8px !important;
+}
+
+.company-footer-link a {
+  color: var(--color-primary) !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+}
+
+.company-footer-link a:hover {
+  text-decoration: underline !important;
+}
+
+/* ===== Animations ===== */
+.fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Dark Mode Fixes ===== */
+html[data-theme="dark"] .form-section {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+html[data-theme="dark"] .prev-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .company-card-centered {
+    padding: 30px 20px;
+    width: 98%;
+  }
+
+  .step-label {
+    display: none;
+  }
+  
+  .step-circle {
+    width: 38px;
+    height: 38px;
+    font-size: 14px;
+  }
+
+  .section-title {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 500px) {
+  .stepper-navigation {
     flex-direction: column;
-    max-width: 800px;
   }
-  .company-illustration-container {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid var(--color-border);
-    padding: 20px;
+  
+  .form-section {
+    padding: 18px;
   }
 }
 
-@media (max-width: 600px) {
-  .form-section {
-    padding: 15px;
-  }
-}
