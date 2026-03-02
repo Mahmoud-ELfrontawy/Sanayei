@@ -1,4 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 import {
   FaEye,
   FaEyeSlash,
@@ -15,6 +17,21 @@ import { RequestServiceInputSkeleton } from "../../Home/sections/RequestServiceS
 
 const LoginPage: React.FC = () => {
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const error = searchParams.get("error");
+    if (error === "no_account") {
+      toast.warning("أنشئ حساباً أولاً 👈", { autoClose: 4000 });
+      setTimeout(() => navigate("/join"), 1500);
+    } else if (error === "banned") {
+      toast.error("هذا الحساب محظور! يرجى التواصل مع الدعم الفني ⛔", { autoClose: 6000 });
+    } else if (error === "auth_failed") {
+      toast.error("فشل تسجيل الدخول عبر جوجل ❌", { autoClose: 5000 });
+    }
+  }, [searchParams, navigate]);
+
   const isPendingCompany = (location.state as any)?.pendingCompany === true;
 
   const {
@@ -130,7 +147,7 @@ const LoginPage: React.FC = () => {
             <button type="button" className="auth-social-btn full-width"
               onClick={() => {
                 window.location.href =
-                  "/api/auth/google";
+                  "/api/auth/google?mode=login";
               }}
             >
               <FaGoogle />

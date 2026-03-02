@@ -16,12 +16,18 @@ const GoogleCallback: React.FC = () => {
             if (!token) {
                 const error = searchParams.get("error");
                 console.error("❌ GoogleCallback: No token found. Error:", error);
-                toast.error(error === "google_auth_failed" ? "فشل تسجيل الدخول عبر جوجل ❌" : "حدث خطأ في المصادقة");
-                setTimeout(() => {
-                    window.location.href = "/login";
-                }, 1000);
+
+                if (error === "no_account") {
+                    toast.warning("ليس لديك حساب بعد! يرجى إنشاء حساب جديد أولاً 🔔", { autoClose: 5000 });
+                    setTimeout(() => { window.location.href = "/join"; }, 1500);
+                } else {
+                    toast.error(error === "google_auth_failed" ? "فشل تسجيل الدخول عبر جوجل ❌" : "حدث خطأ في المصادقة");
+                    setTimeout(() => { window.location.href = "/login"; }, 1000);
+                }
                 return;
             }
+
+            const isNewUser = searchParams.get("is_new") === "1";
 
             try {
                 setStatusMsg("جاري حفظ بيانات الدخول...");
@@ -39,11 +45,6 @@ const GoogleCallback: React.FC = () => {
 
                 // 2. Profile Hydration
                 setStatusMsg("جاري جلب بيانات الملف الشخصي...");
-
-                // We don't know the role yet if it's not in the URL, 
-                // so we try "user" first as a base, but we should really 
-                // have an endpoint that doesn't require the role to just get the profile.
-                // However, based on authService, we need a type.
 
                 const rolesToTry: any[] = queryRole ? [queryRole] : ["user", "craftsman", "company"];
                 let detectedUser = null;
@@ -71,7 +72,15 @@ const GoogleCallback: React.FC = () => {
                     localStorage.setItem("user_id", detectedUser.id.toString());
                     localStorage.setItem("token", token);
                     localStorage.setItem("user_status", detectedUser.status || "");
+
                     toast.success(`مرحباً ${detectedUser.name} 🎉`);
+
+                    if (isNewUser) {
+                        toast.warning("يرجى إكمال بيانات ملفك الشخصي في أقرب وقت وإلا قد يتم تعليق حسابك ⚠️", {
+                            autoClose: 10000,
+                            position: "top-center"
+                        });
+                    }
                 } else {
                     console.warn("⚠️ GoogleCallback: Could not fetch profile or detect role.");
                 }

@@ -1,39 +1,46 @@
 import React, { useState } from "react";
 import { FiList, FiPackage, FiShoppingCart } from "react-icons/fi";
-import StoreGalleryPage from "./StoreGalleryPage";
 import StoreProductList from "./StoreProductList";
 import ProductDetails from "./ProductDetails";
 import StoreOrdersPage from "./StoreOrdersPage";
 import StoreCartTab from "./StoreCartTab";
+import { getPublicCategories } from "../../Api/store/publicStore.api";
+import { useEffect } from "react";
 import "./Store.css";
 
 const StorePage: React.FC = () => {
     const [activeTab, setActiveTab] = useState("products");
     const [searchQuery, setSearchQuery] = useState("");
-    const [storeView, setStoreView] = useState("gallery");
+    const [storeView, setStoreView] = useState("productList"); // Default to productList
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
-    const [selectedCompanyId, setSelectedCompanyId] = useState<any>(null);
+    const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+    const [categories, setCategories] = useState<any[]>([]);
     const [cartCount, setCartCount] = useState(0);
+
+    const fetchCategories = async () => {
+        try {
+            const res = await getPublicCategories();
+            // Handle both Array and { data: [] } formats
+            const cats = Array.isArray(res) ? res : (res?.data ?? []);
+            setCategories(cats);
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchCategories();
+    }, []);
 
     const renderStoreContent = () => {
         switch (storeView) {
-            case "gallery":
-                return (
-                    <StoreGalleryPage
-                        initialCategoryId={null}
-                        searchQuery={searchQuery}
-                        onSearchChange={setSearchQuery}
-                        onBrowseProducts={(companyId) => {
-                            setSelectedCompanyId(companyId);
-                            setStoreView("productList");
-                        }}
-                    />
-                );
             case "productList":
                 return (
                     <StoreProductList
-                        companyId={selectedCompanyId}
-                        onBack={() => setStoreView("gallery")}
+                        categoryId={selectedCategoryId}
+                        searchQuery={searchQuery}
+                        categories={categories}
+                        onCategoryChange={setSelectedCategoryId}
                         onProductClick={(product) => {
                             setSelectedProduct(product);
                             setStoreView("productDetails");
@@ -49,7 +56,19 @@ const StorePage: React.FC = () => {
                     />
                 );
             default:
-                return <StoreGalleryPage initialCategoryId={null} />;
+                return (
+                    <StoreProductList
+                        categoryId={selectedCategoryId}
+                        searchQuery={searchQuery}
+                        categories={categories}
+                        onCategoryChange={setSelectedCategoryId}
+                        onProductClick={(product) => {
+                            setSelectedProduct(product);
+                            setStoreView("productDetails");
+                        }}
+                        onCartCountChange={setCartCount}
+                    />
+                );
         }
     };
 

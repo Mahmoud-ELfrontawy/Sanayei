@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { FiArrowRight, FiShoppingCart, FiShield, FiTruck, FiRefreshCw, FiPlus, FiMinus, FiStar } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { getPublicStoreProductDetails } from "../../Api/auth/Company/storeManagement.api";
@@ -13,65 +13,60 @@ interface ProductDetailsProps {
 }
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct, onBack }) => {
-    const [product, setProduct] = useState<any>(initialProduct);
+    const [fullProduct, setFullProduct] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
     const [quantity, setQuantity] = useState(1);
-    const [addingToCart, setAddingToCart] = useState(false);
+    const [activeImage, setActiveImage] = useState<string | null>(null);
 
-    // Resolve main image
-    const mainImageSrc = getFullImageUrl(product?.main_image)
-        ?? "https://placehold.co/600x500?text=No+Image";
+    const images = useMemo(() => {
+        if (!fullProduct) return [];
+        const list = [];
+        if (fullProduct.main_image) list.push(fullProduct.main_image);
 
-    // Build gallery: [main_image, ...images]
-    const gallery: string[] = [];
-    if (mainImageSrc && !mainImageSrc.includes("placehold.co")) {
-        gallery.push(mainImageSrc);
-    }
-
-    // Try multiple field names for images
-    const rawImages = product?.images || product?.gallery_images;
-    if (rawImages) {
-        let imagesArray = [];
-        try {
-            if (typeof rawImages === 'string') {
-                if (rawImages.startsWith('[') || rawImages.startsWith('{')) {
-                    imagesArray = JSON.parse(rawImages);
-                } else if (rawImages.includes(',')) {
-                    imagesArray = rawImages.split(',').map(s => s.trim());
-                } else {
-                    imagesArray = [rawImages];
+        if (fullProduct.images) {
+            try {
+                const extra = typeof fullProduct.images === "string"
+                    ? JSON.parse(fullProduct.images)
+                    : fullProduct.images;
+                if (Array.isArray(extra)) {
+                    list.push(...extra);
                 }
-            } else {
-                imagesArray = rawImages;
+            } catch (e) {
+                console.error("Error parsing product images:", e);
             }
-        } catch (e) {
-            console.error("Error parsing images:", e);
         }
+        return list;
+    }, [fullProduct]);
 
-        if (Array.isArray(imagesArray)) {
-            imagesArray.forEach((img: any) => {
-                const url = getFullImageUrl(img);
-                if (url && url !== mainImageSrc && !gallery.includes(url)) {
-                    gallery.push(url);
-                }
-            });
+    useEffect(() => {
+        if (images.length > 0 && !activeImage) {
+            setActiveImage(images[0]);
         }
-    }
-
-    const [activeImage, setActiveImage] = useState(mainImageSrc);
+    }, [images, activeImage]);
+    const [addingToCart, setAddingToCart] = useState(false);
 
     // Fetch full product details from backend
     useEffect(() => {
         if (!initialProduct?.id) return;
+        setLoading(true);
         getPublicStoreProductDetails(initialProduct.id)
             .then((data) => {
-                setProduct(data);
-                const fullImg = getFullImageUrl(data.main_image) ?? mainImageSrc;
-                setActiveImage(fullImg);
+                setFullProduct(data);
+                if (data.main_image) {
+                    setActiveImage(data.main_image);
+                }
             })
             .catch(() => {
                 // fallback to initial data if fetch fails
+                setFullProduct(initialProduct);
+                if (initialProduct.main_image) {
+                    setActiveImage(initialProduct.main_image);
+                }
+            })
+            .finally(() => {
+                setLoading(false);
             });
-    }, [initialProduct?.id, mainImageSrc]);
+    }, [initialProduct?.id]);
 
     const { userType } = useAuth();
 
@@ -81,9 +76,14 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
             return;
         }
 
+        if (!fullProduct?.id) {
+            toast.error("لا يمكن إضافة المنتج للسلة. بيانات المنتج غير متوفرة.");
+            return;
+        }
+
         try {
             setAddingToCart(true);
-            await addToCart(product.id, quantity);
+            await addToCart(fullProduct.id, quantity);
             toast.success(`تم إضافة ${quantity} قطعة للسلة ✅`);
         } catch {
             toast.error("يجب تسجيل الدخول أولاً");
@@ -92,15 +92,41 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
         }
     };
 
-    const displayPrice = product?.discount_price && Number(product.discount_price) > 0
-        ? Number(product.discount_price)
-        : Number(product?.price ?? 0);
-    const originalPrice = (product?.discount_price && Number(product.discount_price) > 0 && Number(product.price) > Number(product.discount_price))
-        ? Number(product.price)
+    const displayPrice = fullProduct?.discount_price && Number(fullProduct.discount_price) > 0
+        ? Number(fullProduct.discount_price)
+        : Number(fullProduct?.price ?? 0);
+    const originalPrice = (fullProduct?.discount_price && Number(fullProduct.discount_price) > 0 && Number(fullProduct.price) > Number(fullProduct.discount_price))
+        ? Number(fullProduct.price)
         : null;
-    const discountPct = (originalPrice && displayPrice < originalPrice)
-        ? Math.round((1 - displayPrice / originalPrice) * 100)
-        : null;
+
+    if (loading) {
+        return (
+            <div className="product-details-premium loading-state">
+                <div className="details-header">
+                    <button className="back-btn-glass" onClick={onBack}>
+                        <FiArrowRight />
+                        <span>الرجوع للمتجر</span>
+                    </button>
+                </div>
+                <div className="loading-spinner"></div>
+                <p>جاري تحميل تفاصيل المنتج...</p>
+            </div>
+        );
+    }
+
+    if (!fullProduct) {
+        return (
+            <div className="product-details-premium error-state">
+                <div className="details-header">
+                    <button className="back-btn-glass" onClick={onBack}>
+                        <FiArrowRight />
+                        <span>الرجوع للمتجر</span>
+                    </button>
+                </div>
+                <p>عذراً، لم نتمكن من تحميل تفاصيل المنتج.</p>
+            </div>
+        );
+    }
 
     return (
         <div className="product-details-premium">
@@ -115,23 +141,30 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
                 {/* ===== Images ===== */}
                 <div className="product-visuals">
                     <div className="main-image-stage">
-                        <img src={activeImage} alt={product?.name} />
-                        {discountPct && (
-                            <span className="main-discount-badge">-{discountPct}%</span>
+                        <img
+                            src={getFullImageUrl(activeImage)}
+                            alt={fullProduct.name}
+                            className="fade-in-image"
+                        />
+                        {fullProduct.discount_price && fullProduct.price > fullProduct.discount_price && (
+                            <div className="main-discount-badge">
+                                خصم {Math.round(((fullProduct.price - fullProduct.discount_price) / fullProduct.price) * 100)}%
+                            </div>
                         )}
-                        {product?.badge && (
-                            <span className="product-status-tag">{product.badge}</span>
+                        {fullProduct?.badge && (
+                            <span className="product-status-tag">{fullProduct.badge}</span>
                         )}
                     </div>
-                    {gallery.length > 1 && (
+
+                    {images.length > 1 && (
                         <div className="thumbnails-grid">
-                            {gallery.map((img, idx) => (
+                            {images.map((img: string, idx: number) => (
                                 <div
                                     key={idx}
                                     className={`thumb-box ${activeImage === img ? "active" : ""}`}
                                     onClick={() => setActiveImage(img)}
                                 >
-                                    <img src={img} alt={`thumbnail-${idx}`} />
+                                    <img src={getFullImageUrl(img)} alt={`Thumbnail ${idx}`} />
                                 </div>
                             ))}
                         </div>
@@ -142,25 +175,25 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
                 <div className="product-info-panel">
                     <div className="info-bread-crumb">
                         المتجر
-                        {product?.category?.name && ` / ${product.category.name}`}
-                        {` / ${product?.name}`}
+                        {fullProduct?.category?.name && ` / ${fullProduct.category.name}`}
+                        {` / ${fullProduct?.name}`}
                     </div>
 
                     <div className="title-area">
-                        <h1 className="product-full-name">{product?.name}</h1>
-                        {product?.brand && <span className="brand-name-tag">{product.brand}</span>}
+                        <h1 className="product-full-name">{fullProduct?.name}</h1>
+                        {fullProduct?.brand && <span className="brand-name-tag">{fullProduct.brand}</span>}
                     </div>
 
                     <div className="stats-row">
                         <div className="rating-pill">
                             <FiStar className="star-filled" />
-                            <span>{Number(product?.rating ?? 0).toFixed(1)}</span>
-                            <small>({product?.reviews_count ?? 0} تقييم)</small>
+                            <span>{Number(fullProduct?.rating ?? 0).toFixed(1)}</span>
+                            <small>({fullProduct?.reviews_count ?? 0} تقييم)</small>
                         </div>
                         <div className="divider-v" />
                         <div className="stock-status-pill">
-                            {product?.stock > 0 ? (
-                                <span className="in-stock">متوفر: {product.stock} قطعة</span>
+                            {fullProduct?.stock > 0 ? (
+                                <span className="in-stock">متوفر: {fullProduct.stock} قطعة</span>
                             ) : (
                                 <span className="out-of-stock">نفذ من المخزن</span>
                             )}
@@ -180,10 +213,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
                         <div className="tax-hint">شامل ضريبة القيمة المضافة</div>
                     </div>
 
-                    {product?.description && (
+                    {fullProduct?.description && (
                         <div className="description-box">
                             <h3>وصف المنتج</h3>
-                            <p className="product-long-description">{product.description}</p>
+                            <p className="product-long-description">{fullProduct.description}</p>
                         </div>
                     )}
 
@@ -191,15 +224,15 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
                     <div className="specification-premium-grid">
                         <div className="spec-item-card">
                             <span className="spec-label">العلامة التجارية</span>
-                            <span className="spec-value">{product?.brand || "غير محدد"}</span>
+                            <span className="spec-value">{fullProduct?.brand || "غير محدد"}</span>
                         </div>
                         <div className="spec-item-card">
                             <span className="spec-label">بلد المنشأ</span>
-                            <span className="spec-value">{product?.origin_country || "غير محدد"}</span>
+                            <span className="spec-value">{fullProduct?.origin_country || "غير محدد"}</span>
                         </div>
                         <div className="spec-item-card">
                             <span className="spec-label">الضمان</span>
-                            <span className="spec-value">{product?.warranty || "لا يوجد ضمان"}</span>
+                            <span className="spec-value">{fullProduct?.warranty || "لا يوجد ضمان"}</span>
                         </div>
                     </div>
 
@@ -207,14 +240,14 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
                         <div className="quantity-selector">
                             <button
                                 onClick={() => quantity > 1 && setQuantity(q => q - 1)}
-                                disabled={product?.stock === 0}
+                                disabled={fullProduct?.stock === 0}
                             >
                                 <FiMinus />
                             </button>
                             <span>{quantity}</span>
                             <button
-                                onClick={() => quantity < (product?.stock ?? 99) && setQuantity(q => q + 1)}
-                                disabled={product?.stock === 0 || quantity >= (product?.stock ?? 1)}
+                                onClick={() => quantity < (fullProduct?.stock ?? 99) && setQuantity(q => q + 1)}
+                                disabled={fullProduct?.stock === 0 || quantity >= (fullProduct?.stock ?? 1)}
                             >
                                 <FiPlus />
                             </button>
@@ -222,7 +255,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
                         <button
                             className="add-to-cart-premium-btn"
                             onClick={handleAddToCart}
-                            disabled={addingToCart || product?.stock === 0}
+                            disabled={addingToCart || fullProduct?.stock === 0}
                         >
                             <FiShoppingCart />
                             <span>{addingToCart ? "جاري الإضافة..." : "إضافة للسلة"}</span>

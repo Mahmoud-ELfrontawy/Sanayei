@@ -6,7 +6,8 @@ export interface RegisterWorkerPayload {
   email: string;
   phone: string;
 
-  service_id: number;
+  service_id: number | string; // Changed to allow string if needed
+  custom_service?: string;
   governorate_id: number;
 
   price_range: string;
@@ -28,6 +29,9 @@ export const registerWorker = async (
   formData.append("phone", payload.phone);
 
   formData.append("service_id", payload.service_id.toString());
+  if (payload.custom_service) {
+    formData.append("custom_service", payload.custom_service);
+  }
   formData.append("governorate_id", payload.governorate_id.toString());
 
   formData.append("price_range", payload.price_range);

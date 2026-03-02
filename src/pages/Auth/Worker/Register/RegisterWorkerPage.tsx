@@ -8,6 +8,11 @@ import "../../AuthShared.css";
 import "./RegisterWorker.css";
 import TermsModal from "../../../../components/ui/TermsModal/TermsModal";
 
+// الصوت
+import VoiceAssistantUI from "../../../../components/VoiceAssistant/VoiceAssistantUI";
+import { useVoiceAssistant } from "../../../../hooks/useVoiceAssistant";
+// الصوت
+
 const RegisterWorkerPage: React.FC = () => {
   const {
     register,
@@ -25,6 +30,12 @@ const RegisterWorkerPage: React.FC = () => {
   } = useRegisterWorker();
 
   const [currentStep, setCurrentStep] = useState(1);
+  // الصوت
+  const { isActive, isListening, status, startAssistant, stopAssistant, speakFieldHelp } = useVoiceAssistant(
+    { setValue, register, watch, trigger } as any,
+    setCurrentStep
+  );
+  // الصوت
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [hasReadTerms, setHasReadTerms] = useState(false);
 
@@ -63,6 +74,18 @@ const RegisterWorkerPage: React.FC = () => {
           <h2 className="auth-title">انضم كصنايعي محترف</h2>
           <p className="auth-subtitle">سجل بياناتك الآن لتصل إلى آلاف العملاء في منطقتك</p>
 
+
+          {/* --- Voice Assistant System --- */}
+          {/* الصوت */}
+          <VoiceAssistantUI
+            isActive={isActive}
+            isListening={isListening}
+            status={status}
+            onStart={startAssistant}
+            onStop={stopAssistant}
+          />
+          {/* الصوت */}
+
           {/* --- Stepper Indicator --- */}
           <div className="stepper-container">
             <div className="stepper-progress" style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}></div>
@@ -86,6 +109,7 @@ const RegisterWorkerPage: React.FC = () => {
                   <input
                     className="auth-input"
                     placeholder="الاسم بالكامل"
+                    onFocus={() => speakFieldHelp("name")}
                     {...register("name", {
                       required: "الاسم مطلوب",
                       minLength: { value: 3, message: "الاسم يجب أن يكون 3 أحرف على الأقل" },
@@ -99,6 +123,7 @@ const RegisterWorkerPage: React.FC = () => {
                     className="auth-input"
                     type="email"
                     placeholder="البريد الإلكتروني"
+                    onFocus={() => speakFieldHelp("email")}
                     {...register("email", {
                       required: "البريد مطلوب",
                       pattern: {
@@ -116,6 +141,7 @@ const RegisterWorkerPage: React.FC = () => {
                     type="tel"
                     placeholder="رقم الهاتف"
                     maxLength={11}
+                    onFocus={() => speakFieldHelp("phone")}
                     onInput={(e) => {
                       e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, "");
                     }}
@@ -140,6 +166,7 @@ const RegisterWorkerPage: React.FC = () => {
                   <div className="input-group flex-1">
                     <select
                       className="auth-input"
+                      onFocus={() => speakFieldHelp("service_id")}
                       {...register("service_id", { required: "اختر المهنة" })}
                       disabled={isLoadingData}
                     >
@@ -147,6 +174,7 @@ const RegisterWorkerPage: React.FC = () => {
                       {services.map((service) => (
                         <option key={service.id} value={service.id}>{service.name}</option>
                       ))}
+                      <option value="other">أخري...</option>
                     </select>
                     {errors.service_id && <span className="form-error">{errors.service_id.message}</span>}
                   </div>
@@ -154,6 +182,7 @@ const RegisterWorkerPage: React.FC = () => {
                   <div className="input-group flex-1">
                     <select
                       className="auth-input"
+                      onFocus={() => speakFieldHelp("governorate_id")}
                       {...register("governorate_id", { required: "اختر المحافظة" })}
                       disabled={isLoadingData}
                     >
@@ -166,10 +195,22 @@ const RegisterWorkerPage: React.FC = () => {
                   </div>
                 </div>
 
+                {watch("service_id") === "other" && (
+                  <div className="input-group fade-in">
+                    <input
+                      className="auth-input"
+                      placeholder="اكتب مهنتك هنا"
+                      {...register("custom_service", { required: "يرجى كتابة مهنتك" })}
+                    />
+                    {errors.custom_service && <span className="form-error">{errors.custom_service.message}</span>}
+                  </div>
+                )}
+
                 <div className="input-group">
                   <input
                     className="auth-input"
                     placeholder="نطاق الأسعار (مثال: 1000-3000)"
+                    onFocus={() => speakFieldHelp("price_range")}
                     {...register("price_range", {
                       required: "نطاق الأسعار مطلوب",
                       pattern: {

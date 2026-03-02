@@ -6,6 +6,7 @@ import {
     getIncomingServiceRequests,
     updateServiceRequestStatus,
     completeServiceRequest,
+    cancelServiceRequest,
     // deleteServiceRequest,
 } from "../../Api/serviceRequest/serviceRequests.api";
 import { useAuth } from "../../hooks/useAuth";
@@ -156,6 +157,24 @@ function MyOrdersPage() {
             console.error('❌ [Complete Service] Error:', err);
             console.error('❌ [Complete Service] Error response:', err?.response?.data);
             toast.error("فشل تحديد اكتمال الخدمة");
+        }
+    };
+
+    const handleCancelRequest = async (orderId: number) => {
+        if (!window.confirm("هل أنت متأكد من إلغاء هذا الطلب؟")) return;
+
+        try {
+            await cancelServiceRequest(orderId);
+            toast.success("تم إلغاء الطلب بنجاح ✅");
+
+            // Updating local state to reflect cancellation (setting status to rejected or removing)
+            setOrders((prev) =>
+                prev.map((order) =>
+                    order.id === orderId ? { ...order, status: 'rejected' } : order
+                )
+            );
+        } catch (err: any) {
+            toast.error(err.message || "فشل إلغاء الطلب");
         }
     };
 
@@ -327,6 +346,15 @@ function MyOrdersPage() {
                                     رفض
                                 </button>
                             </div>
+                        )}
+
+                        {!isCraftsman && order.status === "pending" && (
+                            <button
+                                onClick={() => handleCancelRequest(order.id)}
+                                className="btn-premium btn-cancel"
+                            >
+                                إلغاء الطلب
+                            </button>
                         )}
                     </div>
                 </div>

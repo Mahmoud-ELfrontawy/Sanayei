@@ -24,7 +24,8 @@
 .header-navigation {
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 1.5rem;
+    width: 100%;
 }
 
 .back-btn-glass {
@@ -64,6 +65,46 @@
 .results-badge {
     font-size: 0.85rem;
     color: #64748b;
+    white-space: nowrap;
+}
+
+.categories-pills-scroll {
+    display: flex;
+    gap: 0.8rem;
+    overflow-x: auto;
+    padding: 0.5rem 0.2rem;
+    flex: 1;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.categories-pills-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.categories-pills-scroll .pill-btn {
+    padding: 8px 18px;
+    border-radius: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #ffffff;
+    color: #475569;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.categories-pills-scroll .pill-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.categories-pills-scroll .pill-btn.active {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 12px rgba(95, 168, 211, 0.25);
 }
 
 .list-filters-bar {
@@ -256,6 +297,26 @@
     flex-direction: column;
     gap: 0.4rem;
     flex-grow: 1;
+}
+
+.product-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.company-attribution {
+    font-size: 0.75rem;
+    color: var(--color-primary);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(95, 168, 211, 0.08);
+    padding: 2px 8px;
+    border-radius: 6px;
 }
 
 .product-name-amazon {

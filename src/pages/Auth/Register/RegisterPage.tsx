@@ -219,7 +219,7 @@ const RegisterPage: React.FC = () => {
             <button type="button" className="auth-social-btn full-width"
               onClick={() => {
                 window.location.href =
-                  "/api/auth/google";
+                  "/api/auth/google?mode=register";
               }}
             >
               <FaGoogle />

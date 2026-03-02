@@ -90,6 +90,22 @@ export const updateServiceRequestStatus = async (
 };
 
 /**
+ * Cancel service request by user (before acceptance)
+ */
+export const cancelServiceRequest = async (requestId: number) => {
+    try {
+        const response = await axios.post(
+            `${BASE_URL}/user/service-requests/${requestId}/cancel`,
+            {},
+            { headers: getHeaders() }
+        );
+        return response.data;
+    } catch (error) {
+        throw handleError(error);
+    }
+};
+
+/**
  * Complete service request by user (mark as completed)
  */
 export const completeServiceRequest = async (requestId: number) => {

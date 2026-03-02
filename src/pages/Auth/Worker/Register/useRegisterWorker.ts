@@ -14,6 +14,7 @@ export interface RegisterWorkerFormValues {
   email: string;
   phone: string;
   service_id: string;
+  custom_service?: string;
   governorate_id: string;
   front_identity_photo: FileList;
   back_identity_photo: FileList;
@@ -66,7 +67,8 @@ export const useRegisterWorker = () => {
         email: data.email,
         phone: data.phone,
 
-        service_id: Number(data.service_id),
+        service_id: data.service_id === "other" ? "other" : Number(data.service_id),
+        custom_service: data.service_id === "other" ? data.custom_service : undefined,
         governorate_id: Number(data.governorate_id),
 
         price_range: data.price_range,
@@ -110,9 +112,10 @@ export const useRegisterWorker = () => {
 
       if (err.response?.status === 422 && err.response?.data?.errors) {
         const errors = err.response.data.errors;
+        console.log("❌ Validation Errors:", errors); // سطر إضافي لرؤية كل الأخطاء في الكونسول
         const firstKey = Object.keys(errors)[0];
         const firstMsg = errors[firstKey][0];
-        toast.error(firstMsg);
+        toast.error(`${firstKey}: ${firstMsg}`);
       } else {
         toast.error(err.response?.data?.message || "حدث خطأ أثناء التسجيل ❌");
       }

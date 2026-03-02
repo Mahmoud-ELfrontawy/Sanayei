@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
-    FiArrowRight, FiShoppingCart, FiStar, FiChevronDown
+    FiPackage, FiShoppingCart, FiStar, FiChevronDown
 } from "react-icons/fi";
 import { ArrowDownWideNarrow } from "lucide-react";
 import { toast } from "react-toastify";
@@ -11,8 +11,10 @@ import { useAuth } from "../../hooks/useAuth";
 import "./StoreProductList.css";
 
 interface StoreProductListProps {
-    companyId: any;
-    onBack: () => void;
+    categoryId: number | null;
+    searchQuery: string;
+    categories: any[];
+    onCategoryChange: (id: number | null) => void;
     onProductClick: (product: any) => void;
     onCartCountChange?: (count: number) => void;
 }
@@ -24,7 +26,7 @@ const SORT_OPTIONS = [
     { label: "الأعلى تقييماً", sort: "rating" as const, dir: "desc" as const },
 ];
 
-const StoreProductList: React.FC<StoreProductListProps> = ({ companyId, onBack, onProductClick, onCartCountChange }) => {
+const StoreProductList: React.FC<StoreProductListProps> = ({ categoryId, searchQuery, categories, onCategoryChange, onProductClick, onCartCountChange }) => {
     const { isAuthenticated, userType } = useAuth();
 
     /* ── Products ── */
@@ -42,7 +44,8 @@ const StoreProductList: React.FC<StoreProductListProps> = ({ companyId, onBack, 
             setProductsLoading(true);
             const active = SORT_OPTIONS[activeSortIdx];
             const res = await getPublicStoreProducts({
-                company_id: companyId,
+                category_id: categoryId || undefined,
+                search: searchQuery || undefined,
                 sort: active.sort,
                 dir: active.dir,
             });
@@ -52,7 +55,7 @@ const StoreProductList: React.FC<StoreProductListProps> = ({ companyId, onBack, 
         } finally {
             setProductsLoading(false);
         }
-    }, [companyId, activeSortIdx]);
+    }, [categoryId, searchQuery, activeSortIdx]);
 
     useEffect(() => { fetchProducts(); }, [fetchProducts]);
 
@@ -96,16 +99,29 @@ const StoreProductList: React.FC<StoreProductListProps> = ({ companyId, onBack, 
             {/* ── Sticky Header ── */}
             <div className="list-header-sticky">
                 <div className="header-navigation">
-                    <button className="back-btn-glass" onClick={onBack}>
-                        <FiArrowRight />
-                        <span>الرجوع للمتجر</span>
-                    </button>
                     <div className="list-title-group">
-                        <h2 className="company-name-list">منتجات المتجر</h2>
+                        <h2 className="company-name-list">جميع المنتجات</h2>
                         <span className="results-badge">{products.length} منتج متوفر</span>
                     </div>
 
-                    {/* Simple Cart Indicator - Clicking this doesn't open drawer now, user uses the top tab */}
+                    <div className="categories-pills-scroll">
+                        <button
+                            className={`pill-btn ${categoryId === null ? "active" : ""}`}
+                            onClick={() => onCategoryChange(null)}
+                        >
+                            الكل
+                        </button>
+                        {Array.isArray(categories) && categories.map(cat => (
+                            <button
+                                key={cat.id}
+                                className={`pill-btn ${categoryId === cat.id ? "active" : ""}`}
+                                onClick={() => onCategoryChange(cat.id)}
+                            >
+                                {cat.name}
+                            </button>
+                        ))}
+                    </div>
+
                     <div className="cart-float-btn static">
                         <FiShoppingCart size={20} />
                         {cartCount > 0 && <span className="cart-float-count">{cartCount}</span>}
@@ -115,8 +131,8 @@ const StoreProductList: React.FC<StoreProductListProps> = ({ companyId, onBack, 
 
                 <div className="list-filters-bar">
                     <div className="sort-selector-wrapper">
-                        <button 
-                            className={`sort-trigger-btn ${isSortOpen ? 'active' : ''}`} 
+                        <button
+                            className={`sort-trigger-btn ${isSortOpen ? 'active' : ''}`}
                             onClick={() => setIsSortOpen(!isSortOpen)}
                         >
                             <ArrowDownWideNarrow size={18} className="sort-icon-main" />
@@ -188,7 +204,15 @@ const StoreProductList: React.FC<StoreProductListProps> = ({ companyId, onBack, 
                                     </div>
                                 </div>
                                 <div className="card-info-box">
-                                    {product.badge && <span className="product-badge-tag">{product.badge}</span>}
+                                    <div className="product-meta-row">
+                                        {product.badge && <span className="product-badge-tag">{product.badge}</span>}
+                                        {product.company?.company_name && (
+                                            <span className="company-attribution">
+                                                <FiPackage size={12} />
+                                                {product.company.company_name}
+                                            </span>
+                                        )}
+                                    </div>
                                     <h3 className="product-name-amazon">{product.name}</h3>
                                     <div className="rating-row-amazon">
                                         <div className="stars-group">
