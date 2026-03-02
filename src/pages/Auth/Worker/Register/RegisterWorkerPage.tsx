@@ -8,10 +8,8 @@ import "../../AuthShared.css";
 import "./RegisterWorker.css";
 import TermsModal from "../../../../components/ui/TermsModal/TermsModal";
 
-// الصوت
 import VoiceAssistantUI from "../../../../components/VoiceAssistant/VoiceAssistantUI";
 import { useVoiceAssistant } from "../../../../hooks/useVoiceAssistant";
-// الصوت
 
 const RegisterWorkerPage: React.FC = () => {
   const {
@@ -31,25 +29,37 @@ const RegisterWorkerPage: React.FC = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+  const [hasReadTerms, setHasReadTerms] = useState(false);
 
-  // الصوت
+  // ── Voice Assistant ──────────────────────────────────────────────
+  const voiceForm = {
+    setValue,
+    trigger,
+    watch,
+    formState: { errors },
+    services: services || [],
+    governorates: governorates || [],
+  };
+
   const {
     isActive,
     isListening,
     isSpeaking,
     status,
+    currentFieldLabel,
+    lastTranscript,
     startAssistant,
     stopAssistant,
     speakFieldHelp,
-    speakCurrentField
+    speakCurrentField,
   } = useVoiceAssistant(
-    { setValue, register, watch, trigger } as any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    voiceForm as any,
     setCurrentStep,
     focusedField
   );
-  // الصوت
-  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
-  const [hasReadTerms, setHasReadTerms] = useState(false);
+  // ────────────────────────────────────────────────────────────────
 
   const frontFile = watch("front_identity_photo");
   const backFile = watch("back_identity_photo");
@@ -63,13 +73,14 @@ const RegisterWorkerPage: React.FC = () => {
   ];
 
   const nextStep = async () => {
-    let fieldsToValidate: any[] = [];
+    let fieldsToValidate: string[] = [];
     if (currentStep === 1) fieldsToValidate = ["name", "email", "phone"];
     else if (currentStep === 2) fieldsToValidate = ["service_id", "governorate_id", "price_range"];
     else if (currentStep === 3) fieldsToValidate = ["front_identity_photo", "back_identity_photo"];
     else if (currentStep === 4) fieldsToValidate = ["password", "password_confirmation"];
 
-    const isStepValid = await trigger(fieldsToValidate);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const isStepValid = await trigger(fieldsToValidate as any);
     if (isStepValid) {
       setCurrentStep((prev) => Math.min(prev + 1, steps.length));
     }
@@ -79,6 +90,14 @@ const RegisterWorkerPage: React.FC = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
+  /** Handle focus: update focusedField & let voice assistant read it only if active */
+  const handleFieldFocus = (fieldName: string) => {
+    setFocusedField(fieldName);
+    if (isActive) speakFieldHelp(fieldName);
+  };
+
+  const handleFieldBlur = () => setFocusedField(null);
+
   return (
     <div className="auth-page-wrapper worker-page">
       <div className="auth-card auth-card--split worker-card-custom">
@@ -86,23 +105,22 @@ const RegisterWorkerPage: React.FC = () => {
           <h2 className="auth-title">انضم كصنايعي محترف</h2>
           <p className="auth-subtitle">سجل بياناتك الآن لتصل إلى آلاف العملاء في منطقتك</p>
 
-
-          {/* --- Voice Assistant System --- */}
-          {/* الصوت */}
+          {/* Voice Assistant */}
           <VoiceAssistantUI
             isActive={isActive}
             isListening={isListening}
             isSpeaking={isSpeaking}
             status={status}
+            currentFieldLabel={currentFieldLabel}
+            lastTranscript={lastTranscript}
             onStart={startAssistant}
             onStop={stopAssistant}
             onSpeak={speakCurrentField}
           />
-          {/* الصوت */}
 
-          {/* --- Stepper Indicator --- */}
+          {/* Stepper Indicator */}
           <div className="stepper-container">
-            <div className="stepper-progress" style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}></div>
+            <div className="stepper-progress" style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }} />
             {steps.map((step) => (
               <div key={step.id} className={`step-item ${currentStep >= step.id ? "active" : ""} ${currentStep > step.id ? "completed" : ""}`}>
                 <div className="step-circle">
@@ -123,15 +141,12 @@ const RegisterWorkerPage: React.FC = () => {
                   <input
                     className="auth-input"
                     placeholder="الاسم بالكامل"
-                    onFocus={() => {
-                      setFocusedField("name");
-                      speakFieldHelp("name");
-                    }}
                     {...register("name", {
                       required: "الاسم مطلوب",
                       minLength: { value: 3, message: "الاسم يجب أن يكون 3 أحرف على الأقل" },
-                      onBlur: () => setFocusedField(null),
                     })}
+                    onFocus={() => handleFieldFocus("name")}
+                    onBlur={handleFieldBlur}
                   />
                   {errors.name && <span className="form-error">{errors.name.message}</span>}
                 </div>
@@ -141,18 +156,15 @@ const RegisterWorkerPage: React.FC = () => {
                     className="auth-input"
                     type="email"
                     placeholder="البريد الإلكتروني"
-                    onFocus={() => {
-                      setFocusedField("email");
-                      speakFieldHelp("email");
-                    }}
                     {...register("email", {
                       required: "البريد مطلوب",
                       pattern: {
                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                         message: "صيغة البريد الإلكتروني غير صحيحة",
                       },
-                      onBlur: () => setFocusedField(null),
                     })}
+                    onFocus={() => handleFieldFocus("email")}
+                    onBlur={handleFieldBlur}
                   />
                   {errors.email && <span className="form-error">{errors.email.message}</span>}
                 </div>
@@ -163,18 +175,15 @@ const RegisterWorkerPage: React.FC = () => {
                     type="tel"
                     placeholder="رقم الهاتف"
                     maxLength={11}
-                    onFocus={() => {
-                      setFocusedField("phone");
-                      speakFieldHelp("phone");
-                    }}
                     {...register("phone", {
                       required: "رقم الهاتف مطلوب",
                       pattern: {
                         value: /^01[0125][0-9]{8}$/,
                         message: "رقم الهاتف غير صحيح (مثال: 01012345678)",
                       },
-                      onBlur: () => setFocusedField(null),
                     })}
+                    onFocus={() => handleFieldFocus("phone")}
+                    onBlur={handleFieldBlur}
                   />
                   {errors.phone && <span className="form-error">{errors.phone.message}</span>}
                 </div>
@@ -189,14 +198,9 @@ const RegisterWorkerPage: React.FC = () => {
                   <div className="input-group flex-1">
                     <select
                       className="auth-input"
-                      onFocus={() => {
-                        setFocusedField("service_id");
-                        speakFieldHelp("service_id");
-                      }}
-                      {...register("service_id", {
-                        required: "اختر المهنة",
-                        onBlur: () => setFocusedField(null)
-                      })}
+                      {...register("service_id", { required: "اختر المهنة" })}
+                      onFocus={() => handleFieldFocus("service_id")}
+                      onBlur={handleFieldBlur}
                       disabled={isLoadingData}
                     >
                       <option value="">{isLoadingData ? "جاري التحميل..." : "اختر المهنة"}</option>
@@ -211,14 +215,9 @@ const RegisterWorkerPage: React.FC = () => {
                   <div className="input-group flex-1">
                     <select
                       className="auth-input"
-                      onFocus={() => {
-                        setFocusedField("governorate_id");
-                        speakFieldHelp("governorate_id");
-                      }}
-                      {...register("governorate_id", {
-                        required: "اختر المحافظة",
-                        onBlur: () => setFocusedField(null)
-                      })}
+                      {...register("governorate_id", { required: "اختر المحافظة" })}
+                      onFocus={() => handleFieldFocus("governorate_id")}
+                      onBlur={handleFieldBlur}
                       disabled={isLoadingData}
                     >
                       <option value="">{isLoadingData ? "جاري التحميل..." : "اختر المحافظة"}</option>
@@ -235,14 +234,9 @@ const RegisterWorkerPage: React.FC = () => {
                     <input
                       className="auth-input"
                       placeholder="اكتب مهنتك هنا"
-                      onFocus={() => {
-                        setFocusedField("custom_service");
-                        speakFieldHelp("custom_service");
-                      }}
-                      {...register("custom_service", {
-                        required: "يرجى كتابة مهنتك",
-                        onBlur: () => setFocusedField(null)
-                      })}
+                      {...register("custom_service", { required: "يرجى كتابة مهنتك" })}
+                      onFocus={() => handleFieldFocus("custom_service")}
+                      onBlur={handleFieldBlur}
                     />
                     {errors.custom_service && <span className="form-error">{errors.custom_service.message}</span>}
                   </div>
@@ -252,10 +246,6 @@ const RegisterWorkerPage: React.FC = () => {
                   <input
                     className="auth-input"
                     placeholder="نطاق الأسعار (مثال: 1000-3000)"
-                    onFocus={() => {
-                      setFocusedField("price_range");
-                      speakFieldHelp("price_range");
-                    }}
                     {...register("price_range", {
                       required: "نطاق الأسعار مطلوب",
                       pattern: {
@@ -267,7 +257,6 @@ const RegisterWorkerPage: React.FC = () => {
                         if (min >= max) return "السعر الأول يجب أن يكون أقل من الثاني";
                         return true;
                       },
-                      onBlur: () => setFocusedField(null),
                     })}
                   />
                   {errors.price_range && <span className="form-error">{errors.price_range.message}</span>}
@@ -383,14 +372,13 @@ const RegisterWorkerPage: React.FC = () => {
               </div>
             )}
 
-            {/* Stepper Navigation */}
+            {/* Navigation */}
             <div className="stepper-navigation">
               {currentStep > 1 && (
                 <button type="button" className="stepper-btn prev-btn" onClick={prevStep}>
                   <FiArrowRight /> السابق
                 </button>
               )}
-
               {currentStep < steps.length ? (
                 <button type="button" className="stepper-btn next-btn" onClick={nextStep}>
                   التالي <FiArrowLeft />
@@ -426,4 +414,3 @@ const RegisterWorkerPage: React.FC = () => {
 };
 
 export default RegisterWorkerPage;
-

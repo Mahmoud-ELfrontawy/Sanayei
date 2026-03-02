@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiMic, FiSquare, FiVolume2, FiActivity } from 'react-icons/fi';
+import { FiMic, FiSquare, FiVolume2, FiActivity, FiMessageSquare } from 'react-icons/fi';
 import './VoiceAssistant.css';
 
 interface VoiceAssistantUIProps {
@@ -7,6 +7,8 @@ interface VoiceAssistantUIProps {
     isListening: boolean;
     isSpeaking: boolean;
     status: string;
+    currentFieldLabel: string;
+    lastTranscript: string;
     onStart: () => void;
     onStop: () => void;
     onSpeak: () => void;
@@ -17,64 +19,129 @@ const VoiceAssistantUI: React.FC<VoiceAssistantUIProps> = ({
     isListening,
     isSpeaking,
     status,
+    currentFieldLabel,
+    lastTranscript,
     onStart,
     onStop,
     onSpeak,
 }) => {
+    const isPermissionError = status === 'عذراً، يجب السماح بالوصول للميكروفون';
+
     return (
-        <div className={`voice-assistant-container ${isActive ? 'active' : ''}`}>
+        <div className={`voice-assistant-container ${isActive ? 'va-active' : ''}`}>
             {!isActive ? (
-                <div className="voice-trigger-group-wrapper">
-                    {status === 'عذراً، يجب السماح بالوصول للميكروفون' && (
-                        <div className="voice-error-msg">{status}</div>
+                /* ── Idle State ── */
+                <div className="va-idle-wrapper">
+                    {isPermissionError && (
+                        <div className="va-error-msg" role="alert">{status}</div>
                     )}
-                    <div className="voice-trigger-group">
-                        <button type="button" className="voice-trigger-btn primary-gradient" onClick={onStart}>
-                            <FiMic />
+                    <div className="va-idle-group">
+                        <button
+                            type="button"
+                            className="va-start-btn"
+                            onClick={onStart}
+                            aria-label="ابدأ المساعد الصوتي"
+                        >
+                            <span className="va-start-icon"><FiMic /></span>
                             <span>ابدأ المساعد الصوتي</span>
                         </button>
-                        <button type="button" className="voice-help-btn outline-primary" onClick={onSpeak} title="اسمعه بالعربي">
+
+                        <button
+                            type="button"
+                            className="va-help-btn"
+                            onClick={onSpeak}
+                            title="اقرأ لي تعليمات الحقل الحالي"
+                            disabled={!isActive}
+                            aria-label="ما المطلوب في الحقل الحالي"
+                        >
                             <FiVolume2 />
                             <span>ما المطلوب؟</span>
                         </button>
                     </div>
                 </div>
             ) : (
-                <div className="voice-active-panel">
-                    <div className="voice-header">
-                        <div className="voice-branding">
-                            <FiActivity className={`recording-icon ${isListening ? 'active-listening' : ''}`} />
-                            <span>المساعد النشط</span>
+                /* ── Active State ── */
+                <div className="va-panel">
+                    {/* Header */}
+                    <div className="va-header">
+                        <div className="va-brand">
+                            <FiActivity className={`va-activity-icon ${isListening ? 'va-listening-pulse' : ''}`} />
+                            <span>المساعد الصوتي</span>
                         </div>
-                        <button type="button" className="voice-close-mini" onClick={onStop}>
-                            <FiSquare /> إغلاق
-                        </button>
+                        <div className="va-header-actions">
+                            <button
+                                type="button"
+                                className="va-repeat-btn"
+                                onClick={onSpeak}
+                                title="أعد السؤال"
+                                aria-label="أعد قراءة السؤال"
+                            >
+                                <FiVolume2 />
+                            </button>
+                            <button
+                                type="button"
+                                className="va-stop-btn"
+                                onClick={onStop}
+                                aria-label="إيقاف المساعد"
+                            >
+                                <FiSquare />
+                                <span>إيقاف</span>
+                            </button>
+                        </div>
                     </div>
 
-                    <div className="voice-visualizer">
-                        <div className={`wave-bar ${isListening ? 'animate' : ''} ${isSpeaking ? 'speaking' : ''}`}></div>
-                        <div className={`wave-bar ${isListening ? 'animate' : ''} ${isSpeaking ? 'speaking' : ''}`}></div>
-                        <div className={`wave-bar ${isListening ? 'animate' : ''} ${isSpeaking ? 'speaking' : ''}`}></div>
-                        <div className={`wave-bar ${isListening ? 'animate' : ''} ${isSpeaking ? 'speaking' : ''}`}></div>
-                        <div className={`wave-bar ${isListening ? 'animate' : ''} ${isSpeaking ? 'speaking' : ''}`}></div>
+                    {/* Current Field Pill */}
+                    {currentFieldLabel && (
+                        <div className="va-field-pill">
+                            <span className="va-field-pill-label">الحقل الحالي:</span>
+                            <span className="va-field-pill-name">{currentFieldLabel}</span>
+                        </div>
+                    )}
+
+                    {/* Waveform Visualizer */}
+                    <div className="va-visualizer" aria-hidden="true">
+                        {[1, 2, 3, 4, 5, 6, 7].map(i => (
+                            <div
+                                key={i}
+                                className={`va-bar ${isListening ? 'va-bar--listen' : ''} ${isSpeaking ? 'va-bar--speak' : ''}`}
+                                style={{ animationDelay: `${i * 0.1}s` }}
+                            />
+                        ))}
                     </div>
 
-                    <div className="voice-content">
-                        <p className="voice-status-text">
-                            {isListening ? (
-                                <span className="listening-text"><FiMic className="mic-icon" /> أنا أسمعك الآن...</span>
-                            ) : isSpeaking ? (
-                                <span className="speaking-text"><FiVolume2 className="vol-icon" /> جاري التحدث...</span>
-                            ) : (
-                                <span className="idle-text">استعد...</span>
-                            )}
-                        </p>
-                        <p className="voice-transcript">{status}</p>
+                    {/* Status */}
+                    <div className="va-status-row">
+                        {isListening ? (
+                            <span className="va-state-badge va-state-listen">
+                                <FiMic /> أنا أسمعك...
+                            </span>
+                        ) : isSpeaking ? (
+                            <span className="va-state-badge va-state-speak">
+                                <FiVolume2 /> أتحدث إليك...
+                            </span>
+                        ) : (
+                            <span className="va-state-badge va-state-idle">
+                                استعد للحديث...
+                            </span>
+                        )}
                     </div>
 
-                    <div className="voice-footer">
-                        <p className="voice-hint-pro">تحدث بوضوح، سأقوم بكتابة ما تقوله في الحقل الحالي</p>
-                    </div>
+                    {/* Last Heard Transcript */}
+                    {lastTranscript && (
+                        <div className="va-transcript-bubble" role="status">
+                            <FiMessageSquare className="va-transcript-icon" />
+                            <span>{lastTranscript}</span>
+                        </div>
+                    )}
+
+                    {/* Footer hint */}
+                    <p className="va-hint">
+                        {isListening
+                            ? 'تحدث بوضوح وانتظر تأكيد التسجيل'
+                            : isSpeaking
+                                ? 'انتظر حتى أنهي الحديث...'
+                                : 'قل "تخطي" للانتقال، أو "التالي" للحقل التالي'}
+                    </p>
                 </div>
             )}
         </div>
