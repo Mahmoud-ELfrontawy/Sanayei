@@ -104,3 +104,55 @@ html[data-theme="dark"] * {
     max-width: 80vw;
 }
 
+/* =========================================
+   🌙 Standalone Theme Toggle (Header & Dashboard)
+   ========================================= */
+
+.header-theme-toggle.standalone {
+    background: rgba(95, 168, 211, 0.05); /* Using primary color hint */
+    border: 1px solid var(--color-border);
+    color: var(--color-text-main);
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.header-theme-toggle.standalone:hover {
+    background: var(--color-primary);
+    color: #fff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(95, 168, 211, 0.3);
+}
+
+.header-theme-toggle.standalone svg {
+    transition: transform 0.5s ease;
+}
+
+.header-theme-toggle.standalone:hover svg {
+    transform: rotate(15deg) scale(1.1);
+}
+
+html[data-theme="dark"] .header-theme-toggle.standalone {
+    background: rgba(251, 191, 36, 0.1);
+    border-color: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+}
+
+html[data-theme="dark"] .header-theme-toggle.standalone:hover {
+    background: #fbbf24;
+    color: #1a1d27 !important;
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+}
+
+.mobile-standalone {
+    width: 40px !important;
+    height: 40px !important;
+}
+

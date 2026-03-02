@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaBars, FaTimes, FaLock, FaEnvelope } from "react-icons/fa";
+import { FaBars, FaTimes, FaLock, FaEnvelope, FaSun, FaMoon } from "react-icons/fa";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "../components/dashboard/Sidebar/Sidebar";
 import { useAuth } from "../hooks/useAuth";
@@ -14,7 +14,7 @@ function DashboardLayout() {
     const navigate = useNavigate();
     const isMessagesPage = location.pathname.includes("/dashboard/messages");
     const { user } = useAuth();
-    const { isDark } = useTheme();
+    const { isDark, toggleTheme } = useTheme();
     const isBlocked = user?.status === 'rejected';
 
     // 🔒 Security/UX: Ensure payment redirects from Paymob always land back in the Wallet
@@ -53,6 +53,13 @@ function DashboardLayout() {
                 <div className="mobile-logo-wrapper">
                     <img src={isDark ? logoDark : logo} alt="Sanayei" className="mobile-dashboard-logo" />
                 </div>
+                <button
+                    className="header-theme-toggle standalone mobile-standalone"
+                    onClick={toggleTheme}
+                    title={isDark ? "الوضع الفاتح" : "الوضع المظلم"}
+                >
+                    {isDark ? <FaSun size={20} /> : <FaMoon size={20} />}
+                </button>
             </header>
 
             {/* Sidebar with Backdrop */}

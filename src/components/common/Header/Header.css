@@ -64,17 +64,34 @@
     border-right-color: var(--color-primary);
 }
 
-/* Actions */
-.auto-login {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
 
 .header-actions {
     display: flex;
     align-items: center;
+}
+
+.header-actions-guest {
+    display: flex;
+    align-items: center;
     gap: 20px;
+}
+
+.header-auth-buttons {
+    display: flex;
+    align-items: center;
+    gap:15px;
+}
+
+.desktop-only {
+    display: flex;
+    align-items: center;
+}
+
+/* Mobile Specific Actions */
+.header-mobile-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 
@@ -83,7 +100,7 @@
 .avatar-wrapper-header {
     display: flex;
     align-items: center;
-    gap: 25px;
+    gap: 15px; /* Slightly reduced gap for better fit with toggle */
 }
 
 /* ================= Profile Image ================= */
@@ -414,9 +431,11 @@
         padding: 6px 10px;
     }
 
-    .auto-login {
+    .header-actions-guest,
+    .header-auth-buttons {
         flex-direction: column;
-        gap: 12px;
+        width: 100%;
+        gap: 8px;
     }
 
     .header-logo img {
@@ -526,22 +545,4 @@ html[data-theme="dark"] .online-dot {
     border-color: var(--color-bg-main);
 }
 
-/* Dark mode toggle button – moon/sun accent color */
-.header-dropdown-item.dark-mode-toggle {
-    color: #8b5cf6;
-    border-top: 1px solid var(--color-border);
-}
-
-html[data-theme="dark"] .header-dropdown-item.dark-mode-toggle {
-    color: #fbbf24;
-    border-top-color: rgba(255, 255, 255, 0.08);
-}
-
-.header-dropdown-item.dark-mode-toggle:hover {
-    background: rgba(139, 92, 246, 0.08);
-}
-
-html[data-theme="dark"] .header-dropdown-item.dark-mode-toggle:hover {
-    background: rgba(251, 191, 36, 0.08);
-}
-
+/* Standalone toggle specific colors moved to globals.css */

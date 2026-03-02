@@ -155,16 +155,35 @@ const Header: React.FC = () => {
         {/* ================= ACTIONS ================= */}
         <div className="header-actions">
           {!isAuthenticated ? (
-            <div className="auto-login desktop-only">
-              <Button to="/login" variant="primary" className="header-btn">
-                اطلب الآن
-              </Button>
-              <Button to="/login" variant="outline" className="header-btn">
-                تسجيل الدخول
-              </Button>
+            <div className="header-actions-guest desktop-only">
+              <button
+                type="button"
+                className="header-theme-toggle standalone"
+                onClick={toggleTheme}
+                title={isDark ? "الوضع الفاتح" : "الوضع المظلم"}
+              >
+                {isDark ? <FaSun size={20} /> : <FaMoon size={20} />}
+              </button>
+              <div className="header-auth-buttons">
+                <Button to="/login" variant="primary" className="header-btn">
+                  اطلب الآن
+                </Button>
+                <Button to="/login" variant="outline" className="header-btn">
+                  تسجيل الدخول
+                </Button>
+              </div>
             </div>
           ) : (
             <div className="avatar-wrapper-header desktop-only">
+              {/* Theme Toggle for Authenticated Users */}
+              <button
+                type="button"
+                className="header-theme-toggle standalone"
+                onClick={toggleTheme}
+                title={isDark ? "الوضع الفاتح" : "الوضع المظلم"}
+              >
+                {isDark ? <FaSun size={22} /> : <FaMoon size={22} />}
+              </button>
               {/* Messages */}
               <Link
                 to="/dashboard/messages"
@@ -180,6 +199,7 @@ const Header: React.FC = () => {
               {/* Notifications Dropdown */}
               <div className="header-avatar-dropdown" ref={notifDropdownRef}>
                 <button
+                  type="button"
                   onClick={toggleNotifDropdown}
                   className={`header-icon-btn ${unreadCount > 0 ? "has-unread" : ""} ${unreadCount > 0 ? "has-new-notification" : ""}`}
                 >
@@ -195,7 +215,7 @@ const Header: React.FC = () => {
                     <div className="dropdown-header-notif">
                       <span>التنبيهات</span>
                       {unreadCount > 0 && (
-                        <button onClick={markAllAsRead} className="mark-all-read">تعيين الكل كمقروء</button>
+                        <button type="button" onClick={markAllAsRead} className="mark-all-read">تعيين الكل كمقروء</button>
                       )}
                     </div>
 
@@ -242,7 +262,7 @@ const Header: React.FC = () => {
 
               {/* Avatar Dropdown */}
               <div className="header-avatar-dropdown" ref={dropdownRef}>
-                <button className="profile-btn" onClick={toggleDropdown}>
+                <button type="button" className="profile-btn" onClick={toggleDropdown}>
                   <div className="avatar-wrapper-profile">
                     <img
                       src={getAvatarUrl(user?.avatar, user?.name)}
@@ -268,14 +288,7 @@ const Header: React.FC = () => {
                     </Link>
 
                     <button
-                      className="header-dropdown-item dark-mode-toggle"
-                      onClick={toggleTheme}
-                    >
-                      {isDark ? <FaSun size={20} /> : <FaMoon size={20} />}
-                      <span>{isDark ? "الوضع الفاتح" : "الوضع المظلم"}</span>
-                    </button>
-
-                    <button
+                      type="button"
                       className="header-dropdown-item logout"
                       onClick={handleLogout}
                     >
@@ -289,12 +302,23 @@ const Header: React.FC = () => {
           )}
 
           {/* ================= MOBILE ICON ================= */}
-          <button
-            className="mobile-menu-btn mobile-only"
-            onClick={toggleMobileMenu}
-          >
-            {isMobileMenuOpen ? <FiX size={26} /> : <FiMenu size={26} />}
-          </button>
+          <div className="header-mobile-actions mobile-only">
+            <button
+              type="button"
+              className="header-theme-toggle standalone mobile-standalone"
+              onClick={toggleTheme}
+              title={isDark ? "الوضع الفاتح" : "الوضع المظلم"}
+            >
+              {isDark ? <FaSun size={24} /> : <FaMoon size={24} />}
+            </button>
+            <button
+              type="button"
+              className="mobile-menu-btn"
+              onClick={toggleMobileMenu}
+            >
+              {isMobileMenuOpen ? <FiX size={26} /> : <FiMenu size={26} />}
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -371,13 +395,6 @@ const Header: React.FC = () => {
                 <span>الملف الشخصي</span>
               </Link>
 
-              <button
-                className="header-dropdown-item dark-mode-toggle"
-                onClick={toggleTheme}
-              >
-                {isDark ? <FaSun size={20} /> : <FaMoon size={20} />}
-                <span>{isDark ? "الوضع الفاتح" : "الوضع المظلم"}</span>
-              </button>
 
               <button className="header-dropdown-item logout" onClick={handleLogout}>
                 <FaSignOutAlt size={20} />
