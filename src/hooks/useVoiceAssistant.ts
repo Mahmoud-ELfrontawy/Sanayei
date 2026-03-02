@@ -47,7 +47,7 @@ interface VoiceAssistantOptions {
 // ─────────────────────────────────────────────
 const buildFieldConfigs = (
   services: SelectOption[],
-  _governorates: SelectOption[]
+  governorates: SelectOption[] // Removed underscore as we will use it
 ): FieldConfig[] => [
   {
     field: 'name',
@@ -88,13 +88,15 @@ const buildFieldConfigs = (
   {
     field: 'governorate_id',
     label: 'المحافظة',
-    question: 'في أي محافظة تسكن؟ مثلاً: القاهرة، الجيزة، الإسكندرية...',
+    question: `في أي محافظة تسكن؟ الاختيارات المتاحة: ${governorates.slice(0, 5).map(g => g.name).join('، ')}، أو قل: غير ذلك.`,
     type: 'select',
     step: 2,
     matchOptions: (transcript, options) => {
       const lower = transcript.trim().toLowerCase();
       const found = options.find(o =>
-        lower.includes(o.name.toLowerCase()) || o.name.toLowerCase().includes(lower)
+        lower === o.name.toLowerCase() || 
+        lower.includes(o.name.toLowerCase()) || 
+        o.name.toLowerCase().includes(lower)
       );
       return found ? String(found.id) : null;
     },
@@ -155,6 +157,8 @@ const normalizeArabicNumbers = (text: string): string => {
     .replace(/تسعة/g, '9').replace(/مئة|مية/g, '100').replace(/مئتين|ميتين/g, '200')
     .replace(/ألف|الف/g, '000')
     .replace(/[-–إلى\s]+/g, '-')
+    // Final check: if we have something like "100200" make it "100-200"
+    .replace(/^(\d{2,})(\d{2,})$/, '$1-$2')
     .replace(/[^0-9-]/g, '');
 };
 
@@ -181,6 +185,9 @@ export const useVoiceAssistant = (
   const promptIndexRef = useRef(0);
   const focusedFieldRef = useRef<string | null>(null);
   const fieldConfigsRef = useRef<FieldConfig[]>([]);
+  const startListeningRef = useRef<() => void>(() => {});
+  const handleVoiceInputRef = useRef<(t: string) => Promise<void>>(async () => {});
+  const presentFieldRef = useRef<(c: FieldConfig) => Promise<void>>(async () => {});
 
   // Keep fieldConfigs up to date with latest services/governorates
   useEffect(() => {
@@ -239,9 +246,10 @@ export const useVoiceAssistant = (
   }, [stopRecognition]);
 
   // ──────────────────────────────────────────
-  // Start listening
+  // Core Functions (Hoisted to handle circularity)
   // ──────────────────────────────────────────
-  const startListening = useCallback(() => {
+
+  function startListening() {
     const SpeechRecognition = (window as unknown as IWindow).SpeechRecognition
       || (window as unknown as IWindow).webkitSpeechRecognition;
 
@@ -265,7 +273,7 @@ export const useVoiceAssistant = (
       const transcript = (event.results[0][0] as { transcript: string }).transcript.trim();
       setLastTranscript(transcript);
       setStatus(`سمعت: ${transcript}`);
-      handleVoiceInput(transcript);
+      handleVoiceInputRef.current(transcript);
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -278,71 +286,72 @@ export const useVoiceAssistant = (
         return;
       }
       if (event.error === 'no-speech' || event.error === 'aborted') {
-        // Restart quietly
         if (isActiveRef.current && !isSpeakingRef.current) {
-          setTimeout(startListening, 500);
+          setTimeout(() => startListeningRef.current(), 500);
         }
       }
     };
 
     recognition.onend = () => {
       setIsListening(false);
-      // Auto-restart only if still active and not speaking
       if (isActiveRef.current && !isSpeakingRef.current) {
-        setTimeout(startListening, 400);
+        setTimeout(() => startListeningRef.current(), 400);
       }
     };
 
     recognitionRef.current = recognition;
     try {
       recognition.start();
-    } catch { /* already started */ }
-  }, [stopRecognition]);
+    } catch { /* ignored */ }
+  }
 
-  // ──────────────────────────────────────────
-  // Present a field (speak its question then listen)
-  // ──────────────────────────────────────────
-  const presentField = useCallback(async (config: FieldConfig) => {
+  useEffect(() => {
+    startListeningRef.current = startListening;
+  }, []);
+
+  async function presentField(config: FieldConfig) {
     if (!isActiveRef.current) return;
     setCurrentFieldLabel(config.label);
     setCurrentStep(config.step);
     await speak(config.question);
     if (isActiveRef.current) {
-      // For file/password/checkbox fields, just wait — user acts manually
       if (config.type === 'file' || config.type === 'password' || config.type === 'checkbox') {
-        setStatus(`يرجى اتخاذ الإجراء يدوياً للحقل: ${config.label}`);
-        // Don't listen — user will do it manually; auto-advance after delay
-        await new Promise(r => setTimeout(r, 1500));
-        // Advance to next field automatically
-        const idx = promptIndexRef.current;
-        if (idx < fieldConfigsRef.current.length - 1) {
-          promptIndexRef.current = idx + 1;
-          await presentField(fieldConfigsRef.current[idx + 1]);
-        }
-      } else {
-        startListening();
+        setStatus(`يرجى الإجراء يدوياً ثم قل "تم" أو "التالي"`);
       }
+      startListening();
     }
-  }, [speak, startListening, setCurrentStep]);
+  }
 
-  // ──────────────────────────────────────────
-  // Handle voice input for a given field
-  // ──────────────────────────────────────────
-  const handleVoiceInput = useCallback(async (transcript: string) => {
+  useEffect(() => {
+    presentFieldRef.current = presentField;
+  }, []);
+
+  async function handleVoiceInput(transcript: string) {
     stopRecognition();
 
     const configs = fieldConfigsRef.current;
     const focusedFieldName = focusedFieldRef.current;
 
-    // Determine which field to fill
     const targetConfig = focusedFieldName
       ? configs.find(c => c.field === focusedFieldName) || configs[promptIndexRef.current]
       : configs[promptIndexRef.current];
 
     if (!targetConfig) return;
 
+    // Navigation commands for manual fields or skipping
+    if (/تم|خلصت|التالي|بعده|أكمل|نعم|تمام|done|next/i.test(transcript)) {
+      if (targetConfig.type === 'file' || targetConfig.type === 'password' || targetConfig.type === 'checkbox') {
+        await speak('حسناً، ننتقل للحقل التالي.');
+        if (!focusedFieldName && promptIndexRef.current < configs.length - 1) {
+          promptIndexRef.current += 1;
+          await presentField(configs[promptIndexRef.current]);
+          return;
+        }
+      }
+    }
+
     // Skip command
-    if (/تخطي|تجاوز|التالي|skip/i.test(transcript)) {
+    if (/تخطي|تجاوز|بلاش|skip/i.test(transcript)) {
       await speak('حسناً، تم التخطي.');
       if (!focusedFieldName && promptIndexRef.current < configs.length - 1) {
         promptIndexRef.current += 1;
@@ -351,16 +360,15 @@ export const useVoiceAssistant = (
       return;
     }
 
-    // File / password / checkbox — shouldn't receive voice input, but just in case
+    // Explicit check for manual fields again if transcript wasn't a navigation command
     if (targetConfig.type === 'file' || targetConfig.type === 'password' || targetConfig.type === 'checkbox') {
-      await speak('هذا الحقل يتطلب إجراءً يدوياً.');
+      await speak('هذا الحقل يتطلب إجراءً يدوياً. بمجرد الانتهاء قل "تم".');
       startListening();
       return;
     }
 
     let valueToSet: string = transcript;
 
-    // Handle select fields
     if (targetConfig.type === 'select' && targetConfig.matchOptions) {
       const options = targetConfig.field === 'service_id' ? form.services : form.governorates;
       const matched = targetConfig.matchOptions(
@@ -375,7 +383,6 @@ export const useVoiceAssistant = (
       valueToSet = matched;
     }
 
-    // Handle tel: extract digits only
     if (targetConfig.type === 'tel') {
       valueToSet = transcript.replace(/\D/g, '').replace(/[٠-٩]/g, d => String(d.charCodeAt(0) - 1632));
       if (!valueToSet) {
@@ -385,17 +392,17 @@ export const useVoiceAssistant = (
       }
     }
 
-    // Handle price_range: normalize arabic text to number range
     if (targetConfig.field === 'price_range') {
       const normalized = normalizeArabicNumbers(transcript);
       if (normalized && normalized.includes('-')) {
         valueToSet = normalized;
       } else if (transcript.match(/\d+\s*[-–]\s*\d+/)) {
         valueToSet = transcript.replace(/\s/g, '');
+      } else if (normalized.length >= 4) {
+        valueToSet = normalized.replace(/^(\d{2,})(\d{2,})$/, '$1-$2');
       }
     }
 
-    // Set value and trigger validation
     form.setValue(targetConfig.field, valueToSet);
     const isValid = await form.trigger(targetConfig.field);
 
@@ -406,14 +413,12 @@ export const useVoiceAssistant = (
       return;
     }
 
-    // Success feedback
     if (targetConfig.type === 'select') {
       await speak('تم الاختيار بنجاح.');
     } else {
       await speak('تم التسجيل بنجاح.');
     }
 
-    // Advance to next field (only in sequential mode — not focus mode)
     if (!focusedFieldName) {
       const nextIdx = promptIndexRef.current + 1;
       if (nextIdx < configs.length) {
@@ -426,11 +431,13 @@ export const useVoiceAssistant = (
         setIsActive(false);
       }
     } else {
-      // Focus mode: stay listening for this field
       if (isActiveRef.current) startListening();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form, speak, stopRecognition, startListening, presentField]);
+  }
+
+  useEffect(() => {
+    handleVoiceInputRef.current = handleVoiceInput;
+  }, []);
 
   // ──────────────────────────────────────────
   // Cleanup on unmount
@@ -449,13 +456,25 @@ export const useVoiceAssistant = (
   const startAssistant = useCallback(async () => {
     isActiveRef.current = true;
     setIsActive(true);
-    promptIndexRef.current = 0;
-    setStatus('جاري البدء...');
+
     const configs = fieldConfigsRef.current;
-    if (configs.length > 0) {
-      await presentField(configs[0]);
+    const focusedFieldName = focusedFieldRef.current;
+
+    // Smart logic: find index of focused field, or default to 0
+    let startIndex = 0;
+    if (focusedFieldName) {
+      const idx = configs.findIndex(c => c.field === focusedFieldName);
+      if (idx !== -1) startIndex = idx;
     }
-  }, [presentField]);
+
+    promptIndexRef.current = startIndex;
+    setStatus('جاري البدء...');
+
+    if (configs.length > 0) {
+      await presentFieldRef.current(configs[startIndex]);
+    }
+  }, []);
+ // dependencies removed as we use presentFieldRef
 
   const stopAssistant = useCallback(() => {
     isActiveRef.current = false;
@@ -477,8 +496,8 @@ export const useVoiceAssistant = (
     if (!config) return;
     setCurrentFieldLabel(config.label);
     await speak(config.question);
-    if (isActiveRef.current) startListening();
-  }, [speak, startListening]);
+    if (isActiveRef.current) startListeningRef.current();
+  }, [speak]); // removed startListening from deps
 
   /**
    * زر "ما المطلوب؟" — يقرأ الحقل الحالي مرة أخرى
@@ -494,9 +513,9 @@ export const useVoiceAssistant = (
     setCurrentFieldLabel(config.label);
     await speak(config.question);
     if (isActiveRef.current && config.type !== 'file' && config.type !== 'password' && config.type !== 'checkbox') {
-      startListening();
+      startListeningRef.current();
     }
-  }, [speak, startListening]);
+  }, [speak]); // removed startListening from deps
 
   return {
     isActive,
