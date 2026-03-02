@@ -7,7 +7,11 @@ interface IWindow extends Window {
 
 const { webkitSpeechRecognition } = window as unknown as IWindow;
 
-export const useVoiceAssistant = (form: any, setCurrentStep: (step: number) => void) => {
+export const useVoiceAssistant = (
+  form: any, 
+  setCurrentStep: (step: number) => void,
+  focusedField: string | null
+) => {
   const [isActive, setIsActive] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
@@ -70,48 +74,51 @@ export const useVoiceAssistant = (form: any, setCurrentStep: (step: number) => v
   }, [speak]);
 
   const handleResponse = useCallback(async (transcript: string) => {
-    const currentPrompt = prompts[currentPromptIndex];
+    const fieldToUpdate = focusedField || prompts[currentPromptIndex].field;
     
     if (transcript.includes('التالي') || transcript.includes('تخطي') || transcript.includes('خطوة تالية')) {
-        if (currentPromptIndex < prompts.length - 1) {
+        if (!focusedField && currentPromptIndex < prompts.length - 1) {
             setCurrentPromptIndex(prev => prev + 1);
         }
         return;
     }
 
     // Logic to map transcript to field
-    form.setValue(currentPrompt.field as any, transcript);
+    form.setValue(fieldToUpdate as any, transcript);
     
     // Trigger validation
-    const isValid = await form.trigger(currentPrompt.field);
+    const isValid = await form.trigger(fieldToUpdate);
     
     if (!isValid) {
-        const error = form.formState.errors[currentPrompt.field]?.message || 'القيمة غير صحيحة';
-        await speak(`هناك مشكلة: ${error}. يرجى التكرار.`);
+        const error = form.formState.errors[fieldToUpdate]?.message || 'القيمة غير صحيحة';
+        await speak(`هناك مشكلة في ال${fieldToUpdate}: ${error}. يرجى التكرار.`);
         startListening();
         return;
     }
 
     await speak(`تم تسجيل ${transcript}.`);
     
-    if (currentPromptIndex < prompts.length - 1) {
+    // Only move index if we are in sequential mode (no specific field focused)
+    if (!focusedField && currentPromptIndex < prompts.length - 1) {
         setCurrentPromptIndex(prev => prev + 1);
-    } else {
-        setIsActive(false);
-        speak('شكراً لك، لقد أكملنا البيانات الأساسية. يمكنك متابعة التسجيل الآن.');
     }
-  }, [currentPromptIndex, form, speak]);
+  }, [currentPromptIndex, form, speak, focusedField]);
 
   useEffect(() => {
-    if (isActive) {
+    if (isActive && !focusedField) {
       const currentPrompt = prompts[currentPromptIndex];
       setCurrentStep(currentPrompt.step);
       speak(currentPrompt.question).then(startListening);
-    } else {
+    } 
+    // If active but focused on a field, just listen
+    else if (isActive && focusedField) {
+        startListening();
+    }
+    else {
       window.speechSynthesis.cancel();
       if (recognitionRef.current) recognitionRef.current.stop();
     }
-  }, [isActive, currentPromptIndex]);
+  }, [isActive, currentPromptIndex, focusedField]);
 
   return {
     isActive,
@@ -120,19 +127,25 @@ export const useVoiceAssistant = (form: any, setCurrentStep: (step: number) => v
     status,
     startAssistant: () => {
         setIsActive(true);
-        setCurrentPromptIndex(0);
+        window.speechSynthesis.cancel();
     },
     stopAssistant: () => {
         setIsActive(false);
         window.speechSynthesis.cancel();
+        if (recognitionRef.current) recognitionRef.current.stop();
     },
     speakFieldHelp: (fieldName: string) => {
-        // Only speak if the full assistant is NOT already running
-        if (isActive) return;
-        
         const prompt = prompts.find(p => p.field === fieldName);
         if (prompt) {
             speak(prompt.question);
+        }
+    },
+    speakCurrentField: () => {
+        if (focusedField) {
+            const prompt = prompts.find(p => p.field === focusedField);
+            if (prompt) speak(prompt.question);
+        } else {
+            speak("يرجى الضغط على حقل معين أولاً");
         }
     }
   };

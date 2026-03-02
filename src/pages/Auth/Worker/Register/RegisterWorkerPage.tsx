@@ -30,10 +30,13 @@ const RegisterWorkerPage: React.FC = () => {
   } = useRegisterWorker();
 
   const [currentStep, setCurrentStep] = useState(1);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+
   // الصوت
-  const { isActive, isListening, status, startAssistant, stopAssistant, speakFieldHelp } = useVoiceAssistant(
+  const { isActive, isListening, status, startAssistant, stopAssistant, speakFieldHelp, speakCurrentField } = useVoiceAssistant(
     { setValue, register, watch, trigger } as any,
-    setCurrentStep
+    setCurrentStep,
+    focusedField
   );
   // الصوت
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
@@ -83,6 +86,7 @@ const RegisterWorkerPage: React.FC = () => {
             status={status}
             onStart={startAssistant}
             onStop={stopAssistant}
+            onSpeak={speakCurrentField}
           />
           {/* الصوت */}
 
@@ -109,10 +113,14 @@ const RegisterWorkerPage: React.FC = () => {
                   <input
                     className="auth-input"
                     placeholder="الاسم بالكامل"
-                    onFocus={() => speakFieldHelp("name")}
+                    onFocus={() => {
+                      setFocusedField("name");
+                      speakFieldHelp("name");
+                    }}
                     {...register("name", {
                       required: "الاسم مطلوب",
                       minLength: { value: 3, message: "الاسم يجب أن يكون 3 أحرف على الأقل" },
+                      onBlur: () => setFocusedField(null),
                     })}
                   />
                   {errors.name && <span className="form-error">{errors.name.message}</span>}
@@ -123,13 +131,17 @@ const RegisterWorkerPage: React.FC = () => {
                     className="auth-input"
                     type="email"
                     placeholder="البريد الإلكتروني"
-                    onFocus={() => speakFieldHelp("email")}
+                    onFocus={() => {
+                      setFocusedField("email");
+                      speakFieldHelp("email");
+                    }}
                     {...register("email", {
                       required: "البريد مطلوب",
                       pattern: {
                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                         message: "صيغة البريد الإلكتروني غير صحيحة",
                       },
+                      onBlur: () => setFocusedField(null),
                     })}
                   />
                   {errors.email && <span className="form-error">{errors.email.message}</span>}
@@ -141,9 +153,9 @@ const RegisterWorkerPage: React.FC = () => {
                     type="tel"
                     placeholder="رقم الهاتف"
                     maxLength={11}
-                    onFocus={() => speakFieldHelp("phone")}
-                    onInput={(e) => {
-                      e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, "");
+                    onFocus={() => {
+                      setFocusedField("phone");
+                      speakFieldHelp("phone");
                     }}
                     {...register("phone", {
                       required: "رقم الهاتف مطلوب",
@@ -151,6 +163,7 @@ const RegisterWorkerPage: React.FC = () => {
                         value: /^01[0125][0-9]{8}$/,
                         message: "رقم الهاتف غير صحيح (مثال: 01012345678)",
                       },
+                      onBlur: () => setFocusedField(null),
                     })}
                   />
                   {errors.phone && <span className="form-error">{errors.phone.message}</span>}
@@ -166,8 +179,14 @@ const RegisterWorkerPage: React.FC = () => {
                   <div className="input-group flex-1">
                     <select
                       className="auth-input"
-                      onFocus={() => speakFieldHelp("service_id")}
-                      {...register("service_id", { required: "اختر المهنة" })}
+                      onFocus={() => {
+                        setFocusedField("service_id");
+                        speakFieldHelp("service_id");
+                      }}
+                      {...register("service_id", {
+                        required: "اختر المهنة",
+                        onBlur: () => setFocusedField(null)
+                      })}
                       disabled={isLoadingData}
                     >
                       <option value="">{isLoadingData ? "جاري التحميل..." : "اختر المهنة"}</option>
@@ -182,8 +201,14 @@ const RegisterWorkerPage: React.FC = () => {
                   <div className="input-group flex-1">
                     <select
                       className="auth-input"
-                      onFocus={() => speakFieldHelp("governorate_id")}
-                      {...register("governorate_id", { required: "اختر المحافظة" })}
+                      onFocus={() => {
+                        setFocusedField("governorate_id");
+                        speakFieldHelp("governorate_id");
+                      }}
+                      {...register("governorate_id", {
+                        required: "اختر المحافظة",
+                        onBlur: () => setFocusedField(null)
+                      })}
                       disabled={isLoadingData}
                     >
                       <option value="">{isLoadingData ? "جاري التحميل..." : "اختر المحافظة"}</option>
@@ -210,7 +235,10 @@ const RegisterWorkerPage: React.FC = () => {
                   <input
                     className="auth-input"
                     placeholder="نطاق الأسعار (مثال: 1000-3000)"
-                    onFocus={() => speakFieldHelp("price_range")}
+                    onFocus={() => {
+                      setFocusedField("price_range");
+                      speakFieldHelp("price_range");
+                    }}
                     {...register("price_range", {
                       required: "نطاق الأسعار مطلوب",
                       pattern: {
@@ -222,6 +250,7 @@ const RegisterWorkerPage: React.FC = () => {
                         if (min >= max) return "السعر الأول يجب أن يكون أقل من الثاني";
                         return true;
                       },
+                      onBlur: () => setFocusedField(null),
                     })}
                   />
                   {errors.price_range && <span className="form-error">{errors.price_range.message}</span>}

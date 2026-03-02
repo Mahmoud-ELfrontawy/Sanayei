@@ -3,22 +3,50 @@
   width: 100%;
 }
 
-.voice-trigger-btn {
+.voice-trigger-group {
+  display: flex;
+  gap: 10px;
   width: 100%;
+}
+
+.voice-trigger-btn {
+  flex: 2;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 15px;
-  background: linear-gradient(135deg, var(--color-primary), #6366f1);
+  padding: 12px;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: var(--radius-btn);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(var(--color-primary-rgb), 0.3);
+  box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.2);
   transition: all 0.3s ease;
+}
+
+.voice-help-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: var(--color-bg-secondary);
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.voice-help-btn:hover {
+  background: var(--color-primary);
+  color: white;
 }
 
 .voice-trigger-btn:hover {
