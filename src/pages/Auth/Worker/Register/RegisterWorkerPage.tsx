@@ -33,7 +33,16 @@ const RegisterWorkerPage: React.FC = () => {
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
   // الصوت
-  const { isActive, isListening, status, startAssistant, stopAssistant, speakFieldHelp, speakCurrentField } = useVoiceAssistant(
+  const {
+    isActive,
+    isListening,
+    isSpeaking,
+    status,
+    startAssistant,
+    stopAssistant,
+    speakFieldHelp,
+    speakCurrentField
+  } = useVoiceAssistant(
     { setValue, register, watch, trigger } as any,
     setCurrentStep,
     focusedField
@@ -83,6 +92,7 @@ const RegisterWorkerPage: React.FC = () => {
           <VoiceAssistantUI
             isActive={isActive}
             isListening={isListening}
+            isSpeaking={isSpeaking}
             status={status}
             onStart={startAssistant}
             onStop={stopAssistant}
@@ -225,7 +235,14 @@ const RegisterWorkerPage: React.FC = () => {
                     <input
                       className="auth-input"
                       placeholder="اكتب مهنتك هنا"
-                      {...register("custom_service", { required: "يرجى كتابة مهنتك" })}
+                      onFocus={() => {
+                        setFocusedField("custom_service");
+                        speakFieldHelp("custom_service");
+                      }}
+                      {...register("custom_service", {
+                        required: "يرجى كتابة مهنتك",
+                        onBlur: () => setFocusedField(null)
+                      })}
                     />
                     {errors.custom_service && <span className="form-error">{errors.custom_service.message}</span>}
                   </div>
