@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import type { UseFormReturn } from "react-hook-form";
 
 import type { ServiceRequestPayload } from "../../../../constants/serviceRequest";
@@ -7,7 +8,7 @@ import type { Governorate } from "../../../../Api/serviceRequest/governorates.ap
 import type { Sanaei } from "../../../../Api/serviceRequest/sanaei.api";
 
 import { Link } from "react-router-dom";
-import { FaUser, FaWallet, FaMoneyBillWave } from "react-icons/fa";
+import { FaUser, FaWallet, FaMoneyBillWave, FaCheckCircle } from "react-icons/fa";
 import { getTechnicianById } from "../../../../Api/technicians.api";
 import { getAvatarUrl } from "../../../../utils/imageUrl";
 import { formatTimeAgo } from "../../../../utils/timeAgo";
@@ -423,15 +424,20 @@ const RequestServiceForm: React.FC<Props> = ({
                 </div>
             )}
 
+
             {/* طريقة الدفع */}
             {!showSkeleton && (
                 <div className="payment-method-section">
-                    <label className="payment-method-label">طريقة الدفع</label>
+                    <div className="payment-header-group">
+                        <label className="payment-method-label">طريقة الدفع</label>
+                        <span className="payment-method-subtitle">اختر الوسيلة المناسبة لإتمام طلبك</span>
+                    </div>
+
                     <div className="payment-method-options">
                         <label
                             className={`payment-option ${watch("payment_method") === "wallet" || !watch("payment_method")
-                                    ? "active"
-                                    : ""
+                                ? "active"
+                                : ""
                                 }`}
                         >
                             <input
@@ -440,10 +446,15 @@ const RequestServiceForm: React.FC<Props> = ({
                                 {...register("payment_method")}
                                 defaultChecked
                             />
-                            <FaWallet className="pm-icon" />
+                            <div className="pm-icon-wrapper">
+                                <FaWallet className="pm-icon" />
+                            </div>
                             <div className="pm-text">
-                                <strong>دفع بالمحفظة</strong>
-                                <small>يُحوَّل للصنايعي عند قبول الطلب</small>
+                                <strong>الدفع بالمحفظة</strong>
+                                <small>دفع آمن عبر التطبيق بعد الاتفاق</small>
+                            </div>
+                            <div className="pm-check">
+                                <FaCheckCircle />
                             </div>
                         </label>
 
@@ -456,19 +467,32 @@ const RequestServiceForm: React.FC<Props> = ({
                                 value="cash"
                                 {...register("payment_method")}
                             />
-                            <FaMoneyBillWave className="pm-icon" />
+                            <div className="pm-icon-wrapper">
+                                <FaMoneyBillWave className="pm-icon" />
+                            </div>
                             <div className="pm-text">
-                                <strong>دفع عند الزيارة</strong>
-                                <small>نقداً أو بالبطاقة عند الحضور</small>
+                                <strong>الدفع كاش</strong>
+                                <small>دفع مباشر للصنايعي عند الزيارة</small>
+                            </div>
+                            <div className="pm-check">
+                                <FaCheckCircle />
                             </div>
                         </label>
                     </div>
 
-                    {watch("payment_method") === "wallet" && (
-                        <div className="wallet-pay-note">
-                            💡 سيُخصم المبلغ من محفظتك فور قبول الصنايعي للطلب. وفي حالة الرفض يُسترد المبلغ فوراً.
-                        </div>
-                    )}
+                    <AnimatePresence mode="wait">
+                        {watch("payment_method") === "wallet" && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="wallet-pay-note"
+                            >
+                                <div className="note-icon">💡</div>
+                                <p>عند اختيار المحفظة، ستتمكن من تحويل المبلغ للصنايعي بسهولة من داخل الدردشة بعد اتفاقكم على السعر النهائي.</p>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
             )}
 

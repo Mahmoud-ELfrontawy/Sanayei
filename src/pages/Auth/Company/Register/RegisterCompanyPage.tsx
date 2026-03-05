@@ -5,6 +5,8 @@ import { useRegisterCompany } from "./useRegisterCompany";
 import "../../AuthShared.css";
 import "./RegisterCompany.css";
 import TermsModal from "../../../../components/ui/TermsModal/TermsModal";
+import PasswordStrengthMeter from "../../../../components/ui/PasswordStrengthMeter/PasswordStrengthMeter";
+import PhoneValidationMeter from "../../../../components/ui/PhoneValidationMeter/PhoneValidationMeter";
 
 const RegisterCompanyPage: React.FC = () => {
     const {
@@ -37,7 +39,7 @@ const RegisterCompanyPage: React.FC = () => {
 
     const nextStep = async () => {
         let fieldsToValidate: any[] = [];
-        if (currentStep === 1) fieldsToValidate = ["company_name", "company_email", "company_password", "ensure_password"];
+        if (currentStep === 1) fieldsToValidate = ["company_name", "company_email", "company_password", "company_password_confirmation"];
         else if (currentStep === 2) fieldsToValidate = []; // Add file fields if they become required
         else if (currentStep === 3) fieldsToValidate = ["company_phone_number", "company_whatsapp_number", "company_category"];
         else if (currentStep === 4) fieldsToValidate = ["company_city", "company_specific_address", "company_simple_hint"];
@@ -108,25 +110,36 @@ const RegisterCompanyPage: React.FC = () => {
                                                 type={showPassword ? "text" : "password"}
                                                 className="auth-input"
                                                 placeholder="كلمة المرور"
-                                                {...register("company_password", { required: "كلمة المرور مطلوبة", minLength: { value: 8, message: "8 أحرف على الأقل" } })}
+                                                {...register("company_password", {
+                                                    required: "كلمة المرور مطلوبة",
+                                                    minLength: { value: 8, message: "كلمة المرور يجب أن تكون 8 أحرف على الأقل" },
+                                                    validate: (val) => {
+                                                        const hasLetter = /[a-zA-Z]/.test(val);
+                                                        const hasDigit = /[0-9]/.test(val);
+                                                        if (!hasLetter || !hasDigit)
+                                                            return "يجب أن تحتوي كلمة المرور على حروف وأرقام معاً";
+                                                        return true;
+                                                    },
+                                                })}
                                             />
                                             <button type="button" className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
                                                 {showPassword ? <FiEye /> : <FiEyeOff />}
                                             </button>
                                         </div>
                                         {errors.company_password && <span className="form-error">{errors.company_password.message}</span>}
+                                        <PasswordStrengthMeter password={watch("company_password") ?? ""} />
                                     </div>
                                     <div className="input-group flex-1">
                                         <input
                                             type={showPassword ? "text" : "password"}
                                             className="auth-input"
                                             placeholder="تأكيد كلمة المرور"
-                                            {...register("ensure_password", {
+                                            {...register("company_password_confirmation", {
                                                 required: "تأكيد كلمة المرور مطلوب",
                                                 validate: (val) => val === watch("company_password") || "كلمتا المرور غير متطابقتين"
                                             })}
                                         />
-                                        {errors.ensure_password && <span className="form-error">{errors.ensure_password.message}</span>}
+                                        {errors.company_password_confirmation && <span className="form-error">{errors.company_password_confirmation.message}</span>}
                                     </div>
                                 </div>
                             </div>
@@ -186,17 +199,33 @@ const RegisterCompanyPage: React.FC = () => {
                                         <input
                                             className="auth-input"
                                             placeholder="رقم هاتف المتجر"
-                                            {...register("company_phone_number", { required: "رقم الهاتف مطلوب" })}
+                                            maxLength={11}
+                                            {...register("company_phone_number", {
+                                                required: "رقم الهاتف مطلوب",
+                                                pattern: {
+                                                    value: /^01[0125][0-9]{8}$/,
+                                                    message: "رقم هاتف مصري غير صحيح"
+                                                }
+                                            })}
                                         />
                                         {errors.company_phone_number && <span className="form-error">{errors.company_phone_number.message}</span>}
+                                        <PhoneValidationMeter phone={watch("company_phone_number") ?? ""} />
                                     </div>
                                     <div className="input-group flex-1">
                                         <input
                                             className="auth-input"
                                             placeholder="رقم الواتساب"
-                                            {...register("company_whatsapp_number", { required: "رقم الواتساب مطلوب" })}
+                                            maxLength={11}
+                                            {...register("company_whatsapp_number", {
+                                                required: "رقم الواتساب مطلوب",
+                                                pattern: {
+                                                    value: /^01[0125][0-9]{8}$/,
+                                                    message: "رقم واتساب غير صحيح"
+                                                }
+                                            })}
                                         />
                                         {errors.company_whatsapp_number && <span className="form-error">{errors.company_whatsapp_number.message}</span>}
+                                        <PhoneValidationMeter phone={watch("company_whatsapp_number") ?? ""} />
                                     </div>
                                 </div>
 

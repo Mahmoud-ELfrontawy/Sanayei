@@ -78,8 +78,11 @@ const CraftsmanDashboard: React.FC = () => {
     /* ================= ACTIONS ================= */
 
     const handleAction = async (orderId: number, status: "accepted" | "rejected") => {
-        if (isBlocked) {
-            toast.error("حسابك محظور من قبل الإدارة. يرجى التواصل مع الدعم الفني.");
+        if (!isApproved) {
+            const msg = isBlocked
+                ? "حسابك محظور من قبل الإدارة. يرجى التواصل مع الدعم الفني."
+                : "حسابك قيد المراجعة. لا يمكنك قبول أو رفض الطلبات حتى يتم اعتماد حسابك من قبل الإدارة.";
+            toast.error(msg);
             return;
         }
 
@@ -111,6 +114,14 @@ const CraftsmanDashboard: React.FC = () => {
     };
 
     const handleStartChat = (order: any) => {
+        if (!isApproved) {
+            const msg = isBlocked
+                ? "حسابك محظور من قبل الإدارة. لا يمكنك التواصل مع العملاء."
+                : "حسابك قيد المراجعة. لا يمكنك التواصل مع العملاء حتى يتم اعتماد حسابك من قبل الإدارة.";
+            toast.error(msg);
+            return;
+        }
+
         setActiveChat({
             id: order.user_id,
             name: order.name || "عميل",
@@ -306,6 +317,8 @@ const CraftsmanDashboard: React.FC = () => {
                                             <button
                                                 onClick={() => handleStartChat(u)}
                                                 className="chat-btn-mini"
+                                                disabled={!isApproved}
+                                                title={!isApproved ? (isBlocked ? "حسابك محظور" : "الحساب قيد المراجعة") : ""}
                                             >
                                                 <FaCommentDots size={16} />
                                                 تواصل

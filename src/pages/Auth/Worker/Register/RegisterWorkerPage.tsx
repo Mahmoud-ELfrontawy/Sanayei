@@ -7,6 +7,8 @@ import { useRegisterWorker } from "./useRegisterWorker";
 import "../../AuthShared.css";
 import "./RegisterWorker.css";
 import TermsModal from "../../../../components/ui/TermsModal/TermsModal";
+import PasswordStrengthMeter from "../../../../components/ui/PasswordStrengthMeter/PasswordStrengthMeter";
+import PhoneValidationMeter from "../../../../components/ui/PhoneValidationMeter/PhoneValidationMeter";
 
 import VoiceAssistantUI from "../../../../components/VoiceAssistant/VoiceAssistantUI";
 import { useVoiceAssistant } from "../../../../hooks/useVoiceAssistant";
@@ -186,6 +188,7 @@ const RegisterWorkerPage: React.FC = () => {
                     onBlur={handleFieldBlur}
                   />
                   {errors.phone && <span className="form-error">{errors.phone.message}</span>}
+                  <PhoneValidationMeter phone={watch("phone") ?? ""} />
                 </div>
               </div>
             )}
@@ -318,6 +321,13 @@ const RegisterWorkerPage: React.FC = () => {
                         {...register("password", {
                           required: "كلمة المرور مطلوبة",
                           minLength: { value: 8, message: "كلمة المرور يجب أن تكون 8 أحرف على الأقل" },
+                          validate: (val) => {
+                            const hasLetter = /[a-zA-Z]/.test(val);
+                            const hasDigit = /[0-9]/.test(val);
+                            if (!hasLetter || !hasDigit)
+                              return "يجب أن تحتوي كلمة المرور على حروف وأرقام معاً";
+                            return true;
+                          },
                         })}
                       />
                       <button type="button" className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
@@ -325,6 +335,7 @@ const RegisterWorkerPage: React.FC = () => {
                       </button>
                     </div>
                     {errors.password && <span className="form-error">{errors.password.message}</span>}
+                    <PasswordStrengthMeter password={watch("password") ?? ""} />
                   </div>
 
                   <div className="input-group flex-1">

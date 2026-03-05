@@ -7,7 +7,11 @@ import {
     FaHistory,
     FaUniversity,
     FaMobileAlt,
-    FaCreditCard
+    FaCreditCard,
+    FaInfoCircle,
+    FaCheckCircle,
+    FaExchangeAlt,
+    FaSignOutAlt
 } from "react-icons/fa";
 import { toast } from "react-toastify";
 import {
@@ -23,6 +27,7 @@ import {
 } from "../../../Api/wallet.api";
 import { useAuth } from "../../../hooks/useAuth";
 import { authStorage } from "../../../context/auth/auth.storage";
+import WalletTour, { type TourStep } from "../../../components/ui/WalletTour/WalletTour";
 import "./WalletPage.css";
 
 const WalletPage: React.FC = () => {
@@ -34,6 +39,9 @@ const WalletPage: React.FC = () => {
     const [showWithdrawModal, setShowWithdrawModal] = useState(false);
     const [showAddFundsModal, setShowAddFundsModal] = useState(false);
     const [showTransferModal, setShowTransferModal] = useState(false);
+
+    // Tour state
+    const [showTour, setShowTour] = useState(false);
 
     // Form States
     const [withdrawAmount, setWithdrawAmount] = useState("");
@@ -77,6 +85,13 @@ const WalletPage: React.FC = () => {
             ]);
             setData(overview);
             setWithdrawalRequests(requests);
+
+            // Check if first time to show tour
+            const tourSeen = localStorage.getItem(`wallet_tour_seen_${role}`);
+            if (!tourSeen) {
+                setTimeout(() => setShowTour(true), 1000);
+            }
+
         } catch (error: any) {
             // Handle 401 gracefully, especially right after redirect
             if (error.response?.status === 401 && !isRetry) {
@@ -194,7 +209,7 @@ const WalletPage: React.FC = () => {
         const amount = Number(transferAmount);
         const currentBalance = Number(data?.wallet.balance || 0);
 
-        console.log("� [Final Check Before Transfer]", {
+        console.log(" [Final Check Before Transfer]", {
             transfer_amount: amount,
             actual_balance_on_screen: currentBalance,
             sender_id: data?.wallet.id,
@@ -233,6 +248,50 @@ const WalletPage: React.FC = () => {
         }
     };
 
+    const tourSteps: TourStep[] = [
+        {
+            targetId: "wallet-balance-box",
+            title: "رصيدك الحالي",
+            description: "هنا يظهر المبلغ المتاح في محفظتك للاستخدام أو السحب.",
+            position: "bottom" as const
+        },
+        {
+            targetId: "btn-deposit",
+            title: "شحن الرصيد",
+            description: "يمكنك إضافة أموال لمحفظتك بسهولة عبر البطاقة البنكية أو المحافظ الإلكترونية.",
+            position: "bottom" as const
+        },
+        {
+            targetId: "btn-transfer",
+            title: "تحويل أموال",
+            description: "حول أي مبلغ لمستخدم آخر فوراً باستخدام رقم محفظته فقط.",
+            position: "bottom" as const
+        },
+        ...(activeRole === 'craftsman' || activeRole === 'company' ? [{
+            targetId: "btn-withdraw",
+            title: "سحب الأرباح",
+            description: "اسحب أرباحك إلى حسابك البنكي أو محفظتك الإلكترونية في أي وقت.",
+            position: "bottom" as const
+        }] : []),
+        {
+            targetId: "wallet-id-box",
+            title: "رقم محفظتك المميز",
+            description: "هذا هو رقمك الخاص (ID)، شاركه مع الآخرين ليتمكنوا من تحويل الأموال إليك.",
+            position: "top" as const
+        },
+        {
+            targetId: "transactions-tabs",
+            title: "سجل العمليات",
+            description: "تابع جميع الحركات المالية (شحن، تحويل، سحب) بالتفصيل هنا.",
+            position: "top" as const
+        }
+    ];
+
+    const handleTourComplete = () => {
+        setShowTour(false);
+        localStorage.setItem(`wallet_tour_seen_${activeRole || authStorage.getUserType()}`, 'true');
+    };
+
     if (loading && !data) {
         return (
             <div className="wallet-loading-screen">
@@ -262,7 +321,7 @@ const WalletPage: React.FC = () => {
     return (
         <div className="wallet-page">
             <header className="wallet-header">
-                <div className="wallet-balance-card">
+                <div className="wallet-balance-card" id="wallet-balance-box">
                     <div className="balance-info">
                         <span className="balance-label">الرصيد المتاح</span>
                         <h2 className="balance-amount">
@@ -284,13 +343,15 @@ const WalletPage: React.FC = () => {
                     </div>
 
                     <div className="wallet-actions">
-                        <button className="btn-action deposit" onClick={() => setShowAddFundsModal(true)}>
+                        <button id="btn-deposit" className="btn-action deposit" onClick={() => setShowAddFundsModal(true)}>
                             <FaPlus /> شحن الرصيد
                         </button>
-                        <button className="btn-action withdraw" onClick={() => setShowWithdrawModal(true)}>
-                            <FaArrowDown /> سحب الأرباح
-                        </button>
-                        <button className="btn-action transfer" onClick={() => setShowTransferModal(true)}>
+                        {(activeRole === 'craftsman' || activeRole === 'company') && (
+                            <button id="btn-withdraw" className="btn-action withdraw" onClick={() => setShowWithdrawModal(true)}>
+                                <FaArrowDown /> سحب الأرباح
+                            </button>
+                        )}
+                        <button id="btn-transfer" className="btn-action transfer" onClick={() => setShowTransferModal(true)}>
                             <FaArrowUp /> تحويل أموال
                         </button>
                     </div>
@@ -299,121 +360,81 @@ const WalletPage: React.FC = () => {
 
             {/* ===== Prominent Wallet ID ===== */}
             {data?.wallet.id && (
-                <div className="wallet-id-prominent">
+                <div className="wallet-id-prominent" id="wallet-id-box">
                     <div className="wip-left">
-                        <span className="wip-label">رقم محفظتك</span>
+                        <span className="wip-label">رقم محفظتك الخاص للتحويل</span>
                         <span className="wip-number">#{data.wallet.id}</span>
-                        <span className="wip-hint">شارك هذا الرقم مع من يريد التحويل إليك</span>
+                        <span className="wip-hint">أرسل هذا الرقم لمن يريد تحويل مبلغ إلى محفظتك</span>
                     </div>
-                    <button
-                        className="wip-copy-btn"
-                        onClick={() => {
-                            navigator.clipboard.writeText(String(data.wallet.id));
-                            toast.success('تم نسخ رقم المحفظة ✅');
-                        }}
-                    >
-                        📋 نسخ
-                    </button>
+                    <div className="wip-right">
+                        <button
+                            className="wip-copy-btn"
+                            onClick={() => {
+                                navigator.clipboard.writeText(String(data.wallet.id));
+                                toast.success('تم نسخ رقم المحفظة ✅');
+                            }}
+                        >
+                            📋 نسخ الرقم
+                        </button>
+                        <button className="btn-help-guide" onClick={() => setShowTour(true)}>
+                            <FaInfoCircle /> شرح النظام
+                        </button>
+                    </div>
                 </div>
             )}
 
-            {/* ===== Wallet Guide ===== */}
-            <div className="wallet-guide">
-                <h3 className="wg-title">📖 دليل استخدام المحفظة</h3>
-                <div className="wg-grid">
-                    {activeRole === 'user' && (
+            {/* ===== New Professional Wallet Guide ===== */}
+            <div className="wallet-guide-v2">
+                <div className="guide-header-v2">
+                    <h3>💡 كيف تستفيد من محفظتك؟</h3>
+                    <p>أسرع وأضمن طريقة للمعاملات المالية على منصة صنايعي.</p>
+                </div>
+
+                <div className="guide-grid-v2">
+                    {activeRole === 'user' ? (
                         <>
-                            <div className="wg-card">
-                                <div className="wg-icon">💳</div>
-                                <div className="wg-text">
-                                    <strong>شحن الرصيد</strong>
-                                    <p>أضف رصيداً لمحفظتك من خلال الضغط على "شحن الرصيد" واختر المبلغ.</p>
-                                </div>
+                            <div className="guide-item-v2">
+                                <div className="gi-icon-v2 blue"><FaCreditCard /></div>
+                                <h4>شحن سريع</h4>
+                                <p>اشحن رصيدك فوراً وابدأ في طلب الخدمات دون عناء الدفع النقدي.</p>
                             </div>
-                            <div className="wg-card">
-                                <div className="wg-icon">🛠️</div>
-                                <div className="wg-text">
-                                    <strong>دفع خدمة بالمحفظة</strong>
-                                    <p>عند طلب خدمة، اختر "دفع بالمحفظة" — يُخصم المبلغ فور قبول الصنايعي.</p>
-                                </div>
+                            <div className="guide-item-v2">
+                                <div className="gi-icon-v2 orange"><FaExchangeAlt /></div>
+                                <h4>تحويل مباشر</h4>
+                                <p>حول لأي مستخدم آخر أو صنايعي في ثوانٍ باستخدام المعرف الخاص به.</p>
                             </div>
-                            <div className="wg-card">
-                                <div className="wg-icon">🔁</div>
-                                <div className="wg-text">
-                                    <strong>استرداد تلقائي</strong>
-                                    <p>إذا رفض الصنايعي طلبك، يُسترد المبلغ فوراً لرصيدك دون أي خطوات إضافية.</p>
-                                </div>
+                            <div className="guide-item-v2">
+                                <div className="gi-icon-v2 green"><FaCheckCircle /></div>
+                                <h4>أمان تام</h4>
+                                <p>أموالك محفوظة في نظامنا، وتُدفع للصنايعي فقط بعد تأكيدك للطلب.</p>
                             </div>
-                            <div className="wg-card">
-                                <div className="wg-icon">↗️</div>
-                                <div className="wg-text">
-                                    <strong>تحويل أموال</strong>
-                                    <p>يمكنك تحويل رصيد لأي محفظة أخرى عبر إدخال رقمها في "تحويل أموال".</p>
-                                </div>
+                            <div className="guide-item-v2">
+                                <div className="gi-icon-v2 purple"><FaHistory /></div>
+                                <h4>استرداد ذكي</h4>
+                                <p>في حال إلغاء الطلب، يعود المبلغ لمحفظتك فوراً دون الحاجة لتدخل بشري.</p>
                             </div>
                         </>
-                    )}
-                    {activeRole === 'craftsman' && (
+                    ) : (
                         <>
-                            <div className="wg-card">
-                                <div className="wg-icon">🔢</div>
-                                <div className="wg-text">
-                                    <strong>رقم محفظتك</strong>
-                                    <p>رقمك الموضح أعلاه هو ما يُستخدم لتحويل أتعابك — شاركه مع العملاء.</p>
-                                </div>
+                            <div className="guide-item-v2">
+                                <div className="gi-icon-v2 green"><FaWallet /></div>
+                                <h4>تحصيل الأتعاب</h4>
+                                <p>استقبل أتعابك مباشرة في محفظتك بمجرد إنهاء الخدمة بنجاح.</p>
                             </div>
-                            <div className="wg-card">
-                                <div className="wg-icon">✅</div>
-                                <div className="wg-text">
-                                    <strong>استقبال المدفوعات</strong>
-                                    <p>عند قبولك لطلب خدمة مدفوعة بالمحفظة، يُضاف المبلغ تلقائياً لرصيدك.</p>
-                                </div>
+                            <div className="guide-item-v2">
+                                <div className="gi-icon-v2 blue"><FaSignOutAlt /></div>
+                                <h4>سحب سهل</h4>
+                                <p>حول أرباحك إلى كاش عبر فودافون كاش أو حسابك البنكي في أي وقت.</p>
                             </div>
-                            <div className="wg-card">
-                                <div className="wg-icon">💸</div>
-                                <div className="wg-text">
-                                    <strong>سحب الأرباح</strong>
-                                    <p>اسحب أرباحك في أي وقت عبر "سحب الأرباح" ويُحوَّل لحسابك البنكي.</p>
-                                </div>
+                            <div className="guide-item-v2">
+                                <div className="gi-icon-v2 orange"><FaHistory /></div>
+                                <h4>تقارير مالية</h4>
+                                <p>سجل كامل بكل مليم دخل أو خرج من حسابك لضمان الشفافية التامة.</p>
                             </div>
-                            <div className="wg-card">
-                                <div className="wg-icon">📊</div>
-                                <div className="wg-text">
-                                    <strong>متابعة العمليات</strong>
-                                    <p>كل تحويل وارد أو صادر يظهر في قسم "آخر العمليات" مع تفاصيله.</p>
-                                </div>
-                            </div>
-                        </>
-                    )}
-                    {activeRole === 'company' && (
-                        <>
-                            <div className="wg-card">
-                                <div className="wg-icon">🏢</div>
-                                <div className="wg-text">
-                                    <strong>محفظة الشركة</strong>
-                                    <p>رقم محفظتك الموضح أعلاه يُستخدم لاستقبال التحويلات من العملاء والموظفين.</p>
-                                </div>
-                            </div>
-                            <div className="wg-card">
-                                <div className="wg-icon">💳</div>
-                                <div className="wg-text">
-                                    <strong>شحن الرصيد</strong>
-                                    <p>أضف رصيداً لحساب الشركة لتوزيعه أو استخدامه في المدفوعات الداخلية.</p>
-                                </div>
-                            </div>
-                            <div className="wg-card">
-                                <div className="wg-icon">↗️</div>
-                                <div className="wg-text">
-                                    <strong>تحويل للموظفين</strong>
-                                    <p>حوّل الرواتب عبر "تحويل أموال" باستخدام رقم محفظة الموظف المباشرة.</p>
-                                </div>
-                            </div>
-                            <div className="wg-card">
-                                <div className="wg-icon">💸</div>
-                                <div className="wg-text">
-                                    <strong>سحب الأرباح</strong>
-                                    <p>اسحب رصيد الشركة في أي وقت وسيُحوَّل لحسابك البنكي المسجل.</p>
-                                </div>
+                            <div className="guide-item-v2">
+                                <div className="gi-icon-v2 purple"><FaInfoCircle /></div>
+                                <h4>دعم فني</h4>
+                                <p>فريقنا متاح لمساعدتك في أي استفسار يخص العمليات المالية.</p>
                             </div>
                         </>
                     )}
@@ -421,7 +442,7 @@ const WalletPage: React.FC = () => {
             </div>
 
             <section className="transactions-section">
-                <div className="section-header">
+                <div className="section-header" id="transactions-tabs">
                     <div className="tab-switcher">
                         <button
                             className={`tab-btn ${activeTab === "transactions" ? "active" : ""}`}
@@ -674,6 +695,12 @@ const WalletPage: React.FC = () => {
                     </div>
                 </div>
             )}
+
+            <WalletTour
+                isVisible={showTour}
+                steps={tourSteps}
+                onComplete={handleTourComplete}
+            />
         </div>
     );
 };

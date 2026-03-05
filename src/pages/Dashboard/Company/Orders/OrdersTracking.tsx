@@ -94,6 +94,7 @@ const OrdersTracking: React.FC = () => {
                                 <th>العنوان</th>
                                 <th>المنتجات</th>
                                 <th>الإجمالي</th>
+                                <th>طريقة الدفع</th>
                                 <th>الحالة</th>
                                 <th>الإجراء</th>
                             </tr>
@@ -121,6 +122,11 @@ const OrdersTracking: React.FC = () => {
                                         </div>
                                     </td>
                                     <td className="price-text">{parseFloat(order.total_amount).toLocaleString()} ج.م</td>
+                                    <td>
+                                        <span className={`payment-method-badge ${order.payment_method}`}>
+                                            {order.payment_method === 'wallet' ? 'المحفظة' : 'كاش'}
+                                        </span>
+                                    </td>
                                     <td>
                                         <span className={`status-badge ${order.status}`}>
                                             {statusMap[order.status]?.icon}

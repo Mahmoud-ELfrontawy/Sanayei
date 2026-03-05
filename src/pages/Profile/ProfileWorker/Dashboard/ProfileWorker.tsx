@@ -14,9 +14,8 @@ import { getAvatarUrl } from "../../../../utils/imageUrl";
 import { toUiDate } from "../../../../utils/dateApiHelper";
 import { getGovernorates } from "../../../../Api/serviceRequest/governorates.api";
 import FormSkeleton from "../../base/FormSkeleton";
-import { setToastAfterReload } from "../../../../utils/toastAfterReload";
-import { FiAlertCircle } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { FiAlertCircle, FiCheckCircle, FiClock } from "react-icons/fi";
+
 
 /* ================= Types ================= */
 
@@ -91,7 +90,7 @@ const DEFAULT_LOCATION = {
 
 const ProfileWorker = () => {
     const { user, refreshUser } = useAuth();
-    const isApproved = user?.status === 'approved';
+
     const isBlocked = user?.status === 'rejected';
 
     const [loading, setLoading] = useState(false);
@@ -198,21 +197,19 @@ const ProfileWorker = () => {
                 profile_photo: imageFile,
                 work_photos: craftsman.new_work_photos,
                 delete_work_photos: craftsman.delete_work_photos,
-                status: "approved",
             });
 
-            // ✅ الخطوة الحيوية: حذف الصور يدوياً عبر الـ API لضمان الحذف من السيرفر
+            // ✅ حذف الصور يدوياً عبر الـ API لضمان الحذف من السيرفر
             if (craftsman.delete_work_photos && craftsman.delete_work_photos.length > 0) {
                 await Promise.all(
                     craftsman.delete_work_photos.map(path => deleteWorkPhoto(path))
                 );
             }
 
-            await refreshUser();
             setImageFile(null);
-
-            setToastAfterReload("جاري مراجعة البيانات وسيتم الموافقة عليها ⏳", "info");
-            window.location.reload();
+            // ✅ تحديث auth context فقط (لتحديث الـ status) بدون إعادة جلب بيانات الملف الشخصي
+            await refreshUser();
+            toast.info("تم إرسال طلب التحديث بنجاح ✅\nستبقى بياناتك الحالية كما هي حتى تتم مراجعتها من قبل الإدارة.");
         } catch (error: unknown) {
             const err = error as { response?: { data?: { message?: string } } };
             toast.error(err.response?.data?.message || "فشل حفظ البيانات ❌");
@@ -253,19 +250,33 @@ const ProfileWorker = () => {
 
     return (
         <div className="profile-worker-page">
-            {isBlocked && (
-                <div className="approval-warning-banner blocked" style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <FiAlertCircle />
-                    <span>حسابك محظور من قبل الإدارة. يرجى التواصل مع <Link to="/contact" style={{ textDecoration: 'underline' }}>الدعم الفني</Link> لحل المشكلة.</span>
-                </div>
-            )}
 
-            {!isApproved && !isBlocked && (
-                <div className="approval-warning-banner" style={{ background: '#fffbeb', border: '1px solid #fef3c7', color: '#92400e', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <FiAlertCircle />
-                    <span>حسابك قيد المراجعة حالياً. سيتم اعتماد التعديلات فور موافقة الإدارة.</span>
+            {/* ===== Status Card ===== */}
+            <div className={`profile-card status-display-card ${user?.status || 'pending'}`} style={{ marginBottom: '1.5rem' }}>
+                <div className="status-icon-box">
+                    {user?.status === 'approved' && <FiCheckCircle size={32} />}
+                    {user?.status === 'rejected' && <FiAlertCircle size={32} />}
+                    {(user?.status === 'pending' || !user?.status) && <FiClock size={32} />}
                 </div>
-            )}
+                <div className="status-text-content">
+                    <h3>
+                        {user?.status === 'approved' ? 'حساب معتمد' :
+                            user?.status === 'rejected' ? 'الحساب محظور' : 'الحساب قيد المراجعة'}
+                    </h3>
+                    <p>
+                        {user?.status === 'approved'
+                            ? 'حسابك مفعل الآن ويمكنك قبول الطلبات والتواصل مع العملاء واستخدام كافة الميزات.'
+                            : user?.status === 'rejected'
+                                ? (
+                                    <>
+                                        نأسف، تم حظر حسابك من قبل الإدارة. يرجى التواصل مع الدعم الفني لحل المشكلة:{' '}
+                                        <a href="https://wa.me/201026605030" target="_blank" rel="noreferrer" style={{ color: '#dc2626', fontWeight: 'bold', textDecoration: 'underline' }}>تواصل عبر واتساب</a>
+                                    </>
+                                )
+                                : 'جاري مراجعة بياناتك من قبل الإدارة، ستتمكن من قبول الطلبات والتواصل مع العملاء فور اعتماد الحساب.'}
+                    </p>
+                </div>
+            </div>
 
             <ProfileFormBase
                 isCraftsman

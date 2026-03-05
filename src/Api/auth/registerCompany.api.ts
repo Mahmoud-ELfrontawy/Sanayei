@@ -1,9 +1,9 @@
-import axios from "axios";
+import api from "../api";
 
 export interface StoreRegisterPayload {
   company_name: string;
   company_password: string;
-  ensure_password: string;
+  company_password_confirmation: string;
   company_email: string;
   company_phone_number: string;
   company_whatsapp_number: string;
@@ -29,17 +29,20 @@ export const registerCompany = async (data: StoreRegisterPayload) => {
         } else if (value instanceof File) {
           formData.append(key, value);
         }
+      } else if (typeof value === "boolean") {
+        formData.append(key, value ? "1" : "0");
       } else {
         formData.append(key, String(value));
       }
     }
   });
 
-  const res = await axios.post(
-    "/api/companies/register",
+  const res = await api.post(
+    "companies/register",
     formData,
     {
       headers: { 
+        "Content-Type": "multipart/form-data",
         Accept: "application/json" 
       },
     }

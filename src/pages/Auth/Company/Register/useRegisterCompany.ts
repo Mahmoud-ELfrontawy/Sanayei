@@ -23,9 +23,17 @@ export const useRegisterCompany = () => {
         toast.error(res.message || "فشل تسجيل المتجر");
       }
     } catch (error: any) {
-      const errorMsg = error.response?.data?.message || "حدث خطأ أثناء التسجيل";
+      console.error("Registration error details:", error.response?.data);
+      let errorMsg = error.response?.data?.message || "حدث خطأ أثناء التسجيل";
+      
+      if (error.response?.status === 422 && error.response?.data?.errors) {
+        const errors = error.response.data.errors;
+        const firstKey = Object.keys(errors)[0];
+        const firstMsg = errors[firstKey][0];
+        errorMsg = `${firstMsg}`; // Show the specific validation error
+      }
+      
       toast.error(errorMsg);
-      console.error("Registration error:", error);
     }
   };
 
