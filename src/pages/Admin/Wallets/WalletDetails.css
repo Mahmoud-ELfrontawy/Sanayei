@@ -221,3 +221,69 @@
 .btn-back:hover {
     color: #0f172a;
 }
+
+/* 🌙 Dark Mode Overrides */
+html[data-theme="dark"] .wallet-details-container {
+    background: var(--color-bg-section);
+}
+
+html[data-theme="dark"] .wallet-info-card,
+html[data-theme="dark"] .transactions-main-card {
+    background: var(--color-bg-main);
+    border: 1px solid var(--color-border);
+}
+
+html[data-theme="dark"] .avatar-large {
+    background: var(--color-bg-dark);
+    color: var(--color-text-muted);
+}
+
+html[data-theme="dark"] .user-name-large,
+html[data-theme="dark"] .balance-val,
+html[data-theme="dark"] .tx-header h2 {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .wallet-balance-display {
+    background: var(--color-bg-dark);
+}
+
+html[data-theme="dark"] .form-card {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .form-card.credit { background: rgba(16, 185, 129, 0.05); border-color: #10b981; }
+html[data-theme="dark"] .form-card.debit { background: rgba(239, 68, 68, 0.05); border-color: #ef4444; }
+
+html[data-theme="dark"] .form-card.credit h3 { color: #4ade80; }
+html[data-theme="dark"] .form-card.debit h3 { color: #f87171; }
+
+html[data-theme="dark"] .adj-input {
+    background: var(--color-bg-main);
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .history-table th {
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .history-table td {
+    border-color: var(--color-bg-section);
+}
+
+html[data-theme="dark"] .tx-desc-text {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .tx-type-tag.credit { background: rgba(16, 185, 129, 0.2); color: #4ade80; }
+html[data-theme="dark"] .tx-type-tag.debit { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+html[data-theme="dark"] .btn-back {
+    color: var(--color-text-muted);
+}
+
+html[data-theme="dark"] .btn-back:hover {
+    color: var(--color-text-main);
+}

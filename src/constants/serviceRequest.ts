@@ -1,6 +1,6 @@
 
 export interface ServiceRequestPayload {
-    id : number;
+    id: number;
     name: string;
     email: string;
     phone?: string;
@@ -10,15 +10,20 @@ export interface ServiceRequestPayload {
     time: string;
 
     service_type: string;
-    service_name?: string; 
+    service_name?: string;
 
     craftsman_id?: string | number;
     industrial_type?: string;
     industrial_name?: string;
-    
-    status : string;
+
+    status: string;
     price?: string;
     user_id?: number | string;
+
+    // Payment
+    payment_method?: "wallet" | "cash";
+    craftsman_wallet_id?: number | string;
+
     // Relation objects (from 'with' in Laravel)
     craftsman?: {
         id: number;

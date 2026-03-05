@@ -20,17 +20,33 @@ import {
     FaWallet,
     FaChevronDown,
     FaChevronUp,
-    FaEnvelope
+    FaEnvelope,
+    FaEnvelopeOpenText
 } from 'react-icons/fa';
 import { useAuth } from '../hooks/useAuth';
+import { useTheme } from '../context/ThemeContext';
 import { useAdminNotifications } from '../context/AdminNotificationContext';
 import { formatTimeAgo } from '../utils/timeAgo';
 import './AdminLayout.css';
 
 const AdminLayout = () => {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 1024);
     const location = useLocation();
     const { logout, user, isAuthenticated, userType, isLoading } = useAuth();
+    const { isDark, toggleTheme } = useTheme();
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth > 1024) {
+                setIsSidebarOpen(true);
+            } else {
+                setIsSidebarOpen(false);
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
     const navigate = useNavigate();
     const { notifications, unreadCount, markAsRead, markAllAsRead } = useAdminNotifications();
     const [notifOpen, setNotifOpen] = useState(false);
@@ -106,6 +122,7 @@ const AdminLayout = () => {
             ]
         },
         { path: '/admin/contact-messages', label: 'الشكاوي والاقتراحات', icon: FaEnvelope },
+        { path: '/admin/messages', label: 'مركز الرسائل', icon: FaEnvelopeOpenText },
         { path: '/admin/reviews', label: 'التقييمات', icon: FaStar },
     ];
 
@@ -181,66 +198,87 @@ const AdminLayout = () => {
             </aside>
 
             {/* Main */}
-            <div className="admin-main-wrapper">
+            <div className={`admin-main-wrapper ${isSidebarOpen ? 'sidebar-open' : ''}`}>
                 <header className="admin-header">
                     <div className="admin-header-actions">
-                        <button
-                            className="admin-menu-toggle md:hidden"
-                            onClick={() => setIsSidebarOpen(true)}
-                        >
-                            <FaBars size={22} />
-                        </button>
-
-                        <div className="admin-notif-container" ref={notifRef}>
-                            <button className="admin-bell-btn" onClick={() => setNotifOpen(!notifOpen)}>
-                                <FaBell size={20} />
-                                {unreadCount > 0 && <span className="admin-notif-badge">{unreadCount}</span>}
+                        <div className="admin-header-right">
+                            <button
+                                className="admin-menu-toggle"
+                                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                                title={isSidebarOpen ? "إغلاق القائمة" : "فتح القائمة"}
+                            >
+                                <FaBars size={22} />
                             </button>
-
-                            {notifOpen && (
-                                <div className="admin-notif-dropdown">
-                                    <div className="admin-notif-header">
-                                        <span>التنبيهات الإدارية</span>
-                                        {unreadCount > 0 && (
-                                            <button onClick={markAllAsRead} className="admin-mark-read">تعيين كمنتهي</button>
-                                        )}
-                                    </div>
-                                    <div className="admin-notif-list">
-                                        {notifications.length === 0 ? (
-                                            <div className="admin-notif-empty">لا توجد تنبيهات جديدة</div>
-                                        ) : (
-                                            notifications.map(n => (
-                                                <div
-                                                    key={n.id}
-                                                    className={`admin-notif-item ${n.status === 'unread' ? 'unread' : ''}`}
-                                                    onClick={() => {
-                                                        markAsRead(n.id);
-                                                        if (n.link) navigate(n.link);
-                                                        setNotifOpen(false);
-                                                    }}
-                                                >
-                                                    <div className={`admin-notif-icon ${n.type}`}>
-                                                        {n.type === 'new_registration' && <FaUsers />}
-                                                        {n.type === 'new_review' && <FaStar />}
-                                                        {n.type === 'new_request' && <FaFileAlt />}
-                                                        {n.type === 'new_product' && <FaBoxOpen />}
-                                                        {n.type === 'profile_update' && <FaEdit />}
-                                                    </div>
-                                                    <div className="admin-notif-content">
-                                                        <p className="admin-notif-title">{n.title}</p>
-                                                        <p className="admin-notif-msg">{n.message}</p>
-                                                        <span className="admin-notif-time">{formatTimeAgo(n.timestamp)}</span>
-                                                    </div>
-                                                </div>
-                                            ))
-                                        )}
-                                    </div>
-                                </div>
-                            )}
                         </div>
-                        <div className="admin-user-profile">
-                            <span className="admin-username">{user?.name || 'Admin'}</span>
-                            <div className="admin-user-avatar">{user?.name?.[0]?.toUpperCase() || 'A'}</div>
+
+                        <div className="admin-header-left">
+                            <div className="admin-header-controls">
+                                <div className="admin-notif-container" ref={notifRef}>
+                                    <button className="admin-bell-btn" onClick={() => setNotifOpen(!notifOpen)}>
+                                        <FaBell size={20} />
+                                        {unreadCount > 0 && <span className="admin-notif-badge">{unreadCount}</span>}
+                                    </button>
+
+                                    {notifOpen && (
+                                        <div className="admin-notif-dropdown">
+                                            <div className="admin-notif-header">
+                                                <span>التنبيهات الإدارية</span>
+                                                {unreadCount > 0 && (
+                                                    <button onClick={markAllAsRead} className="admin-mark-read">تعيين كمنتهي</button>
+                                                )}
+                                            </div>
+                                            <div className="admin-notif-list">
+                                                {notifications.length === 0 ? (
+                                                    <div className="admin-notif-empty">لا توجد تنبيهات جديدة</div>
+                                                ) : (
+                                                    notifications.map(n => (
+                                                        <div
+                                                            key={n.id}
+                                                            className={`admin-notif-item ${n.status === 'unread' ? 'unread' : ''}`}
+                                                            onClick={() => {
+                                                                markAsRead(n.id);
+                                                                if (n.link) navigate(n.link);
+                                                                setNotifOpen(false);
+                                                            }}
+                                                        >
+                                                            <div className={`admin-notif-icon ${n.type}`}>
+                                                                {n.type === 'new_registration' && <FaUsers />}
+                                                                {n.type === 'new_review' && <FaStar />}
+                                                                {n.type === 'new_request' && <FaFileAlt />}
+                                                                {n.type === 'new_product' && <FaBoxOpen />}
+                                                                {n.type === 'profile_update' && <FaEdit />}
+                                                            </div>
+                                                            <div className="admin-notif-content">
+                                                                <p className="admin-notif-title">{n.title}</p>
+                                                                <p className="admin-notif-msg">{n.message}</p>
+                                                                <span className="admin-notif-time">{formatTimeAgo(n.timestamp)}</span>
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Theme Toggle Button */}
+                                <button
+                                    className="admin-theme-toggle-btn"
+                                    onClick={toggleTheme}
+                                    title={isDark ? "تبديل إلى الوضع النهاري" : "تبديل إلى الوضع الليلي"}
+                                >
+                                    {isDark ? (
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                                    ) : (
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                                    )}
+                                </button>
+                            </div>
+
+                            <div className="admin-user-profile">
+                                <span className="admin-username">{user?.name || 'Admin'}</span>
+                                <div className="admin-user-avatar">{user?.name?.[0]?.toUpperCase() || 'A'}</div>
+                            </div>
                         </div>
                     </div>
                 </header>

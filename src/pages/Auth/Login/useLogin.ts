@@ -39,9 +39,9 @@ export const useLogin = () => {
                 const status = localStorage.getItem('user_status');
 
                 if (role === 'company' && status === 'pending') {
-                    toast.info(`مرحباً ${name}، حسابك قيد المراجعة حالياً وسيتم تفعيله قريباً.`);
+                    toast.info(`مرحباً ${name}، حسابك قيد المراجعة حالياً.`);
                 } else {
-                    toast.success(`تم تسجيل الدخول بنجاح، مرحباً ${name}`);
+                    toast.success("تم تسجيل الدخول بنجاح ✅");
                 }
                 
                 // Navigate manually based on user role

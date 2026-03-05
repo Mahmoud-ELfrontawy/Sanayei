@@ -838,3 +838,75 @@
 .full-approve-btn[type="submit"]:hover {
     background: linear-gradient(135deg, #1d4ed8, #1e40af);
 }
+
+/* 🌙 Dark Mode Overrides */
+html[data-theme="dark"] .services-premium-header {
+    background: linear-gradient(135deg, #1e2435 0%, #060810 100%);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--color-border);
+}
+
+html[data-theme="dark"] .services-controls,
+html[data-theme="dark"] .services-table-wrapper,
+html[data-theme="dark"] .pagination-container,
+html[data-theme="dark"] .artisan-sidebar,
+html[data-theme="dark"] .info-modern-item.edit-field {
+    background: var(--color-bg-main);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .search-input,
+html[data-theme="dark"] .companies-status-filter,
+html[data-theme="dark"] .pg-btn,
+html[data-theme="dark"] .action-btn,
+html[data-theme="dark"] .metric-item,
+html[data-theme="dark"] .info-modern-item,
+html[data-theme="dark"] .info-item-premium span,
+html[data-theme="dark"] .info-item-premium p,
+html[data-theme="dark"] .admin-input-premium,
+html[data-theme="dark"] .icon-preview-container {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .services-table th {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .company-logo-wrapper,
+html[data-theme="dark"] .details-logo-lg {
+    background: var(--color-bg-dark);
+}
+
+html[data-theme="dark"] .company-category-tag {
+    background: rgba(126, 200, 240, 0.1);
+    color: #7ec8f0;
+}
+
+html[data-theme="dark"] .doc-link,
+html[data-theme="dark"] .doc-link-sidebar {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border-color: rgba(96, 165, 250, 0.3);
+}
+
+html[data-theme="dark"] .admin-badge.success,
+html[data-theme="dark"] .status-pill.approved { background: rgba(22, 101, 52, 0.2); color: #4ade80; }
+
+html[data-theme="dark"] .admin-badge.warning,
+html[data-theme="dark"] .status-pill.pending { background: rgba(194, 65, 12, 0.2); color: #fb923c; }
+
+html[data-theme="dark"] .admin-badge.danger,
+html[data-theme="dark"] .status-pill.rejected { background: rgba(153, 27, 27, 0.2); color: #f87171; }
+
+html[data-theme="dark"] .sidebar-header {
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .no-doc,
+html[data-theme="dark"] .no-doc-pill {
+    background: var(--color-bg-dark);
+    color: var(--color-text-muted);
+}

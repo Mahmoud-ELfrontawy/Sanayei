@@ -47,13 +47,11 @@ const OrdersTracking: React.FC = () => {
             setLoadingStatus(orderId);
             const res = await updateOrderStatus(orderId, newStatus);
             if (res.success) {
-                toast.success("تم تحديث حالة الطلب");
-
                 // إشعار فوري للشركة نفسها بتأكيد التحديث
                 const arabicStatus = statusMap[newStatus]?.label || newStatus;
                 addNotification({
-                    title: "تم تحديث حالة الطلب ✅",
-                    message: `تم تغيير حالة الطلب رقم #${orderId} إلى ${arabicStatus}`,
+                    title: "تم تحديث الحالة ✅",
+                    message: `الطلب #${orderId} أصبح الآن ${arabicStatus}`,
                     type: "order_status",
                     orderId: orderId,
                     recipientId: user?.id || 0,

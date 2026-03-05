@@ -103,6 +103,7 @@ export const useCraftsmanProfile = () => {
           specialization: data.service?.name ? [data.service.name] : [],
           paymentMethods: ["الدفع النقدي (كاش)"],
           services: data.service?.name ? [data.service.name] : [],
+          walletId: data.wallet?.id || data.wallet_id || null,
           reviews: data.last_reviews?.map((r: any) => ({
             id: r.id,
             clientName: r.user?.name || "عميل",

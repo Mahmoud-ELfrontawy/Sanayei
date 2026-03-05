@@ -670,3 +670,158 @@ html[data-theme="dark"] .tab-btn:hover:not(.active) {
         justify-content: center;
     }
 }
+
+/* =========================================
+   Prominent Wallet ID Strip
+   ========================================= */
+.wallet-id-prominent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #0f172a, #1e3a5f);
+    border-radius: 14px;
+    padding: 16px 22px;
+    margin-bottom: 24px;
+    color: #fff;
+}
+
+.wip-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.wip-label {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.55);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.wip-number {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: #5FA8D3;
+    font-family: monospace;
+    letter-spacing: 3px;
+    line-height: 1;
+}
+
+.wip-hint {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.4);
+    margin-top: 2px;
+}
+
+.wip-copy-btn {
+    background: rgba(95, 168, 211, 0.2);
+    border: 1px solid rgba(95, 168, 211, 0.4);
+    color: #5FA8D3;
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.wip-copy-btn:hover {
+    background: rgba(95, 168, 211, 0.35);
+    transform: translateY(-1px);
+}
+
+/* =========================================
+   Wallet Guide Section
+   ========================================= */
+.wallet-guide {
+    background: var(--color-bg-section);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 28px;
+}
+
+.wg-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--color-text-main);
+    margin: 0 0 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.wg-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.wg-card {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 14px;
+    background: var(--color-bg-main);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    transition: box-shadow 0.2s;
+}
+
+.wg-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.wg-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    width: 36px;
+    text-align: center;
+}
+
+.wg-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.wg-text strong {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+}
+
+.wg-text p {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Dark mode */
+html[data-theme="dark"] .wallet-guide {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .wg-card {
+    background: var(--color-bg-dark);
+    border-color: var(--color-border);
+}
+
+@media (max-width: 600px) {
+    .wg-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .wallet-id-prominent {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .wip-copy-btn {
+        align-self: flex-end;
+    }
+}

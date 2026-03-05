@@ -227,3 +227,65 @@
     .cat-header h1 { font-size: 1.4rem; }
     .cat-add-btn { width: 100%; justify-content: center; }
 }
+
+/* 🌙 Dark Mode Overrides */
+html[data-theme="dark"] .cat-header {
+    background: linear-gradient(135deg, #1e2435 0%, #060810 100%);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--color-border);
+}
+
+html[data-theme="dark"] .cat-add-btn {
+    background: var(--color-bg-section);
+    color: var(--color-primary);
+}
+
+html[data-theme="dark"] .cat-search,
+html[data-theme="dark"] .cat-refresh-btn,
+html[data-theme="dark"] .cat-table-wrapper,
+html[data-theme="dark"] .cat-modal {
+    background: var(--color-bg-main);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .cat-search input,
+html[data-theme="dark"] .cat-field input,
+html[data-theme="dark"] .cat-field textarea {
+    background: transparent;
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .cat-table thead tr {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .cat-table tbody tr {
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .cat-table tbody tr:hover {
+    background: var(--color-bg-section);
+}
+
+html[data-theme="dark"] .cat-table td,
+html[data-theme="dark"] .cat-name,
+html[data-theme="dark"] .cat-modal h2,
+html[data-theme="dark"] .cat-field label {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .cat-desc {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .cat-count {
+    background: rgba(126, 200, 240, 0.1);
+    color: #7ec8f0;
+}
+
+html[data-theme="dark"] .cat-btn-cancel {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}

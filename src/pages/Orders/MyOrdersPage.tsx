@@ -84,7 +84,16 @@ function MyOrdersPage() {
 
                 const finalOrders = Array.isArray(fetchedOrders) ? fetchedOrders : (fetchedOrders.data || []);
 
-                setOrders(finalOrders);
+                // ✅ Merge payment_method from localStorage since API doesn't return it
+                const paymentMap: Record<string, string> = JSON.parse(
+                    localStorage.getItem("orderPaymentMethods") || "{}"
+                );
+                const ordersWithPayment = finalOrders.map((o: any) => ({
+                    ...o,
+                    payment_method: o.payment_method || paymentMap[String(o.id)] || "cash",
+                }));
+
+                setOrders(ordersWithPayment);
                 setError(null);
             } catch (err: any) {
                 setError(err.message || "تعذر جلب قائمة الطلبات");
@@ -272,7 +281,9 @@ function MyOrdersPage() {
                         </div>
                         <div className="orders-info-item">
                             <span className="orders-info-label"><FaWallet /> طريقة الدفع</span>
-                            <span className="orders-info-value">كاش</span>
+                            <span className={`orders-payment-badge ${order.payment_method === 'wallet' ? 'wallet' : 'cash'}`}>
+                                {order.payment_method === 'wallet' ? '💳 محفظة التطبيق' : '💵 دفع عند الزيارة'}
+                            </span>
                         </div>
                         <div className="orders-info-item">
                             <span className="orders-info-label"><FaUser /> {isCraftsman ? "العميل" : "الصنايعي"}</span>

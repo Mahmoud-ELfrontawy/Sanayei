@@ -297,6 +297,129 @@ const WalletPage: React.FC = () => {
                 </div>
             </header>
 
+            {/* ===== Prominent Wallet ID ===== */}
+            {data?.wallet.id && (
+                <div className="wallet-id-prominent">
+                    <div className="wip-left">
+                        <span className="wip-label">رقم محفظتك</span>
+                        <span className="wip-number">#{data.wallet.id}</span>
+                        <span className="wip-hint">شارك هذا الرقم مع من يريد التحويل إليك</span>
+                    </div>
+                    <button
+                        className="wip-copy-btn"
+                        onClick={() => {
+                            navigator.clipboard.writeText(String(data.wallet.id));
+                            toast.success('تم نسخ رقم المحفظة ✅');
+                        }}
+                    >
+                        📋 نسخ
+                    </button>
+                </div>
+            )}
+
+            {/* ===== Wallet Guide ===== */}
+            <div className="wallet-guide">
+                <h3 className="wg-title">📖 دليل استخدام المحفظة</h3>
+                <div className="wg-grid">
+                    {activeRole === 'user' && (
+                        <>
+                            <div className="wg-card">
+                                <div className="wg-icon">💳</div>
+                                <div className="wg-text">
+                                    <strong>شحن الرصيد</strong>
+                                    <p>أضف رصيداً لمحفظتك من خلال الضغط على "شحن الرصيد" واختر المبلغ.</p>
+                                </div>
+                            </div>
+                            <div className="wg-card">
+                                <div className="wg-icon">🛠️</div>
+                                <div className="wg-text">
+                                    <strong>دفع خدمة بالمحفظة</strong>
+                                    <p>عند طلب خدمة، اختر "دفع بالمحفظة" — يُخصم المبلغ فور قبول الصنايعي.</p>
+                                </div>
+                            </div>
+                            <div className="wg-card">
+                                <div className="wg-icon">🔁</div>
+                                <div className="wg-text">
+                                    <strong>استرداد تلقائي</strong>
+                                    <p>إذا رفض الصنايعي طلبك، يُسترد المبلغ فوراً لرصيدك دون أي خطوات إضافية.</p>
+                                </div>
+                            </div>
+                            <div className="wg-card">
+                                <div className="wg-icon">↗️</div>
+                                <div className="wg-text">
+                                    <strong>تحويل أموال</strong>
+                                    <p>يمكنك تحويل رصيد لأي محفظة أخرى عبر إدخال رقمها في "تحويل أموال".</p>
+                                </div>
+                            </div>
+                        </>
+                    )}
+                    {activeRole === 'craftsman' && (
+                        <>
+                            <div className="wg-card">
+                                <div className="wg-icon">🔢</div>
+                                <div className="wg-text">
+                                    <strong>رقم محفظتك</strong>
+                                    <p>رقمك الموضح أعلاه هو ما يُستخدم لتحويل أتعابك — شاركه مع العملاء.</p>
+                                </div>
+                            </div>
+                            <div className="wg-card">
+                                <div className="wg-icon">✅</div>
+                                <div className="wg-text">
+                                    <strong>استقبال المدفوعات</strong>
+                                    <p>عند قبولك لطلب خدمة مدفوعة بالمحفظة، يُضاف المبلغ تلقائياً لرصيدك.</p>
+                                </div>
+                            </div>
+                            <div className="wg-card">
+                                <div className="wg-icon">💸</div>
+                                <div className="wg-text">
+                                    <strong>سحب الأرباح</strong>
+                                    <p>اسحب أرباحك في أي وقت عبر "سحب الأرباح" ويُحوَّل لحسابك البنكي.</p>
+                                </div>
+                            </div>
+                            <div className="wg-card">
+                                <div className="wg-icon">📊</div>
+                                <div className="wg-text">
+                                    <strong>متابعة العمليات</strong>
+                                    <p>كل تحويل وارد أو صادر يظهر في قسم "آخر العمليات" مع تفاصيله.</p>
+                                </div>
+                            </div>
+                        </>
+                    )}
+                    {activeRole === 'company' && (
+                        <>
+                            <div className="wg-card">
+                                <div className="wg-icon">🏢</div>
+                                <div className="wg-text">
+                                    <strong>محفظة الشركة</strong>
+                                    <p>رقم محفظتك الموضح أعلاه يُستخدم لاستقبال التحويلات من العملاء والموظفين.</p>
+                                </div>
+                            </div>
+                            <div className="wg-card">
+                                <div className="wg-icon">💳</div>
+                                <div className="wg-text">
+                                    <strong>شحن الرصيد</strong>
+                                    <p>أضف رصيداً لحساب الشركة لتوزيعه أو استخدامه في المدفوعات الداخلية.</p>
+                                </div>
+                            </div>
+                            <div className="wg-card">
+                                <div className="wg-icon">↗️</div>
+                                <div className="wg-text">
+                                    <strong>تحويل للموظفين</strong>
+                                    <p>حوّل الرواتب عبر "تحويل أموال" باستخدام رقم محفظة الموظف المباشرة.</p>
+                                </div>
+                            </div>
+                            <div className="wg-card">
+                                <div className="wg-icon">💸</div>
+                                <div className="wg-text">
+                                    <strong>سحب الأرباح</strong>
+                                    <p>اسحب رصيد الشركة في أي وقت وسيُحوَّل لحسابك البنكي المسجل.</p>
+                                </div>
+                            </div>
+                        </>
+                    )}
+                </div>
+            </div>
+
             <section className="transactions-section">
                 <div className="section-header">
                     <div className="tab-switcher">

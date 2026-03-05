@@ -382,28 +382,28 @@
 .sidebar-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
-
+    z-index: 1100;
     transition: all 0.3s ease;
 }
 
 .user-detail-sidebar {
     position: fixed;
     top: 0;
-    right: 0;
+    left: 0;
     bottom: 0;
     width: 450px;
     background: var(--color-bg-main);
-    z-index: 101;
-    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+    z-index: 1200;
+    box-shadow: 10px 0 30px rgba(0,0,0,0.25);
     display: flex;
     flex-direction: column;
-    animation: slideInRight 0.3s ease-out;
+    animation: slideInLeft 0.3s ease-out;
 }
 
-@keyframes slideInRight {
-    from { transform: translateX(100%); }
+@keyframes slideInLeft {
+    from { transform: translateX(-100%); }
     to { transform: translateX(0); }
 }
 
@@ -1280,4 +1280,159 @@
     .add-user-btn, .export-action-btn, .refresh-action-btn { width: 100%; justify-content: center; }
     
     .pagination-container { flex-direction: column; gap: 1rem; }
+}
+
+/* 🌙 Dark Mode Overrides */
+html[data-theme="dark"] .users-premium-header {
+    background: linear-gradient(135deg, #1e2435 0%, #060810 100%);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--color-border);
+}
+
+html[data-theme="dark"] .stat-premium-card {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+html[data-theme="dark"] .filter-select,
+html[data-theme="dark"] .search-input,
+html[data-theme="dark"] .action-btn,
+html[data-theme="dark"] .refresh-btn,
+html[data-theme="dark"] .export-btn {
+    background: var(--color-bg-main);
+    color: var(--color-text-main);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .action-btn:hover,
+html[data-theme="dark"] .refresh-btn:hover {
+    background: var(--color-bg-section);
+}
+
+html[data-theme="dark"] .status-badge-modern.active { background: rgba(22, 101, 52, 0.2); color: #4ade80; border-color: rgba(74, 222, 128, 0.3); }
+html[data-theme="dark"] .status-badge-modern.banned { background: rgba(153, 27, 27, 0.2); color: #f87171; border-color: rgba(248, 113, 113, 0.3); }
+html[data-theme="dark"] .status-badge-modern.inactive { background: rgba(55, 65, 81, 0.2); color: #94a3b8; border-color: rgba(148, 163, 184, 0.3); }
+
+html[data-theme="dark"] .role-badge.admin { background: #1e2435; color: #a5b4fc; border-color: #312e81; }
+html[data-theme="dark"] .role-badge.craftsman { background: #1a2e35; color: #7ec8f0; border-color: #0c4a6e; }
+html[data-theme="dark"] .role-badge.user { background: #1e1e1e; color: #94a3b8; border-color: #334155; }
+
+html[data-theme="dark"] .control-action-card {
+    background: var(--color-bg-main);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .control-action-card:hover {
+    background: var(--color-bg-section);
+}
+
+html[data-theme="dark"] .info-modern-item {
+    background: var(--color-bg-dark);
+}
+
+html[data-theme="dark"] .modal-btn.secondary {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .security-list {
+    background: var(--color-bg-dark);
+}
+
+html[data-theme="dark"] .security-item {
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .security-item code {
+    background: #2d3748;
+    color: #e2e8f0;
+}
+
+html[data-theme="dark"] .admin-user-modal {
+    background: #1a1d27;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+}
+
+html[data-theme="dark"] .modal-header {
+    border-color: #2d3748;
+}
+
+html[data-theme="dark"] .form-group-user label {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .form-group-user input,
+html[data-theme="dark"] .form-group-user select {
+    background: #1e2435;
+    color: var(--color-text-main);
+    border-color: #2d3748;
+}
+
+html[data-theme="dark"] .form-group-user input:focus,
+html[data-theme="dark"] .form-group-user select:focus {
+    border-color: var(--color-primary);
+}
+
+html[data-theme="dark"] .modal-footer {
+    background: #1e2435;
+    border-color: #2d3748;
+}
+
+html[data-theme="dark"] .cancel-btn {
+    background: transparent;
+    border-color: #2d3748;
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .cancel-btn:hover {
+    background: #2d3748;
+}
+
+html[data-theme="dark"] .info-item span {
+    color: var(--color-text-main);
+}
+
+/* User Detail Sidebar Dark Mode */
+html[data-theme="dark"] .user-detail-sidebar {
+    background: #1a1d27;
+    border-right: 1px solid #2d3748;
+}
+
+html[data-theme="dark"] .detail-sidebar-header {
+    border-color: #2d3748;
+}
+
+html[data-theme="dark"] .detail-sidebar-header h2 {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .detail-profile-hero {
+    background: linear-gradient(180deg, rgba(126, 200, 240, 0.05) 0%, transparent 100%);
+    border-bottom-color: #2d3748;
+}
+
+html[data-theme="dark"] .profile-name {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .section-title {
+    color: var(--color-primary);
+}
+
+html[data-theme="dark"] .info-modern-item {
+    background: #1e2435;
+    border-color: #2d3748;
+}
+
+html[data-theme="dark"] .info-modern-item .content span {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .info-modern-item .content label {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .user-id-tag {
+    background: #2d3748;
+    color: #94a3b8;
 }

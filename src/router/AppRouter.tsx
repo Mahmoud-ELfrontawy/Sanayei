@@ -64,6 +64,7 @@ const WalletDetails = lazy(() => import("../pages/Admin/Wallets/WalletDetails"))
 const TransfersTracker = lazy(() => import("../pages/Admin/Wallets/TransfersTracker"));
 const WithdrawalsManager = lazy(() => import("../pages/Admin/Wallets/WithdrawalsManager"));
 const ContactMessages = lazy(() => import("../pages/Admin/Contact/ContactMessages"));
+const AdminMessages = lazy(() => import("../pages/Admin/Messages/AdminMessages"));
 
 const LoadingFallback = () => (
   <div style={{
@@ -113,6 +114,7 @@ const AppRouter: React.FC = () => {
             <Route path="transfers" element={<TransfersTracker />} />
             <Route path="withdrawals" element={<WithdrawalsManager />} />
             <Route path="contact-messages" element={<ContactMessages />} />
+            <Route path="messages" element={<AdminMessages />} />
           </Route>
 
           {/* ===== Main Layout ===== */}

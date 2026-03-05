@@ -286,3 +286,45 @@
     .cancel-btn, .submit-btn { width: 100%; }
 }
 
+/* 🌙 Dark Mode Overrides */
+html[data-theme="dark"] .governorates-premium-header {
+    background: linear-gradient(135deg, #1e2435 0%, #060810 100%);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--color-border);
+}
+
+html[data-theme="dark"] .governorates-controls,
+html[data-theme="dark"] .governorates-table-wrapper,
+html[data-theme="dark"] .gov-modal {
+    background: var(--color-bg-main);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .search-input,
+html[data-theme="dark"] .action-btn,
+html[data-theme="dark"] .form-group-governate input {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .governorates-table th {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .gov-status-badge.active { background: rgba(22, 101, 52, 0.2); color: #4ade80; }
+html[data-theme="dark"] .gov-status-badge.inactive { background: rgba(153, 27, 27, 0.2); color: #f87171; }
+
+html[data-theme="dark"] .modal-header,
+html[data-theme="dark"] .modal-footer {
+    background: var(--color-bg-dark);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .cancel-btn {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}
+

@@ -44,7 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         retryDelay: 2000,
     });
 
-    
+
     useEffect(() => {
         if (profileError && axios.isAxiosError(fetchError)) {
             const status = fetchError.response?.status;

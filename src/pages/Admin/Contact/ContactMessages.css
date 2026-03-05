@@ -365,3 +365,70 @@
     .modal-body { padding: 1.5rem; }
     .meta-info { gap: 0.75rem; }
 }
+
+/* 🌙 Dark Mode Overrides */
+html[data-theme="dark"] .admin-contact-container {
+    background: var(--color-bg-section);
+}
+
+html[data-theme="dark"] .page-header-premium {
+    background: linear-gradient(135deg, #1e2435 0%, #060810 100%);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--color-border);
+}
+
+html[data-theme="dark"] .filter-bar-card,
+html[data-theme="dark"] .message-card,
+html[data-theme="dark"] .msg-modal-card,
+html[data-theme="dark"] .loading-state,
+html[data-theme="dark"] .empty-state,
+html[data-theme="dark"] .pagination,
+html[data-theme="dark"] .pagination button {
+    background: var(--color-bg-main);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .filter-group select,
+html[data-theme="dark"] .btn-view,
+html[data-theme="dark"] .btn-delete,
+html[data-theme="dark"] .meta-info {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .message-card.unread {
+    background: rgba(67, 56, 202, 0.1);
+    border-color: #4338ca;
+}
+
+html[data-theme="dark"] .msg-user,
+html[data-theme="dark"] .msg-subject,
+html[data-theme="dark"] .pagination span,
+html[data-theme="dark"] .meta-info span strong,
+html[data-theme="dark"] .msg-content-full {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .msg-top,
+html[data-theme="dark"] .msg-preview,
+html[data-theme="dark"] .msg-phone,
+html[data-theme="dark"] .loading-state,
+html[data-theme="dark"] .empty-state,
+html[data-theme="dark"] .meta-info span {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .modal-header,
+html[data-theme="dark"] .modal-footer {
+    background: var(--color-bg-dark);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .msg-content-full {
+    background: var(--color-bg-section);
+}
+
+html[data-theme="dark"] .msg-footer {
+    border-color: var(--color-border);
+}

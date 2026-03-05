@@ -10,7 +10,7 @@ export interface UserProfile {
     name: string;
     email: string;
     phone: string;
-    birth_date?: string | null;  // comes as DD/MM/YYYY from backend
+    birth_date?: string | null;  
     gender?: "male" | "female";
     latitude?: number;
     longitude?: number;

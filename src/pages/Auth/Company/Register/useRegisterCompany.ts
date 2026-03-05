@@ -17,10 +17,7 @@ export const useRegisterCompany = () => {
     try {
       const res = await registerCompany(data);
       if (res.success) {
-        toast.info(
-          "🎉 تم تسجيل حساب شركتك بنجاح!\nحسابك قيد المراجعة حالياً من قبل الإدارة — لن تتمكن من تسجيل الدخول حتى يتم اعتماده.",
-          { autoClose: 6000 }
-        );
+        toast.info("تم تسجيل الحساب! سيتم تفعيله من الإدارة قريباً ✅", { autoClose: 5000 });
         navigate("/login", { state: { pendingCompany: true } });
       } else {
         toast.error(res.message || "فشل تسجيل المتجر");

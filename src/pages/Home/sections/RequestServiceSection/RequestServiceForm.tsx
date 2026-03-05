@@ -7,7 +7,7 @@ import type { Governorate } from "../../../../Api/serviceRequest/governorates.ap
 import type { Sanaei } from "../../../../Api/serviceRequest/sanaei.api";
 
 import { Link } from "react-router-dom";
-import { FaUser } from "react-icons/fa";
+import { FaUser, FaWallet, FaMoneyBillWave } from "react-icons/fa";
 import { getTechnicianById } from "../../../../Api/technicians.api";
 import { getAvatarUrl } from "../../../../utils/imageUrl";
 import { formatTimeAgo } from "../../../../utils/timeAgo";
@@ -389,6 +389,17 @@ const RequestServiceForm: React.FC<Props> = ({
                         </div>
                     )}
 
+                    {/* Craftsman Wallet ID — shown after selection */}
+                    {selectedCraftsmanDetails?.wallet_id && (
+                        <div className="craftsman-wallet-id-box">
+                            <div className="cwid-header">
+                                <FaWallet className="cwid-icon" />
+                                <span>رقم محفظة الصنايعي</span>
+                            </div>
+                            <div className="cwid-number">#{selectedCraftsmanDetails.wallet_id}</div>
+                            <p className="cwid-note">سيتم تحويل قيمة الخدمة لهذا الرقم عند القبول</p>
+                        </div>
+                    )}
 
                     {errors.industrial_type && (
                         <span className="form-error">
@@ -409,6 +420,55 @@ const RequestServiceForm: React.FC<Props> = ({
                         readOnly
                         value={`${watch("price")} جنيه`}
                     />
+                </div>
+            )}
+
+            {/* طريقة الدفع */}
+            {!showSkeleton && (
+                <div className="payment-method-section">
+                    <label className="payment-method-label">طريقة الدفع</label>
+                    <div className="payment-method-options">
+                        <label
+                            className={`payment-option ${watch("payment_method") === "wallet" || !watch("payment_method")
+                                    ? "active"
+                                    : ""
+                                }`}
+                        >
+                            <input
+                                type="radio"
+                                value="wallet"
+                                {...register("payment_method")}
+                                defaultChecked
+                            />
+                            <FaWallet className="pm-icon" />
+                            <div className="pm-text">
+                                <strong>دفع بالمحفظة</strong>
+                                <small>يُحوَّل للصنايعي عند قبول الطلب</small>
+                            </div>
+                        </label>
+
+                        <label
+                            className={`payment-option ${watch("payment_method") === "cash" ? "active" : ""
+                                }`}
+                        >
+                            <input
+                                type="radio"
+                                value="cash"
+                                {...register("payment_method")}
+                            />
+                            <FaMoneyBillWave className="pm-icon" />
+                            <div className="pm-text">
+                                <strong>دفع عند الزيارة</strong>
+                                <small>نقداً أو بالبطاقة عند الحضور</small>
+                            </div>
+                        </label>
+                    </div>
+
+                    {watch("payment_method") === "wallet" && (
+                        <div className="wallet-pay-note">
+                            💡 سيُخصم المبلغ من محفظتك فور قبول الصنايعي للطلب. وفي حالة الرفض يُسترد المبلغ فوراً.
+                        </div>
+                    )}
                 </div>
             )}
 

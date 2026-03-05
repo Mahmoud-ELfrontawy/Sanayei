@@ -2,9 +2,11 @@ import { ToastContainer, toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import AppRouter from "./router/AppRouter";
 import LogoLoader from "./components/ui/loaders/FullPageLoader";
+import { useTheme } from "./context/ThemeContext";
 
 function App() {
   const [loading, setLoading] = useState(true);
+  const { isDark } = useTheme();
 
   useEffect(() => {
     // Simulate initial loading
@@ -57,7 +59,7 @@ function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light"
+        theme={isDark ? "dark" : "light"}
       />
     </>
   );
