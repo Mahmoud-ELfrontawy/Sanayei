@@ -1,7 +1,6 @@
-/* ===== Worker Specific Overrides ===== */
-
 .worker-card-custom {
   max-width: 1200px;
+  overflow: hidden; /* 🛡️ Fix horizontal slide animation bleed */
 }
 
 .worker-register-form {

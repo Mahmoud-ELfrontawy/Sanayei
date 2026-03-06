@@ -49,7 +49,7 @@
     font-size:30px;
 }
 
-.req-input,
+.hsq-form-input,
 .req-select select {
     width: 100%;
     height: 55px;
@@ -63,11 +63,11 @@
     direction: rtl;
 }
 
-.req-input::placeholder {
+.hsq-form-input::placeholder {
     color: var(--color-text-muted);
 }
 
-.req-row {
+.hsq-form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
@@ -91,7 +91,7 @@
     font-size: 12px;
 }
 
-.req-submit {
+.hsq-submit-btn {
     width: 100%;
     height: 50px;
     margin-top: 16px;
@@ -105,7 +105,7 @@
     transition: var(--transition-fast);
 }
 
-.req-submit:hover {
+.hsq-submit-btn:hover {
     background: var(--color-primary-hover);
 }
 
@@ -149,7 +149,7 @@
 /* Skeleton Base */
 /* ============================= */
 
-.req-input.loading,
+.hsq-form-input.loading,
 .req-select.loading select,
 .skeleton-service {
     background: linear-gradient(
@@ -164,7 +164,7 @@
     color: transparent;
 }
 
-.req-submit:disabled {
+.hsq-submit-btn:disabled {
     opacity: 0.7;
     cursor: not-allowed;
 }
@@ -206,18 +206,18 @@
         margin-bottom: 20px;
     }
 
-    .req-input,
+    .hsq-form-input,
     .req-select select {
         height: 50px;
         font-size: 18px;
         margin-bottom: 10px;
     }
 
-    .req-row {
+    .hsq-form-row {
         gap: 10px;
     }
 
-    .req-submit {
+    .hsq-submit-btn {
         height: 48px;
         font-size: 24px;
         margin-top: 14px;
@@ -262,10 +262,10 @@
         padding: 30px 20px;
         max-width: 100%;
         order: 2;
-        background: rgba(255, 255, 255, 0.92);
+        background: var(--color-bg-main);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.4);
+        border: 1px solid var(--color-border);
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
         border-radius: 24px;
     }
@@ -276,19 +276,19 @@
         letter-spacing: -0.5px;
     }
 
-    .req-input,
+    .hsq-form-input,
     .req-select select {
         height: 52px;
         font-size: 16px;
         padding: 0 16px;
         margin-bottom: 12px;
-        background: rgba(255, 255, 255, 0.8);
-        border: 1.5px solid #e2e8f0;
+        background: var(--color-bg-main);
+        border: 1.5px solid var(--color-border);
         transition: all 0.3s ease;
         box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
     }
 
-    .req-input:focus,
+    .hsq-form-input:focus,
     .req-select select:focus {
         border-color: var(--color-primary);
         background: #fff;
@@ -296,12 +296,12 @@
         outline: none;
     }
 
-    .req-row {
+    .hsq-form-row {
         grid-template-columns: 1fr;
         gap: 0; /* Let margin-bottom handle it */
     }
 
-    .req-submit {
+    .hsq-submit-btn {
         height: 54px;
         font-size: 20px;
         margin-top: 15px;
@@ -313,7 +313,7 @@
         letter-spacing: 0.5px;
     }
 
-    .req-submit:active {
+    .hsq-submit-btn:active {
         transform: scale(0.98);
         box-shadow: 0 4px 10px rgba(95, 168, 211, 0.2);
     }
@@ -358,14 +358,14 @@
         font-size: 22px;
     }
 
-    .req-input,
+    .hsq-form-input,
     .req-select select {
         height: 48px;
         font-size: 15px;
         border-radius: 12px;
     }
 
-    .req-submit {
+    .hsq-submit-btn {
         height: 50px;
         font-size: 18px;
         border-radius: 12px;
@@ -420,14 +420,14 @@
         margin-bottom: 12px;
     }
 
-    .req-input,
+    .hsq-form-input,
     .req-select select {
         height: 40px;
         font-size: 14px;
         margin-bottom: 6px;
     }
 
-    .req-submit {
+    .hsq-submit-btn {
         height: 42px;
         font-size: 16px;
         margin-top: 8px;
@@ -633,14 +633,14 @@ html[data-theme="dark"] .req-card {
     border: 1px solid var(--color-border);
 }
 
-html[data-theme="dark"] .req-input,
+html[data-theme="dark"] .hsq-form-input,
 html[data-theme="dark"] .req-select select {
     background: var(--color-bg-dark);
     border-color: var(--color-border);
     color: var(--color-text-main);
 }
 
-html[data-theme="dark"] .req-input::placeholder {
+html[data-theme="dark"] .hsq-form-input::placeholder {
     color: var(--color-text-muted);
 }
 
@@ -678,13 +678,13 @@ html[data-theme="dark"] select option {
     color: var(--color-text-main);
 }
 
-html[data-theme="dark"] .req-input:disabled {
+html[data-theme="dark"] .hsq-form-input:disabled {
     background-color: var(--color-bg-dark) !important;
     color: var(--color-text-muted) !important;
 }
 
 
-html[data-theme="dark"] .req-input::-webkit-calendar-picker-indicator {
+html[data-theme="dark"] .hsq-form-input::-webkit-calendar-picker-indicator {
     filter: invert(1);
 }
 

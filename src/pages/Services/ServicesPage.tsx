@@ -144,9 +144,9 @@ const ServicesPage: React.FC = () => {
                 >
                     {/* Price Filter (Only show when a service is selected) */}
                     {serviceFilter !== "all" && (
-                        <div className="services-select-wrapper">
+                        <div className="sf-select-group">
                             <select
-                                className="services-select"
+                                className="sf-custom-select"
                                 value={priceFilter}
                                 onChange={(e) => setPriceFilter(e.target.value)}
                                 style={{ minWidth: "150px" }}

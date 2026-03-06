@@ -6,7 +6,7 @@ interface SubmitSkeletonProps {
    Input Skeleton
 ========================= */
 export const RequestServiceInputSkeleton = () => {
-    return <div className="req-input skeleton-service" />;
+    return <div className="hsq-form-input skeleton-service" />;
 };
 
 /* =========================
@@ -17,14 +17,14 @@ export const RequestServiceSubmitSkeleton = ({
 }: SubmitSkeletonProps) => {
     if (isloading) {
         return (
-            <div className="req-submit skeleton-service">
+            <div className="hsq-submit-btn skeleton-service">
                 <div className="skeleton-line-service" />
             </div>
         );
     }
 
     return (
-        <button type="submit" className="req-submit">
+        <button type="submit" className="hsq-submit-btn">
             تأكيد الحجز
         </button>
     );

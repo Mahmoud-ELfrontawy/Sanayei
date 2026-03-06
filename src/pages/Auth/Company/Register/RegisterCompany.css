@@ -12,6 +12,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+  overflow: hidden; /* 🛡️ Fix horizontal slide animation bleed */
 }
 
 .auth-form-content {

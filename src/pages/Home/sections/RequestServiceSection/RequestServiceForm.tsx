@@ -201,7 +201,7 @@ const RequestServiceForm: React.FC<Props> = ({
                 <RequestServiceInputSkeleton />
             ) : (
                 <select
-                    className="req-input"
+                    className="hsq-form-input"
                     disabled
                     style={{
                         backgroundColor: '#f5f5f5',
@@ -222,9 +222,9 @@ const RequestServiceForm: React.FC<Props> = ({
             {showSkeleton ? (
                 <RequestServiceInputSkeleton />
             ) : (
-                <div className="req-row">
+                <div className="hsq-form-row">
                     <select
-                        className="req-input"
+                        className="hsq-form-input"
                         {...register("province", { required: true })}
                     >
                         <option value="">المحافظة</option>
@@ -236,7 +236,7 @@ const RequestServiceForm: React.FC<Props> = ({
                     </select>
 
                     <input
-                        className="req-input"
+                        className="hsq-form-input"
                         placeholder="العنوان"
                         {...register("address", { required: true })}
                     />
@@ -250,10 +250,10 @@ const RequestServiceForm: React.FC<Props> = ({
                     <RequestServiceInputSkeleton />
                 </>
             ) : (
-                <div className="req-row">
+                <div className="hsq-form-row">
                     <input
                         type={watch("date") ? "date" : "text"}
-                        className="req-input"
+                        className="hsq-form-input"
                         placeholder="تاريخ الخدمة المطلوب"
                         dir="ltr"
                         onFocus={(e) => (e.target.type = "date")}
@@ -267,7 +267,7 @@ const RequestServiceForm: React.FC<Props> = ({
                     />
                     <input
                         type={watch("time") ? "time" : "text"}
-                        className="req-input"
+                        className="hsq-form-input"
                         placeholder="وقت الخدمة المطلوب"
                         dir="ltr"
                         onFocus={(e) => (e.target.type = "time")}
@@ -287,7 +287,7 @@ const RequestServiceForm: React.FC<Props> = ({
                 <RequestServiceInputSkeleton />
             ) : (
                 <select
-                    className="req-input"
+                    className="hsq-form-input"
                     {...register("service_type", {
                         required: "اختر الخدمة",
                     })}
@@ -307,7 +307,7 @@ const RequestServiceForm: React.FC<Props> = ({
             ) : (
                 <>
                     <select
-                        className="req-input"
+                        className="hsq-form-input"
                         disabled={!serviceId}
                         {...register("industrial_type", {
                             required: "من فضلك اختر صنايعي",
@@ -417,7 +417,7 @@ const RequestServiceForm: React.FC<Props> = ({
                         السعر المتوقع
                     </label>
                     <input
-                        className="req-input"
+                        className="hsq-form-input"
                         readOnly
                         value={`${watch("price")} جنيه`}
                     />

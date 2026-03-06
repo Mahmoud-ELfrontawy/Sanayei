@@ -36,11 +36,11 @@ const ServicesFilters: React.FC<Props> = ({
     children,
 }) => {
     return (
-        <form className="services-filters" onSubmit={(e) => e.preventDefault()}>
+        <form className="sf-filters-container" onSubmit={(e) => e.preventDefault()}>
             {/* Reset */}
             <button
                 type="button"
-                className="services-reset-btn"
+                className="sf-reset-action-btn"
                 onClick={() => {
                     onSearchChange("");
                     onServiceChange("all");
@@ -51,9 +51,9 @@ const ServicesFilters: React.FC<Props> = ({
             </button>
 
             {/* Service */}
-            <div className="services-select-wrapper">
+            <div className="sf-select-group">
                 <select
-                    className="services-select"
+                    className="sf-custom-select"
                     value={service}
                     onChange={(e) => onServiceChange(e.target.value)}
                 >
@@ -76,9 +76,9 @@ const ServicesFilters: React.FC<Props> = ({
 
             {/* Governorate */}
             {showCity && (
-                <div className="services-select-wrapper">
+                <div className="sf-select-group">
                     <select
-                        className="services-select"
+                        className="sf-custom-select"
                         value={city}
                         onChange={(e) =>
                             onCityChange?.(e.target.value)
@@ -97,7 +97,7 @@ const ServicesFilters: React.FC<Props> = ({
             {children}
 
             {/* Search */}
-            <div className="services-search">
+            <div className="sf-search-input-box">
                 <input
                     placeholder="ابحث"
                     value={search}
