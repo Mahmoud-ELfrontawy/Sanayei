@@ -12,7 +12,8 @@ import {
     FaDollarSign,
     FaExternalLinkAlt,
     FaFilter,
-    FaTimes
+    FaTimes,
+    FaIdCard
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import './CraftsmenPage.css';
@@ -40,6 +41,8 @@ interface CraftsmanData {
     portfolio_url?: string;
     bio?: string;
     completion_rate: number;
+    front_identity_photo?: string;
+    back_identity_photo?: string;
 }
 
 const CraftsmenPage: React.FC = () => {
@@ -87,7 +90,9 @@ const CraftsmenPage: React.FC = () => {
                 joined_date: u.created_at || u.joined_date,
                 is_verified: u.status === 'approved',
                 bio: u.bio || u.description,
-                completion_rate: parseInt(u.completion_rate || 0)
+                completion_rate: parseInt(u.completion_rate || 0),
+                front_identity_photo: u.front_identity_photo,
+                back_identity_photo: u.back_identity_photo
             }));
 
             setCraftsmen(mapped);
@@ -389,6 +394,43 @@ const CraftsmenPage: React.FC = () => {
                             <div className="detail-section">
                                 <h4 className="s-title">نبذة تعريفية</h4>
                                 <p className="artisan-bio">{selectedCraftsman.bio || 'لا يوجد وصف حالياً'}</p>
+                            </div>
+
+                            <div className="detail-section">
+                                <h4 className="s-title">وثائق التحقق (البطاقة الشخصية)</h4>
+                                <div className="identity-photos-grid">
+                                    <div className="id-photo-item">
+                                        <label>الوجه الأمامي</label>
+                                        <div className="id-image-container">
+                                            {selectedCraftsman.front_identity_photo ? (
+                                                <img 
+                                                    src={getAvatarUrl(selectedCraftsman.front_identity_photo)} 
+                                                    alt="البطاقة - وجه" 
+                                                    className="identity-verification-img"
+                                                    onClick={() => window.open(getAvatarUrl(selectedCraftsman.front_identity_photo), '_blank')}
+                                                />
+                                            ) : (
+                                                <div className="no-photo"><FaIdCard size={40} /><span>غير متوفر</span></div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="id-photo-item">
+                                        <label>الوجه الخلفي</label>
+                                        <div className="id-image-container">
+                                            {selectedCraftsman.back_identity_photo ? (
+                                                <img 
+                                                    src={getAvatarUrl(selectedCraftsman.back_identity_photo)} 
+                                                    alt="البطاقة - ظهر" 
+                                                    className="identity-verification-img"
+                                                    onClick={() => window.open(getAvatarUrl(selectedCraftsman.back_identity_photo), '_blank')}
+                                                />
+                                            ) : (
+                                                <div className="no-photo"><FaIdCard size={40} /><span>غير متوفر</span></div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                                <p className="helper-text-premium">انقر على الصورة لمشاهدتها بالحجم الكامل</p>
                             </div>
 
                             <div className="sidebar-actions-sticky">

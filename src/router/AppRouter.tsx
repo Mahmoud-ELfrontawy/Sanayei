@@ -20,6 +20,7 @@ const ForgotPasswordPage = lazy(() => import("../pages/Auth/ForgotPassword/Forgo
 const ResetPasswordPage = lazy(() => import("../pages/Auth/ResetPassword/ResetPasswordPage"));
 const RegisterPage = lazy(() => import("../pages/Auth/Register/RegisterPage"));
 const GoogleCallback = lazy(() => import("../pages/Auth/google-callback/GoogleCallback"));
+const VerifyEmailPage = lazy(() => import("../pages/Auth/VerifyEmail/VerifyEmailPage"));
 
 const ProfileMe = lazy(() => import("../pages/Profile/ProfileUser/ProfileMe"));
 const ProfileWorker = lazy(() => import("../pages/Profile/ProfileWorker/Dashboard/ProfileWorker"));
@@ -143,6 +144,7 @@ const AppRouter: React.FC = () => {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/register-worker" element={<RegisterWorkerPage />} />
             <Route path="/register-company" element={<RegisterCompanyPage />} />
+            <Route path="/email/verify/:id/:hash" element={<VerifyEmailPage />} />
 
             {/* ===== User Profile ===== */}
             <Route path="/user/profile">

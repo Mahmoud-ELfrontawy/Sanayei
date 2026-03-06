@@ -59,9 +59,13 @@ const RegisterPage: React.FC = () => {
               <div className="input-group">
                 <input
                   className="auth-input"
-                  placeholder="البريد الإلكتروني"
+                  placeholder="البريد الإلكتروني (يفضل Gmail)"
                   {...register("email", {
                     required: "البريد الإلكتروني مطلوب",
+                    pattern: {
+                      value: /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
+                      message: "يرجى استخدام حساب Gmail حقيقي لضمان التوثيق"
+                    }
                   })}
                 />
                 {errors.email && (

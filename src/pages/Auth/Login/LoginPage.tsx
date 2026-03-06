@@ -25,8 +25,11 @@ const LoginPage: React.FC = () => {
     if (error === "no_account") {
       toast.warning("أنشئ حساباً أولاً 👈", { autoClose: 4000 });
       setTimeout(() => navigate("/join"), 1500);
-    } else if (error === "banned") {
-      toast.error("هذا الحساب محظور! يرجى التواصل مع الدعم الفني ⛔", { autoClose: 6000 });
+    } else if (error === "banned" || searchParams.get("blocked") === "true") {
+      toast.error("تم تسجيل الخروج لأن هذا الحساب محظور أو غير مفعل! يرجى التواصل مع الدعم الفني ⛔", {
+        autoClose: 6000,
+        toastId: "auth-error"
+      });
     } else if (error === "auth_failed") {
       toast.error("فشل تسجيل الدخول عبر جوجل ❌", { autoClose: 5000 });
     }

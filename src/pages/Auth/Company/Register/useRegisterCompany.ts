@@ -17,7 +17,7 @@ export const useRegisterCompany = () => {
     try {
       const res = await registerCompany(data);
       if (res.success) {
-        toast.info("تم تسجيل الحساب! سيتم تفعيله من الإدارة قريباً ✅", { autoClose: 5000 });
+        toast.success("تم إنشاء الحساب! يرجى التحقق من بريدك الإلكتروني لتنشيط الحساب والانتظار لموافقة الإدارة ✅", { autoClose: 7000 });
         navigate("/login", { state: { pendingCompany: true } });
       } else {
         toast.error(res.message || "فشل تسجيل المتجر");
@@ -28,9 +28,16 @@ export const useRegisterCompany = () => {
       
       if (error.response?.status === 422 && error.response?.data?.errors) {
         const errors = error.response.data.errors;
-        const firstKey = Object.keys(errors)[0];
-        const firstMsg = errors[firstKey][0];
-        errorMsg = `${firstMsg}`; // Show the specific validation error
+        
+        if (errors.company_email || errors.email) {
+            errorMsg = "هذا البريد الإلكتروني مسجل بالفعل لمؤسسة أخرى ⚠️";
+        } else if (errors.company_phone_number || errors.company_whatsapp_number) {
+            errorMsg = "رقم الهاتف أو الواتساب غير صحيح أو مسجل مسبقاً 📱";
+        } else {
+            const firstKey = Object.keys(errors)[0];
+            const firstMsg = errors[firstKey][0];
+            errorMsg = `${firstMsg}`;
+        }
       }
       
       toast.error(errorMsg);

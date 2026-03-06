@@ -96,7 +96,10 @@ const RegisterCompanyPage: React.FC = () => {
                                             placeholder="البريد الإلكتروني التجاري"
                                             {...register("company_email", {
                                                 required: "البريد الإلكتروني مطلوب",
-                                                pattern: { value: /^\S+@\S+$/i, message: "بريد إلكتروني غير صحيح" }
+                                                pattern: {
+                                                    value: /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
+                                                    message: "يرجى استخدام حساب Gmail حقيقي لضمان التوثيق"
+                                                }
                                             })}
                                         />
                                         {errors.company_email && <span className="form-error">{errors.company_email.message}</span>}

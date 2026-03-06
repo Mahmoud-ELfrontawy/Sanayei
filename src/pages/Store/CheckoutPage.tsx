@@ -4,7 +4,7 @@ import {
     FiSmartphone, FiInfo, FiShield, FiLock, FiArrowRight
 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { getCartItems } from "../../Api/store/cart.api";
 import { createOrder } from "../../Api/store/orders.api";

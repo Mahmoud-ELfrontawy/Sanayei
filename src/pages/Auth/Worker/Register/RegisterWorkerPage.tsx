@@ -161,8 +161,8 @@ const RegisterWorkerPage: React.FC = () => {
                     {...register("email", {
                       required: "البريد مطلوب",
                       pattern: {
-                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                        message: "صيغة البريد الإلكتروني غير صحيحة",
+                        value: /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
+                        message: "يرجى استخدام حساب Gmail حقيقي لضمان التوثيق",
                       },
                     })}
                     onFocus={() => handleFieldFocus("email")}

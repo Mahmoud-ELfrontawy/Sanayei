@@ -82,20 +82,12 @@ export const useRegisterWorker = () => {
 
       console.log('✅ Registration completed:', response);
 
-      // Account needs admin approval — show success toast and go to login
-      if (response.pendingApproval || !response.token) {
-        toast.success(
-          response.message || "تم التسجيل بنجاح، في انتظار موافقة الإدارة ✅"
-        );
-        form.reset();
-        navigate("/login");
-        return;
-      }
-
-      // Auto-login succeeded — go to profile
-      toast.success("تم تسجيل الصنايعي بنجاح وتم تسجيل الدخول 🎉");
+      // Account creation success — show mail check toast and go to login
+      toast.success(
+        response.message || "تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني لتنشيط الحساب. 📧"
+      );
       form.reset();
-      navigate("/craftsman/profile");
+      navigate("/login");
 
     } catch (error: unknown) {
       const err = error as AxiosError<ErrorResponse>;
@@ -113,9 +105,15 @@ export const useRegisterWorker = () => {
       if (err.response?.status === 422 && err.response?.data?.errors) {
         const errors = err.response.data.errors;
         console.log("❌ Validation Errors:", errors); // سطر إضافي لرؤية كل الأخطاء في الكونسول
-        const firstKey = Object.keys(errors)[0];
-        const firstMsg = errors[firstKey][0];
-        toast.error(`${firstKey}: ${firstMsg}`);
+        if (errors.email) {
+          toast.error("هذا البريد الإلكتروني مسجل بالفعل ⚠️ يرجى استخدام بريد آخر.");
+        } else if (errors.phone) {
+          toast.error("رقم الهاتف غير صحيح أو مسجل مسبقاً 📱 يرجى التأكد من كتابة 11 رقم تبدأ بـ 01");
+        } else {
+          const firstKey = Object.keys(errors)[0];
+          const firstMsg = errors[firstKey][0];
+          toast.error(`${firstKey}: ${firstMsg}`);
+        }
       } else {
         toast.error(err.response?.data?.message || "حدث خطأ أثناء التسجيل ❌");
       }

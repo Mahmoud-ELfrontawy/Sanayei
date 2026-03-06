@@ -34,12 +34,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         queryKey: ["authUser"],
         queryFn: () => (state.userType && state.token ? authService.fetchProfile(state.userType) : null),
         enabled: !!state.token && !!state.userType,
-        staleTime: 1000 * 60 * 10,
+        staleTime: 1000 * 60 * 5, // Profile is fresh for 5 mins
+        refetchInterval: 1000 * 30, // 🔄 Check every 30 seconds to catch blocked accounts faster
         retry: (count, error) => {
-            // Allow 1 retry on 401 to handle transient cases (e.g. after Paymob redirect)
+            // No retry on 403 (Blocked/Banned)
             if (axios.isAxiosError(error) && error.response?.status === 403) return false;
+            // Allow 1 retry on 401 for transient network drops
             if (axios.isAxiosError(error) && error.response?.status === 401) return count < 1;
-            return count < 1;
+            return false;
         },
         retryDelay: 2000,
     });
@@ -48,31 +50,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     useEffect(() => {
         if (profileError && axios.isAxiosError(fetchError)) {
             const status = fetchError.response?.status;
-            if (status === 401 || status === 403) {
-                console.warn("🔐 AuthProvider: Profile fetch failed with 401/403. Will clear auth in 3s if no recovery...");
-                console.warn("   Token used:", authStorage.getToken()?.substring(0, 10) + "...");
+
+            // 🛑 403: Banned/Blocked (Instant logout)
+            if (status === 403) {
+                // If we're already on login/register, don't redirect (let local form handle it)
+                if (window.location.pathname.includes("/login") || window.location.pathname.includes("/register")) {
+                    return;
+                }
+
+                console.error("⛔ Account banned. Triggering immediate redirect...");
+                authStorage.clearAuth();
+                window.location.href = "/login?blocked=true";
+                return;
+            }
+
+            // 🔐 401: Unauthorized (Graceful logout with delay)
+            if (status === 401) {
+                console.warn("🔐 AuthProvider: Profile fetch failed with 401. Will clear auth in 2s...");
                 const timer = setTimeout(() => {
-                    // Double-check token still invalid before clearing
-                    const currentToken = authStorage.getToken();
-                    if (!currentToken) {
-                        console.warn("🔐 AuthProvider: Token already cleared, skipping.");
-                        return;
-                    }
+                    if (!authStorage.getToken()) return;
                     authStorage.clearAuth();
-                    setState({
-                        user: null,
-                        token: null,
-                        userType: null,
-                        isAuthenticated: false,
-                        isLoading: false,
-                    });
-                    queryClient.removeQueries({ queryKey: ["authUser"] });
-                    disconnectEcho();
-                }, 3000);
+                    window.location.href = "/login";
+                }, 2000);
                 return () => clearTimeout(timer);
             }
         }
-    }, [profileError, fetchError, queryClient]);
+    }, [profileError, fetchError]);
 
     // Side Effects: Echo and LocalStorage Sync
     useEffect(() => {

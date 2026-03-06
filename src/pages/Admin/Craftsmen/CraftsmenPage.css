@@ -609,3 +609,81 @@ html[data-theme="dark"] .full-edit-btn {
     color: var(--color-text-main);
 }
 
+/* Identity Verification Photos */
+.identity-photos-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.id-photo-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.id-photo-item label {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--color-text-secondary);
+}
+
+.id-image-container {
+    width: 100%;
+    aspect-ratio: 3/2;
+    background: #f1f5f9;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.id-image-container:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 5px 15px rgba(95, 168, 211, 0.2);
+}
+
+.identity-verification-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+}
+
+.identity-verification-img:hover {
+    transform: scale(1.05);
+}
+
+.no-photo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.helper-text-premium {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    font-style: italic;
+    margin-top: 0.5rem;
+    display: block;
+    text-align: center;
+}
+
+/* 🌙 Dark Mode Adjustments */
+html[data-theme="dark"] .id-image-container {
+    background: var(--color-bg-dark);
+}
+
+html[data-theme="dark"] .no-photo {
+    color: var(--color-text-secondary);
+}

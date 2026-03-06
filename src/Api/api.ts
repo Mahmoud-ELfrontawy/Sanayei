@@ -31,13 +31,21 @@ api.interceptors.request.use(
     }
 );
 
-// Response Interceptor: Handle 401 globally
+// Response Interceptor: Handle 401/403 globally (Auth failures / Blocked accounts)
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401) {
-            console.warn("Unauthorized request detected. Authentication may be stale.");
-            // We could trigger a global logout here, but let's keep it safe for now
+        if (error.response?.status === 401 || error.response?.status === 403) {
+            console.warn("Auth failure or Blocked account detected. Logging out...");
+            
+            // 🛑 Hard Logout
+            authStorage.clearAuth();
+            
+            // Redirect only if not already on login/register page to avoid loops
+            const currentPath = window.location.pathname;
+            if (!currentPath.includes("/login") && !currentPath.includes("/register")) {
+                window.location.href = "/login?blocked=true";
+            }
         }
         return Promise.reject(error);
     }
