@@ -7,6 +7,7 @@ import "./HeroSection.css";
 
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../hooks/useAuth";
+import { useIsMobile } from "../../../../hooks/useIsMobile";
 import { toast } from "react-toastify";
 
 const slides = [
@@ -29,6 +30,7 @@ const slides = [
 const HeroSection: React.FC = () => {
     const navigate = useNavigate();
     const { isAuthenticated, userType } = useAuth();
+    const isMobile = useIsMobile();
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const handleNext = useCallback(() => {
@@ -90,9 +92,9 @@ const HeroSection: React.FC = () => {
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={currentIndex}
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: isMobile ? 0 : 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
+                            exit={{ opacity: 0, y: isMobile ? 0 : -20 }}
                             transition={{ duration: 0.6 }}
                         >
                             <h1>{slides[currentIndex].title}</h1>
@@ -124,20 +126,24 @@ const HeroSection: React.FC = () => {
                 </div>
 
                 {/* Navigation Arrows */}
-                <button
-                    className="slider-arrow prev"
-                    onClick={handlePrev}
-                    aria-label="Previous Slide"
-                >
-                    <FaChevronRight />
-                </button>
-                <button
-                    className="slider-arrow next"
-                    onClick={handleNext}
-                    aria-label="Next Slide"
-                >
-                    <FaChevronLeft />
-                </button>
+                {!isMobile && (
+                    <>
+                        <button
+                            className="slider-arrow prev"
+                            onClick={handlePrev}
+                            aria-label="Previous Slide"
+                        >
+                            <FaChevronRight />
+                        </button>
+                        <button
+                            className="slider-arrow next"
+                            onClick={handleNext}
+                            aria-label="Next Slide"
+                        >
+                            <FaChevronLeft />
+                        </button>
+                    </>
+                )}
             </div>
         </section>
     );

@@ -3,16 +3,17 @@ import { WHY_ITEMS } from "./data";
 import "./WhySanayeiSection.css";
 import { motion } from "framer-motion";
 import { useFramerInView } from "../../../../hooks/useInView";
+import { useIsMobile } from "../../../../hooks/useIsMobile";
 import Counter from "../../../../components/ui/Counter";
 
 const WhySanayeiSection: React.FC = () => {
-
+    const isMobile = useIsMobile();
     const { ref, isVisible } = useFramerInView();
 
     return (
         <motion.div
             ref={ref}
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: isMobile ? 0 : 30 }}
             animate={isVisible ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6 }}
         >

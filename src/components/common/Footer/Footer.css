@@ -186,73 +186,117 @@
 /* Mobile (Screens below 600px) */
 @media (max-width: 600px) {
     .footer-grid {
-        /* عمود واحد لكل حاجة */
-        grid-template-columns: 1fr;
-        gap: 30px;
-        padding: 40px 0;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        padding: 30px 10px;
+        text-align: center;
+        align-items: start;
     }
     
     .footer-brand {
-        grid-column: span 1; /* نرجع اللوجو ياخد عمود واحد */
+        grid-column: 1 / -1; /* Take full width to sit below the 3 columns */
+        order: 5; /* Move to bottom */
         padding: 0;
+        margin-top: 20px;
     }
 
-    .footer-logo img {
-        width: 130px;
-        height: 100px;
+    .footer-logo {
+        display: none; /* Hide logo on mobile as per common clean design in image */
+    }
+
+    .footer-social {
+        justify-content: center;
+        margin-top: 10px;
+        gap: 12px;
+    }
+
+    .social-btn-footer {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+        background: #fff;
+        color: #000;
+        border: none;
+    }
+
+    .footer-links,
+    .footer-contact {
+        text-align: center;
     }
 
     .footer-links h4,
     .footer-contact h4 {
-        font-size: 18px;
-        position: relative;
-        display: inline-block;
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: #fff;
     }
-    .footer-links a{
-        font-size: 18px;
-    }
-    .footer-links a:hover {
-    color: var(--color-primary);
-    transform: translateX(-3px);
-}
     
-    /* خط تحت العناوين كشكل جمالي في الموبايل */
+    /* Remove the decorative line for this specific 3-column style */
     .footer-links h4::after,
     .footer-contact h4::after {
-        content: '';
-        display: block;
-        width: 40px;
-        height: 2px;
-        background: var(--color-primary, #dfae52);
-        margin: 8px auto 0;
-        opacity: 0.7;
+        display: none;
     }
 
-    /* Bottom Section Stack */
-    .footer-bottom {
-        flex-direction: column-reverse; 
-        padding: 24px 30px 26px 20px;
-        text-align: center;
-        font-size: 18px;
-        gap: 15px;
+    .footer-links ul,
+    .footer-contact ul {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
     }
 
+    .footer-links a,
+    .contact-item-footer {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0;
+        transition: none;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .contact-item-footer {
+        direction: ltr;
+    }
+
+    /* Bottom Section */
     .footer-divider {
-        position: absolute;
-        right: 0;
+        position: static;
         width: 100%;
+        margin: 15px 0;
+        opacity: 0.1;
+        grid-column: 1 / -1;
+        order: 4;
+    }
+
+    .footer-bottom {
+        grid-column: 1 / -1;
+        order: 6;
+        flex-direction: column;
+        padding: 10px 0 30px;
+        gap: 12px;
+        text-align: center;
+    }
+
+    .footer-legal {
+        justify-content: center;
+        font-size: 14px;
+        color: #fff;
+    }
+
+    .footer-bottom p {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.6);
     }
     
     .back-to-top {
         width: 40px;
         height: 40px;
         left: 15px;
-        bottom: 50px;
-    }
-    .social-btn-footer{
-        font-size: 15px;
-        width: 40px;
-        height: 40px;
+        bottom: 70px; /* Space for trust badge or other floating elements if any */
     }
 }
 

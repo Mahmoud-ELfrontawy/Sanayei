@@ -211,50 +211,50 @@
    ======================================== */
 @media (max-width: 768px) {
     .why-section {
-        padding: 50px 16px;
+        padding: 30px 16px; /* Reduced vertical padding */
     }
 
     .why-container {
-        gap: 35px;
+        gap: 20px; /* Tighter gap */
     }
 
     .why-stats {
-        grid-template-columns: 1fr; /* ✅ عمود واحد على الموبايل */
-        gap: 25px;
+        grid-template-columns: 1fr 1fr; /* ✅ 2 columns for compact look */
+        gap: 20px;
     }
 
     .why-card {
-        gap: 8px;
+        gap: 6px;
     }
 
     .why-icon {
-        width: 44px;
-        height: 44px;
-        font-size: 18px;
+        width: 38px;
+        height: 38px;
+        font-size: 16px;
     }
 
     .why-value {
-        font-size: 20px;
+        font-size: 18px;
     }
 
     .why-title {
-        font-size: 16px;
-        margin: 3px 0;
+        font-size: 15px;
+        margin: 2px 0;
     }
 
     .why-desc {
-        font-size: 14px;
-        line-height: 1.5;
+        font-size: 13px;
+        line-height: 1.4;
     }
 
     .why-heading {
-        font-size: 30px;
-        margin-bottom: 12px;
+        font-size: 24px;
+        margin-bottom: 8px;
     }
 
     .why-text p {
-        font-size: 19px;
-        line-height: 1.6;
+        font-size: 16px;
+        line-height: 1.5;
     }
 }
 
@@ -271,7 +271,8 @@
     }
 
     .why-stats {
-        gap: 20px;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
     }
 
     .why-card {

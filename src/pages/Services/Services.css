@@ -13,11 +13,14 @@
     font-size: 30px;
 }
 
-.services-head__title {
-    font-size: 50px;
-    font-weight: 800;
-    color: var(--color-text-main);
-    margin-bottom: 40px;
+@media (max-width: 768px) {
+    .services-head__label {
+        font-size: 18px;
+    }
+    .services-head__title {
+        font-size: 26px;
+        margin-bottom: 25px;
+    }
 }
 
 /* =========================
@@ -28,59 +31,160 @@
     display: flex;
     gap: 12px;
     align-items: center;
-    justify-content: center;
-    margin-bottom: 40px;
     flex-wrap: wrap;
-}
-
-/* =========================
-    Search Input
-========================= */
-
-.services-search {
-    display: flex;
     align-items: center;
-    background: #fff;
-    border-radius: var(--radius-card-sm);
-    padding: 6px 12px;
-    border: 1px solid var(--color-primary);
-    box-shadow: 0 6px 18px rgba(12, 14, 20, 0.04);
-    max-width: 220px;
-    width: 100%;
+    gap: 15px;
+    margin-bottom: 40px;
+    background: var(--color-bg-section);
+    padding: 20px;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
 }
 
-.services-search input {
-    border: none;
-    outline: none;
-    padding: 8px 10px;
-    font-size: 20px;
-    font-weight: bold;
-    direction: rtl;
-    width: 100%;
-    color: var(--color-primary);
+@media (max-width: 768px) {
+    .services-filters {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 15px 12px;
+        padding: 15px;
+        margin-bottom: 20px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+        border: 1px solid rgba(0,0,0,0.02);
+    }
 }
-
-/* =========================
-    Custom Select
-========================= */
 
 .services-select-wrapper {
     position: relative;
+    flex: 1;
+    min-width: 200px;
+}
+
+@media (max-width: 768px) {
+    .services-select-wrapper {
+        min-width: 0;
+        grid-column: 2;
+        grid-row: 2;
+    }
 }
 
 .services-select {
+    width: 100%;
+    height: 50px;
+    padding: 0 15px 0 40px;
+    border-radius: var(--radius-btn);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-main);
+    color: var(--color-text-main);
+    font-size: 16px;
     appearance: none;
-    padding: 14px 16px 14px 16px;
-    border-radius: var(--radius-card-sm);
-    border: 1px solid var(--color-primary);
-    background-color: #fff;
-    font-size: 20px;
-    color: var(--color-primary);
-    cursor: pointer;
-    direction: rtl;
-    width: 250px;
-    height: 60px;
-    box-shadow: 0 6px 18px rgba(12, 14, 20, 0.04);
+    transition: var(--transition-main);
+}
+
+.services-select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(95, 168, 211, 0.1);
+}
+
+.select-arrow {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+    pointer-events: none;
+}
+
+/* =========================
+    Search
+========================= */
+
+.services-search {
+    flex: 1;
+    min-width: 250px;
+}
+
+@media (max-width: 768px) {
+    .services-search {
+        min-width: 100%;
+        grid-column: 1 / -1;
+        grid-row: 1;
+    }
+}
+
+.services-search input {
+    width: 100%;
+    height: 50px;
+    padding: 0 20px;
+    border-radius: var(--radius-btn);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-main);
+    color: var(--color-text-main);
+    font-size: 16px;
+    transition: var(--transition-main);
+}
+
+.services-search input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(95, 168, 211, 0.1);
+}
+
+/* =========================
+    Reset Button
+========================= */
+
+.services-reset-btn {
+    padding: 0 20px;
+    height: 50px;
+    border-radius: var(--radius-btn);
+    background: #f1f5f9;
+    border: none;
+    color: var(--color-text-secondary);
+    font-weight: 600;
+    transition: var(--transition-main);
+}
+
+html[data-theme='dark'] .services-reset-btn {
+    background: #1e293b;
+    color: #cbd5e1;
+}
+
+.services-reset-btn:hover {
+    background: #e2e8f0;
+    color: var(--color-text-main);
+}
+
+@media (max-width: 768px) {
+    .services-reset-btn {
+        width: auto;
+        height: 45px;
+        padding: 0 24px;
+        font-size: 15px;
+        font-weight: 700;
+        grid-column: 1;
+        grid-row: 2;
+        background: var(--color-primary);
+        color: #fff;
+        border-radius: 999px; /* Pill shape like image */
+    }
+    .services-search input, .services-select {
+        height: 45px;
+        font-size: 14px;
+        border: 1px solid rgba(0,0,0,0.08); /* softer minimal border */
+    }
+}
+
+.services-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+@media (max-width: 768px) {
+    .services-container {
+        padding: 0 16px;
+    }
 }
 
 .services-select:focus {
@@ -217,8 +321,14 @@ html[data-theme="dark"] select option {
     Craftsmen Section
 ========================= */
 
-.craftsmen-section {
-    margin-top: 10px;
+.craft.services-section {
+    padding: 80px 0;
+}
+
+@media (max-width: 768px) {
+    .services-section {
+        padding: 40px 0 100px 0;
+    }
 }
 
 .craftsmen-section__title {

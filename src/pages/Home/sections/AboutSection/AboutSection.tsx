@@ -5,10 +5,11 @@ import { FaArrowLeft } from "react-icons/fa6";
 
 import bigImg from "../../../../assets/images/portfolio image 1.png";
 import smallImg from "../../../../assets/images/portfolio image 2.png";
-import mediaDot from "../../../../assets/images/dots.png";
+import MediaDots from "../../../../assets/images/dots.png";
 
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../hooks/useAuth";
+import { useIsMobile } from "../../../../hooks/useIsMobile";
 import { toast } from "react-toastify";
 
 import "./AboutSection.css";
@@ -16,6 +17,7 @@ import "./AboutSection.css";
 const AboutSection: React.FC = () => {
     const navigate = useNavigate();
     const { isAuthenticated, userType } = useAuth();
+    const isMobile = useIsMobile();
 
     const handleRequestNow = () => {
         if (!isAuthenticated) {
@@ -47,7 +49,7 @@ const AboutSection: React.FC = () => {
     };
 
     const itemVariants = {
-        hidden: { opacity: 0, y: 20 },
+        hidden: { opacity: 0, y: isMobile ? 0 : 20 },
         visible: { opacity: 1, y: 0 }
     };
 
@@ -58,7 +60,7 @@ const AboutSection: React.FC = () => {
                 <motion.div
                     className="about-media"
                     aria-hidden="true"
-                    initial={{ opacity: 0, x: -100 }}
+                    initial={{ opacity: 0, x: isMobile ? 0 : -100 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, amount: 0.5 }}
                     transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
@@ -83,7 +85,7 @@ const AboutSection: React.FC = () => {
                             decoding="async"
                         />
                         <img
-                            src={mediaDot}
+                            src={MediaDots}
                             alt=""
                             className="media-dots"
                             loading="lazy"
@@ -96,7 +98,7 @@ const AboutSection: React.FC = () => {
                 {/* Content - Sliding from Right (Positive X) */}
                 <motion.div
                     className="about-content"
-                    initial={{ opacity: 0, x: 100 }}
+                    initial={{ opacity: 0, x: isMobile ? 0 : 100 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, amount: 0.5 }}
                     transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}

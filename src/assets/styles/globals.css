@@ -12,6 +12,7 @@ body {
     background-color: var(--color-bg-main);
     color: var(--color-text-main);
     transition: background-color 0.3s ease, color 0.3s ease;
+    overflow-x: hidden; /* Prevent horizontal shifts during animations */
 }
 
 /* =========================================

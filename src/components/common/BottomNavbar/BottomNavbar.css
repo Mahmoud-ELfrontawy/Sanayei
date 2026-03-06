@@ -1,0 +1,76 @@
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 0 10px 10px 10px; /* Reduced bottom padding slightly to account for home indicator */
+  z-index: 1000;
+  box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.03);
+}
+
+[data-theme='dark'] .bottom-nav {
+  background: rgba(15, 17, 23, 0.85);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.3);
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--color-text-secondary);
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 60px;
+  position: relative;
+}
+
+.bottom-nav-item svg {
+  font-size: 20px;
+  transition: transform 0.3s ease;
+}
+
+.bottom-nav-item.active {
+  color: var(--color-primary);
+}
+
+.bottom-nav-item.active svg {
+  transform: translateY(-3px);
+}
+
+.bottom-nav-item.active::after {
+  content: '';
+  position: absolute;
+  top: -12px;
+  width: 4px;
+  height: 4px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--color-primary);
+}
+
+/* Ensure desktop doesn't show this */
+@media screen and (min-width: 768px) {
+  .bottom-nav {
+    display: none;
+  }
+}
+
+/* Adjust main content padding for mobile */
+@media screen and (max-width: 767px) {
+  body {
+    padding-bottom: 70px;
+  }
+}

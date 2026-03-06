@@ -130,8 +130,19 @@ const Header: React.FC = () => {
   return (
     <header className="header">
       <nav className="header-nav">
-        {/* Logo */}
-        <Link to="/" className={`header-logo ${isDashboardRoute ? "is-dashboard" : ""}`}>
+        {/* ================= MOBILE MENU BUTTON (Right in RTL) ================= */}
+        <div className="mobile-only">
+          <button
+            type="button"
+            className="mobile-menu-btn"
+            onClick={toggleMobileMenu}
+          >
+            <FiMenu size={28} />
+          </button>
+        </div>
+
+        {/* Logo (Desktop Only) */}
+        <Link to="/" className={`header-logo desktop-only ${isDashboardRoute ? "is-dashboard" : ""}`}>
           <img src={isDark ? logoDark : logo} alt="Sanayei Logo" />
         </Link>
 
@@ -301,77 +312,95 @@ const Header: React.FC = () => {
             </div>
           )}
 
-          {/* ================= MOBILE ICON ================= */}
-          <div className="header-mobile-actions mobile-only">
-            <button
-              type="button"
-              className="header-theme-toggle standalone mobile-standalone"
-              onClick={toggleTheme}
-              title={isDark ? "الوضع الفاتح" : "الوضع المظلم"}
-            >
-              {isDark ? <FaSun size={24} /> : <FaMoon size={24} />}
-            </button>
-            <button
-              type="button"
-              className="mobile-menu-btn"
-              onClick={toggleMobileMenu}
-            >
-              {isMobileMenuOpen ? <FiX size={26} /> : <FiMenu size={26} />}
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* ================= MOBILE MENU ================= */}
-      {isMobileMenuOpen && (
-        <div className="mobile-menu">
+        {/* ================= MOBILE ACTIONS (Left in RTL) ================= */}
+        <div className="header-mobile-actions mobile-only">
           {isAuthenticated && (
-            <div className="mobile-quick-actions">
+            <div className="mobile-top-icons">
               <Link
                 to="/dashboard/messages"
-                className={`mobile-icon-btn ${unreadTotal > 0 ? "has-unread" : ""} ${isNewMessage ? "new-arrival" : ""}`}
-                onClick={() => setIsMobileMenuOpen(false)}
+                className={`header-icon-btn mobile-top-icon ${unreadTotal > 0 ? "has-unread" : ""} ${isNewMessage ? "new-arrival" : ""}`}
               >
-                <FaCommentDots size={24} />
-                {unreadTotal > 0 && (
-                  <span className="header-notification-badge" />
-                )}
-                <span>الرسائل</span>
+                {unreadTotal > 0 && <span className="header-notification-badge" />}
+                <FaCommentDots size={22} className="icon-chat" />
               </Link>
-
               <Link
                 to="/dashboard/notifications"
-                className={`mobile-icon-btn ${unreadCount > 0 ? "has-unread" : ""}`}
-                onClick={() => setIsMobileMenuOpen(false)}
+                className={`header-icon-btn mobile-top-icon ${unreadCount > 0 ? "has-unread" : ""}`}
               >
-                <FaBell size={24} />
-                {unreadCount > 0 && (
-                  <span className="header-notification-badge" />
-                )}
-                <span>الإشعارات</span>
+                {unreadCount > 0 && <span className="header-notification-badge" />}
+                <FaBell size={22} className="icon-bell" />
               </Link>
             </div>
           )}
+        </div>
+      </div>
+    </nav>
 
+      {/* ================= MOBILE OVERLAY & MENU ================= */}
+      <div 
+        className={`mobile-overlay mobile-only ${isMobileMenuOpen ? "open" : ""}`} 
+        onClick={() => setIsMobileMenuOpen(false)} 
+        aria-hidden="true" 
+      />
+
+      <div className={`mobile-menu mobile-only ${isMobileMenuOpen ? "open" : ""}`}>
+        <div className="mobile-menu-header">
+           <div className="mobile-header-right">
+             <Link to="/" className="mobile-logo" onClick={() => setIsMobileMenuOpen(false)}>
+                <img src={isDark ? logoDark : logo} alt="Sanayei" style={{ height: '40px' }} />
+             </Link>
+             <button
+               type="button"
+               className="header-theme-toggle-mobile"
+               onClick={toggleTheme}
+               title={isDark ? "الوضع الفاتح" : "الوضع المظلم"}
+             >
+               {isDark ? <FaSun size={22} /> : <FaMoon size={22} />}
+             </button>
+           </div>
+           <button className="mobile-close-btn" onClick={() => setIsMobileMenuOpen(false)}>
+              <FiX size={26} />
+           </button>
+        </div>
+
+        {isAuthenticated && (
+          <div className="mobile-user-profile">
+            <img 
+              src={getAvatarUrl(user?.avatar, user?.name)} 
+              alt="Profile" 
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = getAvatarUrl(null, user?.name);
+              }}
+            />
+            <div className="mobile-user-info">
+              <span className="mobile-user-name">{user?.name}</span>
+              <span className="mobile-user-email">{user?.email}</span>
+            </div>
+          </div>
+        )}
+
+        <div className="mobile-menu-scrollable">
           <ul className="mobile-links">
-            {viewLinks.map((link) => (
-              <li key={link.path}>
-                <NavLink
-                  to={link.path}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {link.label}
-                </NavLink>
-              </li>
-            ))}
+            {viewLinks
+              .filter(link => !['/', '/services', '/store'].includes(link.path))
+              .map((link) => (
+                <li key={link.path}>
+                  <NavLink
+                    to={link.path}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.label}
+                  </NavLink>
+                </li>
+             ))}
           </ul>
 
           {!isAuthenticated ? (
             <div className="mobile-auth">
-              <Button to="/login" variant="primary" className="header-btn">
+              <Button to="/login" variant="primary" className="header-btn" onClick={() => setIsMobileMenuOpen(false)}>
                 اطلب الآن
               </Button>
-              <Button to="/login" variant="outline" className="header-btn">
+              <Button to="/login" variant="outline" className="header-btn" onClick={() => setIsMobileMenuOpen(false)}>
                 تسجيل الدخول
               </Button>
             </div>
@@ -395,7 +424,6 @@ const Header: React.FC = () => {
                 <span>الملف الشخصي</span>
               </Link>
 
-
               <button className="header-dropdown-item logout" onClick={handleLogout}>
                 <FaSignOutAlt size={20} />
                 <span>تسجيل الخروج</span>
@@ -403,7 +431,7 @@ const Header: React.FC = () => {
             </div>
           )}
         </div>
-      )}
+      </div>
     </header>
   );
 };
