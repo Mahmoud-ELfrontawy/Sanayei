@@ -20,6 +20,7 @@ const ForgotPasswordPage = lazy(() => import("../pages/Auth/ForgotPassword/Forgo
 const ResetPasswordPage = lazy(() => import("../pages/Auth/ResetPassword/ResetPasswordPage"));
 const RegisterPage = lazy(() => import("../pages/Auth/Register/RegisterPage"));
 const GoogleCallback = lazy(() => import("../pages/Auth/google-callback/GoogleCallback"));
+const VerifyEmailPage = lazy(() => import("../pages/Auth/VerifyEmail/VerifyEmailPage"));
 
 const ProfileMe = lazy(() => import("../pages/Profile/ProfileUser/ProfileMe"));
 const ProfileWorker = lazy(() => import("../pages/Profile/ProfileWorker/Dashboard/ProfileWorker"));
@@ -64,6 +65,7 @@ const WalletDetails = lazy(() => import("../pages/Admin/Wallets/WalletDetails"))
 const TransfersTracker = lazy(() => import("../pages/Admin/Wallets/TransfersTracker"));
 const WithdrawalsManager = lazy(() => import("../pages/Admin/Wallets/WithdrawalsManager"));
 const ContactMessages = lazy(() => import("../pages/Admin/Contact/ContactMessages"));
+const AdminMessages = lazy(() => import("../pages/Admin/Messages/AdminMessages"));
 
 const LoadingFallback = () => (
   <div style={{
@@ -113,6 +115,7 @@ const AppRouter: React.FC = () => {
             <Route path="transfers" element={<TransfersTracker />} />
             <Route path="withdrawals" element={<WithdrawalsManager />} />
             <Route path="contact-messages" element={<ContactMessages />} />
+            <Route path="messages" element={<AdminMessages />} />
           </Route>
 
           {/* ===== Main Layout ===== */}
@@ -141,6 +144,7 @@ const AppRouter: React.FC = () => {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/register-worker" element={<RegisterWorkerPage />} />
             <Route path="/register-company" element={<RegisterCompanyPage />} />
+            <Route path="/email/verify/:id/:hash" element={<VerifyEmailPage />} />
 
             {/* ===== User Profile ===== */}
             <Route path="/user/profile">

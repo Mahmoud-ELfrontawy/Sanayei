@@ -529,3 +529,161 @@
     }
 }
 
+/* 🌙 Dark Mode Overrides */
+html[data-theme="dark"] .craftsmen-header {
+    background: linear-gradient(135deg, #1e2435 0%, #060810 100%);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--color-border);
+}
+
+html[data-theme="dark"] .header-stats .stat-card {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+html[data-theme="dark"] .controls-section,
+html[data-theme="dark"] .craftsmen-table-wrapper,
+html[data-theme="dark"] .artisan-sidebar {
+    background: var(--color-bg-main);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .search-box input,
+html[data-theme="dark"] .filter-item,
+html[data-theme="dark"] .metric-item,
+html[data-theme="dark"] .info-modern-item {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .search-box input {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .filter-item select {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .craftsmen-table th {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .artisan-avatar-wrapper,
+html[data-theme="dark"] .large-avatar-wrapper {
+    background: var(--color-bg-dark);
+}
+
+html[data-theme="dark"] .status-badge.approved, 
+html[data-theme="dark"] .status-badge.active,
+html[data-theme="dark"] .status-pill.approved,
+html[data-theme="dark"] .status-pill.active { background: rgba(22, 101, 52, 0.2); color: #4ade80; border-color: rgba(74, 222, 128, 0.3); }
+
+html[data-theme="dark"] .status-badge.pending,
+html[data-theme="dark"] .status-pill.pending { background: rgba(194, 65, 12, 0.2); color: #fb923c; border-color: rgba(251, 146, 60, 0.3); }
+
+html[data-theme="dark"] .status-badge.rejected,
+html[data-theme="dark"] .status-pill.rejected { background: rgba(153, 27, 27, 0.2); color: #f87171; border-color: rgba(248, 113, 113, 0.3); }
+
+html[data-theme="dark"] .pending-row { background: rgba(251, 191, 36, 0.05); }
+
+html[data-theme="dark"] .view-btn, 
+html[data-theme="dark"] .approve-btn, 
+html[data-theme="dark"] .reject-btn {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .view-btn:hover { background: rgba(59, 130, 246, 0.1); }
+html[data-theme="dark"] .approve-btn:hover { background: rgba(16, 185, 129, 0.1); }
+html[data-theme="dark"] .reject-btn:hover { background: rgba(239, 68, 68, 0.1); }
+
+html[data-theme="dark"] .sidebar-header {
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .full-edit-btn {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+/* Identity Verification Photos */
+.identity-photos-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.id-photo-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.id-photo-item label {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--color-text-secondary);
+}
+
+.id-image-container {
+    width: 100%;
+    aspect-ratio: 3/2;
+    background: #f1f5f9;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.id-image-container:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 5px 15px rgba(95, 168, 211, 0.2);
+}
+
+.identity-verification-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+}
+
+.identity-verification-img:hover {
+    transform: scale(1.05);
+}
+
+.no-photo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.helper-text-premium {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    font-style: italic;
+    margin-top: 0.5rem;
+    display: block;
+    text-align: center;
+}
+
+/* 🌙 Dark Mode Adjustments */
+html[data-theme="dark"] .id-image-container {
+    background: var(--color-bg-dark);
+}
+
+html[data-theme="dark"] .no-photo {
+    color: var(--color-text-secondary);
+}

@@ -387,3 +387,38 @@
     transform: translateY(-50%);
     animation: pulse-badge 1.5s ease-in-out infinite;
 }
+
+/* 🌙 Dark Mode Overrides */
+html[data-theme="dark"] .admin-stats-page {
+    background: var(--color-bg-section);
+}
+
+html[data-theme="dark"] .admin-stat-card,
+html[data-theme="dark"] .admin-chart-item {
+    background: var(--color-bg-main);
+    border-color: var(--color-border);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="dark"] .admin-notif-row {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .admin-notif-row.unread {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+html[data-theme="dark"] .admin-chart-loading, 
+html[data-theme="dark"] .admin-chart-empty {
+    background: var(--color-bg-dark);
+}
+
+html[data-theme="dark"] .admin-live-mark-read {
+    background: rgba(126, 200, 240, 0.1);
+}
+
+html[data-theme="dark"] .admin-live-mark-read:hover {
+    background: var(--color-primary);
+}

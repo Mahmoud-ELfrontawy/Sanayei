@@ -17,18 +17,30 @@ export const useRegisterCompany = () => {
     try {
       const res = await registerCompany(data);
       if (res.success) {
-        toast.info(
-          "🎉 تم تسجيل حساب شركتك بنجاح!\nحسابك قيد المراجعة حالياً من قبل الإدارة — لن تتمكن من تسجيل الدخول حتى يتم اعتماده.",
-          { autoClose: 6000 }
-        );
+        toast.success("تم إنشاء الحساب! يرجى التحقق من بريدك الإلكتروني لتنشيط الحساب والانتظار لموافقة الإدارة ✅", { autoClose: 7000 });
         navigate("/login", { state: { pendingCompany: true } });
       } else {
         toast.error(res.message || "فشل تسجيل المتجر");
       }
     } catch (error: any) {
-      const errorMsg = error.response?.data?.message || "حدث خطأ أثناء التسجيل";
+      console.error("Registration error details:", error.response?.data);
+      let errorMsg = error.response?.data?.message || "حدث خطأ أثناء التسجيل";
+      
+      if (error.response?.status === 422 && error.response?.data?.errors) {
+        const errors = error.response.data.errors;
+        
+        if (errors.company_email || errors.email) {
+            errorMsg = "هذا البريد الإلكتروني مسجل بالفعل لمؤسسة أخرى ⚠️";
+        } else if (errors.company_phone_number || errors.company_whatsapp_number) {
+            errorMsg = "رقم الهاتف أو الواتساب غير صحيح أو مسجل مسبقاً 📱";
+        } else {
+            const firstKey = Object.keys(errors)[0];
+            const firstMsg = errors[firstKey][0];
+            errorMsg = `${firstMsg}`;
+        }
+      }
+      
       toast.error(errorMsg);
-      console.error("Registration error:", error);
     }
   };
 

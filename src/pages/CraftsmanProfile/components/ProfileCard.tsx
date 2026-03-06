@@ -1,5 +1,5 @@
 import React from "react";
-import { FaUserEdit } from "react-icons/fa";
+import { FaUserEdit, FaWallet } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -42,10 +42,9 @@ const ProfileCard: React.FC<Props> = ({ craftsman, isOwnProfile }) => {
       }
     });
   };
+
   return (
     <div className="craftsman-card">
-
-
       <div className="craftsman-img-wrapper">
         <img
           src={craftsman.avatarUrl || defaultAvatar}
@@ -73,6 +72,20 @@ const ProfileCard: React.FC<Props> = ({ craftsman, isOwnProfile }) => {
         ))}
       </div>
       <p className="craftsman-exp">خبرة {craftsman.experienceYears} سنوات</p>
+
+      {/* Wallet ID — shown only when available, for payment transfers */}
+      {craftsman.walletId && !isOwnProfile && (
+        <div className="craftsman-wallet-transfer-box">
+          <div className="cwt-label">
+            <FaWallet size={13} />
+            <span>رقم المحفظة للتحويل</span>
+          </div>
+          <div className="cwt-number">#{craftsman.walletId}</div>
+          <small className="cwt-hint">
+            عند الدفع، حوّل قيمة الخدمة لهذا الرقم
+          </small>
+        </div>
+      )}
 
       <div className="card-actions">
         {!isOwnProfile ? (

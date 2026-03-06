@@ -403,3 +403,33 @@
     margin-bottom: 0.5rem;
   }
 }
+
+/* 🌙 Dark Mode Overrides */
+html[data-theme="dark"] .adm-quick-link {
+    background: var(--color-bg-main);
+    border-color: var(--color-border);
+    color: var(--color-primary);
+}
+
+html[data-theme="dark"] .adm-ql-label {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .stat-card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="dark"] .stat-icon-wrapper.users { background-color: rgba(2, 132, 199, 0.15); color: #7ec8f0; }
+html[data-theme="dark"] .stat-icon-wrapper.craftsmen { background-color: rgba(22, 163, 74, 0.15); color: #4ade80; }
+html[data-theme="dark"] .stat-icon-wrapper.requests { background-color: rgba(234, 88, 12, 0.15); color: #fb923c; }
+html[data-theme="dark"] .stat-icon-wrapper.revenue { background-color: rgba(124, 58, 237, 0.15); color: #a78bfa; }
+
+html[data-theme="dark"] .adm-quick-link:hover {
+    border-color: var(--color-primary);
+    background: var(--color-bg-section);
+}
+
+html[data-theme="dark"] .dashboard-header button[style*="background: white"] {
+    background: var(--color-bg-main) !important;
+    border-color: var(--color-border) !important;
+}

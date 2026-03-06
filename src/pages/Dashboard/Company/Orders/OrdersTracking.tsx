@@ -47,13 +47,11 @@ const OrdersTracking: React.FC = () => {
             setLoadingStatus(orderId);
             const res = await updateOrderStatus(orderId, newStatus);
             if (res.success) {
-                toast.success("تم تحديث حالة الطلب");
-
                 // إشعار فوري للشركة نفسها بتأكيد التحديث
                 const arabicStatus = statusMap[newStatus]?.label || newStatus;
                 addNotification({
-                    title: "تم تحديث حالة الطلب ✅",
-                    message: `تم تغيير حالة الطلب رقم #${orderId} إلى ${arabicStatus}`,
+                    title: "تم تحديث الحالة ✅",
+                    message: `الطلب #${orderId} أصبح الآن ${arabicStatus}`,
                     type: "order_status",
                     orderId: orderId,
                     recipientId: user?.id || 0,
@@ -96,6 +94,7 @@ const OrdersTracking: React.FC = () => {
                                 <th>العنوان</th>
                                 <th>المنتجات</th>
                                 <th>الإجمالي</th>
+                                <th>طريقة الدفع</th>
                                 <th>الحالة</th>
                                 <th>الإجراء</th>
                             </tr>
@@ -123,6 +122,11 @@ const OrdersTracking: React.FC = () => {
                                         </div>
                                     </td>
                                     <td className="price-text">{parseFloat(order.total_amount).toLocaleString()} ج.م</td>
+                                    <td>
+                                        <span className={`payment-method-badge ${order.payment_method}`}>
+                                            {order.payment_method === 'wallet' ? 'المحفظة' : 'كاش'}
+                                        </span>
+                                    </td>
                                     <td>
                                         <span className={`status-badge ${order.status}`}>
                                             {statusMap[order.status]?.icon}

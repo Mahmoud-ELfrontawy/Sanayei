@@ -54,7 +54,7 @@ export const useAuth = () => {
                 return true;
             } else {
                 setState({ isLoading: false });
-                toast.error(result.error || "فشل تسجيل الدخول");
+                toast.error(result.error || "فشل تسجيل الدخول", { toastId: "auth-error" });
                 return false;
             }
         } catch (err) {

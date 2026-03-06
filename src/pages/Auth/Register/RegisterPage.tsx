@@ -10,6 +10,8 @@ import { FaGoogle } from "react-icons/fa6";
 import { RequestServiceInputSkeleton } from "../../Home/sections/RequestServiceSection/RequestServiceSkeleton";
 import TermsModal from "../../../components/ui/TermsModal/TermsModal";
 import { useState } from "react";
+import PasswordStrengthMeter from "../../../components/ui/PasswordStrengthMeter/PasswordStrengthMeter";
+import PhoneValidationMeter from "../../../components/ui/PhoneValidationMeter/PhoneValidationMeter";
 
 const RegisterPage: React.FC = () => {
   const {
@@ -57,9 +59,13 @@ const RegisterPage: React.FC = () => {
               <div className="input-group">
                 <input
                   className="auth-input"
-                  placeholder="البريد الإلكتروني"
+                  placeholder="البريد الإلكتروني (يفضل Gmail)"
                   {...register("email", {
                     required: "البريد الإلكتروني مطلوب",
+                    pattern: {
+                      value: /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
+                      message: "يرجى استخدام حساب Gmail حقيقي لضمان التوثيق"
+                    }
                   })}
                 />
                 {errors.email && (
@@ -85,7 +91,7 @@ const RegisterPage: React.FC = () => {
                   {...register("phone", {
                     required: "رقم الهاتف مطلوب",
                     pattern: {
-                      value: /^01[0-2,5][0-9]{8}$/,
+                      value: /^01[0125][0-9]{8}$/,
                       message: "رقم الهاتف غير صحيح",
                     },
                   })}
@@ -95,6 +101,7 @@ const RegisterPage: React.FC = () => {
                     {errors.phone.message}
                   </span>
                 )}
+                <PhoneValidationMeter phone={watch("phone") ?? ""} />
               </div>
             )}
 
@@ -111,8 +118,15 @@ const RegisterPage: React.FC = () => {
                     {...register("password", {
                       required: "كلمة المرور مطلوبة",
                       minLength: {
-                        value: 6,
-                        message: "6 أحرف على الأقل",
+                        value: 8,
+                        message: "كلمة المرور يجب أن تكون 8 أحرف على الأقل",
+                      },
+                      validate: (val) => {
+                        const hasLetter = /[a-zA-Z]/.test(val);
+                        const hasDigit = /[0-9]/.test(val);
+                        if (!hasLetter || !hasDigit)
+                          return "يجب أن تحتوي كلمة المرور على حروف وأرقام معاً";
+                        return true;
                       },
                     })}
                   />
@@ -131,6 +145,7 @@ const RegisterPage: React.FC = () => {
                   {errors.password.message}
                 </span>
               )}
+              <PasswordStrengthMeter password={watch("password") ?? ""} />
             </div>
 
             {/* Confirm password */}

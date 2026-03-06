@@ -80,6 +80,76 @@
   padding-bottom: 15px;
 }
 
+/* ================= Status Display Card ================= */
+.status-display-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+.status-display-card.approved {
+  background: linear-gradient(135deg, #0f172a 0%, #1a2e1a 100%);
+  border: 1px solid #16a34a44;
+}
+
+.status-display-card.pending {
+  background: linear-gradient(135deg, #1c1a0f 0%, #292310 100%);
+  border: 1px solid #ca8a0444;
+}
+
+.status-display-card.rejected {
+  background: linear-gradient(135deg, #1c0f0f 0%, #2a1010 100%);
+  border: 1px solid #dc262644;
+}
+
+.status-icon-box {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.status-display-card.approved .status-icon-box {
+  background: rgba(22, 163, 74, 0.15);
+  color: #4ade80;
+}
+
+.status-display-card.pending .status-icon-box {
+  background: rgba(202, 138, 4, 0.15);
+  color: #facc15;
+}
+
+.status-display-card.rejected .status-icon-box {
+  background: rgba(220, 38, 38, 0.15);
+  color: #f87171;
+}
+
+.status-text-content h3 {
+  font-size: 17px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.status-display-card.approved .status-text-content h3 { color: #4ade80; }
+.status-display-card.pending .status-text-content h3  { color: #facc15; }
+.status-display-card.rejected .status-text-content h3 { color: #f87171; }
+
+.status-text-content p {
+  color: #94a3b8;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Dark mode - card already has dark bg so it works in both modes */
+html[data-theme="dark"] .status-display-card {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
 .card-title {
   font-size: 19px;
   font-weight: 700;
@@ -180,6 +250,12 @@
 
 .form-group.full-width {
   grid-column: 1 / -1;
+}
+
+.phone-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .input-label {

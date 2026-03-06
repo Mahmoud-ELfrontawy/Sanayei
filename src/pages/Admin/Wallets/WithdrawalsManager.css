@@ -127,3 +127,51 @@
     border-radius: 10px;
     margin-top: 1rem;
 }
+
+/* 🌙 Dark Mode Overrides */
+html[data-theme="dark"] .withdrawals-container {
+    background: var(--color-bg-section);
+}
+
+html[data-theme="dark"] .withdrawals-header-premium {
+    background: linear-gradient(135deg, #1e2435 0%, #060810 100%);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="dark"] .request-card {
+    background: var(--color-bg-main);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .request-card:hover {
+    border-color: var(--color-primary);
+    background: var(--color-bg-section);
+}
+
+html[data-theme="dark"] .req-avatar {
+    background: var(--color-bg-dark);
+}
+
+html[data-theme="dark"] .req-name {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .req-amount {
+    color: #fb923c;
+}
+
+html[data-theme="dark"] .payout-method-badge {
+    background: var(--color-bg-dark);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .btn-reject {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.2);
+}
+
+html[data-theme="dark"] .reject-reason-input {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}

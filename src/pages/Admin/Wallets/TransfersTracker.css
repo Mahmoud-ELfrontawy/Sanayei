@@ -127,3 +127,60 @@
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+/* 🌙 Dark Mode Overrides */
+html[data-theme="dark"] .transfers-container {
+    background: var(--color-bg-section);
+}
+
+html[data-theme="dark"] .transfers-header-premium {
+    background: linear-gradient(135deg, #1e2435 0%, #060810 100%);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="dark"] .transfers-table-card {
+    background: var(--color-bg-main);
+    border: 1px solid var(--color-border);
+}
+
+html[data-theme="dark"] .history-table td {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .history-table tr td:first-child,
+html[data-theme="dark"] .history-table tr td:last-child {
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .history-table th {
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .participant-info .name,
+html[data-theme="dark"] .amount-high {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .participant-info .role-badge {
+    background: var(--color-bg-dark);
+    color: var(--color-text-muted);
+}
+
+html[data-theme="dark"] .status-badge-tx.completed { background: rgba(16, 185, 129, 0.2); color: #4ade80; }
+html[data-theme="dark"] .status-badge-tx.pending { background: rgba(194, 65, 12, 0.2); color: #fb923c; }
+
+html[data-theme="dark"] .tx-desc-text {
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .pg-btn {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .pagination-container {
+    border-color: var(--color-border);
+}

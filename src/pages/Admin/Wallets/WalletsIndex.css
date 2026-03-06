@@ -42,6 +42,7 @@
     margin-bottom: 0.5rem;
     background: linear-gradient(to right, #fff, #94a3b8);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -291,4 +292,74 @@
     margin-bottom: 2rem;
     text-align: center;
     font-weight: 600;
+}
+
+/* 🌙 Dark Mode Overrides */
+html[data-theme="dark"] .wallets-container {
+    background: var(--color-bg-section);
+}
+
+html[data-theme="dark"] .wallets-premium-header {
+    background: linear-gradient(135deg, #1e2435 0%, #060810 100%);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--color-border);
+}
+
+html[data-theme="dark"] .wallets-premium-header::after {
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+}
+
+html[data-theme="dark"] .title-area h1 {
+    background: linear-gradient(to right, #fff, #94a3b8);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+html[data-theme="dark"] .wallets-controls,
+html[data-theme="dark"] .wallets-table-wrapper {
+    background: var(--color-bg-main);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .filter-select,
+html[data-theme="dark"] .filter-input,
+html[data-theme="dark"] .action-btn,
+html[data-theme="dark"] .pg-btn {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .wallets-table th {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .wallets-table td {
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .wallets-table tr:hover {
+    background: var(--color-bg-section);
+}
+
+html[data-theme="dark"] .owner-avatar {
+    background: var(--color-bg-dark);
+    color: var(--color-text-muted);
+}
+
+html[data-theme="dark"] .owner-name,
+html[data-theme="dark"] .balance-cell {
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .type-badge.user { background: rgba(3, 105, 161, 0.2); color: #7ec8f0; }
+html[data-theme="dark"] .type-badge.craftsman { background: rgba(146, 64, 14, 0.2); color: #fb923c; }
+html[data-theme="dark"] .type-badge.company { background: rgba(109, 40, 217, 0.2); color: #a5b4fc; }
+html[data-theme="dark"] .type-badge.admin { background: rgba(21, 128, 61, 0.2); color: #4ade80; }
+
+html[data-theme="dark"] .filter-group label {
+    color: var(--color-text-secondary);
 }

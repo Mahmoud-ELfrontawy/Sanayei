@@ -6,6 +6,7 @@ import { MdEdit } from "react-icons/md";
 import MapPicker from "../../../components/MapPicker";
 import "./Profile.css";
 import { FaCamera } from "react-icons/fa6";
+import PhoneValidationMeter from "../../../components/ui/PhoneValidationMeter/PhoneValidationMeter";
 
 export interface BaseProfileData {
     name: string;
@@ -97,7 +98,16 @@ const ProfileFormBase = <T extends BaseProfileData>({
                 </div>
                 <div className="form-grid">
                     <Input value={data.name} placeholder="الاسم بالكامل" onChange={v => setData({ ...data, name: v })} />
-                    <Input value={data.phone} placeholder="رقم الهاتف" ltr onChange={v => setData({ ...data, phone: v })} />
+                    <div className="phone-input-wrapper">
+                        <Input
+                            value={data.phone}
+                            placeholder="رقم الهاتف"
+                            ltr
+                            maxLength={11}
+                            onChange={v => setData({ ...data, phone: v.replace(/[^0-9]/g, "") })}
+                        />
+                        <PhoneValidationMeter phone={data.phone} />
+                    </div>
                     <ReadOnlyInput value={data.email} />
                     <Input value={data.birth_date || ""} placeholder="تاريخ الميلاد" type="date" onChange={v => setData({ ...data, birth_date: v })} />
                     {!isCraftsman && (
@@ -270,13 +280,14 @@ const ProfileFormBase = <T extends BaseProfileData>({
 
 export default ProfileFormBase;
 
-const Input = ({ value, onChange, placeholder, ltr, type = "text" }: { value: string; onChange: (v: string) => void; placeholder?: string; ltr?: boolean; type?: string }) => (
+const Input = ({ value, onChange, placeholder, ltr, type = "text", maxLength }: { value: string; onChange: (v: string) => void; placeholder?: string; ltr?: boolean; type?: string; maxLength?: number }) => (
     <div className="form-group">
         <div className="input-line">
             <input
                 type={type}
                 value={value}
                 placeholder={placeholder}
+                maxLength={maxLength}
                 onChange={e => onChange(e.target.value)}
                 className={`custom-input ${ltr ? "ltr-text" : ""}`}
             />

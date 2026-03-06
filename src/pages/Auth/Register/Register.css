@@ -1,27 +1,35 @@
 /* ===== Register Specific Overrides ===== */
 
+.auth-illustration {
+    overflow: visible !important; /* Allow image to overlap other areas */
+}
+
 .register-img-custom {
-    max-width: 280px;
-    transform: translateX(-30px);
+    position: relative; /* Make z-index work */
+    z-index: 100;
+    max-width: 250px; /* Slightly larger to look better */
+    transform: translate(-60px, 200px); /* Move it over the form and down slightly towards the button */
+    pointer-events: none; /* User can click inputs beneath the image */
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.2)); /* Professional touch */
 }
 
 /* ===== Responsive ===== */
 @media (max-width: 1024px) {
-  .register-img-custom {
-    max-width: 220px;
-    transform: translateX(-15px);
-  }
+    .register-img-custom {
+        max-width: 280px;
+        transform: translate(-40px, 20px);
+    }
 }
 
 @media (max-width: 900px) {
-  .register-img-custom {
-    max-width: 200px;
-    transform: none;
-  }
+    .register-img-custom {
+        max-width: 250px;
+        transform: translateY(20px);
+    }
 }
 
 @media (max-width: 500px) {
-  .register-img-custom {
-    display: none;
-  }
+    .register-img-custom {
+        display: none;
+    }
 }

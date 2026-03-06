@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -105,8 +105,9 @@ const RequestServiceSection: React.FC = () => {
             return;
         }
 
+        const paymentMethod = data.payment_method || "cash";
+
         try {
-            // ✅ Send service request with user_id & full info
             const payload = {
                 // 🔥 User Details
                 user_id: user?.id ? Number(user.id) : null,
@@ -122,7 +123,10 @@ const RequestServiceSection: React.FC = () => {
                 // Service & Craftsman Selection
                 service_type: Number(data.service_type),
                 craftsman_id: Number(data.industrial_type),
-                industrial_type: Number(data.industrial_type), // Fallback
+                industrial_type: Number(data.industrial_type),
+
+                // Payment
+                payment_method: paymentMethod,
             };
 
             // Remove undefined values
@@ -139,7 +143,7 @@ const RequestServiceSection: React.FC = () => {
             // 1. Notification for the Craftsman (New Request)
             addNotification({
                 title: "طلب خدمة جديد 🛠️",
-                message: `لديك طلب جديد لخدمة ${data.service_name} من ${payload.name}.`,
+                message: `طلب لخدمة ${data.service_name} من ${payload.name}`,
                 recipientId: payload.craftsman_id,
                 recipientType: "craftsman",
                 type: "order_request",
@@ -148,8 +152,8 @@ const RequestServiceSection: React.FC = () => {
 
             // 2. Notification for the User (Confirmation)
             addNotification({
-                title: "تم إرسال طلبك بنجاح ✅",
-                message: `طلبك لخدمة ${data.service_name} هو الآن (قيد الانتظار). سيتواصل معك ${data.industrial_name} قريباً.`,
+                title: "تم الإرسال بنجاح ✅",
+                message: `طلب ${data.service_name} قيد الانتظار حالياً — طريقة الدفع: ${paymentMethod === 'wallet' ? 'محفظة' : 'نقدي'}`,
                 recipientId: payload.user_id!,
                 recipientType: "user",
                 type: "order_status",
@@ -163,10 +167,16 @@ const RequestServiceSection: React.FC = () => {
                 ...data,
                 id: serverId,
                 status: "pending",
+                payment_method: paymentMethod,
                 createdAt: new Date().toISOString(),
             };
             localStorage.setItem("myOrders", JSON.stringify([newOrder, ...oldOrders]));
 
+            // ✅ Store payment method in a dedicated map: { orderId: paymentMethod }
+            // This is used by MyOrdersPage to show correct payment method even if API doesn't return it
+            const paymentMap = JSON.parse(localStorage.getItem("orderPaymentMethods") || "{}");
+            paymentMap[String(serverId)] = paymentMethod;
+            localStorage.setItem("orderPaymentMethods", JSON.stringify(paymentMap));
 
             form.reset();
             navigate("/orders");

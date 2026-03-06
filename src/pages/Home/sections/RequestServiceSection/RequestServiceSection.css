@@ -688,3 +688,219 @@ html[data-theme="dark"] .req-input::-webkit-calendar-picker-indicator {
     filter: invert(1);
 }
 
+/* ========================================
+   Craftsman Wallet ID Box (After Selection)
+   ======================================== */
+.craftsman-wallet-id-box {
+    margin: 10px 0;
+    background: linear-gradient(135deg, #0f172a, #1e3a5f);
+    border-radius: 12px;
+    padding: 14px 18px;
+    text-align: center;
+    color: #fff;
+    direction: rtl;
+}
+
+.cwid-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.6);
+    font-weight: 600;
+    margin-bottom: 6px;
+    letter-spacing: 0.3px;
+}
+
+.cwid-icon {
+    color: #5FA8D3;
+}
+
+.cwid-number {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #5FA8D3;
+    font-family: monospace;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+}
+
+.cwid-note {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.45);
+    margin: 0;
+}
+
+/* ========================================
+   Payment Method Section (Premium UI)
+   ======================================== */
+.payment-method-section {
+    margin: 24px 0;
+    direction: rtl;
+}
+
+.payment-header-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.payment-method-label {
+    display: block;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--color-text-accent);
+}
+
+.payment-method-subtitle {
+    font-size: 1.1rem;
+    color: var(--color-text-secondary);
+}
+
+.payment-method-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.payment-option {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-card-sm);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--color-bg-main);
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-option input[type="radio"] {
+    display: none;
+}
+
+.payment-option:hover {
+    border-color: var(--color-primary-light);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(95, 168, 211, 0.12);
+}
+
+.payment-option.active {
+    border-color: var(--color-primary);
+    background: rgba(95, 168, 211, 0.05);
+}
+
+.pm-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-section);
+    transition: all 0.3s;
+}
+
+.payment-option.active .pm-icon-wrapper {
+    background: var(--color-primary);
+}
+
+.pm-icon {
+    font-size: 20px;
+    color: var(--color-text-secondary);
+}
+
+.payment-option.active .pm-icon {
+    color: #fff;
+}
+
+.pm-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.pm-text strong {
+    font-size: 1.2rem;
+    color: var(--color-text-main);
+    font-weight: 800;
+}
+
+.pm-text small {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+}
+
+.pm-check {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    color: var(--color-primary);
+    font-size: 1.3rem;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.payment-option.active .pm-check {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.wallet-pay-note {
+    margin-top: 20px;
+    background: rgba(95, 168, 211, 0.08);
+    border: 1px dashed var(--color-primary);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.note-icon {
+    font-size: 1.2rem;
+}
+
+.wallet-pay-note p {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Dark mode overrides */
+html[data-theme="dark"] .payment-option {
+    background: var(--color-bg-dark);
+}
+
+html[data-theme="dark"] .payment-option:hover {
+    background: #1e293b;
+}
+
+html[data-theme="dark"] .payment-option.active {
+    background: rgba(95, 168, 211, 0.1);
+}
+
+html[data-theme="dark"] .pm-icon-wrapper {
+    background: #1e293b;
+}
+
+html[data-theme="dark"] .wallet-pay-note {
+    background: rgba(95, 168, 211, 0.05);
+}
+
+@media (max-width: 768px) {
+    .payment-method-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .payment-option {
+        padding: 16px;
+    }
+}

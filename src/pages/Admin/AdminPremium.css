@@ -247,3 +247,40 @@
         padding: 1rem;
     }
 }
+
+/* 🌙 Dark Mode Overrides */
+html[data-theme="dark"] .services-premium-header {
+    background: linear-gradient(135deg, #1e2435 0%, #060810 100%);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--color-border);
+}
+
+html[data-theme="dark"] .services-controls,
+html[data-theme="dark"] .services-table-wrapper {
+    background: var(--color-bg-main);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .search-input,
+html[data-theme="dark"] .action-btn,
+html[data-theme="dark"] .admin-select {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}
+
+html[data-theme="dark"] .services-table th {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .services-table td {
+    border-color: var(--color-bg-section);
+}
+
+html[data-theme="dark"] .action-btn {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    color: var(--color-text-main);
+}

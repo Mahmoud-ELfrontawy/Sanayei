@@ -30,13 +30,13 @@ export const useRegister = () => {
                 password_confirmation: data.password_confirmation,
             });
 
-            if (res?.token) {
-                localStorage.setItem("token", res.token);
-                localStorage.setItem("userType", "user"); // Default for this register
-                if (res.data?.id) localStorage.setItem("user_id", res.data.id.toString());
-                
-                setToastAfterReload("تم إنشاء الحساب بنجاح 🎉");
-                window.location.replace("/"); // Go to home/dashboard directly
+            if (res?.status) {
+                setToastAfterReload(res.message || "تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني لتنشيط الحساب. 📧");
+                window.location.replace("/login");
+            } else if (res?.token) {
+                // Fallback for old behavior if needed, but preferred is redirect to login
+                setToastAfterReload("تم إنشاء الحساب! يرجى تفعيل بريدك الإلكتروني.");
+                window.location.replace("/login");
             } else {
                 setToastAfterReload("تم إنشاء الحساب بنجاح 🎉");
                 window.location.replace("/login");
@@ -47,8 +47,16 @@ export const useRegister = () => {
             
             if (error.response?.data?.errors) {
                 const errors = error.response.data.errors;
-                const firstError = Object.values(errors)[0] as string[];
-                message = firstError[0] || message;
+                
+                // Check for specific field errors for better Arabic messages
+                if (errors.email) {
+                    message = "هذا البريد الإلكتروني مسجل بالفعل ⚠️ يرجى استخدام بريد آخر أو تسجيل الدخول.";
+                } else if (errors.phone) {
+                    message = "رقم الهاتف غير صحيح أو مسجل مسبقاً 📱 يرجى التأكد من كتابة 11 رقم تبدأ بـ 01";
+                } else {
+                    const firstError = Object.values(errors)[0] as string[];
+                    message = firstError[0] || message;
+                }
             } else if (error.response?.data?.message) {
                 message = error.response.data.message;
             }

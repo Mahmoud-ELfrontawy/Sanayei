@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import type { UseFormReturn } from "react-hook-form";
 
 import type { ServiceRequestPayload } from "../../../../constants/serviceRequest";
@@ -7,7 +8,7 @@ import type { Governorate } from "../../../../Api/serviceRequest/governorates.ap
 import type { Sanaei } from "../../../../Api/serviceRequest/sanaei.api";
 
 import { Link } from "react-router-dom";
-import { FaUser } from "react-icons/fa";
+import { FaUser, FaWallet, FaMoneyBillWave, FaCheckCircle } from "react-icons/fa";
 import { getTechnicianById } from "../../../../Api/technicians.api";
 import { getAvatarUrl } from "../../../../utils/imageUrl";
 import { formatTimeAgo } from "../../../../utils/timeAgo";
@@ -389,6 +390,17 @@ const RequestServiceForm: React.FC<Props> = ({
                         </div>
                     )}
 
+                    {/* Craftsman Wallet ID — shown after selection */}
+                    {selectedCraftsmanDetails?.wallet_id && (
+                        <div className="craftsman-wallet-id-box">
+                            <div className="cwid-header">
+                                <FaWallet className="cwid-icon" />
+                                <span>رقم محفظة الصنايعي</span>
+                            </div>
+                            <div className="cwid-number">#{selectedCraftsmanDetails.wallet_id}</div>
+                            <p className="cwid-note">سيتم تحويل قيمة الخدمة لهذا الرقم عند القبول</p>
+                        </div>
+                    )}
 
                     {errors.industrial_type && (
                         <span className="form-error">
@@ -409,6 +421,78 @@ const RequestServiceForm: React.FC<Props> = ({
                         readOnly
                         value={`${watch("price")} جنيه`}
                     />
+                </div>
+            )}
+
+
+            {/* طريقة الدفع */}
+            {!showSkeleton && (
+                <div className="payment-method-section">
+                    <div className="payment-header-group">
+                        <label className="payment-method-label">طريقة الدفع</label>
+                        <span className="payment-method-subtitle">اختر الوسيلة المناسبة لإتمام طلبك</span>
+                    </div>
+
+                    <div className="payment-method-options">
+                        <label
+                            className={`payment-option ${watch("payment_method") === "wallet" || !watch("payment_method")
+                                ? "active"
+                                : ""
+                                }`}
+                        >
+                            <input
+                                type="radio"
+                                value="wallet"
+                                {...register("payment_method")}
+                                defaultChecked
+                            />
+                            <div className="pm-icon-wrapper">
+                                <FaWallet className="pm-icon" />
+                            </div>
+                            <div className="pm-text">
+                                <strong>الدفع بالمحفظة</strong>
+                                <small>دفع آمن عبر التطبيق بعد الاتفاق</small>
+                            </div>
+                            <div className="pm-check">
+                                <FaCheckCircle />
+                            </div>
+                        </label>
+
+                        <label
+                            className={`payment-option ${watch("payment_method") === "cash" ? "active" : ""
+                                }`}
+                        >
+                            <input
+                                type="radio"
+                                value="cash"
+                                {...register("payment_method")}
+                            />
+                            <div className="pm-icon-wrapper">
+                                <FaMoneyBillWave className="pm-icon" />
+                            </div>
+                            <div className="pm-text">
+                                <strong>الدفع كاش</strong>
+                                <small>دفع مباشر للصنايعي عند الزيارة</small>
+                            </div>
+                            <div className="pm-check">
+                                <FaCheckCircle />
+                            </div>
+                        </label>
+                    </div>
+
+                    <AnimatePresence mode="wait">
+                        {watch("payment_method") === "wallet" && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="wallet-pay-note"
+                            >
+                                <div className="note-icon">💡</div>
+                                <p>عند اختيار المحفظة، ستتمكن من تحويل المبلغ للصنايعي بسهولة من داخل الدردشة بعد اتفاقكم على السعر النهائي.</p>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
             )}
 

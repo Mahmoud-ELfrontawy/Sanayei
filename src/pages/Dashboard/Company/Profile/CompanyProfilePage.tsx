@@ -3,6 +3,7 @@ import { FiUpload, FiSave, FiInfo, FiCheckCircle, FiClock, FiAlertCircle } from 
 import { toast } from "react-toastify";
 import { useCompanyProfile } from "./useCompanyProfile";
 import { useAuth } from "../../../../hooks/useAuth";
+import PhoneValidationMeter from "../../../../components/ui/PhoneValidationMeter/PhoneValidationMeter";
 import "./CompanyProfile.css";
 
 const CompanyProfilePage: React.FC = () => {
@@ -102,11 +103,21 @@ const CompanyProfilePage: React.FC = () => {
                         </div>
                         <div className="input-field">
                             <label>رقم الهاتف</label>
-                            <input {...register("company_phone_number")} placeholder="رقم الهاتف" />
+                            <input
+                                {...register("company_phone_number")}
+                                placeholder="رقم الهاتف"
+                                maxLength={11}
+                            />
+                            <PhoneValidationMeter phone={watch("company_phone_number") ?? ""} />
                         </div>
                         <div className="input-field">
                             <label>رقم الواتساب</label>
-                            <input {...register("company_whatsapp_number")} placeholder="رقم الواتساب" />
+                            <input
+                                {...register("company_whatsapp_number")}
+                                placeholder="رقم الواتساب"
+                                maxLength={11}
+                            />
+                            <PhoneValidationMeter phone={watch("company_whatsapp_number") ?? ""} />
                         </div>
                     </div>
                 </div>
