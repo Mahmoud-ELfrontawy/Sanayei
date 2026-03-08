@@ -28,6 +28,7 @@ const ProfileReviews = lazy(() => import("../pages/Profile/Reviews/ProfileReview
 const EditProfileLayout = lazy(() => import("../layouts/EditProfileLayout"));
 const DashboardLayout = lazy(() => import("../layouts/DashboardLayout"));
 const Store = lazy(() => import("../pages/Store/Store"));
+const PaymentResult = lazy(() => import("../pages/Auth/PaymentResult/PaymentResult"));
 const MyOrdersPage = lazy(() => import("../pages/Orders/MyOrdersPage"));
 const RequestServiceSection = lazy(() => import("../pages/Home/sections/RequestServiceSection/RequestServiceSection"));
 const RegisterWorkerPage = lazy(() => import("../pages/Auth/Worker/Register/RegisterWorkerPage"));
@@ -133,6 +134,7 @@ const AppRouter: React.FC = () => {
             <Route path="/terms" element={<TermsOfUse />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/profile" element={<ProfileMe />} />
+            <Route path="/payment-result" element={<PaymentResult />} />
             <Route path="/request-service" element={<RequestServiceSection />} />
             <Route path="/craftsman/:id" element={<CraftsmanProfilePage />} />
             <Route path="/user/:id" element={<UserProfilePage />} />
