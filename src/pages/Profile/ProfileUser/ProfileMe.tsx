@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import FormSkeleton from "../base/FormSkeleton";
 import { useNavigate, Link } from "react-router-dom";
 import { FiAlertCircle } from "react-icons/fi";
+import ProfileCompletionMeter from "../../../components/ui/ProfileCompletion/ProfileCompletionMeter";
 
 interface UserState {
     name: string;
@@ -175,6 +176,9 @@ const ProfileUser = () => {
 
     return (
         <div className="profile-user-page">
+
+            <ProfileCompletionMeter type="user" data={user} />
+
             {isBlocked && (
                 <div className="approval-warning-banner blocked" style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <FiAlertCircle />

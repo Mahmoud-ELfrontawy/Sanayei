@@ -93,20 +93,30 @@ const WalletPage: React.FC = () => {
             }
 
         } catch (error: any) {
+            const isRecharge = window.location.search.includes("status=success") ||
+                document.referrer.includes("paymob");
+
             // Handle 401 gracefully, especially right after redirect
-            if (error.response?.status === 401 && !isRetry) {
-                console.warn("Retrying wallet fetch after 401...");
-                setTimeout(() => fetchData(true), 2000);
-                return;
+            if (error.response?.status === 401) {
+                if (!isRetry) {
+                    console.warn("Transient 401 detected (Role: " + role + "). Retrying in 2s...");
+                    setTimeout(() => fetchData(true), 2000);
+                    return;
+                }
+                // If it's a recharge and we already retried, maybe the session is truly lost or 
+                // the role/token sync is failing. Don't clear EVERYTHING if we still have a token.
+                const token = authStorage.getToken();
+                if (token && isRecharge) {
+                    console.error("Persistent 401 during recharge. User might need to refresh manually.");
+                    toast.warning("جلسة العمل قديمة، يرجى تحديث الصفحة يدوياً إذا لم يظهر الرصيد.");
+                }
             }
 
             console.error("Failed to fetch wallet data", error);
             if (error.response?.status === 404 || error.response?.data?.message?.includes("wallet")) {
                 setData(null);
-            } else {
-                if (error.response?.status !== 401) {
-                    toast.error("فشل في تحميل بيانات المحفظة");
-                }
+            } else if (error.response?.status !== 401) {
+                toast.error("فشل في تحميل بيانات المحفظة");
                 setData(null);
             }
         } finally {
@@ -135,10 +145,10 @@ const WalletPage: React.FC = () => {
 
         if (isAuthenticated) {
             if (status === "success") {
-                toast.success("تم شحن الرصيد بنجاح! يتم الآن تحديث محفظتك...");
+                toast.success("تم شحن الرصيد بنجاح! يتم الآن تحديث محفظتك خلال 5 ثوانٍ...");
                 window.history.replaceState({}, document.title, window.location.pathname);
-                // Give the webhook and auth profile retry enough time to finish before fetching
-                setTimeout(() => fetchData(), 3500);
+                // Give the webhook and auth profile retry enough time (5s) to finish before fetching
+                setTimeout(() => fetchData(), 5000);
             } else {
                 fetchData();
                 if (status === "failed") {

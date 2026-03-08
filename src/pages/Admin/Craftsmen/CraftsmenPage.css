@@ -679,11 +679,174 @@ html[data-theme="dark"] .full-edit-btn {
     text-align: center;
 }
 
-/* 🌙 Dark Mode Adjustments */
-html[data-theme="dark"] .id-image-container {
-    background: var(--color-bg-dark);
+/* Admin Control Card */
+.admin-control-card {
+    background: #f1f5f9;
+    padding: 1.5rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    border: 1px solid var(--color-border);
 }
 
-html[data-theme="dark"] .no-photo {
+.admin-control-card .s-title {
+    margin-bottom: 1rem;
+    border-right-color: var(--color-primary);
+}
+
+.control-group {
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.control-group label {
+    font-size: 0.85rem;
+    font-weight: 800;
     color: var(--color-text-secondary);
+}
+
+.admin-select, .admin-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background: white;
+    font-weight: 700;
+    color: var(--color-text-accent);
+    font-family: inherit;
+}
+
+.admin-textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.toggle-group {
+    flex-direction: row !important;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid var(--color-border);
+}
+
+.toggle-info p {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
+/* Switch / Toggle Button */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: var(--color-primary);
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px var(--color-primary);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.save-status-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 1rem;
+}
+
+.save-status-btn:hover:not(:disabled) {
+    background: var(--color-text-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.save-status-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Activity Dot */
+.sub-details {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.activity-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.activity-dot.active { background: #10b981; box-shadow: 0 0 8px #10b981; }
+.activity-dot.inactive { background: #ef4444; }
+
+/* 🌙 Dark Mode Adjustments */
+html[data-theme="dark"] .admin-control-card {
+    background: var(--color-bg-section);
+}
+
+html[data-theme="dark"] .admin-select, 
+html[data-theme="dark"] .admin-textarea,
+html[data-theme="dark"] .toggle-group {
+    background: var(--color-bg-dark);
+    border-color: var(--color-border);
+    color: white;
+}
+
+html[data-theme="dark"] .slider {
+    background-color: #334155;
 }

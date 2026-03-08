@@ -4,13 +4,9 @@ import {
     FaEdit,
     FaEye,
     FaCheckCircle,
-    FaTimesCircle,
     FaStar,
-    FaClock,
     FaWrench,
-    FaBriefcase,
     FaDollarSign,
-    FaExternalLinkAlt,
     FaFilter,
     FaTimes,
     FaIdCard
@@ -43,6 +39,8 @@ interface CraftsmanData {
     completion_rate: number;
     front_identity_photo?: string;
     back_identity_photo?: string;
+    is_active: boolean;
+    rejection_reason?: string;
 }
 
 const CraftsmenPage: React.FC = () => {
@@ -57,6 +55,12 @@ const CraftsmenPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
+    // Advanced Status State
+    const [editStatus, setEditStatus] = useState<'pending' | 'approved' | 'rejected' | 'blocked'>('pending');
+    const [editIsActive, setEditIsActive] = useState(false);
+    const [rejectionReason, setRejectionReason] = useState('');
+    const [isSavingStatus, setIsSavingStatus] = useState(false);
+
     const fetchCraftsmen = async () => {
         setLoading(true);
         try {
@@ -67,11 +71,9 @@ const CraftsmenPage: React.FC = () => {
             };
             const response = await adminCraftsmenApi.getAllCraftsmen(params);
 
-            // Handle both wrapped {data: {...}} and direct {...} response formats
             const paginationObj = response.data.data || response.data;
             const allCraftsmen = paginationObj?.data || [];
 
-            // Map to the interface
             const mapped: CraftsmanData[] = allCraftsmen.map((u: any) => ({
                 id: (u.id || '').toString(),
                 name: u.name || 'بدون اسم',
@@ -92,7 +94,9 @@ const CraftsmenPage: React.FC = () => {
                 bio: u.bio || u.description,
                 completion_rate: parseInt(u.completion_rate || 0),
                 front_identity_photo: u.front_identity_photo,
-                back_identity_photo: u.back_identity_photo
+                back_identity_photo: u.back_identity_photo,
+                is_active: u.is_active === 1 || u.is_active === true,
+                rejection_reason: u.rejection_reason
             }));
 
             setCraftsmen(mapped);
@@ -110,33 +114,41 @@ const CraftsmenPage: React.FC = () => {
         fetchCraftsmen();
     }, [currentPage, searchTerm, selectedStatus]);
 
-    const handleUpdateStatus = async (id: string, action: 'approve' | 'reject' | 'block') => {
-        const actionText = action === 'approve' ? 'تفعيل' : (action === 'reject' ? 'رفض' : 'حظر');
-
+    const handleSaveAdvancedStatus = async () => {
+        if (!selectedCraftsman) return;
+        setIsSavingStatus(true);
         try {
-            switch (action) {
-                case 'approve':
-                    await adminCraftsmenApi.verifyCraftsman(id);
-                    toast.success("تم تنشيط الحساب بنجاح");
-                    break;
-                case 'reject':
-                    await adminCraftsmenApi.rejectCraftsman(id);
-                    toast.success("تم رفض الطلب");
-                    break;
-                case 'block':
-                    await adminCraftsmenApi.toggleCraftsmanBlock(id);
-                    toast.success("تم تحديث حالة الحظر");
-                    break;
+            // 1. Handle Status Changes via specific endpoints provided in backend
+            if (editStatus === 'approved' && selectedCraftsman.status !== 'approved') {
+                await adminCraftsmenApi.verifyCraftsman(selectedCraftsman.id);
+            } else if (editStatus === 'rejected' && selectedCraftsman.status !== 'rejected') {
+                await adminCraftsmenApi.rejectCraftsman(selectedCraftsman.id, rejectionReason || undefined);
+            } else if (editStatus === 'blocked' && selectedCraftsman.status !== 'blocked') {
+                await adminCraftsmenApi.toggleCraftsmanBlock(selectedCraftsman.id);
             }
-            fetchCraftsmen(); // Refresh data to get updated states from backend
 
-        } catch (err) {
-            toast.error(`فشل ${actionText} الحساب`);
+            // 2. Handle Activity Toggle (is_active) independently
+            // Since there's no generic update, we use toggle-block for activity changes 
+            // if the status hasn't already been handled above.
+            if (editIsActive !== selectedCraftsman.is_active && editStatus === selectedCraftsman.status) {
+                await adminCraftsmenApi.toggleCraftsmanBlock(selectedCraftsman.id);
+            }
+
+            toast.success("تم تحديث بيانات الحساب بنجاح");
+            fetchCraftsmen();
+            setIsSidebarOpen(false);
+        } catch (err: any) {
+            toast.error(err.response?.data?.message || "فشل تحديث بيانات الحساب");
+        } finally {
+            setIsSavingStatus(false);
         }
     };
 
     const openSidebar = (craftsman: CraftsmanData) => {
         setSelectedCraftsman(craftsman);
+        setEditStatus(craftsman.status);
+        setEditIsActive(craftsman.is_active);
+        setRejectionReason(craftsman.rejection_reason || '');
         setIsSidebarOpen(true);
     };
 
@@ -145,9 +157,7 @@ const CraftsmenPage: React.FC = () => {
             c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
             c.phone.includes(searchTerm);
-
         const matchesStatus = selectedStatus === 'all' || c.status === selectedStatus;
-
         const matchesSpecialty = selectedSpecialty === 'all' || c.specialty === selectedSpecialty;
         return matchesSearch && matchesStatus && matchesSpecialty;
     });
@@ -198,6 +208,7 @@ const CraftsmenPage: React.FC = () => {
                             <option value="pending">بانتظار المراجعة</option>
                             <option value="approved">نشط</option>
                             <option value="rejected">مرفوض</option>
+                            <option value="blocked">محظور</option>
                         </select>
                     </div>
                     <div className="filter-item">
@@ -241,7 +252,10 @@ const CraftsmenPage: React.FC = () => {
                                         </div>
                                         <div className="artisan-details">
                                             <span className="name">{craftsman.name}</span>
-                                            <span className="id">ID: {craftsman.id}</span>
+                                            <div className="sub-details">
+                                                <span className="id">ID: {craftsman.id}</span>
+                                                <span className={`activity-dot ${craftsman.is_active ? 'active' : 'inactive'}`} title={craftsman.is_active ? 'نشط حالياً' : 'غير مفعل'}></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
@@ -266,19 +280,12 @@ const CraftsmenPage: React.FC = () => {
                                     </span>
                                 </td>
                                 <td className="actions-cell">
-                                    <button className="view-btn" onClick={() => openSidebar(craftsman)} title="عرض التفاصيل">
+                                    <button className="view-btn" onClick={() => openSidebar(craftsman)} title="عرض التحكم المتقدم">
+                                        <FaEdit size={18} />
+                                    </button>
+                                    <button className="view-btn secondary" onClick={() => window.open(`/craftsman/${craftsman.id}`, '_blank')} title="معاينة الملف">
                                         <FaEye size={18} />
                                     </button>
-                                    {craftsman.status === 'pending' && (
-                                        <>
-                                            <button className="approve-btn" onClick={() => handleUpdateStatus(craftsman.id, 'approve')} title="تنشيط">
-                                                <FaCheckCircle size={18} />
-                                            </button>
-                                            <button className="reject-btn" onClick={() => handleUpdateStatus(craftsman.id, 'reject')} title="رفض">
-                                                <FaTimesCircle size={18} />
-                                            </button>
-                                        </>
-                                    )}
                                 </td>
                             </tr>
                         ))}
@@ -286,35 +293,21 @@ const CraftsmenPage: React.FC = () => {
                 </table>
             </div>
 
-            {/* Pagination Controls */}
             {totalPages > 1 && (
                 <div className="pagination-container">
-                    <button
-                        disabled={currentPage === 1}
-                        onClick={() => setCurrentPage(prev => prev - 1)}
-                        className="pg-btn"
-                    >
-                        السابق
-                    </button>
+                    <button disabled={currentPage === 1} onClick={() => setCurrentPage(prev => prev - 1)} className="pg-btn">السابق</button>
                     <span className="pg-info">صفحة {currentPage} من {totalPages}</span>
-                    <button
-                        disabled={currentPage === totalPages}
-                        onClick={() => setCurrentPage(prev => prev + 1)}
-                        className="pg-btn"
-                    >
-                        التالي
-                    </button>
+                    <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(prev => prev + 1)} className="pg-btn">التالي</button>
                 </div>
             )}
 
-            {/* Artisan Detail Sidebar */}
             {isSidebarOpen && selectedCraftsman ? (
                 <>
                     <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>
                     <div className="artisan-sidebar">
                         <div className="sidebar-header">
                             <button className="close-btn" onClick={() => setIsSidebarOpen(false)}><FaTimes size={24} /></button>
-                            <h3>تفاصيل الملف المهني</h3>
+                            <h3>إدارة حساب الصنايعي</h3>
                         </div>
 
                         <div className="sidebar-content">
@@ -324,138 +317,130 @@ const CraftsmenPage: React.FC = () => {
                                         src={getAvatarUrl(selectedCraftsman.avatar, selectedCraftsman.name)}
                                         alt={selectedCraftsman.name}
                                         className="large-avatar-img"
-                                        onError={(e) => {
-                                            (e.currentTarget as HTMLImageElement).src = getAvatarUrl(null, selectedCraftsman.name);
-                                        }}
                                     />
                                 </div>
                                 <h4>{selectedCraftsman.name}</h4>
                                 <span className={`status-pill ${selectedCraftsman.status}`}>
-                                    {selectedCraftsman.status === 'approved' ? 'حساب نشط' :
-                                        selectedCraftsman.status === 'rejected' ? 'حساب مرفوض' :
-                                            selectedCraftsman.status === 'blocked' ? 'حساب محظور' : 'بانتظار التفعيل'}
+                                    {selectedCraftsman.status === 'approved' ? 'حساب معتمد' :
+                                        selectedCraftsman.status === 'rejected' ? 'طلب مرفوض' :
+                                            selectedCraftsman.status === 'blocked' ? 'محظور إدارياً' : 'قيد المراجعة'}
                                 </span>
+                            </div>
+
+                            {/* Status and Activity Controls */}
+                            <div className="admin-control-card">
+                                <h4 className="s-title">التحكم في حالة الحساب</h4>
+
+                                <div className="control-group">
+                                    <label>حالة الاعتماد</label>
+                                    <select
+                                        className="admin-select"
+                                        value={editStatus}
+                                        onChange={(e) => setEditStatus(e.target.value as any)}
+                                    >
+                                        <option value="pending">قيد المراجعة</option>
+                                        <option value="approved">معتمد (Approve)</option>
+                                        <option value="rejected">مرفوض (Reject)</option>
+                                        <option value="blocked">محظور (Block)</option>
+                                    </select>
+                                </div>
+
+                                {editStatus === 'rejected' && (
+                                    <div className="control-group">
+                                        <label>سبب الرفض (اختياري)</label>
+                                        <textarea
+                                            className="admin-textarea"
+                                            value={rejectionReason}
+                                            onChange={(e) => setRejectionReason(e.target.value)}
+                                            placeholder="اكتب سبب الرفض هنا ليظهر للصنايعي..."
+                                        />
+                                    </div>
+                                )}
+
+                                <div className="control-group toggle-group">
+                                    <div className="toggle-info">
+                                        <label>حالة النشاط (الظهور)</label>
+                                        <p>تحكم في ظهور الصنايعي في نتائج البحث والطلبات</p>
+                                    </div>
+                                    <label className="switch">
+                                        <input
+                                            type="checkbox"
+                                            checked={editStatus === 'approved' ? true : editIsActive}
+                                            disabled={editStatus === 'approved'}
+                                            onChange={(e) => setEditIsActive(e.target.checked)}
+                                        />
+                                        <span className="slider round"></span>
+                                    </label>
+                                </div>
+
+                                <button
+                                    className="save-status-btn"
+                                    onClick={handleSaveAdvancedStatus}
+                                    disabled={isSavingStatus}
+                                >
+                                    {isSavingStatus ? 'جاري الحفظ...' : 'حفظ التغييرات الإدارية'}
+                                </button>
                             </div>
 
                             <div className="metrics-grid">
                                 <div className="metric-item">
                                     <FaStar size={20} color="#f59e0b" />
                                     <span className="m-value">{selectedCraftsman.rating}</span>
-                                    <span className="m-label">تقييم عام</span>
+                                    <span className="m-label">التقييم</span>
                                 </div>
                                 <div className="metric-item">
-                                    <FaBriefcase size={20} color="#3b82f6" />
+                                    <FaCheckCircle size={20} color="#10b981" />
                                     <span className="m-value">{selectedCraftsman.completed_jobs}</span>
-                                    <span className="m-label">مهمة مكتملة</span>
-                                </div>
-                                <div className="metric-item">
-                                    <FaClock size={20} color="#10b981" />
-                                    <span className="m-value">{selectedCraftsman.experience_years}س</span>
-                                    <span className="m-label">خبرة</span>
+                                    <span className="m-label">مكتملة</span>
                                 </div>
                             </div>
 
                             <div className="detail-section">
-                                <h4 className="s-title">المعلومات المهنية</h4>
+                                <h4 className="s-title">أوراق الهوية</h4>
+                                <div className="identity-photos-grid">
+                                    <div className="id-photo-item">
+                                        <label>وجه البطاقة</label>
+                                        <div className="id-image-container">
+                                            {selectedCraftsman.front_identity_photo ? (
+                                                <img src={getAvatarUrl(selectedCraftsman.front_identity_photo)} alt="ID Front" className="identity-verification-img" onClick={() => window.open(getAvatarUrl(selectedCraftsman.front_identity_photo), '_blank')} />
+                                            ) : <div className="no-photo"><FaIdCard size={30} /></div>}
+                                        </div>
+                                    </div>
+                                    <div className="id-photo-item">
+                                        <label>ظهر البطاقة</label>
+                                        <div className="id-image-container">
+                                            {selectedCraftsman.back_identity_photo ? (
+                                                <img src={getAvatarUrl(selectedCraftsman.back_identity_photo)} alt="ID Back" className="identity-verification-img" onClick={() => window.open(getAvatarUrl(selectedCraftsman.back_identity_photo), '_blank')} />
+                                            ) : <div className="no-photo"><FaIdCard size={30} /></div>}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="detail-section">
+                                <h4 className="s-title">المعلومات الأساسية</h4>
                                 <div className="info-modern-list">
                                     <div className="info-modern-item">
                                         <FaWrench size={18} />
                                         <div className="content">
-                                            <label>التخصص الأساسي</label>
+                                            <label>التخصص</label>
                                             <span>{selectedCraftsman.specialty}</span>
                                         </div>
                                     </div>
                                     <div className="info-modern-item">
                                         <FaDollarSign size={18} />
                                         <div className="content">
-                                            <label>فئة الأسعار</label>
+                                            <label>فئة السعر</label>
                                             <span>{selectedCraftsman.price_range}</span>
                                         </div>
                                     </div>
-                                    <div className="info-modern-item">
-                                        <FaCheckCircle size={18} />
-                                        <div className="content">
-                                            <label>نسبة النجاح / الإكمال</label>
-                                            <span>{selectedCraftsman.completion_rate}%</span>
-                                        </div>
-                                    </div>
-                                    {selectedCraftsman.portfolio_url && (
-                                        <div className="info-modern-item">
-                                            <FaExternalLinkAlt size={18} />
-                                            <div className="content">
-                                                <label>معرض الأعمال / بورتفوليو</label>
-                                                <a href={selectedCraftsman.portfolio_url} target="_blank" rel="noreferrer">عرض الرابط الخارجي</a>
-                                            </div>
-                                        </div>
-                                    )}
                                 </div>
-                            </div>
-
-                            <div className="detail-section">
-                                <h4 className="s-title">نبذة تعريفية</h4>
-                                <p className="artisan-bio">{selectedCraftsman.bio || 'لا يوجد وصف حالياً'}</p>
-                            </div>
-
-                            <div className="detail-section">
-                                <h4 className="s-title">وثائق التحقق (البطاقة الشخصية)</h4>
-                                <div className="identity-photos-grid">
-                                    <div className="id-photo-item">
-                                        <label>الوجه الأمامي</label>
-                                        <div className="id-image-container">
-                                            {selectedCraftsman.front_identity_photo ? (
-                                                <img 
-                                                    src={getAvatarUrl(selectedCraftsman.front_identity_photo)} 
-                                                    alt="البطاقة - وجه" 
-                                                    className="identity-verification-img"
-                                                    onClick={() => window.open(getAvatarUrl(selectedCraftsman.front_identity_photo), '_blank')}
-                                                />
-                                            ) : (
-                                                <div className="no-photo"><FaIdCard size={40} /><span>غير متوفر</span></div>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div className="id-photo-item">
-                                        <label>الوجه الخلفي</label>
-                                        <div className="id-image-container">
-                                            {selectedCraftsman.back_identity_photo ? (
-                                                <img 
-                                                    src={getAvatarUrl(selectedCraftsman.back_identity_photo)} 
-                                                    alt="البطاقة - ظهر" 
-                                                    className="identity-verification-img"
-                                                    onClick={() => window.open(getAvatarUrl(selectedCraftsman.back_identity_photo), '_blank')}
-                                                />
-                                            ) : (
-                                                <div className="no-photo"><FaIdCard size={40} /><span>غير متوفر</span></div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                                <p className="helper-text-premium">انقر على الصورة لمشاهدتها بالحجم الكامل</p>
-                            </div>
-
-                            <div className="sidebar-actions-sticky">
-                                {selectedCraftsman.status === 'pending' ? (
-                                    <div className="approval-actions">
-                                        <button className="full-approve-btn" onClick={() => handleUpdateStatus(selectedCraftsman.id, 'approve')}>
-                                            <FaCheckCircle size={20} /> تفعيل الحساب فوراً
-                                        </button>
-                                        <button className="full-reject-btn" onClick={() => handleUpdateStatus(selectedCraftsman.id, 'reject')}>
-                                            <FaTimesCircle size={20} /> رفض الطلب
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <div className="approval-actions">
-                                        <button className="full-reject-btn" onClick={() => handleUpdateStatus(selectedCraftsman.id, 'block')}>
-                                            <FaEdit size={20} /> {selectedCraftsman.status === 'blocked' ? 'إلغاء الحظر' : 'حظر الحساب'}
-                                        </button>
-                                    </div>
-                                )}
                             </div>
                         </div>
                     </div>
                 </>
             ) : null}
-        </div >
+        </div>
     );
 };
 

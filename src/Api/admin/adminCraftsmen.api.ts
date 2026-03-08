@@ -33,8 +33,8 @@ export const adminCraftsmenApi = {
     },
 
     // Reject a craftsman request
-    rejectCraftsman: async (id: string | number) => {
-        return axios.post(`${BASE_URL}/admin/craftsmen/${id}/reject`, {}, { headers: getAuthHeader() });
+    rejectCraftsman: async (id: string | number, reason?: string) => {
+        return axios.post(`${BASE_URL}/admin/craftsmen/${id}/reject`, { reason }, { headers: getAuthHeader() });
     },
 
     // Toggle block status for a craftsman
@@ -50,16 +50,6 @@ export const adminCraftsmenApi = {
         return axios.post(`${BASE_URL}/admin/craftsmen/${id}/add-balance`, { amount }, { headers: getAuthHeader() });
     },
 
-    // CRUD Resource Methods (from Route::apiResource)
-    getCraftsman: async (id: string | number) => {
-        return axios.get(`${BASE_URL}/admin/craftsmen/${id}`, { headers: getAuthHeader() });
-    },
-    createCraftsman: async (data: any) => {
-        return axios.post(`${BASE_URL}/admin/craftsmen`, data, { headers: getAuthHeader() });
-    },
-    updateCraftsman: async (id: string | number, data: any) => {
-        return axios.put(`${BASE_URL}/admin/craftsmen/${id}`, data, { headers: getAuthHeader() });
-    },
     deleteCraftsman: async (id: string | number) => {
         return axios.delete(`${BASE_URL}/admin/craftsmen/${id}`, { headers: getAuthHeader() });
     }

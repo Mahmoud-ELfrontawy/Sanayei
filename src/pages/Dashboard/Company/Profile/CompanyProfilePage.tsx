@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { useCompanyProfile } from "./useCompanyProfile";
 import { useAuth } from "../../../../hooks/useAuth";
 import PhoneValidationMeter from "../../../../components/ui/PhoneValidationMeter/PhoneValidationMeter";
+import ProfileCompletionMeter from "../../../../components/ui/ProfileCompletion/ProfileCompletionMeter";
 import "./CompanyProfile.css";
 
 const CompanyProfilePage: React.FC = () => {
@@ -34,6 +35,8 @@ const CompanyProfilePage: React.FC = () => {
                 <h2>إدارة بيانات المتجر</h2>
                 <p>تحكم في كيفية ظهور معرضك للعملاء</p>
             </div>
+
+            <ProfileCompletionMeter type="company" data={watch()} />
 
             <form onSubmit={handleSubmit(handleUpdate)} className="profile-edit-form">
 

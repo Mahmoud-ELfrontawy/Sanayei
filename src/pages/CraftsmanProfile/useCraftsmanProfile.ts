@@ -89,7 +89,7 @@ export const useCraftsmanProfile = () => {
         const mappedData: CraftsmanProfileData = {
           id: data.id,
           name: data.name || "بدون اسم",
-          jobTitle: data.service?.name || data.craft_type || "صنايعي",
+          jobTitle: data.service?.name || data.service_name || data.craft_type || "صنايعي محترف",
           avatarUrl: avatar,
           coverUrl: avatar, // Using the same image as requested
           rating: Number(data.rating) || 0,

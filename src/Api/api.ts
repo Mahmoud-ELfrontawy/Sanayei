@@ -35,7 +35,19 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401 || error.response?.status === 403) {
+        const isWalletRecharge = window.location.pathname.includes("/wallet") && 
+                                (window.location.search.includes("status=success") || 
+                                 document.referrer.includes("paymob") || 
+                                 document.referrer.includes("accept.paymob"));
+
+        if ((error.response?.status === 401 || error.response?.status === 403)) {
+            // Specific exception: if we are in a wallet recharge flow, don't clear session on the first 401
+            // because it might be a temporary sync issue with the server session/token after redirect.
+            if (isWalletRecharge && error.config?.url?.includes("wallet")) {
+                console.warn("Transient 401 detected in Wallet Recharge flow. Preventing hard logout.");
+                return Promise.reject(error);
+            }
+
             console.warn("Auth failure or Blocked account detected. Logging out...");
             
             // 🛑 Hard Logout

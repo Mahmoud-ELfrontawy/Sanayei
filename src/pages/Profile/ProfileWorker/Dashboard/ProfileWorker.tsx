@@ -15,6 +15,7 @@ import { toUiDate } from "../../../../utils/dateApiHelper";
 import { getGovernorates } from "../../../../Api/serviceRequest/governorates.api";
 import FormSkeleton from "../../base/FormSkeleton";
 import { FiAlertCircle, FiCheckCircle, FiClock } from "react-icons/fi";
+import ProfileCompletionMeter from "../../../../components/ui/ProfileCompletion/ProfileCompletionMeter";
 
 
 /* ================= Types ================= */
@@ -250,6 +251,8 @@ const ProfileWorker = () => {
 
     return (
         <div className="profile-worker-page">
+
+            <ProfileCompletionMeter type="craftsman" data={craftsman} />
 
             {/* ===== Status Card ===== */}
             <div className={`profile-card status-display-card ${user?.status || 'pending'}`} style={{ marginBottom: '1.5rem' }}>
