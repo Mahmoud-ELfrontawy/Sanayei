@@ -1,26 +1,9 @@
-import axios from "axios";
-import { authStorage } from "../../../context/auth/auth.storage";
-
-const BASE_URL = "/api";
-
-const getAuthHeaders = (isMultipart = false) => {
-    const token = authStorage.getToken();
-    if (!token) {
-        return null;
-    }
-    return {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-        ...(isMultipart ? { "Content-Type": "multipart/form-data" } : {})
-    };
-};
+import api from "../../api";
 
 /* ================= Management (Store Owner) ================= */
 export const getStoreCategories = async () => {
-    const headers = getAuthHeaders();
-    if (!headers) throw new Error("Unauthorized");
     try {
-        const res = await axios.get(`${BASE_URL}/company/store/categories`, { headers });
+        const res = await api.get(`/company/store/categories`);
         return res.data;
     } catch (error: any) {
         console.error("Store API Error (Get Categories):", error.response?.data || error.message);
@@ -29,10 +12,8 @@ export const getStoreCategories = async () => {
 };
 
 export const addStoreCategory = async (data: { name: string, description?: string, icon?: string }) => {
-    const headers = getAuthHeaders();
-    if (!headers) throw new Error("Unauthorized");
     try {
-        const res = await axios.post(`${BASE_URL}/company/store/categories`, data, { headers });
+        const res = await api.post(`/company/store/categories`, data);
         return res.data;
     } catch (error: any) {
         console.error("Store API Error (Add Category):", error.response?.data || error.message);
@@ -41,56 +22,46 @@ export const addStoreCategory = async (data: { name: string, description?: strin
 };
 
 export const updateStoreCategory = async (id: number, data: { name: string, description?: string, icon?: string }) => {
-    const headers = getAuthHeaders();
-    if (!headers) throw new Error("Unauthorized");
-    const res = await axios.put(`${BASE_URL}/company/store/categories/${id}`, data, { headers });
+    const res = await api.put(`/company/store/categories/${id}`, data);
     return res.data;
 };
 
 export const deleteStoreCategory = async (id: number) => {
-    const headers = getAuthHeaders();
-    if (!headers) throw new Error("Unauthorized");
-    const res = await axios.delete(`${BASE_URL}/company/store/categories/${id}`, { headers });
+    const res = await api.delete(`/company/store/categories/${id}`);
     return res.data;
 };
 
 /* ================= Products ================= */
 export const getStoreProducts = async () => {
-    const headers = getAuthHeaders();
-    if (!headers) throw new Error("Unauthorized");
-    const res = await axios.get(`${BASE_URL}/company/store/products`, { headers });
+    const res = await api.get(`/company/store/products`);
     return res.data;
 };
 
 export const addStoreProduct = async (formData: FormData) => {
-    const headers = getAuthHeaders(true);
-    if (!headers) throw new Error("Unauthorized");
-    const res = await axios.post(`${BASE_URL}/company/store/products`, formData, { headers });
+    const res = await api.post(`/company/store/products`, formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+    });
     return res.data;
 };
 
 export const updateStoreProduct = async (id: number, formData: FormData) => {
-    const headers = getAuthHeaders(true);
-    if (!headers) throw new Error("Unauthorized");
     // For PHP/Laravel to handle files with PUT, we use POST + _method=PUT
     formData.append("_method", "PUT");
-    const res = await axios.post(`${BASE_URL}/company/store/products/${id}`, formData, { headers });
+    const res = await api.post(`/company/store/products/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+    });
     return res.data;
 };
 
 export const deleteStoreProduct = async (id: number) => {
-    const headers = getAuthHeaders();
-    if (!headers) throw new Error("Unauthorized");
-    const res = await axios.delete(`${BASE_URL}/company/store/products/${id}`, { headers });
+    const res = await api.delete(`/company/store/products/${id}`);
     return res.data;
 };
 
 /* ================= Orders ================= */
 export const getStoreOrders = async () => {
-    const headers = getAuthHeaders();
-    if (!headers) throw new Error("Unauthorized");
     try {
-        const res = await axios.get(`${BASE_URL}/company/store/orders`, { headers });
+        const res = await api.get(`/company/store/orders`);
         const data = res.data;
         if (Array.isArray(data)) return data;
         if (data && Array.isArray(data.data)) return data.data;
@@ -103,10 +74,8 @@ export const getStoreOrders = async () => {
 };
 
 export const updateOrderStatus = async (orderId: number, status: string) => {
-    const headers = getAuthHeaders();
-    if (!headers) throw new Error("Unauthorized");
     try {
-        const res = await axios.patch(`${BASE_URL}/company/store/orders/${orderId}`, { status }, { headers });
+        const res = await api.patch(`/company/store/orders/${orderId}`, { status });
         return res.data;
     } catch (error: any) {
         console.error("Store API Error (Update Order):", error.response?.data || error.message);
@@ -116,9 +85,7 @@ export const updateOrderStatus = async (orderId: number, status: string) => {
 
 /* ================= Public View (Users/Craftsmen) ================= */
 export const getPublicStoreCategories = async () => {
-    const res = await axios.get(`${BASE_URL}/store/categories`, {
-        headers: { Accept: "application/json" }
-    });
+    const res = await api.get(`/store/categories`);
     return res.data;
 };
 
@@ -140,15 +107,11 @@ export const getPublicStoreProducts = async (params: PublicProductsParams = {}) 
     if (params.dir) query.append("dir", params.dir);
     if (params.page) query.append("page", String(params.page));
 
-    const res = await axios.get(`${BASE_URL}/store/products?${query.toString()}`, {
-        headers: { Accept: "application/json" }
-    });
+    const res = await api.get(`/store/products?${query.toString()}`);
     return res.data;
 };
 
 export const getPublicStoreProductDetails = async (productId: number) => {
-    const res = await axios.get(`${BASE_URL}/store/products/${productId}`, {
-        headers: { Accept: "application/json" }
-    });
+    const res = await api.get(`/store/products/${productId}`);
     return res.data;
 };

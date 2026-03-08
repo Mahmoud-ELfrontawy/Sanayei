@@ -1,25 +1,11 @@
-import axios from "axios";
-import { authStorage } from "../../context/auth/auth.storage";
-
-const BASE_URL = "/api";
-
-const getAuthHeaders = () => {
-    const token = authStorage.getToken();
-    if (!token) return null;
-    return {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-    };
-};
+import api from "../api";
 
 /**
  * إتمام الطلب وتحويل السلة إلى طلبات فعلية
  */
 export const createOrder = async (orderData: { shipping_address: string, payment_method: string }) => {
-    const headers = getAuthHeaders();
-    if (!headers) throw new Error("Unauthorized");
     try {
-        const res = await axios.post(`${BASE_URL}/company/store/checkout`, orderData, { headers });
+        const res = await api.post(`/company/store/checkout`, orderData);
         return res.data;
     } catch (error: any) {
         console.error("Order API Error:", error.response?.data || error.message);
@@ -31,10 +17,8 @@ export const createOrder = async (orderData: { shipping_address: string, payment
  * جلب جميع طلبات المستخدم الحالي
  */
 export const getUserOrders = async () => {
-    const headers = getAuthHeaders();
-    if (!headers) throw new Error("Unauthorized");
     try {
-        const res = await axios.get(`${BASE_URL}/company/store/my-orders`, { headers });
+        const res = await api.get(`/company/store/my-orders`);
         // handle both { data: [...] } and direct array response
         const data = res.data;
         if (Array.isArray(data)) return data;
@@ -52,10 +36,8 @@ export const getUserOrders = async () => {
  * جلب تفاصيل طلب معين
  */
 export const getOrderDetails = async (orderId: number) => {
-    const headers = getAuthHeaders();
-    if (!headers) throw new Error("Unauthorized");
     try {
-        const res = await axios.get(`${BASE_URL}/company/store/orders/${orderId}`, { headers });
+        const res = await api.get(`/company/store/orders/${orderId}`);
         return res.data;
     } catch (error: any) {
         console.error("Fetch Order Details Error:", error.response?.data || error.message);

@@ -1,70 +1,55 @@
-import axios from 'axios';
-import { authStorage } from '../../context/auth/auth.storage';
-
-const BASE_URL = '/api';
-
-const getAuthHeader = (hasBody = false) => {
-    const token = authStorage.getToken();
-    const headers: any = { 
-        Authorization: `Bearer ${token}`,
-        "Accept": "application/json",
-    };
-    if (hasBody) {
-        headers["Content-Type"] = "application/json";
-    }
-    return headers;
-};
+import api from '../api';
 
 export const adminUsersApi = {
     // Users
     getAllUsers: async (params: { page?: number; search?: string; is_active?: boolean; is_admin?: boolean; per_page?: number }) => {
-        const queryParams = new URLSearchParams();
-        if (params.page) queryParams.append('page', params.page.toString());
-        if (params.search) queryParams.append('search', params.search);
-        if (params.per_page) queryParams.append('per_page', params.per_page.toString());
-        if (params.is_active !== undefined) queryParams.append('is_active', params.is_active ? '1' : '0');
-        if (params.is_admin !== undefined) queryParams.append('is_admin', params.is_admin ? '1' : '0');
+        const queryParams: any = {};
+        if (params.page) queryParams.page = params.page;
+        if (params.search) queryParams.search = params.search;
+        if (params.per_page) queryParams.per_page = params.per_page;
+        if (params.is_active !== undefined) queryParams.is_active = params.is_active ? '1' : '0';
+        if (params.is_admin !== undefined) queryParams.is_admin = params.is_admin ? '1' : '0';
         
-        return axios.get(`${BASE_URL}/admin/users?${queryParams.toString()}`, { headers: getAuthHeader() });
+        return api.get(`/admin/users`, { params: queryParams });
     },
     
     getStatistics: async () => {
-        return axios.get(`${BASE_URL}/admin/users/statistics`, { headers: getAuthHeader() });
+        return api.get(`/admin/users/statistics`);
     },
 
     exportUsers: async () => {
-        return axios.get(`${BASE_URL}/admin/users/export`, { headers: getAuthHeader(), responseType: 'blob' });
+        return api.get(`/admin/users/export`, { responseType: 'blob' });
     },
 
     showUser: async (userId: string | number) => {
-        return axios.get(`${BASE_URL}/admin/users/${userId}`, { headers: getAuthHeader() });
+        return api.get(`/admin/users/${userId}`);
     },
 
     createUser: async (data: any) => {
-        return axios.post(`${BASE_URL}/admin/users`, data, { headers: getAuthHeader(true) });
+        return api.post(`/admin/users`, data);
     },
 
     updateUser: async (userId: string | number, data: any) => {
-        return axios.put(`${BASE_URL}/admin/users/${userId}`, data, { headers: getAuthHeader(true) });
+        return api.put(`/admin/users/${userId}`, data);
     },
 
     deleteUser: async (userId: string | number) => {
-        return axios.post(`${BASE_URL}/admin/users/${userId}`, {}, { headers: getAuthHeader(true) });
+        return api.post(`/admin/users/${userId}`);
     },
 
     forceDeleteUser: async (userId: string | number) => {
-        return axios.delete(`${BASE_URL}/admin/users/${userId}/force`, { headers: getAuthHeader(true) });
+        return api.delete(`/admin/users/${userId}/force`);
     },
 
     toggleBlockUser: async (userId: string | number) => {
-        return axios.post(`${BASE_URL}/admin/users/${userId}/toggle-block`, {}, { headers: getAuthHeader(true) });
+        return api.post(`/admin/users/${userId}/toggle-block`);
     },
 
     getUserWallet: async (userId: string | number) => {
-        return axios.get(`${BASE_URL}/admin/users/${userId}/wallet`, { headers: getAuthHeader() });
+        return api.get(`/admin/users/${userId}/wallet`);
     },
 
     addUserBalance: async (userId: string | number, amount: number) => {
-        return axios.post(`${BASE_URL}/admin/users/${userId}/add-balance`, { amount }, { headers: getAuthHeader(true) });
+        return api.post(`/admin/users/${userId}/add-balance`, { amount });
     },
 };

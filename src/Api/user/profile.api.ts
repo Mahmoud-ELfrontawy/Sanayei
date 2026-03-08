@@ -1,8 +1,5 @@
-import axios from "axios";
+import api from "../api";
 import { toApiDate } from "../../utils/dateApiHelper";
-import { authStorage } from "../../context/auth/auth.storage";
-
-const BASE_URL = "/api";
 
 /* ================= Interfaces ================= */
 export interface UserProfile {
@@ -26,15 +23,7 @@ export interface ProfileResponse {
 
 /* ================= Get Profile ================= */
 export const getMyProfile = async () => {
-  const token = authStorage.getToken();
-
-  const res = await axios.get(`${BASE_URL}/user/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-    },
-  });
-
+  const res = await api.get(`/user/me`);
   return res.data;
 };
 
@@ -48,7 +37,6 @@ export const updateProfile = async (data: {
   longitude?: number;
   profile_image?: File | null;
 }) => {
-  const token = authStorage.getToken();
   const formData = new FormData();
 
   // 👈 Laravel workaround
@@ -71,14 +59,12 @@ export const updateProfile = async (data: {
     }
   });
 
-  const res = await axios.post(
-    `${BASE_URL}/user/profile`,
+  const res = await api.post(
+    `/user/profile`,
     formData,
     {
       headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-        // ❌ متحطش Content-Type يدوي
+        "Content-Type": "multipart/form-data",
       },
     }
   );
@@ -88,31 +74,12 @@ export const updateProfile = async (data: {
 
 /* ================= Get User Profile by ID (Public) ================= */
 export const getUserProfileById = async (id: string | number) => {
-  const token = authStorage.getToken();
-
-  const res = await axios.get(`${BASE_URL}/auth/user/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-    },
-  });
-
+  const res = await api.get(`/auth/user/${id}`);
   return res.data;
 };
 
 /* ================= Delete Account ================= */
 export const deleteUserAccount = async () => {
-  const token = authStorage.getToken();
-
-  const res = await axios.delete(
-    `${BASE_URL}/user/delete-account`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    }
-  );
-
+  const res = await api.delete(`/user/delete-account`);
   return res.data;
 }
