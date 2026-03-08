@@ -14,6 +14,7 @@ import { NotificationProvider } from "./context/NotificationContext.tsx";
 // ✅ Providers الجديدة بعد تقسيم الشات
 import { UserChatProvider } from "./context/UserChatProvider.tsx";
 import { CraftsmanChatProvider } from "./context/CraftsmanChatProvider.tsx";
+import { UIProvider } from "./context/UIContext.tsx";
 
 /* ================= React Query Client ================= */
 const queryClient = new QueryClient({
@@ -33,14 +34,14 @@ createRoot(document.getElementById("root")!).render(
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <NotificationProvider>
-
-            {/* ✅ لف التطبيق بالاتنين علشان يدعم user + craftsman */}
-            <UserChatProvider>
-              <CraftsmanChatProvider>
-                <App />
-              </CraftsmanChatProvider>
-            </UserChatProvider>
-
+            <UIProvider>
+              {/* ✅ لف التطبيق بالاتنين علشان يدعم user + craftsman */}
+              <UserChatProvider>
+                <CraftsmanChatProvider>
+                  <App />
+                </CraftsmanChatProvider>
+              </UserChatProvider>
+            </UIProvider>
           </NotificationProvider>
         </AuthProvider>
       </QueryClientProvider>

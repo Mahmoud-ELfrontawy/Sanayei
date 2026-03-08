@@ -22,12 +22,17 @@
   box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.3);
 }
 
-.bottom-nav-item {
+.bottom-nav-item,
+.bottom-nav button.bottom-nav-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
   color: var(--color-text-secondary);
   gap: 5px;
   font-size: 11px;
@@ -42,23 +47,14 @@
   transition: transform 0.3s ease;
 }
 
-.bottom-nav-item.active {
+.bottom-nav-item.active,
+.bottom-nav-item.active-btn {
   color: var(--color-primary);
 }
 
-.bottom-nav-item.active svg {
+.bottom-nav-item.active svg,
+.bottom-nav-item.active-btn svg {
   transform: translateY(-3px);
-}
-
-.bottom-nav-item.active::after {
-  content: '';
-  position: absolute;
-  top: -12px;
-  width: 4px;
-  height: 4px;
-  background: var(--color-primary);
-  border-radius: 50%;
-  box-shadow: 0 0 10px var(--color-primary);
 }
 
 /* Ensure desktop doesn't show this */

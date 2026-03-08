@@ -1,9 +1,13 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaHome, FaTools, FaStore, FaClipboardList, FaUser } from 'react-icons/fa';
+import { FaHome, FaTools, FaStore, FaClipboardList } from 'react-icons/fa';
+import { FiMenu } from 'react-icons/fi';
+import { useUI } from '../../../context/UIContext';
 import './BottomNavbar.css';
 
 const BottomNavbar: React.FC = () => {
+  const { toggleMobileMenu, isMobileMenuOpen } = useUI();
+
   return (
     <nav className="bottom-nav">
       <NavLink to="/" className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}>
@@ -22,10 +26,15 @@ const BottomNavbar: React.FC = () => {
         <FaClipboardList />
         <span>الطلبات</span>
       </NavLink>
-      <NavLink to="/user/profile" className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}>
-        <FaUser />
-        <span>حسابي</span>
-      </NavLink>
+
+      <button 
+        type="button" 
+        className={`bottom-nav-item ${isMobileMenuOpen ? 'active-btn' : ''}`}
+        onClick={toggleMobileMenu}
+      >
+        <FiMenu />
+        <span>القائمة</span>
+      </button>
     </nav>
   );
 };

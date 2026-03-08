@@ -1,8 +1,8 @@
 import { NavLink, Link, useLocation } from "react-router-dom";
 import { IoIosArrowDown } from "react-icons/io";
-import { FiMenu, FiX } from "react-icons/fi";
+import { FiX, FiChevronLeft } from "react-icons/fi";
 import { useEffect, useRef, useState } from "react";
-import { FaUser, FaSignOutAlt, FaThLarge, FaBox, FaRegClock, FaCommentDots, FaBell, FaMoon, FaSun } from "react-icons/fa";
+import { FaUser, FaSignOutAlt, FaThLarge, FaBox, FaRegClock, FaCommentDots, FaBell, FaMoon, FaSun, FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaClipboardList, FaHeadset, FaInfoCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { formatTimeAgo } from "../../../utils/timeAgo";
 import { getAvatarUrl } from "../../../utils/imageUrl";
@@ -19,6 +19,7 @@ import { useNotifications } from "../../../context/NotificationContext";
 import { useUserChat } from "../../../context/UserChatProvider";
 import { useCraftsmanChat } from "../../../context/CraftsmanChatProvider";
 import { useTheme } from "../../../context/ThemeContext";
+import { useUI } from "../../../context/UIContext";
 
 
 /* ================= TYPES ================= */
@@ -47,7 +48,7 @@ const Header: React.FC = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isMobileMenuOpen, closeMobileMenu } = useUI();
 
   const dropdownRef = useRef<DropdownRef>(null);
   const notifDropdownRef = useRef<DropdownRef>(null);
@@ -82,7 +83,6 @@ const Header: React.FC = () => {
     setIsOpen(false);
   };
 
-  const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev);
 
   const handleLogout = () => {
     setIsOpen(false);
@@ -130,16 +130,7 @@ const Header: React.FC = () => {
   return (
     <header className="header">
       <nav className="header-nav">
-        {/* ================= MOBILE MENU BUTTON (Right in RTL) ================= */}
-        <div className="mobile-only">
-          <button
-            type="button"
-            className="mobile-menu-btn"
-            onClick={toggleMobileMenu}
-          >
-            <FiMenu size={28} />
-          </button>
-        </div>
+        {/* ================= MOBILE MENU BUTTON REMOVED (Moved to Bottom Nav) ================= */}
 
         {/* Logo (Desktop Only) */}
         <Link to="/" className={`header-logo desktop-only ${isDashboardRoute ? "is-dashboard" : ""}`}>
@@ -312,41 +303,21 @@ const Header: React.FC = () => {
             </div>
           )}
 
-        {/* ================= MOBILE ACTIONS (Left in RTL) ================= */}
-        <div className="header-mobile-actions mobile-only">
-          {isAuthenticated && (
-            <div className="mobile-top-icons">
-              <Link
-                to="/dashboard/messages"
-                className={`header-icon-btn mobile-top-icon ${unreadTotal > 0 ? "has-unread" : ""} ${isNewMessage ? "new-arrival" : ""}`}
-              >
-                {unreadTotal > 0 && <span className="header-notification-badge" />}
-                <FaCommentDots size={22} className="icon-chat" />
-              </Link>
-              <Link
-                to="/dashboard/notifications"
-                className={`header-icon-btn mobile-top-icon ${unreadCount > 0 ? "has-unread" : ""}`}
-              >
-                {unreadCount > 0 && <span className="header-notification-badge" />}
-                <FaBell size={22} className="icon-bell" />
-              </Link>
-            </div>
-          )}
-        </div>
+        {/* ================= MOBILE ACTIONS REMOVED (Moved to Sidebar) ================= */}
       </div>
     </nav>
 
       {/* ================= MOBILE OVERLAY & MENU ================= */}
       <div 
         className={`mobile-overlay mobile-only ${isMobileMenuOpen ? "open" : ""}`} 
-        onClick={() => setIsMobileMenuOpen(false)} 
+        onClick={closeMobileMenu} 
         aria-hidden="true" 
       />
 
       <div className={`mobile-menu mobile-only ${isMobileMenuOpen ? "open" : ""}`}>
         <div className="mobile-menu-header">
            <div className="mobile-header-right">
-             <Link to="/" className="mobile-logo" onClick={() => setIsMobileMenuOpen(false)}>
+             <Link to="/" className="mobile-logo" onClick={closeMobileMenu}>
                 <img src={isDark ? logoDark : logo} alt="Sanayei" style={{ height: '40px' }} />
              </Link>
              <button
@@ -358,38 +329,76 @@ const Header: React.FC = () => {
                {isDark ? <FaSun size={22} /> : <FaMoon size={22} />}
              </button>
            </div>
-           <button className="mobile-close-btn" onClick={() => setIsMobileMenuOpen(false)}>
+           <button className="mobile-close-btn" onClick={closeMobileMenu}>
               <FiX size={26} />
            </button>
         </div>
 
         {isAuthenticated && (
-          <div className="mobile-user-profile">
-            <img 
-              src={getAvatarUrl(user?.avatar, user?.name)} 
-              alt="Profile" 
-              onError={(e) => {
-                (e.currentTarget as HTMLImageElement).src = getAvatarUrl(null, user?.name);
-              }}
-            />
-            <div className="mobile-user-info">
-              <span className="mobile-user-name">{user?.name}</span>
-              <span className="mobile-user-email">{user?.email}</span>
+          <Link to={profilePath} className="mobile-user-profile" onClick={closeMobileMenu}>
+            <div className="mobile-avatar-frame">
+              <img 
+                src={getAvatarUrl(user?.avatar, user?.name)} 
+                alt="Profile" 
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = getAvatarUrl(null, user?.name);
+                }}
+              />
+              <span className="online-indicator-pulse" />
             </div>
-          </div>
+            <div className="mobile-user-info">
+              <span className="mobile-greeting">مرحباً بك</span>
+              <span className="mobile-user-name">{user?.name}</span>
+            </div>
+            <FiChevronLeft size={24} className="mobile-profile-chevron" />
+          </Link>
         )}
 
         <div className="mobile-menu-scrollable">
           <ul className="mobile-links">
+            {isAuthenticated && (
+              <>
+                <li>
+                  <NavLink to="/dashboard/messages" onClick={closeMobileMenu} className={({ isActive }) => isActive ? "active" : ""}>
+                    <div className="mobile-link-inner">
+                      <FaCommentDots size={20} />
+                      <span>الرسائل</span>
+                    </div>
+                    {unreadTotal > 0 && <span className="mobile-link-badge messages">{unreadTotal}</span>}
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to="/dashboard/notifications" onClick={closeMobileMenu} className={({ isActive }) => isActive ? "active" : ""}>
+                    <div className="mobile-link-inner">
+                      <FaBell size={20} />
+                      <span>الإشعارات</span>
+                    </div>
+                    {unreadCount > 0 && <span className="mobile-link-badge notifications">{unreadCount}</span>}
+                  </NavLink>
+                </li>
+                <div className="mobile-menu-divider" />
+              </>
+            )}
+
             {viewLinks
               .filter(link => !['/', '/services', '/store'].includes(link.path))
               .map((link) => (
                 <li key={link.path}>
                   <NavLink
                     to={link.path}
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={closeMobileMenu}
+                    className={({ isActive }) => isActive ? "active" : ""}
                   >
-                    {link.label}
+                    <div className="mobile-link-inner">
+                      {/* Icons for common links */}
+                      {link.path.includes('dashboard') ? <FaThLarge size={20} /> : 
+                       link.path.includes('profile') ? <FaUser size={20} /> : 
+                       link.path.includes('contact') ? <FaHeadset size={20} /> :
+                       link.path.includes('orders') || link.label.includes('طلب') ? <FaClipboardList size={20} /> :
+                       link.path.includes('about') ? <FaInfoCircle size={20} /> :
+                       <FaBox size={20} />}
+                      <span>{link.label}</span>
+                    </div>
                   </NavLink>
                 </li>
              ))}
@@ -397,10 +406,10 @@ const Header: React.FC = () => {
 
           {!isAuthenticated ? (
             <div className="mobile-auth">
-              <Button to="/login" variant="primary" className="header-btn" onClick={() => setIsMobileMenuOpen(false)}>
+              <Button to="/login" variant="primary" className="header-btn" onClick={closeMobileMenu}>
                 اطلب الآن
               </Button>
-              <Button to="/login" variant="outline" className="header-btn" onClick={() => setIsMobileMenuOpen(false)}>
+              <Button to="/login" variant="outline" className="header-btn" onClick={closeMobileMenu}>
                 تسجيل الدخول
               </Button>
             </div>
@@ -408,28 +417,27 @@ const Header: React.FC = () => {
             <div className="mobile-auth">
               <Link
                 to={dashboardPath}
-                className="header-dropdown-item"
-                onClick={() => setIsMobileMenuOpen(false)}
+                className="header-dropdown-item mobile-dashboard-btn"
+                onClick={closeMobileMenu}
               >
                 <FaThLarge size={20} />
                 <span>{isAdmin ? "لوحة الإدارة" : "لوحة التحكم"}</span>
               </Link>
 
-              <Link
-                to={profilePath}
-                className="header-dropdown-item"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <FaUser size={20} />
-                <span>الملف الشخصي</span>
-              </Link>
-
-              <button className="header-dropdown-item logout" onClick={handleLogout}>
+              <button className="header-dropdown-item logout mobile-logout-btn" onClick={handleLogout}>
                 <FaSignOutAlt size={20} />
                 <span>تسجيل الخروج</span>
               </button>
             </div>
           )}
+
+          {/* Social Media Footer */}
+          <div className="mobile-social-footer">
+            <a href="#" aria-label="Facebook"><FaFacebookF /></a>
+            <a href="#" aria-label="Twitter"><FaTwitter /></a>
+            <a href="#" aria-label="Instagram"><FaInstagram /></a>
+            <a href="#" aria-label="LinkedIn"><FaLinkedinIn /></a>
+          </div>
         </div>
       </div>
     </header>
