@@ -97,12 +97,7 @@
     align-items: center;
 }
 
-/* Mobile Specific Actions */
-.header-mobile-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
+/* Mobile Specific Actions removed */
 
 
 /* ================= Header Avatar Area ================= */
