@@ -19,5 +19,9 @@ export const adminApi = {
     
     getProfile: async () => {
         return axios.get(`${BASE_URL}/admin/me`, { headers: getAuthHeader() });
+    },
+
+    getLiveMapData: async () => {
+        return axios.get(`${BASE_URL}/admin/live-map`, { headers: getAuthHeader() });
     }
 };

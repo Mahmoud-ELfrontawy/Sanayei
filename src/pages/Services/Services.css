@@ -334,15 +334,59 @@ html[data-theme="dark"] select option {
     }
 }
 
+.craftsmen-section {
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 2px solid #f3f4f6;
+}
+
+.craftsmen-section__header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
 .craftsmen-section__title {
-    font-size: 32px;
-    font-weight: 800;
-    color: #5FA8D3;
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #111827;
     padding-bottom: 12px;
     margin: 40px auto 20px;
     text-align: center;
     position: relative;
     width: fit-content;
+}
+
+.view-toggle {
+    display: flex;
+    background: #f3f4f6;
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.toggle-btn {
+    padding: 8px 20px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    color: #6b7280;
+}
+
+.toggle-btn.active {
+    background: #fff;
+    color: var(--primary-color, #2563eb);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.toggle-btn:hover:not(.active) {
+    color: #111827;
 }
 
 .craftsmen-section__title::after {

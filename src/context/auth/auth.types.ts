@@ -6,6 +6,8 @@ export interface User {
   email: string;
   avatar?: string;
   status?: 'approved' | 'pending' | 'rejected';
+  latitude?: number | string;
+  longitude?: number | string;
 }
 
 export interface AuthState {

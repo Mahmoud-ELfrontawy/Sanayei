@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation as useGeoLocation } from "../../../../hooks/useLocation";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
@@ -33,6 +34,7 @@ interface ErrorResponse {
 export const useRegisterWorker = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const { location: geoCoords } = useGeoLocation();
 
   const form = useForm<RegisterWorkerFormValues>();
 
@@ -78,6 +80,9 @@ export const useRegisterWorker = () => {
 
         front_identity_photo: data.front_identity_photo[0],
         back_identity_photo: data.back_identity_photo[0],
+        
+        latitude: geoCoords?.lat,
+        longitude: geoCoords?.lng,
       });
 
       console.log('✅ Registration completed:', response);

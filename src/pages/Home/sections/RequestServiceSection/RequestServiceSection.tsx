@@ -127,6 +127,10 @@ const RequestServiceSection: React.FC = () => {
 
                 // Payment
                 payment_method: paymentMethod,
+
+                // Fixed Location at request time
+                latitude: user?.latitude !== undefined ? Number(user.latitude) : undefined,
+                longitude: user?.longitude !== undefined ? Number(user.longitude) : undefined,
             };
 
             // Remove undefined values

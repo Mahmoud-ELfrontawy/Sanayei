@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import type { UseFormReturn } from "react-hook-form";
 
@@ -7,7 +8,6 @@ import type { Service } from "../../../../constants/service";
 import type { Governorate } from "../../../../Api/serviceRequest/governorates.api";
 import type { Sanaei } from "../../../../Api/serviceRequest/sanaei.api";
 
-import { Link } from "react-router-dom";
 import { FaUser, FaWallet, FaMoneyBillWave, FaCheckCircle } from "react-icons/fa";
 import { getTechnicianById } from "../../../../Api/technicians.api";
 import { getAvatarUrl } from "../../../../utils/imageUrl";
@@ -38,12 +38,29 @@ const RequestServiceForm: React.FC<Props> = ({
         formState: { errors, isSubmitting },
     } = form;
 
+    const location = useLocation();
+    const routerState = location.state as { serviceId?: string | number; workerId?: string | number } | null;
+
     const [selectedCraftsmanDetails, setSelectedCraftsmanDetails] = useState<any>(null);
 
     const serviceId = watch("service_type");
     const workerId = watch("industrial_type");
 
     const autoSelectedRef = useRef(false);
+
+    // Auto-fill from route state if coming from Map
+    useEffect(() => {
+        if (routerState?.serviceId && !serviceId) {
+            setValue("service_type", String(routerState.serviceId));
+        }
+        if (routerState?.workerId && !workerId) {
+            // Need a slight delay to ensure services/sanaei are loaded and filtered
+            setTimeout(() => {
+                setValue("industrial_type", String(routerState.workerId));
+                autoSelectedRef.current = true;
+            }, 100);
+        }
+    }, [routerState, serviceId, workerId, setValue]);
 
     // Fetch craftsman details on selection
     useEffect(() => {

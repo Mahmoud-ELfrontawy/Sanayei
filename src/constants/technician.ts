@@ -22,4 +22,7 @@ export interface Technician {
     last_seen?: string | null;
     last_seen_human?: string | null;
     status?: string;
+    latitude?: number;
+    longitude?: number;
+    distance?: number;
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import ReviewModal from "../../components/ui/ReviewModal/ReviewModal";
+import OrderTrackingMap from "../../components/common/OrderTrackingMap/OrderTrackingMap";
 import { useNavigate, Link } from "react-router-dom";
 import {
     getMyServiceRequests,
@@ -60,23 +61,26 @@ function MyOrdersPage() {
 
 
     useEffect(() => {
-        const fetchOrders = async () => {
+        let isMounted = true;
+        const fetchOrders = async (showLoading = true) => {
             if (authLoading) return;
 
             if (!user) {
-                setError("يجب تسجيل الدخول لعرض الطلبات");
-                setLoading(false);
+                if (isMounted) setError("يجب تسجيل الدخول لعرض الطلبات");
+                if (isMounted && showLoading) setLoading(false);
                 return;
             }
 
             try {
-                setLoading(true);
+                if (showLoading && isMounted) setLoading(true);
                 let result;
                 if (isCraftsman) {
                     result = await getIncomingServiceRequests();
                 } else {
                     result = await getMyServiceRequests();
                 }
+
+                if (!isMounted) return;
 
                 const fetchedOrders = Array.isArray(result)
                     ? result
@@ -96,14 +100,29 @@ function MyOrdersPage() {
                 setOrders(ordersWithPayment);
                 setError(null);
             } catch (err: any) {
-                setError(err.message || "تعذر جلب قائمة الطلبات");
-                toast.error("فشل تحميل الطلبات");
+                if (isMounted && showLoading) {
+                    setError(err.message || "تعذر جلب قائمة الطلبات");
+                    toast.error("فشل تحميل الطلبات");
+                }
             } finally {
-                setTimeout(() => setLoading(false), 500);
+                if (isMounted && showLoading) {
+                    setTimeout(() => {
+                        if (isMounted) setLoading(false);
+                    }, 500);
+                }
             }
         };
 
-        fetchOrders();
+        fetchOrders(true);
+
+        const intervalId = setInterval(() => {
+            fetchOrders(false);
+        }, 30000);
+
+        return () => {
+            isMounted = false;
+            clearInterval(intervalId);
+        };
     }, [user, isCraftsman, authLoading]);
 
     // للصنايعي - قبول أو رفض الطلب فقط
@@ -302,6 +321,20 @@ function MyOrdersPage() {
                         </div>
                     </div>
                 </div>
+
+                {/* Tracking Map for Active Orders */}
+                {order.status === "accepted" && (
+                    <div style={{ padding: '0 1.5rem 1rem' }}>
+                        <OrderTrackingMap 
+                            userLat={order.latitude ?? order.user?.latitude}
+                            userLng={order.longitude ?? order.user?.longitude}
+                            craftsmanLat={order.craftsman?.latitude}
+                            craftsmanLng={order.craftsman?.longitude}
+                            userName={order.name || order.user?.name}
+                            craftsmanName={order.craftsman?.name}
+                        />
+                    </div>
+                )}
 
                 {/* Footer: Actions */}
                 <div className="orders-card-footer">

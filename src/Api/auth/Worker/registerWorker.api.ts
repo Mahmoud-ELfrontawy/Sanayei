@@ -17,6 +17,8 @@ export interface RegisterWorkerPayload {
 
   front_identity_photo: File;
   back_identity_photo: File;
+  latitude?: number;
+  longitude?: number;
 }
 
 export const registerWorker = async (
@@ -41,6 +43,9 @@ export const registerWorker = async (
 
   formData.append("front_identity_photo", payload.front_identity_photo);
   formData.append("back_identity_photo", payload.back_identity_photo);
+
+  if (payload.latitude) formData.append("latitude", payload.latitude.toString());
+  if (payload.longitude) formData.append("longitude", payload.longitude.toString());
 
   const registerResponse = await axios.post(
     "/api/craftsmen/register",

@@ -2,22 +2,36 @@ import { useMemo, useState, useEffect } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { useLocation } from "react-router-dom";
 import { useRequestServiceData } from "../Home/sections/RequestServiceSection/useRequestServiceData";
-import { getTechnicians } from "../../Api/technicians.api";
+import { getTechnicians, getNearestTechnicians } from "../../Api/technicians.api";
 import type { Technician } from "../../constants/technician";
+import { useAuth } from "../../hooks/useAuth";
 
 import ServicesFilters from "./ServicesFilters";
 import ServiceCard from "../../components/common/ServiceCard/ServiceCard";
 import ServicesSkeleton from "../Home/sections/ServicesSection/ServicesSkeleton";
 import TechnicianCard from "../../components/common/TechniciansCard/TechnicianCard";
+import TechnicianMap from "../../components/common/TechnicianMap/TechnicianMap";
+import { useLocation as useGeoLocation } from "../../hooks/useLocation";
 
 import "./Services.css";
 
 const ServicesPage: React.FC = () => {
     const { services, governorates, loading } = useRequestServiceData();
+    const { user } = useAuth();
     const location = useLocation();
 
     const [search, setSearch] = useState("");
     const [serviceFilter, setServiceFilter] = useState("all");
+    const [viewMode, setViewMode] = useState<"list" | "map">("map");
+    const { location: userGeoLocation } = useGeoLocation();
+
+    // Determine the effective location: saved user location first, then GPS
+    const effectiveLocation = useMemo(() => {
+        if (user?.latitude && user?.longitude && !isNaN(Number(user.latitude)) && !isNaN(Number(user.longitude))) {
+            return { lat: Number(user.latitude), lng: Number(user.longitude) };
+        }
+        return userGeoLocation;
+    }, [user, userGeoLocation]);
 
     // Handle incoming state from Home page
     useEffect(() => {
@@ -38,7 +52,7 @@ const ServicesPage: React.FC = () => {
 
     // Technicians State
     const [technicians, setTechnicians] = useState<Technician[]>([]);
-    const [loadingTechs, setLoadingTechs] = useState(true);
+    const [loadingTechs, setLoadingTechs] = useState(false); // Initialized to false
 
     // Helper for Price Level
     const getPriceLevel = (priceRange: string | null) => {
@@ -51,11 +65,25 @@ const ServicesPage: React.FC = () => {
 
     // Fetch Technicians
     useEffect(() => {
+        const selectedService = services.find(s => s.slug === serviceFilter);
+
+        // ✅ If we have an effective location and a specific service, ALWAYS get nearest (up to 10)
+        if (effectiveLocation && selectedService) {
+            setLoadingTechs(true);
+            getNearestTechnicians(effectiveLocation.lat, effectiveLocation.lng, selectedService.id)
+                .then(setTechnicians)
+                .catch(() => getTechnicians().then(setTechnicians)) // Fallback to all if nearest fails
+                .finally(() => setLoadingTechs(false));
+            return;
+        }
+
+        // Generic fetch if no effective location or no service selected
+        setLoadingTechs(true);
         getTechnicians()
             .then(setTechnicians)
             .catch(err => console.error("Failed to load technicians", err))
             .finally(() => setLoadingTechs(false));
-    }, []);
+    }, [effectiveLocation, serviceFilter, services]); // Removed viewMode dependency from fetch to keep data consistent
 
     const filteredServices = useMemo(() => {
         return services.filter((service) => {
@@ -92,7 +120,7 @@ const ServicesPage: React.FC = () => {
         const selectedService = services.find(s => s.slug === serviceFilter);
         if (!selectedService) return [];
 
-        return techniciansWithMappedGovernorates.filter((t) => {
+        let result = techniciansWithMappedGovernorates.filter((t) => {
             // ✅ Only show approved technicians
             const isApproved = t.status === 'approved';
             if (!isApproved) return false;
@@ -109,7 +137,14 @@ const ServicesPage: React.FC = () => {
 
             return matchService && matchCity && matchPrice;
         });
-    }, [techniciansWithMappedGovernorates, serviceFilter, services, cityFilter, priceFilter]);
+
+        // Slice the final filteredTechnicians to 10 when viewMode is 'map'
+        if (viewMode === 'map' && result.length > 10) {
+            return result.slice(0, 10);
+        }
+
+        return result;
+    }, [techniciansWithMappedGovernorates, serviceFilter, services, cityFilter, priceFilter, viewMode]); // Added viewMode to dependencies
 
     // Handle request click in Service Card
     const handleServiceRequest = (service: any) => {
@@ -181,12 +216,34 @@ const ServicesPage: React.FC = () => {
                         {/* Craftsmen Section (Only shows if a service is selected) */}
                         {serviceFilter !== "all" && (
                             <div id="craftsmen-section" className="craftsmen-section">
-                                <h2 className="craftsmen-section__title">
-                                    صنايعية {services.find(s => s.slug === serviceFilter)?.name || ""}
-                                </h2>
+                                <div className="craftsmen-section__header-row">
+                                    <h2 className="craftsmen-section__title">
+                                        صنايعية {services.find(s => s.slug === serviceFilter)?.name || ""}
+                                    </h2>
+                                    
+                                    <div className="view-toggle">
+                                        <button 
+                                            className={`toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
+                                            onClick={() => setViewMode('list')}
+                                        >
+                                            القائمة
+                                        </button>
+                                        <button 
+                                            className={`toggle-btn ${viewMode === 'map' ? 'active' : ''}`}
+                                            onClick={() => setViewMode('map')}
+                                        >
+                                            الخريطة
+                                        </button>
+                                    </div>
+                                </div>
 
                                 {loadingTechs ? (
                                     <ServicesSkeleton />
+                                ) : viewMode === 'map' ? (
+                                    <TechnicianMap 
+                                        technicians={filteredTechnicians} 
+                                        userLocation={effectiveLocation} 
+                                    />
                                 ) : filteredTechnicians.length > 0 ? (
                                     <div className="workers-grid">
                                         {filteredTechnicians.map((t) => (

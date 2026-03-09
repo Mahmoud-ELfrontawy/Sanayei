@@ -21,7 +21,8 @@ import {
     FaChevronDown,
     FaChevronUp,
     FaEnvelope,
-    FaEnvelopeOpenText
+    FaEnvelopeOpenText,
+    FaMapMarkedAlt
 } from 'react-icons/fa';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../context/ThemeContext';
@@ -106,6 +107,7 @@ const AdminLayout = () => {
         { path: '/admin/users', label: 'المستخدمين', icon: FaUsers },
         { path: '/admin/craftsmen', label: 'الصنايعية', icon: FaHardHat },
         { path: '/admin/companies', label: 'الشركات', icon: FaBuilding },
+        { path: '/admin/live-map', label: 'خريطة النظام', icon: FaMapMarkedAlt },
         { path: '/admin/services', label: 'الخدمات', icon: FaWrench },
         { path: '/admin/governorates', label: 'المحافظات', icon: FaMapMarkerAlt },
         { path: '/admin/categories', label: 'التصنيفات', icon: FaTags },

@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { FaUsers, FaHardHat, FaRegFileAlt, FaDollarSign, FaBell, FaUser, FaTools, FaMapMarkerAlt, FaTags, FaCommentAlt, FaBoxOpen, FaStar, FaCircle, FaFileAlt } from 'react-icons/fa';
+import { FaUsers, FaHardHat, FaRegFileAlt, FaDollarSign, FaBell, FaUser, FaTools, FaMapMarkerAlt, FaTags, FaCommentAlt, FaBoxOpen, FaStar, FaCircle, FaFileAlt, FaMapMarkedAlt } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { adminApi } from '../../Api/admin/admin.api';
 import { adminUsersApi } from '../../Api/admin/adminUsers.api';
@@ -125,6 +125,7 @@ const AdminDashboard = () => {
                 {[
                     { to: '/admin/users', icon: <FaUser />, label: 'المستخدمون', color: '#3b82f6' },
                     { to: '/admin/craftsmen', icon: <FaHardHat />, label: 'الصنايعية', color: '#f59e0b' },
+                    { to: '/admin/live-map', icon: <FaMapMarkedAlt />, label: 'خريطة النظام', color: '#ef4444' },
                     { to: '/admin/services', icon: <FaTools />, label: 'الخدمات', color: '#8b5cf6' },
                     { to: '/admin/governorates', icon: <FaMapMarkerAlt />, label: 'المحافظات', color: '#10b981' },
                     { to: '/admin/categories', icon: <FaTags />, label: 'التصنيفات', color: '#0ea5e9' },

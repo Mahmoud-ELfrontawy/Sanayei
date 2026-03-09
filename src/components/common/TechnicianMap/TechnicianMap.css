@@ -1,0 +1,92 @@
+.technician-map-wrapper {
+    margin: 20px 0;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+.tech-popup .leaflet-popup-content-wrapper {
+    border-radius: 12px;
+    padding: 0;
+}
+
+.popup-content {
+    text-align: center;
+    padding: 10px;
+}
+
+.popup-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 8px;
+    border: 2px solid var(--primary-color, #2563eb);
+}
+
+.popup-content h4 {
+    margin: 5px 0;
+    font-size: 1.1rem;
+    color: #111827;
+}
+
+.popup-content p {
+    margin: 0 0 10px;
+    color: #4b5563;
+    font-size: 0.9rem;
+}
+
+.btn-view-profile {
+    background-color: var(--primary-color, #2563eb);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    transition: background 0.2s;
+}
+
+.btn-view-profile:hover {
+    background-color: var(--primary-hover, #1d4ed8);
+}
+
+/* User marker subtle pulse */
+.pulse-user-circle {
+    opacity: 0.8;
+    animation: fade-pulse 2s infinite alternate;
+}
+
+@keyframes fade-pulse {
+    0% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+/* Custom Distance Tooltip */
+.distance-tooltip {
+    background-color: #1f2937;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    padding: 4px 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.distance-tooltip.leaflet-tooltip-top::before {
+    border-top-color: #1f2937;
+}
+
+.popup-distance {
+    color: #eab308;
+    font-weight: bold;
+    font-size: 0.95rem;
+    background: #fefce8;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 5px;
+}
