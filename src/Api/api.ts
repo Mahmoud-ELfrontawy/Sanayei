@@ -1,10 +1,20 @@
 import axios from "axios";
 import { authStorage } from "../context/auth/auth.storage";
 
-const RAW_BASE_URL = import.meta.env.VITE_API_URL || "https://sanay3i.net/api";
+const getBaseUrl = () => {
+    const envUrl = import.meta.env.VITE_API_URL;
+    
+    // If it's a relative path or missing, and we are not on localhost, force the absolute backend domain
+    if (!envUrl || envUrl.startsWith("/") || envUrl.includes("vercel.app")) {
+        return "https://sanay3i.net/api";
+    }
+    
+    return envUrl;
+};
+
+const RAW_BASE_URL = getBaseUrl();
 export const BASE_URL = RAW_BASE_URL.endsWith("/") ? RAW_BASE_URL : `${RAW_BASE_URL}/`;
 
-console.log("🌐 API Base URL:", BASE_URL);
 
 const api = axios.create({
     baseURL: BASE_URL,
