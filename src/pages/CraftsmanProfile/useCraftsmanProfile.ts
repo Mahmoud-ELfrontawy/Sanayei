@@ -62,15 +62,23 @@ export const useCraftsmanProfile = () => {
 
         // Mapping API data to UI structure
 
-        // ✅ FIX: If reviews are missing in "me" endpoint, fetch them from public profile
-        if (isOwnProfile && data.id && (!data.last_reviews || data.last_reviews.length === 0)) {
+        // ✅ FIX: If own profile, fetch public profile data to get richer fields (service name, governorate name, reviews)
+        if (isOwnProfile && data.id) {
           try {
-            const publicProfile = await getTechnicianById(data.id);
-            if (publicProfile?.last_reviews?.length > 0) {
-              data.last_reviews = publicProfile.last_reviews;
-            }
+            const publicData = await getTechnicianById(data.id);
+            // Merge public data into private data to fill gaps (like service object, reviews, work_photos)
+            data = {
+              ...data,
+              service: publicData.service || data.service,
+              service_name: publicData.service?.name || publicData.service_name || data.service_name,
+              governorate_id: publicData.governorate_id || data.governorate_id,
+              last_reviews: publicData.last_reviews || data.last_reviews,
+              rating: publicData.rating || data.rating,
+              work_photos: publicData.work_photos || data.work_photos,
+              experience_years: publicData.experience_years || data.experience_years,
+            };
           } catch (e) {
-            // Ignore error
+            console.warn("Failed to merge public profile data", e);
           }
         }
 

@@ -240,8 +240,6 @@ const SharedChatWindow: React.FC<Props> = ({
         );
     }
 
-    const avatarSrc = getAvatarUrl(activeChat.avatar, activeChat.name);
-
     return (
         <div className="chat-window">
             {/* ===== Header ===== */}
@@ -257,7 +255,7 @@ const SharedChatWindow: React.FC<Props> = ({
                         <Link to={profileLink} className="chat-header-link">
                             <div className="avatar-wrapper-chat">
                                 <img
-                                    src={avatarSrc}
+                                    src={getAvatarUrl(activeChat.avatar, activeChat.name)}
                                     alt={activeChat.name}
                                     className="contact-avatar"
                                     onError={(e) => {
@@ -271,7 +269,7 @@ const SharedChatWindow: React.FC<Props> = ({
                         <>
                             <div className="avatar-wrapper-chat">
                                 <img
-                                    src={avatarSrc}
+                                    src={getAvatarUrl(activeChat.avatar, activeChat.name)}
                                     alt={activeChat.name}
                                     className="contact-avatar"
                                     onError={(e) => {

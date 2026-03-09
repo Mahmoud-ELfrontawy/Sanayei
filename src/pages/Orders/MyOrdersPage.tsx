@@ -23,6 +23,7 @@ import {
     FaClock,
     FaCalendarAlt,
     FaWallet,
+    FaMoneyBillWave,
     FaUser
 } from "react-icons/fa";
 import { formatArabicDate } from "../../utils/dateFormatter";
@@ -301,7 +302,11 @@ function MyOrdersPage() {
                         <div className="orders-info-item">
                             <span className="orders-info-label"><FaWallet /> طريقة الدفع</span>
                             <span className={`orders-payment-badge ${order.payment_method === 'wallet' ? 'wallet' : 'cash'}`}>
-                                {order.payment_method === 'wallet' ? '💳 محفظة التطبيق' : '💵 دفع عند الزيارة'}
+                                {order.payment_method === 'wallet' ? (
+                                    <><FaWallet /> محفظة التطبيق</>
+                                ) : (
+                                    <><FaMoneyBillWave /> دفع عند الزيارة</>
+                                )}
                             </span>
                         </div>
                         <div className="orders-info-item">
@@ -325,7 +330,7 @@ function MyOrdersPage() {
                 {/* Tracking Map for Active Orders */}
                 {order.status === "accepted" && (
                     <div style={{ padding: '0 1.5rem 1rem' }}>
-                        <OrderTrackingMap 
+                        <OrderTrackingMap
                             userLat={order.latitude ?? order.user?.latitude}
                             userLng={order.longitude ?? order.user?.longitude}
                             craftsmanLat={order.craftsman?.latitude}

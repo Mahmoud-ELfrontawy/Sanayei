@@ -17,7 +17,9 @@ const AboutTab: React.FC<Props> = ({ data }) => {
         <ul className="info-list">
           <li>• {data.jobTitle}</li>
           {data.specialization &&
-            data.specialization.map((spec, idx) => <li key={idx}>• {spec}</li>)}
+            data.specialization
+              .filter(spec => spec !== data.jobTitle) // Prevent duplicate bullet for the main job title
+              .map((spec, idx) => <li key={idx}>• {spec}</li>)}
         </ul>
       </div>
 

@@ -38,8 +38,8 @@ export const useLogin = () => {
                 const role = localStorage.getItem('userType');
                 const status = localStorage.getItem('user_status');
 
-                if (role === 'company' && status === 'pending') {
-                    toast.info(`مرحباً ${name}، حسابك قيد المراجعة حالياً.`);
+                if ((role === 'company' || role === 'craftsman') && status === 'pending') {
+                    toast.info(`مرحباً ${name}، حسابك قيد المراجعة حالياً وسيتم تفعيله في أقرب وقت.`);
                 } else {
                     toast.success("تم تسجيل الدخول بنجاح ✅");
                 }

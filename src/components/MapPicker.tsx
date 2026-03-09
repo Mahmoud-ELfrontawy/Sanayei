@@ -58,7 +58,7 @@ const MapPicker = ({ latitude, longitude, onChange }: MapPickerProps) => {
 
   return (
     <div className="map-picker-container" style={{ height: "100%", width: "100%", position: "relative" }}>
-      <button 
+      <button
         type="button"
         onClick={handleLocateMe}
         className="locate-me-btn"

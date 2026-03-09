@@ -1,7 +1,7 @@
 import React from "react";
 import { type UserProfile } from "../../../Api/user/profile.api";
-import { FaUser, FaPhoneAlt, FaEnvelope, FaUserEdit } from "react-icons/fa";
-import { getFullImageUrl } from "../../../utils/imageUrl";
+import { FaPhoneAlt, FaEnvelope, FaUserEdit } from "react-icons/fa";
+import { getAvatarUrl } from "../../../utils/imageUrl";
 import Button from "../../../components/ui/Button/Button";
 
 interface Props {
@@ -10,20 +10,19 @@ interface Props {
 }
 
 const UserProfileCard: React.FC<Props> = ({ user, isOwnProfile }) => {
-    const avatarUrl = user.profile_image_url ? getFullImageUrl(user.profile_image_url) : null;
-
     return (
         <div className="craftsman-card">
             {/* Top link removed */}
 
             <div className="craftsman-img-wrapper">
-                {avatarUrl ? (
-                    <img src={avatarUrl} alt={user.name} className="craftsman-img" />
-                ) : (
-                    <div className="craftsman-img" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f5' }}>
-                        <FaUser size={60} color="#ccc" />
-                    </div>
-                )}
+                <img
+                    src={getAvatarUrl(user.profile_image_url, user.name)}
+                    alt={user.name}
+                    className="craftsman-img"
+                    onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = getAvatarUrl(null, user.name);
+                    }}
+                />
             </div>
 
             <h2 className="craftsman-name">{user.name}</h2>

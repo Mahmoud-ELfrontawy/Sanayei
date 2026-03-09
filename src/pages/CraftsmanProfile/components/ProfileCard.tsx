@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../../../hooks/useAuth";
 import type { CraftsmanProfileData } from "../../../types/craftsman";
-import defaultAvatar from "../../../assets/images/image5.png";
+import { getAvatarUrl } from "../../../utils/imageUrl";
 import Button from "../../../components/ui/Button/Button";
 
 interface Props {
@@ -47,9 +47,12 @@ const ProfileCard: React.FC<Props> = ({ craftsman, isOwnProfile }) => {
     <div className="craftsman-card">
       <div className="craftsman-img-wrapper">
         <img
-          src={craftsman.avatarUrl || defaultAvatar}
+          src={getAvatarUrl(craftsman.avatarUrl, craftsman.name)}
           alt={craftsman.name}
           className="craftsman-img"
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).src = getAvatarUrl(null, craftsman.name);
+          }}
         />
       </div>
 

@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import { IoIosArrowDown } from "react-icons/io";
+import { FaMoneyBillWave } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { useRequestServiceData } from "../Home/sections/RequestServiceSection/useRequestServiceData";
 import { getTechnicians, getNearestTechnicians } from "../../Api/technicians.api";
@@ -22,7 +23,7 @@ const ServicesPage: React.FC = () => {
 
     const [search, setSearch] = useState("");
     const [serviceFilter, setServiceFilter] = useState("all");
-    const [viewMode, setViewMode] = useState<"list" | "map">("map");
+    const [viewMode, setViewMode] = useState<"list" | "map">("list");
     const { location: userGeoLocation } = useGeoLocation();
 
     // Determine the effective location: saved user location first, then GPS
@@ -179,9 +180,10 @@ const ServicesPage: React.FC = () => {
                 >
                     {/* Price Filter (Only show when a service is selected) */}
                     {serviceFilter !== "all" && (
-                        <div className="sf-select-group">
+                        <div className="sf-filter-item select-item">
+                            <FaMoneyBillWave className="field-icon" />
                             <select
-                                className="sf-custom-select"
+                                className="sf-select-field"
                                 value={priceFilter}
                                 onChange={(e) => setPriceFilter(e.target.value)}
                                 style={{ minWidth: "150px" }}
@@ -220,15 +222,15 @@ const ServicesPage: React.FC = () => {
                                     <h2 className="craftsmen-section__title">
                                         صنايعية {services.find(s => s.slug === serviceFilter)?.name || ""}
                                     </h2>
-                                    
+
                                     <div className="view-toggle">
-                                        <button 
+                                        <button
                                             className={`toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
                                             onClick={() => setViewMode('list')}
                                         >
                                             القائمة
                                         </button>
-                                        <button 
+                                        <button
                                             className={`toggle-btn ${viewMode === 'map' ? 'active' : ''}`}
                                             onClick={() => setViewMode('map')}
                                         >
@@ -240,9 +242,9 @@ const ServicesPage: React.FC = () => {
                                 {loadingTechs ? (
                                     <ServicesSkeleton />
                                 ) : viewMode === 'map' ? (
-                                    <TechnicianMap 
-                                        technicians={filteredTechnicians} 
-                                        userLocation={effectiveLocation} 
+                                    <TechnicianMap
+                                        technicians={filteredTechnicians}
+                                        userLocation={effectiveLocation}
                                     />
                                 ) : filteredTechnicians.length > 0 ? (
                                     <div className="workers-grid">

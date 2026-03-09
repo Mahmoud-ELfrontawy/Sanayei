@@ -24,14 +24,16 @@ const CraftsmanChatList: React.FC = () => {
                                 }`}
                             onClick={() => setActiveChat(c)}
                         >
-                            <img
-                                src={getAvatarUrl(c.avatar, c.name)}
-                                alt={c.name}
-                                className="contact-avatar"
-                                onError={(e) => {
-                                    (e.currentTarget as HTMLImageElement).src = getAvatarUrl(null, c.name);
-                                }}
-                            />
+                            <div className="contact-avatar-container" style={{ width: '48px', height: '48px', borderRadius: '50%', overflow: 'hidden', flexShrink: 0 }}>
+                                <img
+                                    src={getAvatarUrl(c.avatar, c.name)}
+                                    alt={c.name}
+                                    className="contact-avatar"
+                                    onError={(e) => {
+                                        (e.currentTarget as HTMLImageElement).src = getAvatarUrl(null, c.name);
+                                    }}
+                                />
+                            </div>
 
                             <div className="contact-info">
                                 <div className="contact-name">{c.name}</div>

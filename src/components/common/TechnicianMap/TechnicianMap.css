@@ -90,3 +90,21 @@
     display: inline-block;
     margin-top: 5px;
 }
+
+/* Distance label on polyline */
+.line-distance-label {
+    background: #1e293b !important;
+    color: #fff !important;
+    border: 2px solid #3b82f6 !important;
+    border-radius: 20px !important;
+    padding: 2px 8px !important;
+    font-weight: 800 !important;
+    font-size: 0.8rem !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+    white-space: nowrap !important;
+    opacity: 1 !important;
+}
+
+.line-distance-label::before {
+    display: none !important;
+}
