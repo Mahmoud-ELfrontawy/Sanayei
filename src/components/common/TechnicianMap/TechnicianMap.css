@@ -1,19 +1,34 @@
+/* TechnicianMap.css */
+
 .technician-map-wrapper {
-    margin: 20px 0;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
+    margin: 30px 0;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
     overflow: hidden;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--color-border);
+    transition: transform 0.3s ease;
 }
 
+/* ==========================
+   Leaflet Popup Styling
+   ========================== */
 .tech-popup .leaflet-popup-content-wrapper {
-    border-radius: 12px;
+    border-radius: 24px;
     padding: 0;
+    background: var(--color-bg-main);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--color-border);
+}
+
+.tech-popup .leaflet-popup-tip {
+    background: var(--color-bg-main);
 }
 
 .popup-content {
     text-align: center;
-    padding: 10px;
+    padding: 20px 15px;
+    min-width: 200px;
+    direction: rtl;
 }
 
 .popup-avatar {
@@ -21,90 +36,119 @@
     height: 60px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 8px;
-    border: 2px solid var(--primary-color, #2563eb);
+    margin-bottom: 12px;
+    border: 3px solid var(--color-primary);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
 }
 
 .popup-content h4 {
-    margin: 5px 0;
-    font-size: 1.1rem;
-    color: #111827;
+    margin: 0 0 5px;
+    font-size: 1.25rem;
+    color: var(--color-text-accent);
+    font-weight: 800;
 }
 
 .popup-content p {
-    margin: 0 0 10px;
-    color: #4b5563;
-    font-size: 0.9rem;
-}
-
-.btn-view-profile {
-    background-color: var(--primary-color, #2563eb);
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
+    margin: 0 0 12px;
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
     font-weight: 600;
-    width: 100%;
-    transition: background 0.2s;
-}
-
-.btn-view-profile:hover {
-    background-color: var(--primary-hover, #1d4ed8);
-}
-
-/* User marker subtle pulse */
-.pulse-user-circle {
-    opacity: 0.8;
-    animation: fade-pulse 2s infinite alternate;
-}
-
-@keyframes fade-pulse {
-    0% { opacity: 0.6; }
-    100% { opacity: 1; }
-}
-
-/* Custom Distance Tooltip */
-.distance-tooltip {
-    background-color: #1f2937;
-    color: #ffffff;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    font-size: 0.85rem;
-    padding: 4px 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-.distance-tooltip.leaflet-tooltip-top::before {
-    border-top-color: #1f2937;
 }
 
 .popup-distance {
-    color: #eab308;
-    font-weight: bold;
-    font-size: 0.95rem;
-    background: #fefce8;
-    padding: 4px 8px;
-    border-radius: 4px;
+    background: var(--color-primary-light, #e0f2fe);
+    color: var(--color-primary);
+    padding: 4px 12px;
+    border-radius: 10px;
+    font-size: 1rem !important;
+    font-weight: 800 !important;
     display: inline-block;
+    margin-top: 2px;
+    margin-bottom: 15px !important;
+    border: 1px solid rgba(85, 152, 192, 0.2);
+}
+
+/* ==========================
+   Popup Actions & Buttons
+   ========================== */
+.popup-actions {
+    display: flex;
+    gap: 12px;
     margin-top: 5px;
 }
 
-/* Distance label on polyline */
+.btn-popup {
+    flex: 1;
+    padding: 10px 8px;
+    border-radius: 12px;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    white-space: nowrap;
+}
+
+.btn-request {
+    background: var(--color-primary);
+    color: #fff;
+    box-shadow: 0 6px 15px rgba(85, 152, 192, 0.3);
+}
+
+.btn-request:hover {
+    background: var(--color-primary-hover, #4a87ab);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(85, 152, 192, 0.4);
+}
+
+.btn-profile {
+    background: #FFB340;
+    color: #fff;
+    box-shadow: 0 6px 15px rgba(255, 179, 64, 0.25);
+}
+
+.btn-profile:hover {
+    background: #e6a139;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(255, 179, 64, 0.35);
+}
+
+/* ==========================
+   Tooltips & Polylines
+   ========================== */
 .line-distance-label {
-    background: #1e293b !important;
+    background: var(--color-navy-deep) !important;
     color: #fff !important;
-    border: 2px solid #3b82f6 !important;
-    border-radius: 20px !important;
-    padding: 2px 8px !important;
-    font-weight: 800 !important;
-    font-size: 0.8rem !important;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+    border: 2px solid var(--color-primary) !important;
+    border-radius: 25px !important;
+    padding: 4px 12px !important;
+    font-weight: 900 !important;
+    font-size: 1rem !important;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.3) !important;
     white-space: nowrap !important;
     opacity: 1 !important;
 }
 
 .line-distance-label::before {
     display: none !important;
+}
+
+/* 🌙 Dark Mode Adjustments */
+html[data-theme="dark"] .tech-popup .leaflet-popup-content-wrapper,
+html[data-theme="dark"] .tech-popup .leaflet-popup-tip {
+    background: var(--color-bg-dark);
+}
+
+html[data-theme="dark"] .popup-distance {
+    background: rgba(85, 152, 192, 0.1);
+    border-color: rgba(85, 152, 192, 0.3);
+}
+
+html[data-theme="dark"] .popup-content h4 {
+    color: #fff;
+}
+
+html[data-theme="dark"] .popup-content p {
+    color: var(--color-text-secondary);
 }

@@ -1,6 +1,6 @@
-import userImg from "../../assets/images/Rectangle 35.png";
-import artisanImg from "../../assets/images/Rectangle 33.png";
-import companyImg from "../../assets/images/Rectangle 31.png";
+import userImg from "../../assets/images/join_user_new.png";
+import artisanImg from "../../assets/images/join_craftsman_new.png";
+import companyImg from "../../assets/images/join_company_new.png";
 
 export const JOIN_CARDS = [
   {

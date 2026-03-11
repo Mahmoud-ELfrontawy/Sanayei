@@ -5,7 +5,7 @@ import { FaArrowLeft } from "react-icons/fa6";
 
 import bigImg from "../../../../assets/images/portfolio image 1.png";
 import smallImg from "../../../../assets/images/portfolio image 2.png";
-import MediaDots from "../../../../assets/images/dots.png";
+
 
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../hooks/useAuth";
@@ -84,13 +84,7 @@ const AboutSection: React.FC = () => {
                             loading="lazy"
                             decoding="async"
                         />
-                        <img
-                            src={MediaDots}
-                            alt=""
-                            className="media-dots"
-                            loading="lazy"
-                            decoding="async"
-                        />
+                        <div className="media-dots" aria-hidden="true" />
                         <div className="media-deco" />
                     </div>
                 </motion.div>

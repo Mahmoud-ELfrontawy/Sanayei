@@ -24,8 +24,8 @@
     inset: 0;
     background: linear-gradient(to right,
             rgba(0, 0, 0, 0) 0%,
-            var(--color-text-accent) 70%,
-            var(--color-text-accent) 100%);
+            var(--color-navy-deep) 69%,
+            var(--color-navy-deep) 100%);
     pointer-events: none;
     z-index: 2; /* Above image, below content */
 }

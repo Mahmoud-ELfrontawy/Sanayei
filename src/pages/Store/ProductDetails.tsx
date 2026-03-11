@@ -86,7 +86,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
             setAddingToCart(true);
             await addToCart(fullProduct.id, quantity);
             toast.success(`تم إضافة ${quantity} قطعة للسلة ✅`);
-            
+
             // ✅ Notify Parent to update global badge
             getCartCount().then(onCartCountChange);
         } catch {

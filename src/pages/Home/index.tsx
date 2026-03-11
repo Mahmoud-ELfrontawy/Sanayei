@@ -3,6 +3,7 @@ import CardsRow from "./sections/CardsRow/CardsRow";
 import HeroSection from "./sections/HeroSection/HeroSection";
 import RequestServiceSection from "./sections/RequestServiceSection/RequestServiceSection";
 import ServicesSection from "./sections/ServicesSection/ServicesSection";
+import TestimonialsSection from "./sections/TestimonialsSection/TestimonialsSection";
 import WhySanayeiSection from "./sections/WhySanayeiSection/WhySanayeiSection";
 
 const Home: React.FC = () => {
@@ -12,6 +13,7 @@ const Home: React.FC = () => {
             <CardsRow />
             <AboutSection />
             <ServicesSection limit={4} />
+            <TestimonialsSection />
             <RequestServiceSection />
             <WhySanayeiSection />
         </>
@@ -19,4 +21,3 @@ const Home: React.FC = () => {
 };
 
 export default Home;
-

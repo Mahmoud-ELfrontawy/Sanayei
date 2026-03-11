@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import Home from "../pages/Home";
 import { AdminNotificationProvider } from "../context/AdminNotificationContext";
+import LogoLoader from "../components/ui/loaders/FullPageLoader";
 
 // Lazy load pages for better performance
 const ServicesPage = lazy(() => import("../pages/Services/ServicesPage"));
@@ -14,7 +15,7 @@ const HowItWorks = lazy(() => import("../pages/HowItWorks/HowItWorks"));
 const JoinUs = lazy(() => import("../pages/JoinUs/JoinUs"));
 const PrivacyPolicy = lazy(() => import("../pages/Legal/PrivacyPolicy"));
 const TermsOfUse = lazy(() => import("../pages/Legal/TermsOfUse"));
-
+const LearnMorePage = lazy(() => import("../pages/LearnMore/LearnMorePage"));
 const LoginPage = lazy(() => import("../pages/Auth/Login/LoginPage"));
 const ForgotPasswordPage = lazy(() => import("../pages/Auth/ForgotPassword/ForgotPasswordPage"));
 const ResetPasswordPage = lazy(() => import("../pages/Auth/ResetPassword/ResetPasswordPage"));
@@ -69,24 +70,10 @@ const ContactMessages = lazy(() => import("../pages/Admin/Contact/ContactMessage
 const AdminMessages = lazy(() => import("../pages/Admin/Messages/AdminMessages"));
 const AdminLiveMap = lazy(() => import("../pages/Admin/sections/AdminLiveMap/AdminLiveMap"));
 
-const LoadingFallback = () => (
-  <div style={{
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    fontSize: '1.25rem',
-    color: '#3498db',
-    background: '#f8f9fa'
-  }}>
-    <div className="animate-pulse">جاري التحميل...</div>
-  </div>
-);
-
 const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
-      <Suspense fallback={<LoadingFallback />}>
+      <Suspense fallback={<LogoLoader />}>
         <Routes>
           <Route path="/auth/callback" element={<GoogleCallback />} />
 
@@ -140,7 +127,7 @@ const AppRouter: React.FC = () => {
             <Route path="/request-service" element={<RequestServiceSection />} />
             <Route path="/craftsman/:id" element={<CraftsmanProfilePage />} />
             <Route path="/user/:id" element={<UserProfilePage />} />
-
+            <Route path="/learn-more" element={<LearnMorePage />} />
             {/* ===== Auth Pages ===== */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />

@@ -59,11 +59,13 @@
 
 .media-dots {
     position: absolute;
-    left: -20px;
-    bottom: -130px;
-    width: 200px;
-    height: 150px;
-
+    left: -30px;
+    bottom: -110px;
+    width: 240px;
+    height: 180px;
+    background-image: radial-gradient(rgba(11, 30, 51, 0.15) 2.2px, transparent 0);
+    background-size: 20px 20px;
+    z-index: 1;
 }
 
 .media-deco {
@@ -486,6 +488,10 @@ html[data-theme="dark"] .media-img--small {
 
 html[data-theme="dark"] .media-deco {
     background: rgba(95, 168, 211, 0.1);
+}
+
+html[data-theme="dark"] .media-dots {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.08) 2.2px, transparent 0);
 }
 
 html[data-theme="dark"] .about-features .icon {

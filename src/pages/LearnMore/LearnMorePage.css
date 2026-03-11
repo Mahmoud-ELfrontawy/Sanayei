@@ -1,0 +1,357 @@
+/* LearnMorePage.css */
+
+.lm-page {
+    background: var(--color-bg-main);
+    color: var(--color-text-main);
+    overflow-x: hidden;
+    direction: rtl;
+}
+
+.lm-container {
+    width: min(1200px, 90%);
+    margin: 0 auto;
+}
+
+.lm-section {
+    padding: 100px 0;
+}
+
+/* ==========================
+   Hero Section
+   ========================== */
+.lm-hero {
+    position: relative;
+    padding: 140px 0 100px;
+    background: linear-gradient(180deg, var(--color-bg-section) 0%, var(--color-bg-main) 100%);
+    text-align: center;
+    overflow: hidden;
+}
+
+.lm-hero-badge {
+    display: inline-block;
+    padding: 10px 24px;
+    background: var(--color-primary);
+    color: #fff;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 20px rgba(95, 168, 211, 0.2);
+}
+
+.lm-hero-title {
+    font-size: clamp(2.5rem, 6vw, 4.2rem);
+    color: var(--color-text-accent);
+    line-height: 1.2;
+    margin-bottom: 30px;
+    font-weight: 900;
+}
+
+.lm-hero-title span {
+    color: var(--color-primary);
+    position: relative;
+}
+
+.lm-hero-subtitle {
+    font-size: 1.5rem;
+    color: var(--color-text-secondary);
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.8;
+}
+
+.lm-hero-deco {
+    position: absolute;
+    top: -100px;
+    left: -100px;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(95, 168, 211, 0.1) 0%, transparent 70%);
+    z-index: 0;
+}
+
+/* ==========================
+   Vision Section
+   ========================== */
+.lm-visual-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+}
+
+.lm-section-title {
+    font-size: 3rem;
+    color: var(--color-text-accent);
+    margin-bottom: 25px;
+    font-weight: 800;
+}
+
+.lm-text-side p {
+    font-size: 1.3rem;
+    line-height: 1.9;
+    color: var(--color-text-main);
+    margin-bottom: 40px;
+    opacity: 0.9;
+}
+
+.lm-stats {
+    display: flex;
+    gap: 50px;
+}
+
+.lm-stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.lm-stat-num {
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: var(--color-primary);
+    line-height: 1;
+}
+
+.lm-stat-label {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    margin-top: 5px;
+}
+
+/* Image Side Deco */
+.lm-card-deco {
+    position: relative;
+    padding: 20px;
+}
+
+.lm-image-placeholder {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: var(--color-bg-section);
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.1);
+    border: 8px solid var(--color-bg-main);
+}
+
+.lm-image-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.floating-icon, .floating-icon-2 {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    background: var(--color-primary);
+    color: #fff;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    box-shadow: 0 15px 30px rgba(95, 168, 211, 0.4);
+    z-index: 10;
+    animation: float 4s ease-in-out infinite;
+}
+
+.floating-icon { top: -20px; right: -20px; }
+.floating-icon-2 { bottom: -20px; left: -20px; animation-delay: 2s; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+/* ==========================
+   Pillars Section
+   ========================== */
+.lm-pillars {
+    background: var(--color-bg-section);
+}
+
+.lm-centered-header {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 60px;
+}
+
+.lm-section-desc {
+    font-size: 1.4rem;
+    color: var(--color-text-secondary);
+}
+
+.lm-pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 30px;
+}
+
+.lm-pillar-card {
+    background: var(--color-bg-main);
+    padding: 50px 35px;
+    border-radius: 35px;
+    text-align: center;
+    border: 1px solid var(--color-border);
+    transition: all 0.4s ease;
+}
+
+.lm-pillar-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--color-primary) 0%, #7ec4ed 100%);
+    color: #fff;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 35px;
+    margin: 0 auto 30px;
+    box-shadow: 0 10px 20px rgba(95, 168, 211, 0.2);
+}
+
+.lm-pillar-card h3 {
+    font-size: 1.7rem;
+    color: var(--color-text-accent);
+    margin-bottom: 15px;
+    font-weight: 800;
+}
+
+.lm-pillar-card p {
+    font-size: 1.15rem;
+    color: var(--color-text-main);
+    opacity: 0.8;
+    line-height: 1.7;
+}
+
+/* ==========================
+   CTA Section
+   ========================== */
+.lm-footer-cta {
+    background: var(--color-bg-main);
+}
+
+.lm-cta-inner {
+    background: var(--color-navy-deep);
+    padding: 100px 40px;
+    border-radius: 50px;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+.lm-cta-inner h2 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin-bottom: 20px;
+}
+
+.lm-cta-inner p {
+    font-size: 1.5rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto 40px;
+}
+
+.lm-cta-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.lm-btn {
+    padding: 18px 45px;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.lm-btn-primary {
+    background: var(--color-primary);
+    color: #fff;
+    border: none;
+    box-shadow: 0 15px 35px rgba(95, 168, 211, 0.3);
+}
+
+.lm-btn-outline {
+    background: transparent;
+    color: #fff;
+    border: 2px solid rgba(255,255,255,0.3);
+}
+
+.lm-btn:hover {
+    transform: translateY(-5px);
+}
+
+.lm-btn-outline:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: #fff;
+}
+
+/* ==========================
+   Responsive
+   ========================== */
+@media (max-width: 1024px) {
+    .lm-visual-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 60px;
+    }
+    
+    .lm-stats {
+        justify-content: center;
+    }
+
+    .lm-cta-inner h2 {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .lm-hero {
+        padding: 100px 0 60px;
+    }
+    
+    .lm-section-title {
+        font-size: 2.2rem;
+    }
+    
+    .lm-hero-title {
+        font-size: 2rem;
+    }
+
+    .lm-hero-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .lm-cta-actions {
+        flex-direction: column;
+    }
+
+    .lm-btn {
+        width: 100%;
+    }
+}
+
+/* 🌙 Dark Mode Adjustments */
+html[data-theme="dark"] .lm-hero-deco {
+    background: radial-gradient(circle, rgba(126, 200, 240, 0.05) 0%, transparent 70%);
+}
+
+html[data-theme="dark"] .lm-pillar-card {
+    background: var(--color-bg-section);
+}
+
+html[data-theme="dark"] .lm-image-placeholder {
+    border-color: var(--color-bg-section);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.4);
+}
+
+html[data-theme="dark"] .lm-cta-inner {
+    background: linear-gradient(135deg, #0b1e33 0%, #060810 100%);
+}

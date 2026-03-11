@@ -18,14 +18,14 @@
 /* Hero Section */
 .ju-hero-section {
     padding: 120px 0 80px;
-    background: linear-gradient(180deg, #f0f7ff 0%, var(--color-bg-main) 100%);
+    background: linear-gradient(180deg, var(--color-bg-section) 0%, var(--color-bg-main) 100%);
     text-align: center;
     position: relative;
 }
 
 .ju-hero-badge {
     padding: 12px 28px;
-    background: white;
+    background: var(--color-bg-main);
     color: var(--color-primary);
     border-radius: 50px;
     font-weight: 700;
@@ -97,7 +97,7 @@
 }
 
 .ju-benefit-card {
-    background: white;
+    background: var(--color-bg-main);
     padding: 45px 35px;
     border-radius: 35px;
     border: 1px solid rgba(0,0,0,0.03);
@@ -143,11 +143,11 @@
 /* Final CTA Section */
 .ju-register-cta {
     padding: 100px 0;
-    background: white;
+    background: var(--color-bg-main);
 }
 
 .ju-cta-box {
-    background: linear-gradient(135deg, #f8faff 0%, #ffffff 100%);
+    background: var(--color-bg-section);
     padding: 80px 40px;
     border-radius: 50px;
     text-align: center;
@@ -232,4 +232,30 @@
     .ju-cta-buttons {
         flex-direction: column;
     }
+}
+
+/* 🌙 JoinUs Dark Mode Overrides */
+html[data-theme="dark"] .ju-hero-badge {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .ju-benefit-card {
+    background: var(--color-bg-section);
+    border-color: var(--color-border);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+html[data-theme="dark"] .ju-cta-box {
+    background: var(--color-bg-dark);
+    border-color: var(--color-border);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.4);
+}
+
+html[data-theme="dark"] .ju-benefit-icon {
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+html[data-theme="dark"] .ju-hero-subtitle {
+    color: var(--color-text-secondary);
 }

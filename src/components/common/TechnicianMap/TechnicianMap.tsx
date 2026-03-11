@@ -1,23 +1,74 @@
 import React, { useEffect } from 'react';
+import L from 'leaflet';
 import { MapContainer, TileLayer, CircleMarker, Popup, useMap, Polyline, Tooltip } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useNavigate } from 'react-router-dom';
 import type { Technician } from '../../../constants/technician';
 import { getAvatarUrl } from '../../../utils/imageUrl';
+import './TechnicianMap.css';
 
 interface TechnicianMapProps {
     technicians: Technician[];
     userLocation: { lat: number, lng: number } | null;
 }
 
-// Component to handle map center updates
-const ChangeView: React.FC<{ center: [number, number] }> = ({ center }) => {
+// Component to handle automatic map bounds adjustment to show all parties
+const AutoFitBounds: React.FC<{ userLocation: { lat: number, lng: number } | null, technicians: Technician[] }> = ({ userLocation, technicians }) => {
     const map = useMap();
-    useEffect(() => {
-        if (center[0] && center[1]) {
-            map.setView(center, map.getZoom());
+
+    const handleFit = () => {
+        const points: L.LatLngExpression[] = [];
+        
+        if (userLocation) {
+            points.push([userLocation.lat, userLocation.lng]);
         }
-    }, [center, map]);
+        
+        technicians.forEach(tech => {
+            if (tech.latitude && tech.longitude) {
+                points.push([Number(tech.latitude), Number(tech.longitude)]);
+            }
+        });
+
+        if (points.length > 1) {
+            const bounds = L.latLngBounds(points);
+            map.fitBounds(bounds, { 
+                padding: [70, 70], 
+                maxZoom: 15,
+                animate: true,
+                duration: 1.5
+            });
+        } else if (points.length === 1) {
+            map.setView(points[0], 13, { animate: true });
+        }
+    };
+
+    // Initial fit and on data change
+    useEffect(() => {
+        handleFit();
+    }, [userLocation, technicians, map]);
+
+    // Periodic check to return view if user wandered off to a blank area
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (technicians.length === 0) return;
+
+            const currentBounds = map.getBounds();
+            const anyTechVisible = technicians.some(tech => {
+                if (tech.latitude && tech.longitude) {
+                    return currentBounds.contains(L.latLng(Number(tech.latitude), Number(tech.longitude)));
+                }
+                return false;
+            });
+
+            // If no technician is in the current viewport, bring the view back
+            if (!anyTechVisible) {
+                handleFit();
+            }
+        }, 4000); // Check every 4 seconds
+
+        return () => clearInterval(interval);
+    }, [map, technicians, userLocation]);
+
     return null;
 };
 
@@ -54,9 +105,7 @@ const TechnicianMap: React.FC<TechnicianMapProps> = ({ technicians, userLocation
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 />
 
-                {userLocation && (
-                    <ChangeView center={[userLocation.lat, userLocation.lng]} />
-                )}
+                <AutoFitBounds userLocation={userLocation} technicians={technicians} />
 
                 {/* User Location Marker (Guaranteed rendering) */}
                 {userLocation && (
@@ -121,18 +170,16 @@ const TechnicianMap: React.FC<TechnicianMapProps> = ({ technicians, userLocation
                                             <p className="popup-distance">يبعد عنك: {Number(tech.distance).toFixed(2)} كم</p>
                                         )}
 
-                                        <div className="popup-actions" style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                                        <div className="popup-actions">
                                             <button
                                                 onClick={() => navigate('/request-service', { state: { serviceId: tech.service?.id, workerId: tech.id } })}
-                                                className="btn-view-profile"
-                                                style={{ backgroundColor: '#10b981', color: 'white', flex: 1 }}
+                                                className="btn-popup btn-request"
                                             >
                                                 طلب خدمة الآن
                                             </button>
                                             <button
                                                 onClick={() => navigate(`/craftsman/${tech.id}`)}
-                                                className="btn-view-profile"
-                                                style={{ backgroundColor: '#eab308', color: 'white', flex: 1 }}
+                                                className="btn-popup btn-profile"
                                             >
                                                 الملف الشخصي
                                             </button>

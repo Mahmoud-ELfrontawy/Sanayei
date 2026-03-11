@@ -117,7 +117,7 @@ const HeroSection: React.FC = () => {
 
                         <motion.button
                             whileTap={{ scale: 0.95 }}
-                            onClick={() => navigate("/choose")}
+                            onClick={() => navigate("/learn-more")}
                             className="btn-outline-herosection"
                         >
                             اقرأ اكثر

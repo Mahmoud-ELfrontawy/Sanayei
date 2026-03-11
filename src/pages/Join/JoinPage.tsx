@@ -10,19 +10,21 @@ const JoinPage: React.FC = () => {
         <div className="join-grid">
           {JOIN_CARDS.map((card) => (
             <div className="join-card" key={card.title}>
-              <h3 className="join-title">{card.title}</h3>
+              <div className="join-img-wrapper">
+                <img
+                  src={card.image}
+                  alt={card.title}
+                  className="join-image"
+                />
+              </div>
 
-              <img
-                src={card.image}
-                alt={card.title}
-                className="join-image"
-              />
-
-              <p className="join-text">{card.text}</p>
-
-              <Link to={card.link} className="join-btn">
-                {card.button}
-              </Link>
+              <div className="join-content">
+                <h3 className="join-title">{card.title}</h3>
+                <p className="join-text">{card.text}</p>
+                <Link to={card.link} className="join-btn">
+                  {card.button}
+                </Link>
+              </div>
             </div>
           ))}
         </div>
