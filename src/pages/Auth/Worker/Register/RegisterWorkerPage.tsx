@@ -157,13 +157,15 @@ const RegisterWorkerPage: React.FC = () => {
                   <input
                     className="auth-input"
                     type="email"
-                    placeholder="البريد الإلكتروني"
+                    placeholder="البريد الإلكتروني (اختياري)"
                     {...register("email", {
-                      required: "البريد مطلوب",
-                      pattern: {
-                        value: /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
-                        message: "يرجى استخدام حساب Gmail حقيقي لضمان التوثيق",
-                      },
+                      validate: (value) => {
+                        if (!value) return true;
+                        if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(value)) {
+                          return "يرجى استخدام حساب Gmail حقيقي لضمان التوثيق";
+                        }
+                        return true;
+                      }
                     })}
                     onFocus={() => handleFieldFocus("email")}
                     onBlur={handleFieldBlur}

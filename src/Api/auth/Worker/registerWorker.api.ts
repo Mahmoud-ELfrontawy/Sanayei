@@ -3,7 +3,7 @@ import { loginCraftsman } from "./loginWorker.api";
 
 export interface RegisterWorkerPayload {
   name: string;
-  email: string;
+  email?: string;
   phone: string;
 
   service_id: number | string; // Changed to allow string if needed
@@ -27,7 +27,9 @@ export const registerWorker = async (
   const formData = new FormData();
 
   formData.append("name", payload.name);
-  formData.append("email", payload.email);
+  if (payload.email) {
+    formData.append("email", payload.email);
+  }
   formData.append("phone", payload.phone);
 
   formData.append("service_id", payload.service_id.toString());

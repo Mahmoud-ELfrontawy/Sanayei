@@ -36,7 +36,6 @@ const StoreProductList: React.FC<StoreProductListProps> = ({ categoryId, searchQ
     const [isSortOpen, setIsSortOpen] = useState(false);
 
     /* ── Cart State ── */
-    const [cartCount, setCartCount] = useState(0);
 
     /* ───────────── Products fetch ───────────── */
     const fetchProducts = useCallback(async () => {
@@ -64,8 +63,7 @@ const StoreProductList: React.FC<StoreProductListProps> = ({ categoryId, searchQ
         if (!isAuthenticated) return;
         try {
             const data = await getCartItems();
-            const items = Array.isArray(data) ? data : [];
-            setCartCount(items.length);
+            const items = Array.isArray(data) ? data : (data?.data ?? []);
             onCartCountChange?.(items.length);
         } catch {
             /* silence */
@@ -120,12 +118,6 @@ const StoreProductList: React.FC<StoreProductListProps> = ({ categoryId, searchQ
                                 {cat.name}
                             </button>
                         ))}
-                    </div>
-
-                    <div className="cart-float-btn static">
-                        <FiShoppingCart size={20} />
-                        {cartCount > 0 && <span className="cart-float-count">{cartCount}</span>}
-                        <span>السلة</span>
                     </div>
                 </div>
 
@@ -205,7 +197,9 @@ const StoreProductList: React.FC<StoreProductListProps> = ({ categoryId, searchQ
                                 </div>
                                 <div className="card-info-box">
                                     <div className="product-meta-row">
-                                        {product.badge && <span className="product-badge-tag">{product.badge}</span>}
+                                        {product.badge && product.badge !== '0' && product.badge !== 0 && (
+                                            <span className="product-badge-tag">{product.badge}</span>
+                                        )}
                                         {product.company?.company_name && (
                                             <span className="company-attribution">
                                                 <FiPackage size={12} />

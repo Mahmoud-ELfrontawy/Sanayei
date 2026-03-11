@@ -11,6 +11,7 @@ import { getWalletOverview } from "../../Api/wallet.api";
 import { getFullImageUrl } from "../../utils/imageUrl";
 import { useAuth } from "../../hooks/useAuth";
 import { useNotifications } from "../../context/NotificationContext";
+import PhoneValidationMeter from "../../components/ui/PhoneValidationMeter/PhoneValidationMeter";
 import "./StoreCartTab.css";
 
 interface StoreCartTabProps {
@@ -40,7 +41,7 @@ const StoreCartTab: React.FC<StoreCartTabProps> = ({ onCartCountChange, onGoToOr
         try {
             setLoading(true);
             const data = await getCartItems();
-            const items = Array.isArray(data) ? data : [];
+            const items = Array.isArray(data) ? data : (data?.data ?? []);
             setCartItems(items);
             onCartCountChange?.(items.length);
         } catch {
@@ -201,12 +202,12 @@ const StoreCartTab: React.FC<StoreCartTabProps> = ({ onCartCountChange, onGoToOr
                         <div className="cart-tab-header">
                             {cartView === "checkout" ? (
                                 <button className="cart-tab-back-btn" onClick={() => setCartView("cart")}>
-                                    <FiArrowRight /> رجوع
+                                    <FiArrowRight /> رجوع للسلة
                                 </button>
                             ) : (
-                                <h2><FiShoppingCart /> السلة</h2>
+                                <h2><FiShoppingCart /> السلة الذكية</h2>
                             )}
-                            <span className="cart-tab-count">{cartItems.length} منتج</span>
+                            <div className="cart-tab-count">{cartItems.length} عنصر</div>
                         </div>
 
                         <AnimatePresence mode="wait">
@@ -232,7 +233,7 @@ const StoreCartTab: React.FC<StoreCartTabProps> = ({ onCartCountChange, onGoToOr
                                                     {item.quantity > 1 && <small> × {item.quantity}</small>}
                                                 </p>
                                             </div>
-                                            <button className="cart-tab-remove-btn" onClick={() => handleRemove(item.id)}>
+                                            <button className="cart-tab-remove-btn" title="حذف" onClick={() => handleRemove(item.id)}>
                                                 <FiTrash2 />
                                             </button>
                                         </div>
@@ -249,12 +250,12 @@ const StoreCartTab: React.FC<StoreCartTabProps> = ({ onCartCountChange, onGoToOr
                                 >
                                     <div className="cart-field-group">
                                         <label><FiMapPin /> عنوان التوصيل بالتفصيل</label>
-                                        <textarea
+                                        <input
+                                            type="text"
                                             value={formData.shipping_address}
                                             onChange={e => setFormData(d => ({ ...d, shipping_address: e.target.value }))}
-                                            placeholder="أدخل العنوان (المحافظة، المنطقة، اسم الشارع، رقم العقار)"
+                                            placeholder="المحافظة، المنطقة، اسم الشارع، رقم العقار..."
                                             required
-                                            rows={3}
                                         />
                                     </div>
 
@@ -263,10 +264,11 @@ const StoreCartTab: React.FC<StoreCartTabProps> = ({ onCartCountChange, onGoToOr
                                         <input
                                             type="tel"
                                             value={formData.phone}
-                                            onChange={e => setFormData(d => ({ ...d, phone: e.target.value }))}
-                                            placeholder="رقم الموبايل المتاح حالياً"
+                                            onChange={e => setFormData(d => ({ ...d, phone: e.target.value.replace(/\D/g, '').slice(0, 11) }))}
+                                            placeholder="رقم الموبايل (مثال: 01012345678)"
                                             required
                                         />
+                                        <PhoneValidationMeter phone={formData.phone} />
                                     </div>
 
                                     <div className="cart-field-group">
@@ -275,22 +277,24 @@ const StoreCartTab: React.FC<StoreCartTabProps> = ({ onCartCountChange, onGoToOr
                                             <label className={`cart-payment-opt ${formData.payment_method === "cash" ? "active" : ""}`}>
                                                 <input type="radio" checked={formData.payment_method === "cash"}
                                                     onChange={() => setFormData(d => ({ ...d, payment_method: "cash" }))} />
-                                                <div className="pm-opt-main">
-                                                    <div className="pm-opt-title"><FiTruck /> الدفع عند الاستلام</div>
+                                                <div className="pm-opt-title">
+                                                    <FiTruck />
+                                                    <span>الدفع نقداً</span>
                                                 </div>
                                             </label>
 
                                             <label className={`cart-payment-opt ${formData.payment_method === "wallet" ? "active" : ""}`}>
                                                 <input type="radio" checked={formData.payment_method === "wallet"}
                                                     onChange={() => setFormData(d => ({ ...d, payment_method: "wallet" }))} />
-                                                <div className="pm-opt-main">
-                                                    <div className="pm-opt-title"><FiCreditCard /> المحفظة الإلكترونية</div>
-                                                    {walletBalance !== null && (
-                                                        <div className={`balance-info ${walletBalance < totalPrice ? 'balance-low' : 'balance-ok'}`}>
-                                                            رصيدك: {walletBalance.toLocaleString()} ج.م
-                                                        </div>
-                                                    )}
+                                                <div className="pm-opt-title">
+                                                    <FiCreditCard />
+                                                    <span>المحفظة</span>
                                                 </div>
+                                                {walletBalance !== null && (
+                                                    <div className={`balance-info ${walletBalance < totalPrice ? 'balance-low' : 'balance-ok'}`}>
+                                                        رصيدك: {walletBalance.toLocaleString()} ج.م
+                                                    </div>
+                                                )}
                                             </label>
                                         </div>
                                     </div>
@@ -301,7 +305,9 @@ const StoreCartTab: React.FC<StoreCartTabProps> = ({ onCartCountChange, onGoToOr
                                             animate={{ opacity: 1, y: 0 }}
                                             className="cart-wallet-info"
                                         >
-                                            <div className="wallet-note">سيتم التحويل لمحفظة الشركة مباشرة</div>
+                                            <div className="wallet-note">
+                                                <FiShield /> سيتم التحويل لمحفظة الشركة مباشرة لضمان حقوقك
+                                            </div>
                                             <div className="mini-company-wallets">
                                                 {companies.map(comp => (
                                                     <div key={comp.id} className="mini-wallet-item">

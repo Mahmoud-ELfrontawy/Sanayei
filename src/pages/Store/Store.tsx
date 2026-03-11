@@ -5,6 +5,7 @@ import ProductDetails from "./ProductDetails";
 import StoreOrdersPage from "./StoreOrdersPage";
 import StoreCartTab from "./StoreCartTab";
 import { getPublicCategories } from "../../Api/store/publicStore.api";
+import { getCartCount } from "../../Api/store/cart.api";
 import { useEffect } from "react";
 import "./Store.css";
 
@@ -30,6 +31,8 @@ const StorePage: React.FC = () => {
 
     useEffect(() => {
         fetchCategories();
+        // Fetch Initial Cart Count
+        getCartCount().then(setCartCount);
     }, []);
 
     const renderStoreContent = () => {
@@ -53,6 +56,7 @@ const StorePage: React.FC = () => {
                     <ProductDetails
                         product={selectedProduct}
                         onBack={() => setStoreView("productList")}
+                        onCartCountChange={setCartCount}
                     />
                 );
             default:

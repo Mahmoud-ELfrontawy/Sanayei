@@ -77,7 +77,7 @@
 html[data-theme="dark"] {
     /* Primary – slightly lighter for contrast on dark bg */
     --color-primary: #7ec8f0;
-    --color-primary-hover: #5FA8D3;
+    --color-primary-hover: #5598C0;
 
     /* Text */
     --color-text-main: #e2e8f0;

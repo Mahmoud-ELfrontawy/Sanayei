@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { FiArrowRight, FiShoppingCart, FiShield, FiTruck, FiRefreshCw, FiPlus, FiMinus, FiStar } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { getPublicStoreProductDetails } from "../../Api/auth/Company/storeManagement.api";
-import { addToCart } from "../../Api/store/cart.api";
+import { addToCart, getCartCount } from "../../Api/store/cart.api";
 import { getFullImageUrl } from "../../utils/imageUrl";
 import { useAuth } from "../../hooks/useAuth";
 import "./ProductDetails.css";
@@ -10,9 +10,10 @@ import "./ProductDetails.css";
 interface ProductDetailsProps {
     product: any; // initial product data from the list (may be partial)
     onBack: () => void;
+    onCartCountChange?: (count: number) => void;
 }
 
-const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct, onBack }) => {
+const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct, onBack, onCartCountChange }) => {
     const [fullProduct, setFullProduct] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [quantity, setQuantity] = useState(1);
@@ -85,6 +86,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
             setAddingToCart(true);
             await addToCart(fullProduct.id, quantity);
             toast.success(`تم إضافة ${quantity} قطعة للسلة ✅`);
+            
+            // ✅ Notify Parent to update global badge
+            getCartCount().then(onCartCountChange);
         } catch {
             toast.error("يجب تسجيل الدخول أولاً");
         } finally {
@@ -151,7 +155,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
                                 خصم {Math.round(((fullProduct.price - fullProduct.discount_price) / fullProduct.price) * 100)}%
                             </div>
                         )}
-                        {fullProduct?.badge && (
+                        {fullProduct?.badge && fullProduct.badge !== '0' && fullProduct.badge !== 0 && (
                             <span className="product-status-tag">{fullProduct.badge}</span>
                         )}
                     </div>

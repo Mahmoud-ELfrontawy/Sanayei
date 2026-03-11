@@ -66,8 +66,9 @@ export const removeFromCart = async (cartItemId: number) => {
  */
 export const getCartCount = async () => {
     try {
-        const items = await getCartItems();
-        return Array.isArray(items) ? items.length : 0;
+        const res = await getCartItems();
+        const items = Array.isArray(res) ? res : (res?.data ?? []);
+        return items.length;
     } catch {
         return 0;
     }

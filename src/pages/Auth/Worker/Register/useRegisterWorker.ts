@@ -12,7 +12,7 @@ import { useRequestServiceData } from
 
 export interface RegisterWorkerFormValues {
   name: string;
-  email: string;
+  email?: string;
   phone: string;
   service_id: string;
   custom_service?: string;
@@ -89,7 +89,9 @@ export const useRegisterWorker = () => {
 
       // Account creation success — show mail check toast and go to login
       toast.success(
-        response.message || "تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني لتنشيط الحساب. 📧"
+        response.message || (data.email 
+          ? "تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني لتنشيط الحساب. 📧"
+          : "تم إنشاء الحساب بنجاح! سيتم مراجعة بياناتك وتفعيل الحساب قريباً. ✅")
       );
       form.reset();
       navigate("/login");
@@ -109,7 +111,7 @@ export const useRegisterWorker = () => {
 
       if (err.response?.status === 422 && err.response?.data?.errors) {
         const errors = err.response.data.errors;
-        console.log("❌ Validation Errors:", errors); // سطر إضافي لرؤية كل الأخطاء في الكونسول
+        console.log("❌ Validation Errors:", errors);
         if (errors.email) {
           toast.error("هذا البريد الإلكتروني مسجل بالفعل ⚠️ يرجى استخدام بريد آخر.");
         } else if (errors.phone) {
@@ -135,3 +137,4 @@ export const useRegisterWorker = () => {
     isLoadingData,
   };
 };
+
