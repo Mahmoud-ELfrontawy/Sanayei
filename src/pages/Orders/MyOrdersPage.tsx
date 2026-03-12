@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import ReviewModal from "../../components/ui/ReviewModal/ReviewModal";
 import OrderTrackingMap from "../../components/common/OrderTrackingMap/OrderTrackingMap";
 import { useNavigate, Link } from "react-router-dom";
@@ -116,15 +116,39 @@ function MyOrdersPage() {
 
         fetchOrders(true);
 
+        // 🔄 Background refresh every 20s (reduced from 30s)
         const intervalId = setInterval(() => {
             fetchOrders(false);
-        }, 30000);
+        }, 20_000);
 
         return () => {
             isMounted = false;
             clearInterval(intervalId);
         };
     }, [user, isCraftsman, authLoading]);
+
+    // ⚡ Instant refresh when Echo delivers a status change notification
+    const { userNotifications } = useNotifications();
+    const lastNotifRef = React.useRef<string | null>(null);
+    useEffect(() => {
+        const latest = userNotifications.find(
+            n => n.type === "order_status" || n.type === "order_request"
+        );
+        if (latest && latest.id !== lastNotifRef.current) {
+            lastNotifRef.current = latest.id;
+            // Silent re-fetch without showing skeleton
+            (async () => {
+                try {
+                    const result = isCraftsman
+                        ? await getIncomingServiceRequests()
+                        : await getMyServiceRequests();
+                    const raw = Array.isArray(result) ? result : result.data || result.orders || [];
+                    const final = Array.isArray(raw) ? raw : raw.data || [];
+                    if (final.length > 0) setOrders(final);
+                } catch { /* silent */ }
+            })();
+        }
+    }, [userNotifications, isCraftsman]);
 
     // للصنايعي - قبول أو رفض الطلب فقط
     const handleStatusUpdate = async (orderId: number, newStatus: "accepted" | "rejected") => {

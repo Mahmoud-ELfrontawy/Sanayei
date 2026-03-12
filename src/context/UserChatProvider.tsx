@@ -159,17 +159,25 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
         },
     });
 
-    /* ================= Chat Access Check ================= */
+    /* ================= Chat Access Check (Live Poll) ================= */
 
     useEffect(() => {
         if (!activeChat || !user?.id) {
             setCanSendMessage(true);
             return;
         }
-        setCanSendMessage(true); // Optimistic — reset while checking
-        getActiveServiceRequest('user', activeChat.id).then(({ status }) => {
-            setCanSendMessage(status === 'accepted');
-        });
+
+        // Check immediately on chat open
+        const check = () =>
+            getActiveServiceRequest('user', activeChat.id).then(({ status }) => {
+                setCanSendMessage(status === 'accepted');
+            }).catch(() => {/* silent */});
+
+        check();
+
+        // Re-check every 30s so chat locks automatically when service completes
+        const interval = setInterval(check, 20_000);
+        return () => clearInterval(interval);
     }, [activeChat?.id, user?.id]);
 
     /* ================= Mark As Read ================= */

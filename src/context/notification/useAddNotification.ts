@@ -139,9 +139,10 @@ function _showToast(
 
         case "product_review": {
             toast.success(`⭐ ${notif.title}: ${notif.message}`, {
-                position: "top-right",
-                autoClose: 10000,
-                toastId:   eventId,
+                position:     "top-right",
+                autoClose:    15000,
+                closeOnClick: false,
+                toastId:      `prod_rev_${notif.orderId}`, // Stable ID to prevent duplicates
             });
             break;
         }

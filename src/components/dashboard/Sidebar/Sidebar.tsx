@@ -88,11 +88,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             path: "/dashboard",
             icon: <FaThLarge size={20} />
         },
-        {
-                title: "عرض البروفايل العام",
-                path: `/company/${user?.id}`,
-                icon: <FaEye size={20} />
-            },
 
         {
             title: "المحفظة",
@@ -116,6 +111,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
         // Company-specific links
         ...(userType === "company" ? [
+            {
+                title: "عرض البروفايل العام",
+                path: `/company/${user?.id}`,
+                icon: <FaEye size={20} />
+            },
             {
                 title: "إدارة المنتجات",
                 path: "/dashboard/company/products",

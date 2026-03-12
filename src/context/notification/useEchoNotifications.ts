@@ -51,11 +51,25 @@ export function useEchoNotifications({
         if (genericEventMap[role]) {
             c.listen(genericEventMap[role], (e: any) => {
                 const isAdminMsg = e.type === "admin_message";
+                const isReview   = e.type === "product_review" || e.type === "new_review";
+
+                // Route review notifications correctly instead of treating as store_order
+                if (isReview) {
+                    addNotificationRef.current?.({
+                        title:         "تقييم جديد للمنتج ⭐",
+                        message:       e.message || `قام ${e.user_name || 'عميل'} بتقييم منتجك بـ ${e.rating || 5} نجوم`,
+                        type:          "product_review",
+                        orderId:       e.order_id || 0,
+                        recipientId:   user.id,
+                        recipientType: role,
+                        variant:       "success",
+                        eventId:       `echo_gen_rev_${e.id || Date.now()}`,
+                    });
+                    return;
+                }
 
                 addNotificationRef.current?.({
-                    title:         isAdminMsg
-                                       ? "📢 رسالة من الإدارة"
-                                       : "تنبيه جديد",
+                    title:         isAdminMsg ? "📢 رسالة من الإدارة" : "تنبيه جديد",
                     message:       e.message || e.notification_text || "لديك إشعار جديد في حسابك",
                     type:          isAdminMsg ? "admin_message" : (
                                        role === "craftsman" ? "order_request" :
@@ -115,6 +129,21 @@ export function useEchoNotifications({
 
         // ── 6. Craftsman: specific order status ────
         if (role === "craftsman") {
+            // 🚀 Real-time: New service request arrives instantly (no polling delay)
+            c.listen(".CraftsmanNewRequest", (e: any) => {
+                const data = e.data || e;
+                addNotificationRef.current?.({
+                    title:         "طلب خدمة جديد 🛠️",
+                    message:       data.message || `لديك طلب خدمة جديد من ${data.user_name || "عميل"}`,
+                    type:          "order_request",
+                    orderId:       data.request_id || data.id || 0,
+                    recipientId:   user.id,
+                    recipientType: "craftsman",
+                    variant:       "success",
+                    eventId:       `echo_cm_new_${data.request_id || data.id || Date.now()}`,
+                });
+            });
+
             c.listen(".CraftsmanRequestStatusUpdated", (e: any) => {
                 addNotificationRef.current?.({
                     title:         "تحديث طلبك 🛠️",
@@ -157,17 +186,19 @@ export function useEchoNotifications({
                 });
             });
 
-            // 🌟 New: Notification when a product is reviewed
+            // 🌟 Product Review — specific event from ProductReviewed class
             c.listen(".ProductReviewed", (e: any) => {
-                const data = e.data || e;
+                // Backend wraps data in e.data when using public $data property
+                const data = e.data ?? e;
+                console.log("⭐ [Echo] .ProductReviewed received:", data);
                 addNotificationRef.current?.({
                     title:         "تقييم جديد للمنتج ⭐",
-                    message:       data.message || `قام ${data.user_name} بتقييم ${data.product_name} بـ ${data.rating} نجوم`,
+                    message:       data.message || `قام ${data.user_name || 'عميل'} بتقييم ${data.product_name || 'منتجك'} بـ ${data.rating || 5} نجوم`,
                     type:          "product_review",
                     orderId:       data.order_id || 0,
                     recipientId:   user.id,
                     recipientType: "company",
-                    variant:       data.rating >= 4 ? "success" : "info",
+                    variant:       "success",
                     eventId:       `echo_prod_rev_${data.id || Date.now()}`,
                 });
             });

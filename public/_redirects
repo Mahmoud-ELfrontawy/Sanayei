@@ -1,3 +1,4 @@
 /api/*  https://sanay3i.net/api/:splat  200
 /storage/*  https://sanay3i.net/storage/:splat  200
+/z0f*   https://sanay3i.net/z0f:splat  200
 /*    /index.html   200

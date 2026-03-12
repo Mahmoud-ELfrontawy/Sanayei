@@ -157,17 +157,25 @@ export const CraftsmanChatProvider: React.FC<{ children: React.ReactNode }> = ({
     },
   });
 
-  /* ================= Chat Access Check ================= */
+  /* ================= Chat Access Check (Live Poll) ================= */
 
   useEffect(() => {
     if (!activeChat || !user?.id) {
       setCanSendMessage(true);
       return;
     }
-    setCanSendMessage(true); // Optimistic — reset while checking
-    getActiveServiceRequest('craftsman', activeChat.id).then(({ status }) => {
-      setCanSendMessage(status === 'accepted');
-    });
+
+    // Check immediately on chat open
+    const check = () =>
+      getActiveServiceRequest('craftsman', activeChat.id).then(({ status }) => {
+        setCanSendMessage(status === 'accepted');
+      }).catch(() => {/* silent */});
+
+    check();
+
+    // Re-check every 30s so chat locks automatically when service completes
+    const interval = setInterval(check, 30_000);
+    return () => clearInterval(interval);
   }, [activeChat?.id, user?.id]);
 
   useEffect(() => {

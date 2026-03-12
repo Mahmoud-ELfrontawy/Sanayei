@@ -9,6 +9,10 @@
       "destination": "https://sanay3i.net/storage/:path*"
     },
     {
+      "source": "/z0f:path*",
+      "destination": "https://sanay3i.net/z0f:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

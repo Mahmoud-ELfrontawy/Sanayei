@@ -22,7 +22,6 @@ const UserDashboard: React.FC = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                setLoading(true);
                 const res = await getMyServiceRequests();
                 let ordersArray = [];
                 if (Array.isArray(res)) {
@@ -35,7 +34,6 @@ const UserDashboard: React.FC = () => {
                     }
                 }
                 setOrders(ordersArray);
-                // ✅ Sync to localStorage for consistency
                 localStorage.setItem("myOrders", JSON.stringify(ordersArray));
             } catch (err) {
                 const stored = localStorage.getItem("myOrders");
@@ -45,7 +43,12 @@ const UserDashboard: React.FC = () => {
             }
         };
 
+        // Initial fetch
         fetchOrders();
+
+        // 🔄 Auto-refresh every 20s so status changes appear without refresh
+        const interval = setInterval(fetchOrders, 20_000);
+        return () => clearInterval(interval);
     }, []);
 
     // Get unique craftsmen from unique email or name

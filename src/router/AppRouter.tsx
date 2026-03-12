@@ -177,6 +177,9 @@ const AppRouter: React.FC = () => {
               <Route path="wallet" element={<WalletPage />} />
               <Route path="store" element={<StoreGalleryPage />} />
             </Route>
+
+            {/* ===== Catch All 404 ===== */}
+            <Route path="*" element={<Home />} />
           </Route>
         </Routes>
       </Suspense>

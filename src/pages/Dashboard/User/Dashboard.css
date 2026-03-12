@@ -204,6 +204,10 @@
    Recent Craftsmen Section
    ============================== */
 
+.recent-craftsmen {
+    margin-top: 40px;
+}
+
 .dashboard-section {
     background: white;
     padding: 25px;
