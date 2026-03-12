@@ -77,7 +77,10 @@ const StoreCartTab: React.FC<StoreCartTabProps> = ({ onCartCountChange, onGoToOr
     };
 
     const totalPrice = useMemo(() => cartItems.reduce((sum, item) => {
-        const price = Number(item.product?.discount_price || item.product?.price || 0);
+        const p = item.product;
+        const price = p?.discount_price && Number(p.discount_price) > 0
+            ? Number(p.price) - Number(p.discount_price)
+            : Number(p?.price || 0);
         return sum + price * item.quantity;
     }, 0), [cartItems]);
 
@@ -229,7 +232,13 @@ const StoreCartTab: React.FC<StoreCartTabProps> = ({ onCartCountChange, onGoToOr
                                             <div className="cart-tab-item-info">
                                                 <p className="cart-tab-item-name">{item.product?.name}</p>
                                                 <p className="cart-tab-item-price">
-                                                    {Number(item.product?.discount_price || item.product?.price).toLocaleString()} ج.م
+                                                    {(() => {
+                                                        const p = item.product;
+                                                        const finalPrice = p?.discount_price && Number(p.discount_price) > 0
+                                                            ? Number(p.price) - Number(p.discount_price)
+                                                            : Number(p?.price || 0);
+                                                        return finalPrice.toLocaleString();
+                                                    })()} ج.م
                                                     {item.quantity > 1 && <small> × {item.quantity}</small>}
                                                 </p>
                                             </div>

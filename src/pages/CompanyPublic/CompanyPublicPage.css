@@ -1,0 +1,508 @@
+/* =============================
+   Company Public Profile Page
+   Uses CSS variables from variables.css
+   ============================= */
+
+.cpub-page {
+    background: var(--color-bg-section);
+    min-height: 100vh;
+    direction: rtl;
+}
+
+/* ── Loading / Error states ── */
+.cpub-loading,
+.cpub-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    gap: 16px;
+    color: var(--color-text-secondary);
+    text-align: center;
+    padding: 2rem;
+}
+
+.cpub-spinner {
+    width: 52px;
+    height: 52px;
+    border: 4px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: cpub-spin 0.9s linear infinite;
+}
+
+@keyframes cpub-spin {
+    to { transform: rotate(360deg); }
+}
+
+.cpub-error button {
+    margin-top: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-btn);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 700;
+    transition: background var(--transition-fast);
+}
+
+.cpub-error button:hover {
+    background: var(--color-primary-hover);
+}
+
+/* ── Back bar ── */
+.cpub-back-bar {
+    padding: 16px 24px 0;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.cpub-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: 1px solid var(--color-border);
+    padding: 8px 18px;
+    border-radius: var(--radius-btn);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all var(--transition-fast);
+    margin-bottom: 25px;
+}
+
+.cpub-back-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+/* ── Hero ── */
+.cpub-hero {
+    background: var(--color-bg-main);
+    border-bottom: 1px solid var(--color-border);
+    padding: 48px 24px;
+}
+
+.cpub-hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.cpub-logo-wrap {
+    flex-shrink: 0;
+}
+
+.cpub-logo {
+    width: 130px;
+    height: 130px;
+    border-radius: 20px;
+    object-fit: cover;
+    border: 3px solid var(--color-border);
+    background: var(--color-bg-section);
+}
+
+.cpub-logo-placeholder {
+    width: 130px;
+    height: 130px;
+    border-radius: 20px;
+    background: var(--color-bg-section);
+    border: 2px dashed var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-secondary);
+}
+
+.cpub-hero-info {
+    flex: 1;
+    min-width: 240px;
+}
+
+.cpub-name-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.cpub-name {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--color-text-main);
+    margin: 0;
+}
+
+.cpub-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+.cpub-badge.approved {
+    background: rgba(76, 175, 80, 0.12);
+    color: #2e7d32;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.cpub-badge.pending {
+    background: rgba(255, 193, 7, 0.12);
+    color: #b45309;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.cpub-category-row {
+    margin-bottom: 16px;
+}
+
+.cpub-category-tag {
+    display: inline-block;
+    background: rgba(95, 168, 211, 0.12);
+    color: var(--color-primary);
+    border: 1px solid rgba(95, 168, 211, 0.25);
+    padding: 4px 14px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.cpub-about {
+    color: var(--color-text-secondary);
+    font-size: 1.05rem;
+    line-height: 1.75;
+    margin-bottom: 20px;
+    max-width: 680px;
+}
+
+.cpub-stats {
+    display: flex;
+    gap: 32px;
+}
+
+.cpub-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cpub-stat strong {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--color-text-main);
+}
+
+.cpub-stat span {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+/* ── Sections ── */
+.cpub-section {
+    max-width: 1200px;
+    margin: 48px auto;
+    padding: 0 24px;
+}
+
+.cpub-section-header {
+    margin-bottom: 28px;
+}
+
+.cpub-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--color-text-main);
+    margin: 0;
+}
+
+.cpub-section-title svg {
+    color: var(--color-primary);
+}
+
+/* ── Empty state ── */
+.cpub-empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--color-text-secondary);
+}
+
+.cpub-empty p {
+    margin-top: 16px;
+    font-size: 1rem;
+}
+
+/* ── Products grid ── */
+.cpub-products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 24px;
+}
+
+.cpub-product-card {
+    background: var(--color-bg-main);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: transform var(--transition-main), box-shadow var(--transition-main), border-color var(--transition-fast);
+}
+
+.cpub-product-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--color-primary);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
+}
+
+.cpub-product-img-wrap {
+    position: relative;
+    height: 180px;
+    background: var(--color-bg-section);
+    overflow: hidden;
+}
+
+.cpub-product-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cpub-discount-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--color-error);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 999px;
+}
+
+.cpub-product-info {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cpub-product-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+    margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.cpub-product-price {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cpub-price-main {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--color-primary);
+}
+
+.cpub-price-old {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    text-decoration: line-through;
+}
+
+.cpub-product-rating {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+}
+
+.cpub-product-rating .star-on  { color: #f59e0b; fill: #f59e0b; }
+.cpub-product-rating .star-off { color: var(--color-border); }
+
+/* ── Reviews grid ── */
+.cpub-reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.cpub-review-card {
+    background: var(--color-bg-main);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.cpub-review-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.cpub-reviewer-avatar {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 800;
+    overflow: hidden;
+}
+
+.cpub-reviewer-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cpub-reviewer-info .cpub-reviewer-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cpub-reviewer-info strong {
+    font-size: 0.95rem;
+    color: var(--color-text-main);
+}
+
+.cpub-reviewer-type {
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+}
+
+.cpub-reviewer-type.craftsman {
+    background: rgba(190, 24, 93, 0.1);
+    color: #be185d;
+}
+
+.cpub-reviewer-type.user {
+    background: rgba(3, 105, 161, 0.1);
+    color: #0369a1;
+}
+
+html[data-theme="dark"] .cpub-reviewer-type.craftsman {
+    background: rgba(190, 24, 93, 0.2);
+    color: #f9a8d4;
+}
+
+html[data-theme="dark"] .cpub-reviewer-type.user {
+    background: rgba(3, 105, 161, 0.2);
+    color: #7dd3fc;
+}
+
+.cpub-review-stars {
+    display: flex;
+    gap: 2px;
+    margin-top: 4px;
+}
+
+.cpub-review-stars .star-on  { color: #f59e0b; fill: #f59e0b; }
+.cpub-review-stars .star-off { color: var(--color-border); }
+
+.cpub-review-comment {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-style: italic;
+    margin: 0;
+}
+
+.cpub-review-product-tag {
+    display: inline-block;
+    background: var(--color-bg-section);
+    color: var(--color-text-secondary);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    border: 1px solid var(--color-border);
+    align-self: flex-start;
+}
+
+.cpub-avg-stars {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #f59e0b;
+}
+
+.cpub-review-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.cpub-review-date {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .cpub-hero-inner {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .cpub-name {
+        font-size: 1.5rem;
+    }
+
+    .cpub-products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .cpub-reviews-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .cpub-products-grid {
+        grid-template-columns: 1fr;
+    }
+}

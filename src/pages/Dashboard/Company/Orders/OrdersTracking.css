@@ -98,6 +98,26 @@
     cursor: not-allowed;
 }
 
+.print-btn-mini {
+    background: #f8fafc;
+    color: #64748b;
+    border: 1px solid var(--color-border);
+    padding: 0.5rem 0.8rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-main);
+}
+
+.print-btn-mini:hover {
+    background: #f1f5f9;
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    transform: scale(1.05);
+}
+
 @media (max-width: 992px) {
     .tracking-table-card { overflow-x: auto; }
 }
@@ -150,4 +170,16 @@ html[data-theme="dark"] .user-type-badge.user {
 html[data-theme="dark"] .user-type-badge.craftsman {
     background: rgba(123, 31, 162, 0.15);
     color: #e1bee7;
+}
+
+html[data-theme="dark"] .print-btn-mini {
+    background: var(--color-bg-dark);
+    border-color: var(--color-border);
+    color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .print-btn-mini:hover {
+    background: var(--color-bg-section);
+    color: var(--color-primary);
+    border-color: var(--color-primary);
 }

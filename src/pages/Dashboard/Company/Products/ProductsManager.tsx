@@ -272,8 +272,8 @@ const ProductsManager: React.FC = () => {
                                     <input type="number" min="0" value={newProduct.price} onChange={handleChange("price")} placeholder="0.00" />
                                 </div>
                                 <div className="input-field">
-                                    <label>سعر الخصم (اختياري)</label>
-                                    <input type="number" min="0" value={newProduct.discount_price} onChange={handleChange("discount_price")} placeholder="0.00" />
+                                    <label>قيمة الخصم (اختياري) <small style={{color:'#94a3b8', fontWeight:'400'}}></small></label>
+                                    <input type="number" min="0" value={newProduct.discount_price} onChange={handleChange("discount_price")} placeholder="مثال: 50 يعني السعر النهائي = السعر الأصلي - 50" />
                                 </div>
                             </div>
 
@@ -438,9 +438,9 @@ const ProductsManager: React.FC = () => {
                                         </div>
                                     </td>
                                     <td data-label="السعر" className="price-text">
-                                        {prod.discount_price ? (
+                                        {prod.discount_price && Number(prod.discount_price) > 0 ? (
                                             <>
-                                                <span>{Number(prod.discount_price).toLocaleString()} ج.م</span>
+                                                <span>{(Number(prod.price) - Number(prod.discount_price)).toLocaleString()} ج.م</span>
                                                 <small style={{ textDecoration: 'line-through', color: '#94a3b8', marginRight: '6px' }}>
                                                     {Number(prod.price).toLocaleString()}
                                                 </small>

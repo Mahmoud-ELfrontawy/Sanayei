@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { getUserOrders } from "../../Api/store/orders.api";
-import { FiPackage, FiTruck, FiCheckCircle, FiClock, FiXCircle } from "react-icons/fi";
+import { FiPackage, FiTruck, FiCheckCircle, FiClock, FiXCircle, FiStar } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { formatArabicDate } from "../../utils/dateFormatter";
+import ProductReviewModal from "../../components/ui/ProductReviewModal/ProductReviewModal";
 import "./StoreOrdersPage.css";
 
 import { useAuth } from "../../hooks/useAuth";
@@ -12,6 +13,10 @@ const StoreOrdersPage: React.FC = () => {
     const [orders, setOrders] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
+    // Modal State
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+    const [selectedOrderForReview, setSelectedOrderForReview] = useState<any>(null);
+
     const fetchOrders = async () => {
         if (!isAuthenticated) {
             setLoading(false);
@@ -20,7 +25,33 @@ const StoreOrdersPage: React.FC = () => {
         try {
             setLoading(true);
             const data = await getUserOrders();
-            setOrders(Array.isArray(data) ? data : []);
+            const ordersList = Array.isArray(data) ? data : [];
+            setOrders(ordersList);
+
+            // 🌟 Auto-popup Logic
+            const seenPopups = JSON.parse(sessionStorage.getItem('seen_review_popups') || '[]');
+            
+            const recentlyCompleted = ordersList.find(o => 
+                (o.status === 'completed' || o.status === 'delivered') && 
+                !o.is_reviewed && 
+                !o.review_id &&
+                !seenPopups.includes(o.id)
+            );
+
+            if (recentlyCompleted) {
+                const product = recentlyCompleted.items?.[0]?.product || recentlyCompleted.product;
+                if (product) {
+                    setSelectedOrderForReview({
+                        orderId: recentlyCompleted.id,
+                        productId: product.id,
+                        productName: product.name
+                    });
+                    setIsReviewModalOpen(true);
+                    
+                    // Mark as seen in this session
+                    sessionStorage.setItem('seen_review_popups', JSON.stringify([...seenPopups, recentlyCompleted.id]));
+                }
+            }
         } catch (error: any) {
             if (error.message !== "Unauthorized") {
                 console.error("Fetch Store Orders Error:", error);
@@ -53,10 +84,31 @@ const StoreOrdersPage: React.FC = () => {
             case 'pending': return { label: 'قيد الانتظار', icon: <FiClock />, class: 'pending' };
             case 'processing': return { label: 'جاري التجهيز', icon: <FiPackage />, class: 'processing' };
             case 'shipped': return { label: 'تم الشحن', icon: <FiTruck />, class: 'shipped' };
-            case 'completed': return { label: 'تم التسليم', icon: <FiCheckCircle />, class: 'completed' };
+            case 'completed':
+            case 'delivered': return { label: 'تم التسليم ✅', icon: <FiCheckCircle />, class: 'completed' };
             case 'cancelled': return { label: 'ملغي', icon: <FiXCircle />, class: 'cancelled' };
             default: return { label: status || 'غير محدد', icon: <FiPackage />, class: 'default' };
         }
+    };
+
+    const handleOpenReview = (order: any) => {
+        if (order.is_reviewed || order.review_id) {
+            toast.info("لقد قمت بتقييم هذا الطلب مسبقاً");
+            return;
+        }
+
+        const product = order.items?.[0]?.product || order.product;
+        if (!product) {
+            toast.error("خطأ في بيانات المنتج");
+            return;
+        }
+
+        setSelectedOrderForReview({
+            orderId: order.id,
+            productId: product.id,
+            productName: product.name
+        });
+        setIsReviewModalOpen(true);
     };
 
     if (loading) return <div className="orders-loading">جاري تحميل طلبات المتجر...</div>;
@@ -101,7 +153,7 @@ const StoreOrdersPage: React.FC = () => {
                                 <div className="order-details-summary">
                                     <div className="summary-row">
                                         <span>الشركة:</span>
-                                        <strong>{order.company?.name || 'شركة معتمدة'}</strong>
+                                        <strong>{order.company?.name || order.company?.company_name || 'شركة معتمدة'}</strong>
                                     </div>
                                     <div className="summary-row">
                                         <span>الإجمالي:</span>
@@ -117,11 +169,33 @@ const StoreOrdersPage: React.FC = () => {
                                     <button className="btn-details-mini" onClick={() => toast.info("صفحة التفاصيل قريباً")}>
                                         عرض التفاصيل الكاملة
                                     </button>
+                                    
+                                    {(order.status === 'completed' || order.status === 'delivered') && (
+                                        <button 
+                                            className={`btn-rate-order ${order.is_reviewed || order.review_id ? 'already-rated' : ''}`}
+                                            onClick={() => handleOpenReview(order)}
+                                        >
+                                            <FiStar />
+                                            {order.is_reviewed || order.review_id ? 'تم التقييم' : 'تقييم المنتج'}
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         );
                     })}
                 </div>
+            )}
+
+            {/* Product Review Modal */}
+            {selectedOrderForReview && (
+                <ProductReviewModal
+                    isOpen={isReviewModalOpen}
+                    onClose={() => setIsReviewModalOpen(false)}
+                    orderId={selectedOrderForReview.orderId}
+                    productId={selectedOrderForReview.productId}
+                    productName={selectedOrderForReview.productName}
+                    onSuccess={fetchOrders}
+                />
             )}
         </div>
     );

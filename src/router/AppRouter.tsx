@@ -42,6 +42,7 @@ const CompanyDashboard = lazy(() => import("../pages/Dashboard/Company/CompanyDa
 const CompanyProfilePage = lazy(() => import("../pages/Dashboard/Company/Profile/CompanyProfilePage"));
 const ProductsManager = lazy(() => import("../pages/Dashboard/Company/Products/ProductsManager"));
 const OrdersTracking = lazy(() => import("../pages/Dashboard/Company/Orders/OrdersTracking"));
+const CompanyProductReviews = lazy(() => import("../pages/Dashboard/Company/Reviews/CompanyProductReviews"));
 const StoreGalleryPage = lazy(() => import("../pages/Store/StoreGalleryPage"));
 const StoreOrdersPage = lazy(() => import("../pages/Store/StoreOrdersPage"));
 const DashboardIndex = lazy(() => import("../pages/Dashboard/DashboardIndex"));
@@ -50,6 +51,7 @@ const NotificationsPage = lazy(() => import("../pages/Dashboard/Notifications/No
 const WalletPage = lazy(() => import("../pages/Dashboard/Wallet/WalletPage"));
 const CraftsmanProfilePage = lazy(() => import("../pages/CraftsmanProfile/CraftsmanProfilePage"));
 const UserProfilePage = lazy(() => import("../pages/UserProfile/UserProfilePage"));
+const CompanyPublicPage = lazy(() => import("../pages/CompanyPublic/CompanyPublicPage"));
 const AdminLayout = lazy(() => import("../layouts/AdminLayout"));
 const AdminDashboard = lazy(() => import("../pages/Admin/AdminDashboard"));
 const AdminStatistics = lazy(() => import("../pages/Admin/AdminStatistics"));
@@ -127,6 +129,7 @@ const AppRouter: React.FC = () => {
             <Route path="/request-service" element={<RequestServiceSection />} />
             <Route path="/craftsman/:id" element={<CraftsmanProfilePage />} />
             <Route path="/user/:id" element={<UserProfilePage />} />
+            <Route path="/company/:id" element={<CompanyPublicPage />} />
             <Route path="/learn-more" element={<LearnMorePage />} />
             {/* ===== Auth Pages ===== */}
             <Route path="/login" element={<LoginPage />} />
@@ -167,6 +170,7 @@ const AppRouter: React.FC = () => {
                 <Route path="profile" element={<CompanyProfilePage />} />
                 <Route path="products" element={<ProductsManager />} />
                 <Route path="orders" element={<OrdersTracking />} />
+                <Route path="reviews" element={<CompanyProductReviews />} />
               </Route>
               <Route path="messages" element={<MessagesPage />} />
               <Route path="notifications" element={<NotificationsPage />} />

@@ -137,6 +137,15 @@ function _showToast(
             break;
         }
 
+        case "product_review": {
+            toast.success(`⭐ ${notif.title}: ${notif.message}`, {
+                position: "top-right",
+                autoClose: 10000,
+                toastId:   eventId,
+            });
+            break;
+        }
+
         default: {
             const variant     = notif.variant || "info";
             const toastMethod = (toast as any)[variant] ?? toast.info;

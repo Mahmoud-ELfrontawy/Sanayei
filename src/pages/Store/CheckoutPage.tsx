@@ -61,7 +61,10 @@ const CheckoutPage: React.FC = () => {
     }, [navigate]);
 
     const totalPrice = useMemo(() => cartItems.reduce((sum, item) => {
-        const price = Number(item.product?.discount_price || item.product?.price || 0);
+        const p = item.product;
+        const price = p?.discount_price && Number(p.discount_price) > 0
+            ? Number(p.price) - Number(p.discount_price)
+            : Number(p?.price || 0);
         return sum + price * item.quantity;
     }, 0), [cartItems]);
 
@@ -289,7 +292,13 @@ const CheckoutPage: React.FC = () => {
                                             <span>الكمية: {item.quantity}</span>
                                         </div>
                                         <div className="prod-price">
-                                            {(Number(item.product?.discount_price || item.product?.price) * item.quantity).toLocaleString()} ج.م
+                                            {(() => {
+                                                const p = item.product;
+                                                const finalPrice = p?.discount_price && Number(p.discount_price) > 0
+                                                    ? Number(p.price) - Number(p.discount_price)
+                                                    : Number(p?.price || 0);
+                                                return (finalPrice * item.quantity).toLocaleString();
+                                            })()} ج.م
                                         </div>
                                     </div>
                                 ))}

@@ -156,6 +156,21 @@ export function useEchoNotifications({
                     eventId:       `echo_comp_st_${data.request_id}_${data.status_arabic}`,
                 });
             });
+
+            // 🌟 New: Notification when a product is reviewed
+            c.listen(".ProductReviewed", (e: any) => {
+                const data = e.data || e;
+                addNotificationRef.current?.({
+                    title:         "تقييم جديد للمنتج ⭐",
+                    message:       data.message || `قام ${data.user_name} بتقييم ${data.product_name} بـ ${data.rating} نجوم`,
+                    type:          "product_review",
+                    orderId:       data.order_id || 0,
+                    recipientId:   user.id,
+                    recipientType: "company",
+                    variant:       data.rating >= 4 ? "success" : "info",
+                    eventId:       `echo_prod_rev_${data.id || Date.now()}`,
+                });
+            });
         }
 
         // ── Cleanup ────────────────────────────────

@@ -115,3 +115,39 @@ export const getPublicStoreProductDetails = async (productId: number) => {
     const res = await api.get(`/store/products/${productId}`);
     return res.data;
 };
+
+export const getPublicCompanyProfile = async (companyId: number | string) => {
+    const res = await api.get(`/store/companies/${companyId}`);
+    return res.data;
+};
+
+/* ================= Reviews ================= */
+export const submitProductReview = async (payload: { 
+    product_id: number; 
+    order_id: number; 
+    rating: number; 
+    comment: string; 
+}) => {
+    try {
+        const res = await api.post(`/store/products/reviews`, payload);
+        return res.data;
+    } catch (error: any) {
+        console.error("Store API Error (Submit Review):", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+export const getProductReviews = async (productId: number) => {
+    const res = await api.get(`/store/products/${productId}/reviews`);
+    return res.data;
+};
+
+export const getCompanyReviews = async () => {
+    try {
+        const res = await api.get(`/company/store/reviews`);
+        return res.data;
+    } catch (error: any) {
+        // Silencing the error for fallback handling in components
+        throw error;
+    }
+};

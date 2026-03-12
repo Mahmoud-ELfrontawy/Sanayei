@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { FiArrowRight, FiShoppingCart, FiShield, FiTruck, FiRefreshCw, FiPlus, FiMinus, FiStar } from "react-icons/fi";
+import { FiArrowRight, FiShoppingCart, FiStar, FiTruck, FiShield, FiRefreshCw, FiPlus, FiMinus } from "react-icons/fi";
+import { FaStar } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { getPublicStoreProductDetails } from "../../Api/auth/Company/storeManagement.api";
 import { addToCart, getCartCount } from "../../Api/store/cart.api";
 import { getFullImageUrl } from "../../utils/imageUrl";
 import { useAuth } from "../../hooks/useAuth";
 import "./ProductDetails.css";
+import { Link } from "react-router-dom";
+import { formatArabicDate } from "../../utils/dateFormatter";
 
 interface ProductDetailsProps {
     product: any; // initial product data from the list (may be partial)
@@ -46,11 +49,21 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
     }, [images, activeImage]);
     const [addingToCart, setAddingToCart] = useState(false);
 
+
+
+    const { userType } = useAuth();
+    const [reviews, setReviews] = useState<any[]>([]);
+    const [showAllReviews, setShowAllReviews] = useState(false);
+    const [loadingReviews, setLoadingReviews] = useState(false);
+
+
     // Fetch full product details from backend
     useEffect(() => {
         if (!initialProduct?.id) return;
         setLoading(true);
-        getPublicStoreProductDetails(initialProduct.id)
+        const productId = initialProduct.id;
+        
+        getPublicStoreProductDetails(productId)
             .then((data) => {
                 setFullProduct(data);
                 if (data.main_image) {
@@ -58,7 +71,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
                 }
             })
             .catch(() => {
-                // fallback to initial data if fetch fails
                 setFullProduct(initialProduct);
                 if (initialProduct.main_image) {
                     setActiveImage(initialProduct.main_image);
@@ -67,9 +79,18 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
             .finally(() => {
                 setLoading(false);
             });
-    }, [initialProduct?.id]);
 
-    const { userType } = useAuth();
+        // Fetch Reviews
+        setLoadingReviews(true);
+        import("../../Api/auth/Company/storeManagement.api").then(api => {
+            api.getProductReviews(productId)
+                .then(data => {
+                    setReviews(Array.isArray(data) ? data : (data?.data ?? []));
+                })
+                .catch(err => console.error("Error fetching reviews:", err))
+                .finally(() => setLoadingReviews(false));
+        });
+    }, [initialProduct?.id]);
 
     const handleAddToCart = async () => {
         if (userType === 'company') {
@@ -97,9 +118,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
     };
 
     const displayPrice = fullProduct?.discount_price && Number(fullProduct.discount_price) > 0
-        ? Number(fullProduct.discount_price)
+        ? Number(fullProduct.price) - Number(fullProduct.discount_price)
         : Number(fullProduct?.price ?? 0);
-    const originalPrice = (fullProduct?.discount_price && Number(fullProduct.discount_price) > 0 && Number(fullProduct.price) > Number(fullProduct.discount_price))
+    const originalPrice = fullProduct?.discount_price && Number(fullProduct.discount_price) > 0
         ? Number(fullProduct.price)
         : null;
 
@@ -132,6 +153,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
         );
     }
 
+    const reviewsToShow = showAllReviews ? reviews : reviews.slice(0, 3);
+
     return (
         <div className="product-details-premium">
             <header className="details-header">
@@ -150,9 +173,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
                             alt={fullProduct.name}
                             className="fade-in-image"
                         />
-                        {fullProduct.discount_price && fullProduct.price > fullProduct.discount_price && (
+                        {fullProduct.discount_price && Number(fullProduct.discount_price) > 0 && (
                             <div className="main-discount-badge">
-                                خصم {Math.round(((fullProduct.price - fullProduct.discount_price) / fullProduct.price) * 100)}%
+                                خصم {Math.round((Number(fullProduct.discount_price) / Number(fullProduct.price)) * 100)}%
                             </div>
                         )}
                         {fullProduct?.badge && fullProduct.badge !== '0' && fullProduct.badge !== 0 && (
@@ -185,7 +208,14 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
 
                     <div className="title-area">
                         <h1 className="product-full-name">{fullProduct?.name}</h1>
-                        {fullProduct?.brand && <span className="brand-name-tag">{fullProduct.brand}</span>}
+                        <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+                            {fullProduct?.brand && <span className="brand-name-tag">{fullProduct.brand}</span>}
+                            {fullProduct?.company && (
+                                <Link to={`/company/${fullProduct.company.id}`} className="company-details-link">
+                                    بواسطة: {fullProduct.company.company_name}
+                                </Link>
+                            )}
+                        </div>
                     </div>
 
                     <div className="stats-row">
@@ -281,6 +311,63 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product: initialProduct
                         </div>
                     </div>
                 </div>
+            </div>
+
+            {/* ===== Reviews Section ===== */}
+            <div className="product-reviews-section">
+                <div className="section-header-reviews">
+                    <h3>آراء المشترين ({reviews.length})</h3>
+                </div>
+
+                {loadingReviews ? (
+                    <div className="reviews-loading-mini">جاري تحميل التقييمات...</div>
+                ) : reviews.length === 0 ? (
+                    <div className="no-reviews-box">
+                        <p>لا توجد تقييمات لهذا المنتج بعد. كن أول من يقيمه!</p>
+                    </div>
+                ) : (
+                    <div className="reviews-grid-list">
+                        {reviewsToShow.map((rev: any) => (
+                            <div key={rev.id} className="review-card-modern">
+                                <div className="rev-header">
+                                    <div className="rev-user-info">
+                                        <div className="rev-avatar">
+                                            {rev.user_avatar ? (
+                                                <img src={rev.user_avatar} alt={rev.user_name} />
+                                            ) : (
+                                                (rev.user_name || "م").charAt(0)
+                                            )}
+                                        </div>
+                                        <div>
+                                            <div className="rev-user-meta">
+                                                <p className="rev-user-name">{rev.user_name || "مستخدم"}</p>
+                                                <span className={`rev-type-badge ${rev.user_type === 'صنايعي' ? 'craftsman' : 'user'}`}>
+                                                    {rev.user_type}
+                                                </span>
+                                            </div>
+                                            <p className="rev-date">{formatArabicDate(rev.created_at)}</p>
+                                        </div>
+                                    </div>
+                                    <div className="rev-stars">
+                                        {[...Array(5)].map((_, i) => (
+                                            <FaStar key={i} className={i < rev.rating ? "filled" : ""} />
+                                        ))}
+                                    </div>
+                                </div>
+                                {rev.comment && <p className="rev-comment">{rev.comment}</p>}
+                            </div>
+                        ))}
+
+                        {reviews.length > 3 && (
+                            <button 
+                                className="btn-show-more-reviews" 
+                                onClick={() => setShowAllReviews(!showAllReviews)}
+                            >
+                                {showAllReviews ? "عرض أقل" : "باقي التقييمات"}
+                            </button>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );

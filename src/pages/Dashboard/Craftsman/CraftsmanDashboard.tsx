@@ -38,6 +38,7 @@ const CraftsmanDashboard: React.FC = () => {
     const { addNotification, markAllAsRead } = useNotifications();
 
     const [incomingRequests, setIncomingRequests] = useState<any[]>([]);
+    const [allRequests, setAllRequests] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     /* ================= LOAD DATA ================= */
@@ -63,7 +64,8 @@ const CraftsmanDashboard: React.FC = () => {
                     }
                 }
 
-                // أول 5 طلبات فقط
+                // أول 5 طلبات فقط للعرض، بس الكل للإحصائيات
+                setAllRequests(requests);
                 setIncomingRequests(requests.slice(0, 5));
             } catch (err) {
                 console.error("Failed to load incoming requests", err);
@@ -178,15 +180,29 @@ const CraftsmanDashboard: React.FC = () => {
 
                 {/* Stats */}
                 <div className="stats-grid mb-12">
-                    <StatCardComp title="إجمالي الأرباح" value="$8,670" change="24%" isPositive icon={<FaDollarSign size={20} />} />
+                    <StatCardComp 
+                        title="إجمالي الأرباح" 
+                        value={`${allRequests.reduce((sum, r) => {
+                            const s = (r.status || '').toLowerCase();
+                            if (s === 'accepted' || s === 'completed' || s === 'finished') {
+                                return sum + parseFloat(r.price || r.total_amount || r.cost || 0);
+                            }
+                            return sum;
+                        }, 0).toLocaleString()} ج.م`} 
+                        icon={<FaDollarSign size={20} />} 
+                        isPositive 
+                    />
                     <StatCardComp
                         title="الطلبات المكتملة"
-                        value={incomingRequests.filter(r => r.status === 'accepted').length.toString()}
+                        value={allRequests.filter(r => {
+                            const s = (r.status || '').toLowerCase();
+                            return s === 'accepted' || s === 'completed' || s === 'finished';
+                        }).length.toString()}
                         icon={<FaCheckCircle size={20} />}
                     />
                     <StatCardComp
                         title="العملاء الجدد"
-                        value={new Set(incomingRequests.map(r => r.user_id)).size.toString()}
+                        value={new Set(allRequests.map(r => r.user_id)).size.toString()}
                         change="5%"
                         isPositive
                         icon={<FaUsers size={20} />}

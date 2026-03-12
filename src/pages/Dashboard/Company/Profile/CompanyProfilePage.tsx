@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { FiUpload, FiSave, FiInfo, FiCheckCircle, FiClock, FiAlertCircle } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { useCompanyProfile } from "./useCompanyProfile";
 import { useAuth } from "../../../../hooks/useAuth";
 import PhoneValidationMeter from "../../../../components/ui/PhoneValidationMeter/PhoneValidationMeter";
 import ProfileCompletionMeter from "../../../../components/ui/ProfileCompletion/ProfileCompletionMeter";
+import { getFullImageUrl } from "../../../../utils/imageUrl";
 import "./CompanyProfile.css";
 
 const CompanyProfilePage: React.FC = () => {
@@ -18,7 +19,18 @@ const CompanyProfilePage: React.FC = () => {
         formState: { isSubmitting },
     } = useCompanyProfile();
 
-    const logoFile = watch("company_logo") as unknown as FileList;
+    const [logoPreview, setLogoPreview] = useState<string | null>(null);
+
+    const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setLogoPreview(URL.createObjectURL(file));
+        }
+    };
+
+    // Determine what to show: new preview > existing saved logo > placeholder
+    const savedLogo = getFullImageUrl(watch("company_logo") as unknown as string);
+    const displayLogo = logoPreview || savedLogo;
 
     if (loading) {
         return (
@@ -74,16 +86,22 @@ const CompanyProfilePage: React.FC = () => {
                     </div>
                     <div className="logo-upload-wrapper">
                         <div className="logo-preview">
-                            {watch("company_logo_url") ? (
-                                <img src={watch("company_logo_url")} alt="Logo" />
+                            {displayLogo ? (
+                                <img src={displayLogo} alt="شعار المتجر" />
                             ) : (
                                 <div className="logo-placeholder">No Logo</div>
                             )}
                         </div>
-                        <label className={`upload-btn ${logoFile?.length ? "has-file" : ""}`}>
+                        <label className={`upload-btn ${logoPreview ? "has-file" : ""}`}>
                             <FiUpload />
-                            {logoFile?.length ? logoFile[0].name : "تغيير الشعار"}
-                            <input type="file" hidden accept="image/*" {...register("company_logo")} />
+                            {logoPreview ? "تم اختيار صورة جديدة" : "تغيير الشعار"}
+                            <input
+                                type="file"
+                                hidden
+                                accept="image/*"
+                                {...register("company_logo")}
+                                onChange={handleLogoChange}
+                            />
                         </label>
                     </div>
                 </div>

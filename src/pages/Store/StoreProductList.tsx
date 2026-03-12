@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import {
     FiPackage, FiShoppingCart, FiStar, FiChevronDown
 } from "react-icons/fi";
@@ -184,9 +185,9 @@ const StoreProductList: React.FC<StoreProductListProps> = ({ categoryId, searchQ
                             <div key={product.id} className="amazon-style-card" onClick={() => onProductClick(product)}>
                                 <div className="card-image-box">
                                     <img src={imgSrc} alt={product.name} loading="lazy" />
-                                    {product.discount_price && product.price && (
+                                    {product.discount_price && product.price && Number(product.discount_price) > 0 && (
                                         <span className="discount-badge">
-                                            -{Math.round((1 - product.discount_price / product.price) * 100)}%
+                                            -{Math.round((product.discount_price / product.price) * 100)}%
                                         </span>
                                     )}
                                     <div className="quick-actions">
@@ -201,10 +202,14 @@ const StoreProductList: React.FC<StoreProductListProps> = ({ categoryId, searchQ
                                             <span className="product-badge-tag">{product.badge}</span>
                                         )}
                                         {product.company?.company_name && (
-                                            <span className="company-attribution">
+                                            <Link
+                                                to={`/company/${product.company.id}`}
+                                                className="company-attribution company-link"
+                                                onClick={e => e.stopPropagation()}
+                                            >
                                                 <FiPackage size={12} />
                                                 {product.company.company_name}
-                                            </span>
+                                            </Link>
                                         )}
                                     </div>
                                     <h3 className="product-name-amazon">{product.name}</h3>
@@ -217,9 +222,9 @@ const StoreProductList: React.FC<StoreProductListProps> = ({ categoryId, searchQ
                                         <span className="reviews-count">({product.reviews_count ?? 0})</span>
                                     </div>
                                     <div className="price-row-amazon">
-                                        {product.discount_price ? (
+                                        {product.discount_price && Number(product.discount_price) > 0 ? (
                                             <>
-                                                <span className="price-amount">{Number(product.discount_price).toLocaleString()}</span>
+                                                <span className="price-amount">{(Number(product.price) - Number(product.discount_price)).toLocaleString()}</span>
                                                 <span className="currency-label">ج.م</span>
                                                 <span className="original-price">{Number(product.price).toLocaleString()}</span>
                                             </>

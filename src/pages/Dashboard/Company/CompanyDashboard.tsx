@@ -35,12 +35,20 @@ const CompanyDashboard: React.FC = () => {
                 const productCount = Array.isArray(products) ? products.length : (products?.data?.length || 0);
 
                 // Calculate orders data
-                const ordersList = Array.isArray(orders) ? orders : (orders?.data || []);
-                const newOrdersCount = ordersList.filter((o: any) => o.status === 'pending' || o.status === 'new').length;
+                const ordersList = Array.isArray(orders) ? orders : (orders?.data || orders?.orders || []);
 
-                // Total sales calculation
-                const deliveredOrders = ordersList.filter((o: any) => o.status === 'delivered' || o.status === 'completed');
-                const totalAmount = deliveredOrders.reduce((sum: number, o: any) => sum + (parseFloat(o.total_amount || 0)), 0);
+                // Use case-insensitive status checks for robustness
+                const newOrdersCount = ordersList.filter((o: any) => {
+                    const s = (o.status || '').toLowerCase();
+                    return s === 'pending' || s === 'new' || s === 'processing' || s === 'ordered';
+                }).length;
+
+                // Total sales calculation - include all orders that are NOT cancelled or rejected
+                const validOrders = ordersList.filter((o: any) => {
+                    const s = (o.status || '').toLowerCase();
+                    return s !== 'cancelled' && s !== 'rejected' && s !== 'failed';
+                });
+                const totalAmount = validOrders.reduce((sum: number, o: any) => sum + (parseFloat(o.total_amount || 0)), 0);
 
                 // --- Process Pie Data (Order Status Distribution) ---
                 const statusCounts: Record<string, number> = {};
@@ -69,7 +77,7 @@ const CompanyDashboard: React.FC = () => {
                 const monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
                 const monthlySales = new Array(12).fill(0);
 
-                deliveredOrders.forEach((o: any) => {
+                validOrders.forEach((o: any) => {
                     const date = new Date(o.created_at);
                     const month = date.getMonth();
                     monthlySales[month] += parseFloat(o.total_amount || 0);
@@ -220,7 +228,7 @@ const CompanyDashboard: React.FC = () => {
                                 {(() => {
                                     const total = stats.pieData.reduce((sum, item) => sum + item.value, 0);
                                     const colors = ['var(--color-primary)', 'var(--color-success)', 'var(--color-warning)', 'var(--color-error)', '#A855F7'];
-                                    
+
                                     return stats.pieData.map((item, index) => {
                                         const percentage = total > 0 ? Math.round((item.value / total) * 100) : 0;
                                         return (

@@ -12,7 +12,9 @@ import {
     FaLock,
     FaChevronRight,
     FaChevronLeft,
-    FaChartLine
+    FaChartLine,
+    FaEye,
+    FaStar
 } from "react-icons/fa";
 
 import { toast } from "react-toastify";
@@ -86,6 +88,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             path: "/dashboard",
             icon: <FaThLarge size={20} />
         },
+        {
+                title: "عرض البروفايل العام",
+                path: `/company/${user?.id}`,
+                icon: <FaEye size={20} />
+            },
 
         {
             title: "المحفظة",
@@ -119,6 +126,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 path: "/dashboard/company/orders",
                 icon: <FaShoppingCart size={20} />
             },
+            {
+                title: "مراجعات المنتجات",
+                path: "/dashboard/company/reviews",
+                icon: <FaStar size={20} />
+            },
+            
         ] : []),
 
         // Craftsman-specific links
