@@ -58,9 +58,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     return;
                 }
 
-                console.error("⛔ Account banned. Triggering immediate redirect...");
+                console.error("⛔ Account restriction or conflict detected.");
+                
+                const errorMessage = fetchError.response?.data?.message?.toLowerCase() || "";
+                // If it explicitly says banned/rejected, show the banned message. 
+                // Otherwise, assume it's a session conflict (another device login) 
+                // as that's the common case for 403s in this app's lifecycle.
+                const isBanned = errorMessage.includes("banned") || 
+                                 errorMessage.includes("rejected") || 
+                                 errorMessage.includes("محظور") || 
+                                 errorMessage.includes("غير مفعل");
+
                 authStorage.clearAuth();
-                window.location.href = "/login?blocked=true";
+                window.location.href = `/login?${isBanned ? 'blocked=true' : 'concurrent=true'}`;
                 return;
             }
 

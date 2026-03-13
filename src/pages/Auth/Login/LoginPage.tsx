@@ -25,6 +25,11 @@ const LoginPage: React.FC = () => {
     if (error === "no_account") {
       toast.warning("أنشئ حساباً أولاً 👈", { autoClose: 4000 });
       setTimeout(() => navigate("/join"), 1500);
+    } else if (searchParams.get("concurrent") === "true") {
+      toast.error("تم تسجيل الخروج لأن الحساب تم فتحه من جهاز آخر 🔓", {
+        autoClose: 5000,
+        toastId: "auth-session-conflict"
+      });
     } else if (error === "banned" || searchParams.get("blocked") === "true") {
       toast.error("تم تسجيل الخروج لأن هذا الحساب محظور أو غير مفعل! يرجى التواصل مع الدعم الفني ⛔", {
         autoClose: 6000,
