@@ -149,8 +149,7 @@ const LoginPage: React.FC = () => {
           <div className="auth-social-container">
             <button type="button" className="auth-social-btn full-width"
               onClick={() => {
-                window.location.href =
-                  "/api/auth/google?mode=login";
+                window.location.href = `${import.meta.env.VITE_API_URL}/auth/google?mode=login`;
               }}
             >
               <FaGoogle />

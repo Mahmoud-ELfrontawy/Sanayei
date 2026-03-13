@@ -10,8 +10,19 @@ const GoogleCallback: React.FC = () => {
 
     useEffect(() => {
         const handleLogin = async () => {
-            const token = searchParams.get("token") || searchParams.get("access_token");
-            console.log("🔍 GoogleCallback: Token received:", token ? "Yes (starts with " + token.substring(0, 5) + "...)" : "No");
+            // Log full URL for debugging (useful when issues occur)
+            console.log("🔗 GoogleCallback: Full URL:", window.location.href);
+            
+            // Try getting from useSearchParams first, fallback to manual parsing if needed
+            let token = searchParams.get("token") || searchParams.get("access_token");
+            
+            // Manual fallback for weird encoded URLs or double encoding
+            if (!token && window.location.search.includes("token=")) {
+                const manualMatch = window.location.search.match(/[?&]token=([^&]+)/);
+                if (manualMatch) token = decodeURIComponent(manualMatch[1]);
+            }
+            
+            console.log("🔍 GoogleCallback: Token received:", token ? "Yes (starts with " + token.substring(0, 10) + "...)" : "No");
 
             if (!token) {
                 const error = searchParams.get("error");

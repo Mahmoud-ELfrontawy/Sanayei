@@ -213,8 +213,8 @@ const OrdersTracking: React.FC = () => {
                         <tbody>
                             {orders.map((order) => (
                                 <tr key={order.id}>
-                                    <td><strong>#{order.id}</strong></td>
-                                    <td>
+                                    <td data-label="رقم الطلب"><strong>#{order.id}</strong></td>
+                                    <td data-label="العميل">
                                         <div className="name-with-type">
                                             {order.user_name || "عميل مجهول"}
                                             <span className={`user-type-badge ${order.user_type?.includes('Craftsman') ? 'craftsman' : 'user'}`}>
@@ -222,8 +222,8 @@ const OrdersTracking: React.FC = () => {
                                             </span>
                                         </div>
                                     </td>
-                                    <td>{order.shipping_address || "غير محدد"}</td>
-                                    <td>
+                                    <td data-label="العنوان">{order.shipping_address || "غير محدد"}</td>
+                                    <td data-label="المنتجات">
                                         <div className="order-items-mini">
                                             {order.items?.map((item: any) => (
                                                 <span key={item.id} className="item-line">
@@ -232,20 +232,20 @@ const OrdersTracking: React.FC = () => {
                                             ))}
                                         </div>
                                     </td>
-                                    <td className="price-text">{parseFloat(order.total_amount).toLocaleString()} ج.م</td>
-                                    <td>
+                                    <td data-label="الإجمالي" className="price-text">{parseFloat(order.total_amount).toLocaleString()} ج.م</td>
+                                    <td data-label="طريقة الدفع">
                                         <span className={`payment-method-badge ${order.payment_method}`}>
                                             {order.payment_method === 'wallet' ? 'المحفظة' : 'كاش'}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td data-label="الحالة">
                                         <span className={`status-badge ${order.status}`}>
                                             {statusMap[order.status]?.icon}
                                             {statusMap[order.status]?.label || order.status}
                                         </span>
                                     </td>
-                                    <td>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <td data-label="الإجراء">
+                                        <div className="order-actions-mobile-wrapper" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                             <select
                                                 className="status-select-premium"
                                                 value={updatingStatus[order.id] || order.status}

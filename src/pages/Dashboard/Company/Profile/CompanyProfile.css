@@ -228,7 +228,7 @@
     align-items: center;
     gap: 0.6rem;
     padding: 0.8rem 2rem;
-    background: var(--primary-color, #2b6cb0);
+    background: var(--color-primary);
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -241,6 +241,7 @@
 .save-btn:hover {
     filter: brightness(1.1);
     transform: translateY(-2px);
+    background: var(--color-primary-hover);
 }
 
 .save-btn:disabled {
@@ -377,4 +378,41 @@ html[data-theme="dark"] .card-header {
 
 html[data-theme="dark"] .profile-loading p {
     color: var(--color-text-main);
+}
+@media (max-width: 768px) {
+    .company-profile-container {
+        padding: 1rem;
+    }
+
+    .profile-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .status-display-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.5rem;
+        gap: 1rem;
+    }
+
+    .logo-upload-wrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.2rem;
+        text-align: center;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .profile-card {
+        padding: 1.2rem;
+    }
+
+    .save-btn {
+        width: 100%;
+        justify-content: center;
+    }
 }

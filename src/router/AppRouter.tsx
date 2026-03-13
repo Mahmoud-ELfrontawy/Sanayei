@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import MainLayout from "../layouts/MainLayout";
 import Home from "../pages/Home";
@@ -179,6 +179,8 @@ const AppRouter: React.FC = () => {
             </Route>
 
 
+            {/* ===== Catch All ===== */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
       </Suspense>

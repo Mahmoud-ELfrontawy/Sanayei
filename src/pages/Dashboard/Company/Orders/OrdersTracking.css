@@ -118,9 +118,83 @@
     transform: scale(1.05);
 }
 
-@media (max-width: 992px) {
-    .tracking-table-card { overflow-x: auto; }
+/* =========================================
+   📱 Orders Tracking Responsive Improvements
+   ========================================= */
+@media (max-width: 768px) {
+    .orders-tracking-page {
+        padding: 1rem;
+    }
+
+    .tracking-header {
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    .tracking-header h1 {
+        font-size: 24px;
+    }
+
+    /* Convert Table to Cards */
+    .tracking-table, 
+    .tracking-table thead, 
+    .tracking-table tbody, 
+    .tracking-table th, 
+    .tracking-table td, 
+    .tracking-table tr {
+        display: block;
+    }
+
+    .tracking-table thead tr {
+        display: none; /* Hide headers on mobile */
+    }
+
+    .tracking-table tr {
+        border-bottom: 1px solid var(--color-border);
+        padding: 1rem;
+        background: #fff;
+    }
+
+    html[data-theme="dark"] .tracking-table tr {
+        background: var(--color-bg-section);
+    }
+
+    .tracking-table td {
+        border: none;
+        padding: 0.6rem 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+        text-align: left;
+    }
+
+    .tracking-table td::before {
+        content: attr(data-label);
+        font-weight: 800;
+        color: var(--color-text-secondary);
+        margin-left: 10px;
+        font-size: 13px;
+    }
+
+    .order-items-mini {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    .order-actions-mobile-wrapper {
+        width: 100%;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+
+    .status-select-premium {
+        flex: 1;
+        min-width: 120px;
+    }
 }
+
 
 /* =========================================
    🌙 Orders Tracking Dark Mode

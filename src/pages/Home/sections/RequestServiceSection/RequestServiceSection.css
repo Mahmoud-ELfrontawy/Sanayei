@@ -338,6 +338,26 @@
         color: rgba(255, 255, 255, 0.9);
         font-weight: 500;
     }
+
+    .payment-method-label {
+        font-size: 1rem;
+    }
+
+    .payment-method-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .pm-text strong {
+        font-size: 0.95rem;
+    }
+
+    .pm-text small {
+        font-size: 0.8rem;
+    }
+
+    .wallet-pay-note p {
+        font-size: 0.70rem;
+    }
 }
 
 /* ========================================

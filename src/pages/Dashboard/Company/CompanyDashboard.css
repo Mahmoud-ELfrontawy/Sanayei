@@ -207,15 +207,98 @@
 
 /* 📱 Responsive */
 @media (max-width: 768px) {
+    .dashboard-page {
+        gap: 1.5rem;
+    }
+
     .dashboard-header-premium {
         flex-direction: column;
         text-align: center;
         gap: 1.5rem;
-        padding: 2.5rem 1.5rem;
+        padding: 2rem 1rem;
+        border-radius: 12px;
     }
-    .header-content h1 { font-size: 26px; }
-    .header-content p { font-size: 17px; }
-    .charts-grid { grid-template-columns: 1fr; }
+    
+    .header-content h1 { 
+        font-size: 22px; 
+    }
+    
+    .header-content p { 
+        font-size: 15px; 
+    }
+    
+    .header-actions {
+        width: 100%;
+    }
+
+    .header-actions .manage-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.7rem;
+        font-size: 14px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .quick-actions-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .action-card-inner {
+        padding: 1.2rem;
+        gap: 1rem;
+    }
+
+    .action-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+
+    .action-info h4 {
+        font-size: 17px;
+    }
+
+    .action-info p {
+        font-size: 13px;
+    }
+
+    .charts-grid { 
+        grid-template-columns: 1fr; 
+        gap: 1.5rem;
+    }
+
+    .chart-item {
+        padding: 1.5rem 1rem;
+    }
+
+    .chart-item h3 {
+        font-size: 18px;
+        text-align: center;
+    }
+
+    .chart-container {
+        min-height: 300px;
+    }
+
+    .custom-legend {
+        gap: 1rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .legend-item {
+        min-width: unset;
+        gap: 0.4rem;
+    }
+
+    .legend-label {
+        font-size: 12px;
+    }
 }
 
 /* =========================================

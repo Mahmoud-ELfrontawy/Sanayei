@@ -233,9 +233,13 @@
 
     .btn-hero,
     .btn-outline-herosection {
-        font-size: 15px;
-        height: 46px; /* Slightly larger buttons */
-        min-width: 130px;
+        font-size: 16px;
+        height: 45px; 
+        min-width: 120px;
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 }
 

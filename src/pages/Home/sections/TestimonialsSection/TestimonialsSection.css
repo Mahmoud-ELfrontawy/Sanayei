@@ -195,14 +195,27 @@
         text-align: center;
         gap: 30px;
     }
+    .testimonials-eyebrow {
+        font-size: 18px;
+    }
+    .testimonials-title {
+        font-size: 1.6rem;
+    }
     .testimonials-nav-btns {
         display: none; /* Hide custom nav on mobile, use swiper pagination */
     }
     .testimonial-card {
-        padding: 30px 25px;
+        padding: 25px 20px;
     }
     .testimonial-content {
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+    .user-info h4 {
         font-size: 1.1rem;
+    }
+    .user-info span {
+        font-size: 0.85rem;
     }
 }
 
