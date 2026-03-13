@@ -28,6 +28,11 @@ function DashboardLayout() {
         }
     }, [location, navigate]);
 
+    // Close sidebar on route change
+    useEffect(() => {
+        setIsSidebarOpen(false);
+    }, [location.pathname]);
+
     return (
         <div className={`dashboard-container ${isSidebarOpen ? "sidebar-open" : ""} ${isMessagesPage ? "is-messages-page" : ""} ${isBlocked ? "is-blocked" : ""}`}>
             {isBlocked && (

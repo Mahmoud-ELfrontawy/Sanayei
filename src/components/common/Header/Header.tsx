@@ -86,6 +86,7 @@ const Header: React.FC = () => {
 
   const handleLogout = () => {
     setIsOpen(false);
+    closeMobileMenu(); // Ensure mobile menu closes on logout
     const name = user?.name || "";
     logout(false);
     toast.success(`تم تسجيل الخروج بنجاح، نراك قريباً ${name}`);
@@ -124,6 +125,11 @@ const Header: React.FC = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    closeMobileMenu();
+  }, [location.pathname]);
 
   /* ================= RENDER ================= */
 
@@ -433,10 +439,10 @@ const Header: React.FC = () => {
 
           {/* Social Media Footer */}
           <div className="mobile-social-footer">
-            <a href="#" aria-label="Facebook"><FaFacebookF /></a>
-            <a href="#" aria-label="Twitter"><FaTwitter /></a>
-            <a href="#" aria-label="Instagram"><FaInstagram /></a>
-            <a href="#" aria-label="LinkedIn"><FaLinkedinIn /></a>
+            <a href="#" onClick={closeMobileMenu} aria-label="Facebook"><FaFacebookF /></a>
+            <a href="#" onClick={closeMobileMenu} aria-label="Twitter"><FaTwitter /></a>
+            <a href="#" onClick={closeMobileMenu} aria-label="Instagram"><FaInstagram /></a>
+            <a href="#" onClick={closeMobileMenu} aria-label="LinkedIn"><FaLinkedinIn /></a>
           </div>
         </div>
       </div>
