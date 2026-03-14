@@ -17,6 +17,7 @@ import {
 } from "../../Api/serviceRequest/serviceRequests.api";
 import { getStoreOrders } from "../../Api/auth/Company/storeManagement.api";
 import { getUserOrders }   from "../../Api/store/orders.api";
+import { getMyNotifications } from "../../Api/notifications/notifications.api";
 import { toast }           from "react-toastify";
 import type { NewNotificationPayload } from "./notification.types";
 import {
@@ -48,6 +49,7 @@ export function useNotificationPolling({
     const isFirstUserOrdersFetch       = useRef(true);
     const prevCraftsmanOrdersRef       = useRef<Record<number, string>>({});
     const isFirstCraftsmanOrdersFetch  = useRef(true);
+    const isFirstBackendFetch          = useRef(true);
 
     // ── handleAction (accept/reject service request) ──
     // Exposed via ref so addNotification can call it without a dependency cycle
@@ -82,6 +84,7 @@ export function useNotificationPolling({
         isFirstUserOrdersFetch.current      = true;
         prevCraftsmanOrdersRef.current      = {};
         isFirstCraftsmanOrdersFetch.current = true;
+        isFirstBackendFetch.current         = true;
     }, [user?.id, userType]);
 
     // ── Fetch helpers ───────────────────────────
@@ -251,6 +254,38 @@ export function useNotificationPolling({
         } catch { /* silent */ }
     }, [user, userType, isMountedRef, addNotificationRef]);
 
+    // ── Fetches historic notifications from backend database (e.g. while app was closed)
+    const fetchBackendNotifications = useCallback(async () => {
+        if (!user || !userType || !isMountedRef.current) return;
+        const role = normalizeRole(userType);
+
+        try {
+            const dbNotifs = await getMyNotifications(role);
+            if (!Array.isArray(dbNotifs) || !isMountedRef.current) return;
+
+            dbNotifs.forEach((n: any) => {
+                const isAdminMsg = n.type === "admin_message";
+                
+                // Usually notifications from laravel database have a JSON 'data' block
+                const dataBlock = n.data || n;
+                
+                addNotificationRef.current?.({
+                    title:         dataBlock.title || (isAdminMsg ? "📢 رسالة من الإدارة" : "تنبيه"),
+                    message:       dataBlock.message || dataBlock.body || dataBlock.notification_text || "لديك إشعار",
+                    type:          dataBlock.type || n.type || "admin_message",
+                    orderId:       dataBlock.request_id || dataBlock.order_id || n.id || 0,
+                    recipientId:   user.id,
+                    recipientType: role,
+                    variant:       isAdminMsg ? "info" : "success",
+                    eventId:       `db_notif_${n.id || Date.now()}`,
+                    // Don't unread historic ones unless marked 'unread' from DB (optional)
+                    // You'll rely on the existing deduping logic based on eventId
+                });
+            });
+
+        } catch { /* silent */ }
+    }, [user, userType, isMountedRef, addNotificationRef]);
+
     // ── Unified polling interval ────────────────
     useEffect(() => {
         if (!user || !userType) return;
@@ -262,6 +297,11 @@ export function useNotificationPolling({
             if (role === "company")   fetchCompanyOrders();
             if (role === "user")      fetchUserStoreOrders();
             if (role === "craftsman") fetchCraftsmanStoreOrders();
+
+            if (isFirstBackendFetch.current) {
+                fetchBackendNotifications();
+                isFirstBackendFetch.current = false;
+            }
         };
 
         runAll(); // immediate first run

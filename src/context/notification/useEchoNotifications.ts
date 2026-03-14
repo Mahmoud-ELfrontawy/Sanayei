@@ -34,13 +34,22 @@ export function useEchoNotifications({
         };
         const primaryChannel = `notifications.${prefixMap[role] ?? "user"}.${user.id}`;
         
-        // 🔍 DEBUG: Log channel info so we can diagnose company ID mismatch
-        if (role === "company") {
-            console.log("[Echo Debug] Company channel:", primaryChannel, "| user.id:", user.id);
-        }
-        
+        // 🔍 Subscribe to the primary channel authorized by backend
         const c = echo.private(primaryChannel);
 
+        // 🔬 Add global monitor to log any broadcasted event to the browser console for debugging
+        if (echo.connector?.pusher?.bind_global) {
+             const _window = window as any;
+             if (!_window._hasPusherGlobalBind) {
+                 echo.connector.pusher.bind_global((eventName: string, data: any) => {
+                     // don't spam pusher internal events
+                     if (!eventName.startsWith('pusher:')) {
+                         console.log(`🚦 [Echo Global Monitor] Event: ${eventName}`, data);
+                     }
+                 });
+                 _window._hasPusherGlobalBind = true;
+             }
+        }
         
         const genericEventMap: Record<string, string> = {
             user:      ".UserNotification",
@@ -83,6 +92,38 @@ export function useEchoNotifications({
                 });
             });
         }
+
+        // ── 2b. Standard Laravel Notifications & Admin broadcasts ────────
+        // This catches notifications sent via Laravel's Notification::send() over the 'broadcast' channel
+        c.notification((notification: any) => {
+            console.log("🔔 [Echo Notification Received]", notification);
+            const msgBody = notification.message || notification.body || notification.notification_text || notification.data?.message || "لديك تنبيه جديد";
+            addNotificationRef.current?.({
+                title: notification.title || (notification.type === "admin_message" ? "📢 رسالة من الإدارة" : "إشعار جديد"),
+                message: msgBody,
+                type: notification.type || "admin_message",
+                orderId: notification.request_id || notification.id || 0,
+                recipientId: user.id,
+                recipientType: role,
+                variant: "info",
+                eventId: `echo_notification_${notification.id || Date.now()}`,
+            });
+        });
+
+        // Some custom backends send explicit Custom broadcasting events
+        c.listen(".AdminMessage", (e: any) => {
+             console.log("📢 [Echo Admin Message]", e);
+             addNotificationRef.current?.({
+                 title: e.title || "📢 رسالة من الإدارة",
+                 message: e.body || e.message || "رسالة إدارية جديدة",
+                 type: "admin_message",
+                 orderId: e.id || 0,
+                 recipientId: user.id,
+                 recipientType: role,
+                 variant: "info",
+                 eventId: `echo_admin_msg_${e.id || Date.now()}`
+             });
+        });
 
         // ── 3. Chat messages ───────────────────────
         const handleNewMessage = (e: any) => {
