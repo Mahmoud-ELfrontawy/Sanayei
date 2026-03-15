@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
-    FaArrowRight, FaMapMarkerAlt, FaUsers, FaClock, FaCheckCircle,
+    FaArrowRight, FaMapMarkerAlt, FaCheckCircle,
     FaCamera, FaSpinner, FaTrash, FaGlobeAmericas, FaExclamationTriangle
 } from "react-icons/fa";
 import {
