@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import Home from "../pages/Home";
 import { AdminNotificationProvider } from "../context/AdminNotificationContext";
+import { CommunityProvider } from "../context/CommunityContext";
 import LogoLoader from "../components/ui/loaders/FullPageLoader";
 
 // Lazy load pages for better performance
@@ -72,6 +73,10 @@ const ContactMessages = lazy(() => import("../pages/Admin/Contact/ContactMessage
 const AdminMessages = lazy(() => import("../pages/Admin/Messages/AdminMessages"));
 const AdminLiveMap = lazy(() => import("../pages/Admin/sections/AdminLiveMap/AdminLiveMap"));
 
+const CommunityPage = lazy(() => import("../pages/Community/CommunityPage"));
+const CreatePostPage = lazy(() => import("../pages/Community/CreatePostPage"));
+const PostDetailPage = lazy(() => import("../pages/Community/PostDetailPage"));
+
 const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
@@ -131,6 +136,10 @@ const AppRouter: React.FC = () => {
             <Route path="/user/:id" element={<UserProfilePage />} />
             <Route path="/company/:id" element={<CompanyPublicPage />} />
             <Route path="/learn-more" element={<LearnMorePage />} />
+            {/* ===== Community Pages ===== */}
+            <Route path="/community" element={<CommunityProvider><CommunityPage /></CommunityProvider>} />
+            <Route path="/community/new" element={<CommunityProvider><CreatePostPage /></CommunityProvider>} />
+            <Route path="/community/:id" element={<CommunityProvider><PostDetailPage /></CommunityProvider>} />
             {/* ===== Auth Pages ===== */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
