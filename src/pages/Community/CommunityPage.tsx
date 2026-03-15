@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useCallback, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaEdit, FaImage, FaMapMarkerAlt, FaSpinner, FaTrophy, FaSearch, FaFilter } from "react-icons/fa";
 import { useCommunity } from "../../context/CommunityContext";
 import { useAuth } from "../../hooks/useAuth";
@@ -62,32 +62,6 @@ const CommunityPage: React.FC = () => {
             <div className="fb-community-layout">
                 {/* ── LEFT SIDEBAR (Profile & Filters) ── */}
                 <aside className="fb-sidebar fb-left-sidebar desktop-only">
-                    {isAuthenticated && user && (
-                        <div className="fb-profile-card">
-                            <img 
-                                src={getAvatarUrl(user.avatar, user.name)} 
-                                alt={user.name} 
-                                className="fb-profile-avatar-large" 
-                            />
-                            <h3 className="fb-profile-name">{user.name}</h3>
-                            {myPoints ? (
-                                <div className="fb-profile-stats">
-                                    <PointsBadge badge={myPoints.badge} points={myPoints.total_points} />
-                                    <div className="fb-profile-stat-row">
-                                        <span>إنجازات:</span>
-                                        <strong>{myPoints.verified_jobs} خدمة مجتمعية</strong>
-                                    </div>
-                                    <div className="fb-profile-stat-row">
-                                        <span>قسائم السحب:</span>
-                                        <strong>{myPoints.draw_entries} 🎁</strong>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="community-loading"><FaSpinner className="community-spinner" /></div>
-                            )}
-                        </div>
-                    )}
-
                     <div className="fb-filters-card">
                         <h4 className="fb-card-title"><FaFilter /> تصفية البلاغات</h4>
                         
@@ -126,6 +100,32 @@ const CommunityPage: React.FC = () => {
                             تطبيق التصفية
                         </button>
                     </div>
+
+                    {isAuthenticated && user && (
+                        <div className="fb-profile-card">
+                            <img 
+                                src={getAvatarUrl(user.avatar, user.name)} 
+                                alt={user.name} 
+                                className="fb-profile-avatar-large" 
+                            />
+                            <h3 className="fb-profile-name">{user.name}</h3>
+                            {myPoints ? (
+                                <div className="fb-profile-stats">
+                                    <PointsBadge badge={myPoints.badge} points={myPoints.total_points} />
+                                    <div className="fb-profile-stat-row">
+                                        <span>إنجازات:</span>
+                                        <strong>{myPoints.verified_jobs} خدمة مجتمعية</strong>
+                                    </div>
+                                    <div className="fb-profile-stat-row">
+                                        <span>قسائم السحب:</span>
+                                        <strong>{myPoints.draw_entries} 🎁</strong>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="community-loading"><FaSpinner className="community-spinner" /></div>
+                            )}
+                        </div>
+                    )}
                 </aside>
 
                 {/* ── CENTER COLUMN (Feed) ── */}
@@ -220,7 +220,10 @@ const CommunityPage: React.FC = () => {
                                 </div>
                             ))}
                             {leaderboard.length === 0 && (
-                                <div className="fb-empty-state small">لا يوجد إنجازات بعد</div>
+                                <div className="fb-empty-state small">
+                                    <span>🏆</span>
+                                    <p>لا يوجد إنجازات بعد</p>
+                                </div>
                             )}
                         </div>
                     </div>

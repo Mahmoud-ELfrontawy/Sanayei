@@ -73,6 +73,7 @@ html[data-theme="dark"] .fb-sidebar::-webkit-scrollbar-thumb {
     border-radius: 50%;
     object-fit: cover;
     border: 3px solid #1877F2;
+    box-sizing: content-box;
 }
 
 .fb-profile-name {
@@ -90,10 +91,10 @@ html[data-theme="dark"] .fb-profile-name {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
     align-items: center;
     border-top: 1px solid var(--border-color, #ced0d4);
-    padding-top: 12px;
+    padding-top: 16px;
 }
 
 html[data-theme="dark"] .fb-profile-stats {
@@ -117,6 +118,7 @@ html[data-theme="dark"] .fb-profile-stat-row {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    align-items: stretch;
 }
 
 .fb-card-title {
@@ -282,10 +284,18 @@ html[data-theme="dark"] .fb-create-action:hover {
     padding: 40px 20px;
     color: var(--text-secondary, #65676B);
 }
+.fb-empty-state.small {
+    padding: 20px 10px;
+    font-size: 14px;
+}
 .fb-empty-state span {
     font-size: 40px;
     display: block;
     margin-bottom: 12px;
+}
+.fb-empty-state.small span {
+    font-size: 24px;
+    margin-bottom: 8px;
 }
 .fb-end-msg {
     text-align: center;

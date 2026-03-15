@@ -1,4 +1,3 @@
-import React from "react";
 import type { LeaderboardEntry } from "../../Api/community.api";
 
 const BADGE_CONFIG = {

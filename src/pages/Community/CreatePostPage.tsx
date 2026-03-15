@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowRight, FaMapMarkerAlt, FaCamera, FaExclamationTriangle, FaCheckCircle } from "react-icons/fa";
 import { createCommunityPost } from "../../Api/community.api";

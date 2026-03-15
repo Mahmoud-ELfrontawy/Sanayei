@@ -1,4 +1,3 @@
-import React from "react";
 import { FaMapMarkerAlt, FaGlobeAmericas, FaEllipsisH, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
 import { formatTimeAgo } from "../../utils/timeAgo";
 import { getAvatarUrl } from "../../utils/imageUrl";
