@@ -89,7 +89,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
                                 />
                                 <FaStar
                                     className="star"
-                                    color={ratingValue <= (hover || rating) ? "#FFC107" : "#e4e5e9"}
+                                    color={ratingValue <= (hover || rating) ? "var(--color-warning)" : "var(--color-divider)"}
                                     size={32}
                                     onMouseEnter={() => setHover(ratingValue)}
                                     onMouseLeave={() => setHover(0)}

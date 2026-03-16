@@ -115,7 +115,22 @@ html[data-theme="dark"] .header-theme-toggle-minimal:hover {
 .header-auth-buttons {
     display: flex;
     align-items: center;
-    gap:15px;
+    gap: 15px;
+}
+
+.header-btn {
+    min-height: 52px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 12px 24px !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+}
+
+.header-btn:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .desktop-only {
@@ -869,13 +884,13 @@ html[data-theme="dark"] .mobile-social-footer a:hover {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 10px !important;
-    padding: 15px 30px !important;
+    gap: 8px !important;
+    padding: 12px 15px !important; /* Match standard .btn padding */
     font-size: 20px !important;
     font-weight: 600 !important;
     cursor: pointer;
-    line-height: normal;
-    min-height: 58px;
+    line-height: 1.5;
+    min-height: 60px; /* Set a consistent height for both buttons in header */
     border-radius: var(--radius-btn);
 }
 

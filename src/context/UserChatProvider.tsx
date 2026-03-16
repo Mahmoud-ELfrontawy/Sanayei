@@ -152,7 +152,9 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
         }
         const check = () =>
             getActiveServiceRequest((userType === 'company' ? 'company' : 'user') as any, activeChat.id).then(({ status }) => {
-                setCanSendMessage(status === 'accepted' || status === 'pending');
+                // الشات يفتح فقط عندما يتم قبول الطلب رسميًا
+                // ويقفل إذا كان قيد الانتظار أو انتهى (completed)
+                setCanSendMessage(status === 'accepted');
             }).catch(() => { });
         check();
         const interval = setInterval(check, 10_000);

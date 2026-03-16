@@ -42,6 +42,21 @@ const getHeaders = () => {
 };
 
 /**
+ * Get company's own service requests
+ */
+export const getCompanyServiceRequests = async (filters = {}) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/company/service-requests`, {
+            params: filters,
+            headers: getHeaders(),
+        });
+        return response.data;
+    } catch (error) {
+        throw handleError(error);
+    }
+};
+
+/**
  * Get user's own service requests
  */
 export const getMyServiceRequests = async (filters = {}) => {
@@ -157,20 +172,25 @@ export const getActiveServiceRequest = async (
         let requests: any[] = [];
 
         if (role === 'user' || role === 'company') {
-            const res = await getMyServiceRequests();
+            const res = role === 'company' ? await getCompanyServiceRequests() : await getMyServiceRequests();
             const data = res.data || res || [];
             requests = Array.isArray(data) ? data : (data.data || []);
             
-            // Prioritize active requests (accepted or pending) 
-            // Also check that it's not already confirmed/completed by the user/company
+            // 1. أولاً: التحقق إذا كان هناك أي طلب تم إتمامه (ليغلق الشات فوراً)
+            const completedMatch = requests.find((r: any) => 
+                Number(r.craftsman_id) === Number(otherId) &&
+                (r.status === 'completed' || r.user_confirmation === 'confirmed')
+            );
+            if (completedMatch) return { status: 'completed' };
+
+            // 2. ثانياً: البحث عن طلب مقبول ونشط حالياً
             const activeMatch = requests.find((r: any) => 
                 Number(r.craftsman_id) === Number(otherId) &&
-                (r.status === 'accepted' || r.status === 'pending') &&
-                r.user_confirmation !== 'confirmed' &&
-                r.status !== 'completed'
+                r.status === 'accepted'
             );
-            if (activeMatch) return { status: activeMatch.status };
+            if (activeMatch) return { status: 'accepted' };
 
+            // 3. ثالثاً: إذا لم نجد هذا ولا ذاك، نرجع حالة آخر طلب
             const lastMatch = requests.find((r: any) => Number(r.craftsman_id) === Number(otherId));
             return { status: lastMatch?.status ?? null };
         } else {
@@ -178,19 +198,25 @@ export const getActiveServiceRequest = async (
             const data = res.data || res || [];
             requests = Array.isArray(data) ? data : (data.data || []);
             
-            // البحث عن أي طلب نشط (مقبول أو قيد الانتظار) من هذا الطرف
+            // 1. أولاً: التحقق إذا كان هناك أي طلب تم إتمامه
+            const completedMatch = requests.find((r: any) => 
+                (Number(r.user_id) === Number(otherId) || 
+                 Number(r.company_id) === Number(otherId) || 
+                 Number(r.requester_craftsman_id) === Number(otherId)) &&
+                (r.status === 'completed' || r.user_confirmation === 'confirmed')
+            );
+            if (completedMatch) return { status: 'completed' };
+
+            // 2. ثانياً: البحث عن طلب مقبول ونشط حالياً
             const activeMatch = requests.find((r: any) => 
                 (Number(r.user_id) === Number(otherId) || 
                  Number(r.company_id) === Number(otherId) || 
                  Number(r.requester_craftsman_id) === Number(otherId)) &&
-                (r.status === 'accepted' || r.status === 'pending') &&
-                r.user_confirmation !== 'confirmed' &&
-                r.status !== 'completed'
+                r.status === 'accepted'
             );
+            if (activeMatch) return { status: 'accepted' };
 
-            if (activeMatch) return { status: activeMatch.status };
-
-            // إذا لم نجد طلباً نشطاً، نبحث عن آخر طلب عام
+            // 3. ثالثاً: البحث عن آخر طلب عام
             const lastMatch = requests.find((r: any) => 
                 Number(r.user_id) === Number(otherId) || 
                 Number(r.company_id) === Number(otherId) || 

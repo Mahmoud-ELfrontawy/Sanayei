@@ -68,6 +68,13 @@
     color: #cbd5e1;
 }
 
+.address-detail-mini {
+    font-size: 13px;
+    color: var(--color-text-accent);
+    opacity: 0.85;
+    margin-inline-start: 4px;
+}
+
 .order-actions-area {
     display: flex;
     align-items: center;

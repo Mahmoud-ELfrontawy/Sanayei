@@ -161,12 +161,13 @@ export const CraftsmanChatProvider: React.FC<{ children: React.ReactNode }> = ({
     }
     const check = () =>
       getActiveServiceRequest('craftsman', activeChat.id).then(({ status }) => {
-        // الشات يظل مفتوحاً إذا كان الطلب مقبولاً أو قيد الانتظار
-        setCanSendMessage(status === 'accepted' || status === 'pending');
+        // الشات يفتح فقط عندما يتم قبول الطلب رسميًا من الصنايعي
+        // ويقفل إذا كان قيد الانتظار أو انتهى (completed)
+        setCanSendMessage(status === 'accepted');
       }).catch(() => {});
     
     check();
-    const interval = setInterval(check, 30_000);
+    const interval = setInterval(check, 10_000); // Changed to 10s for better sync
     return () => clearInterval(interval);
   }, [activeChat?.id, user?.id]);
 

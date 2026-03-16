@@ -239,24 +239,32 @@ const RequestServiceForm: React.FC<Props> = ({
             {showSkeleton ? (
                 <RequestServiceInputSkeleton />
             ) : (
-                <div className="hsq-form-row">
-                    <select
-                        className="hsq-form-input"
-                        {...register("province", { required: true })}
-                    >
-                        <option value="">المحافظة</option>
-                        {governorates.map((g) => (
-                            <option key={g.id} value={g.name}>
-                                {g.name}
-                            </option>
-                        ))}
-                    </select>
+                <div className="hsq-form-row_wrapper">
+                    <div className="hsq-form-row">
+                        <div className="input-with-error">
+                            <select
+                                className={`hsq-form-input ${errors.province ? 'error' : ''}`}
+                                {...register("province", { required: "من فضلك اختر المحافظة" })}
+                            >
+                                <option value="">المحافظة</option>
+                                {governorates.map((g) => (
+                                    <option key={g.id} value={g.name}>
+                                        {g.name}
+                                    </option>
+                                ))}
+                            </select>
+                            {errors.province && <span className="form-error">{errors.province.message}</span>}
+                        </div>
 
-                    <input
-                        className="hsq-form-input"
-                        placeholder="العنوان"
-                        {...register("address", { required: true })}
-                    />
+                        <div className="input-with-error">
+                            <input
+                                className={`hsq-form-input ${errors.address ? 'error' : ''}`}
+                                placeholder="العنوان بالتفصيل"
+                                {...register("address", { required: "من فضلك أدخل العنوان" })}
+                            />
+                            {errors.address && <span className="form-error">{errors.address.message}</span>}
+                        </div>
+                    </div>
                 </div>
             )}
 
@@ -267,35 +275,44 @@ const RequestServiceForm: React.FC<Props> = ({
                     <RequestServiceInputSkeleton />
                 </>
             ) : (
-                <div className="hsq-form-row">
-                    <input
-                        type={watch("date") ? "date" : "text"}
-                        className="hsq-form-input"
-                        placeholder="تاريخ الخدمة المطلوب"
-                        dir="ltr"
-                        onFocus={(e) => (e.target.type = "date")}
-                        {...register("date", {
-                            required: true,
-                            onBlur: (e) => {
-                                if (!e.target.value) e.target.type = "text";
-                            }
-                        })}
-                        title="تاريخ الزيارة"
-                    />
-                    <input
-                        type={watch("time") ? "time" : "text"}
-                        className="hsq-form-input"
-                        placeholder="وقت الخدمة المطلوب"
-                        dir="ltr"
-                        onFocus={(e) => (e.target.type = "time")}
-                        {...register("time", {
-                            required: true,
-                            onBlur: (e) => {
-                                if (!e.target.value) e.target.type = "text";
-                            }
-                        })}
-                        title="وقت الزيارة"
-                    />
+                <div className="hsq-form-row_wrapper">
+                    <div className="hsq-form-row">
+                        <div className="input-with-error">
+                            <input
+                                type={watch("date") ? "date" : "text"}
+                                className={`hsq-form-input ${errors.date ? 'error' : ''}`}
+                                placeholder="تاريخ الزيارة المطلوبة"
+                                dir="rtl"
+                                onFocus={(e) => (e.target.type = "date")}
+                                {...register("date", {
+                                    required: "من فضلك اختر التاريخ",
+                                    onBlur: (e) => {
+                                        if (!e.target.value) e.target.type = "text";
+                                    }
+                                })}
+                                title="تاريخ الزيارة"
+                            />
+                            {errors.date && <span className="form-error">{errors.date.message}</span>}
+                        </div>
+
+                        <div className="input-with-error">
+                            <input
+                                type={watch("time") ? "time" : "text"}
+                                className={`hsq-form-input ${errors.time ? 'error' : ''}`}
+                                placeholder="وقت الزيارة المطلوب"
+                                dir="rtl"
+                                onFocus={(e) => (e.target.type = "time")}
+                                {...register("time", {
+                                    required: "من فضلك اختر الوقت",
+                                    onBlur: (e) => {
+                                        if (!e.target.value) e.target.type = "text";
+                                    }
+                                })}
+                                title="وقت الزيارة"
+                            />
+                            {errors.time && <span className="form-error">{errors.time.message}</span>}
+                        </div>
+                    </div>
                 </div>
             )}
 
@@ -303,19 +320,22 @@ const RequestServiceForm: React.FC<Props> = ({
             {showSkeleton ? (
                 <RequestServiceInputSkeleton />
             ) : (
-                <select
-                    className="hsq-form-input"
-                    {...register("service_type", {
-                        required: "اختر الخدمة",
-                    })}
-                >
-                    <option value="">اختر خدمتك</option>
-                    {services.map((s) => (
-                        <option key={s.id} value={s.id}>
-                            {s.name}
-                        </option>
-                    ))}
-                </select>
+                <div className="input-with-error">
+                    <select
+                        className={`hsq-form-input ${errors.service_type ? 'error' : ''}`}
+                        {...register("service_type", {
+                            required: "من فضلك اختر نوع الخدمة",
+                        })}
+                    >
+                        <option value="">اختر نوع الخدمة التي تطلبها</option>
+                        {services.map((s) => (
+                            <option key={s.id} value={s.id}>
+                                {s.name}
+                            </option>
+                        ))}
+                    </select>
+                    {errors.service_type && <span className="form-error">{errors.service_type.message}</span>}
+                </div>
             )}
 
             {/* الصنايعي */}
@@ -323,25 +343,28 @@ const RequestServiceForm: React.FC<Props> = ({
                 <RequestServiceInputSkeleton />
             ) : (
                 <>
-                    <select
-                        className="hsq-form-input"
-                        disabled={!serviceId}
-                        {...register("industrial_type", {
-                            required: "من فضلك اختر صنايعي",
-                        })}
-                    >
-                        <option value="">
-                            {serviceId
-                                ? "اختر صنايعي"
-                                : "اختر الخدمة أولًا"}
-                        </option>
-
-                        {filteredSanaei.map((w) => (
-                            <option key={w.id} value={w.id}>
-                                {w.name}
+                    <div className="input-with-error">
+                        <select
+                            className={`hsq-form-input ${errors.industrial_type ? 'error' : ''}`}
+                            disabled={!serviceId}
+                            {...register("industrial_type", {
+                                required: "من فضلك اختر الصنايعي المطللوب",
+                            })}
+                        >
+                            <option value="">
+                                {serviceId
+                                    ? "اختر الصنايعي من القائمة"
+                                    : "اختر نوع الخدمة أولاً لتظهر لك قائمة الصنايعية"}
                             </option>
-                        ))}
-                    </select>
+
+                            {filteredSanaei.map((w) => (
+                                <option key={w.id} value={w.id}>
+                                    {w.name}
+                                </option>
+                            ))}
+                        </select>
+                        {errors.industrial_type && <span className="form-error">{errors.industrial_type.message}</span>}
+                    </div>
 
                     {selectedCraftsmanDetails && (
                         <div className="selected-craftsman-card">
@@ -417,12 +440,6 @@ const RequestServiceForm: React.FC<Props> = ({
                             <div className="cwid-number">#{selectedCraftsmanDetails.wallet_id}</div>
                             <p className="cwid-note">سيتم تحويل قيمة الخدمة لهذا الرقم عند القبول</p>
                         </div>
-                    )}
-
-                    {errors.industrial_type && (
-                        <span className="form-error">
-                            {errors.industrial_type.message}
-                        </span>
                     )}
                 </>
             )}

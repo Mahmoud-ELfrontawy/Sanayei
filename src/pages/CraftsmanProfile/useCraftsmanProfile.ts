@@ -113,13 +113,49 @@ export const useCraftsmanProfile = () => {
           paymentMethods: ["الدفع النقدي (كاش)"],
           services: data.service?.name ? [data.service.name] : [],
           walletId: data.wallet?.id || data.wallet_id || null,
-          reviews: data.last_reviews?.map((r: any) => ({
-            id: r.id,
-            clientName: r.user?.name || "عميل",
-            rating: r.rating,
-            comment: r.comment,
-            date: r.created_at?.split("T")[0]
-          })) || [],
+          reviews: data.last_reviews?.map((r: any) => {
+            // 1. Attempt to find the best possible entity object
+            const reviewer = r.user || r.company || r.reviewable || r.reviewer || r.client || {};
+            
+            // 2. Comprehensive Name extraction
+            // Fallback to "عميل رقم X" makes the auto-generated avatar unique for each user
+            const reviewerName = 
+                r.user_name || 
+                r.company_name || 
+                r.userName || 
+                r.client_name || 
+                r.clientName ||
+                reviewer.company_name || 
+                reviewer.name || 
+                reviewer.full_name ||
+                r.name ||
+                (r.user_id ? `عميل رقم ${r.user_id}` : "عميل");
+            
+            // 3. Comprehensive Photo extraction
+            // Priority: direct links > relation profile photos > avatars
+            const photoPath = 
+                r.user_image || 
+                r.user_avatar || 
+                r.company_logo || 
+                r.client_image ||
+                reviewer.profile_image_url || 
+                reviewer.profile_photo || 
+                reviewer.company_logo || 
+                reviewer.logo || 
+                reviewer.avatar || 
+                reviewer.profile_image ||
+                reviewer.image ||
+                r.image;
+
+            return {
+              id: r.id,
+              clientName: reviewerName,
+              clientImage: getAvatarUrl(photoPath, reviewerName),
+              rating: r.rating,
+              comment: r.comment,
+              date: r.created_at?.split("T")[0]
+            };
+          }) || [],
           portfolio: data.work_photos?.map((p: any, index: number) => ({
             id: index,
             title: `عمل رقم ${index + 1}`,

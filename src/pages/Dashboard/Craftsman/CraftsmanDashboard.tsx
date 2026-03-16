@@ -124,11 +124,20 @@ const CraftsmanDashboard: React.FC = () => {
             return;
         }
 
+        const recipientId = order.company_id || order.user_id;
+        const recipientType = order.company_id ? "company" : "user";
+
+        if (!recipientId) {
+            toast.error("تعذر العثور على بيانات العميل لبدء المحادثة");
+            return;
+        }
+
         setActiveChat({
-            id: order.user_id,
-            name: order.name || "عميل",
+            id: Number(recipientId),
+            name: order.name || (recipientType === "company" ? "شركة" : "عميل"),
+            type: recipientType,
             unread_count: 0,
-            avatar: order.avatar,
+            avatar: order.avatar || order.user?.profile_photo || order.company?.logo,
         });
 
         navigate("/dashboard/messages");
@@ -243,6 +252,7 @@ const CraftsmanDashboard: React.FC = () => {
                                                 <span className="client-label">العميل:</span> {req.name || "مجهول"}
                                                 <span className="location-divider">|</span>
                                                 {req.province || req.city || "غير محدد"}
+                                                {req.address && <span className="address-detail-mini"> - {req.address}</span>}
                                             </p>
                                         </div>
                                     </div>

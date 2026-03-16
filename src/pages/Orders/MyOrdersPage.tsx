@@ -326,8 +326,13 @@ function MyOrdersPage() {
                     <div className="orders-info-grid">
                         <div className="orders-info-item">
                             <span className="orders-info-label"><FaMapMarkerAlt /> الموقع</span>
-                            <span className="orders-info-value">
-                                {order.governorate || order.city || order.province || order.address || "غير محدد"}
+                            <span className="orders-info-value" style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                                <span style={{ fontWeight: 600 }}>{order.province || order.governorate || order.city || "الموقع غير محدد"}</span>
+                                {order.address && (
+                                    <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)', opacity: 0.9 }}>
+                                        {order.address}
+                                    </span>
+                                )}
                             </span>
                         </div>
                         <div className="orders-info-item">

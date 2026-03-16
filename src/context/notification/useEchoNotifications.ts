@@ -237,6 +237,22 @@ export function useEchoNotifications({
                     eventId:       `echo_cm_st_${e.request_id}_${e.status_arabic}`,
                 });
             });
+
+            // 🌟 New: Receive notifications when a user/company reviews the craftsman
+            c.listen(".ServiceReviewReceived", (e: any) => {
+                const data = e.data || e;
+                console.log("⭐ [Echo] .ServiceReviewReceived received:", data);
+                addNotificationRef.current?.({
+                    title:         "تقييم جديد للخدمة ⭐",
+                    message:       data.message || `قام ${data.user_name || 'عميل'} بتقييم خدمتك بـ ${data.rating || 5} نجوم - "${data.comment || 'بدون تعليق'}"`,
+                    type:          "product_review", // Uses the review UI style
+                    orderId:       data.request_id || 0,
+                    recipientId:   user.id,
+                    recipientType: "craftsman",
+                    variant:       "success",
+                    eventId:       `echo_service_rev_${data.request_id || Date.now()}`,
+                });
+            });
         }
 
         // ── 7. Company: specific order events ──────
