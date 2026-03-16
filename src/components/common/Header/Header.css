@@ -36,6 +36,32 @@
     object-fit: contain;
 }
 
+.header-theme-toggle-minimal {
+    background: transparent;
+    border: none;
+    padding: 8px; /* Added padding for better hit area and alignment */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-main);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 50%;
+}
+
+.header-theme-toggle-minimal:hover {
+    transform: scale(1.1);
+    color: var(--color-primary);
+}
+
+html[data-theme="dark"] .header-theme-toggle-minimal {
+    color: #fbbf24;
+}
+
+html[data-theme="dark"] .header-theme-toggle-minimal:hover {
+    color: #fcd34d;
+}
+
 /* Navigation */
 .header-links {
     list-style: none;

@@ -179,11 +179,11 @@ const Header: React.FC = () => {
             <div className="header-actions-guest desktop-only">
               <button
                 type="button"
-                className="header-theme-toggle standalone"
+                className="header-theme-toggle-minimal"
                 onClick={toggleTheme}
                 title={isDark ? "الوضع الفاتح" : "الوضع المظلم"}
               >
-                {isDark ? <FaSun size={20} /> : <FaMoon size={20} />}
+                {isDark ? <FaSun size={22} /> : <FaMoon size={22} />}
               </button>
               <div className="header-auth-buttons">
                 <Button to="/login" variant="primary" className="header-btn">
@@ -217,10 +217,9 @@ const Header: React.FC = () => {
             </div>
           ) : (
             <div className="avatar-wrapper-header desktop-only">
-              {/* Theme Toggle for Authenticated Users */}
               <button
                 type="button"
-                className="header-theme-toggle standalone"
+                className="header-theme-toggle-minimal"
                 onClick={toggleTheme}
                 title={isDark ? "الوضع الفاتح" : "الوضع المظلم"}
               >
