@@ -17,6 +17,7 @@ export interface CraftsmanProfileData {
   id: number;
   name: string;
   jobTitle: string;
+  serviceId?: number;
   avatarUrl: string;
   coverUrl: string;
   rating: number;

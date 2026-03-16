@@ -133,7 +133,7 @@ export const createServiceRequest = async (payload: any) => {
         }
 
         const response = await axios.post(
-            `${BASE_URL}/service-requests`,
+            `${BASE_URL}/user/service-requests`,
             payload,
             { headers }
         );
@@ -150,22 +150,54 @@ export const createServiceRequest = async (payload: any) => {
  * @param otherId - The ID of the other party (craftsman_id for user, user_id for craftsman)
  */
 export const getActiveServiceRequest = async (
-    role: 'user' | 'craftsman',
+    role: 'user' | 'craftsman' | 'company',
     otherId: number
 ): Promise<{ status: 'accepted' | 'completed' | 'pending' | 'rejected' | null }> => {
     try {
         let requests: any[] = [];
 
-        if (role === 'user') {
+        if (role === 'user' || role === 'company') {
             const res = await getMyServiceRequests();
-            requests = Array.isArray(res.data) ? res.data : (Array.isArray(res) ? res : []);
-            const match = requests.find((r: any) => r.craftsman_id === otherId);
-            return { status: match?.status ?? null };
+            const data = res.data || res || [];
+            requests = Array.isArray(data) ? data : (data.data || []);
+            
+            // Prioritize active requests (accepted or pending) 
+            // Also check that it's not already confirmed/completed by the user/company
+            const activeMatch = requests.find((r: any) => 
+                Number(r.craftsman_id) === Number(otherId) &&
+                (r.status === 'accepted' || r.status === 'pending') &&
+                r.user_confirmation !== 'confirmed' &&
+                r.status !== 'completed'
+            );
+            if (activeMatch) return { status: activeMatch.status };
+
+            const lastMatch = requests.find((r: any) => Number(r.craftsman_id) === Number(otherId));
+            return { status: lastMatch?.status ?? null };
         } else {
             const res = await getIncomingServiceRequests();
-            requests = Array.isArray(res.data) ? res.data : (Array.isArray(res) ? res : []);
-            const match = requests.find((r: any) => r.user_id === otherId || r.user?.id === otherId);
-            return { status: match?.status ?? null };
+            const data = res.data || res || [];
+            requests = Array.isArray(data) ? data : (data.data || []);
+            
+            // البحث عن أي طلب نشط (مقبول أو قيد الانتظار) من هذا الطرف
+            const activeMatch = requests.find((r: any) => 
+                (Number(r.user_id) === Number(otherId) || 
+                 Number(r.company_id) === Number(otherId) || 
+                 Number(r.requester_craftsman_id) === Number(otherId)) &&
+                (r.status === 'accepted' || r.status === 'pending') &&
+                r.user_confirmation !== 'confirmed' &&
+                r.status !== 'completed'
+            );
+
+            if (activeMatch) return { status: activeMatch.status };
+
+            // إذا لم نجد طلباً نشطاً، نبحث عن آخر طلب عام
+            const lastMatch = requests.find((r: any) => 
+                Number(r.user_id) === Number(otherId) || 
+                Number(r.company_id) === Number(otherId) || 
+                Number(r.requester_craftsman_id) === Number(otherId)
+            );
+
+            return { status: lastMatch?.status ?? null };
         }
     } catch {
         return { status: null };

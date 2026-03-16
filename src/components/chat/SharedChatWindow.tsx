@@ -22,6 +22,7 @@ interface Message {
     message?: string;
     message_type?: "text" | "image" | "audio";
     media_path?: string | null;
+    is_mine?: boolean;
 }
 
 interface ChatUser {
@@ -293,8 +294,8 @@ const SharedChatWindow: React.FC<Props> = ({
 
             {/* ===== Messages ===== */}
             <div className="messages-container" ref={messagesContainerRef}>
-                {sortedMessages.map((msg) => {
-                    const isMine = msg.sender_id !== activeChat.id;
+                {sortedMessages.map((msg: any) => {
+                    const isMine = msg.is_mine !== undefined ? msg.is_mine : msg.sender_id !== activeChat.id;
 
                     return (
                         <div

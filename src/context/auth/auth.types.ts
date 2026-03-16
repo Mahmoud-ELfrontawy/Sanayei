@@ -8,6 +8,7 @@ export interface User {
   status?: 'approved' | 'pending' | 'rejected';
   latitude?: number | string;
   longitude?: number | string;
+  service_id?: number;
 }
 
 export interface AuthState {

@@ -95,22 +95,21 @@ const RequestServiceSection: React.FC = () => {
             return;
         }
 
-        // Restriction: Companies and Craftsmen cannot request service
-        if (userType === 'company' || userType === 'craftsman') {
-            toast.info(
-                userType === 'company'
-                    ? "عذراً، يجب التسجيل بحساب مستخدم عادي لطلب خدمات الصنايعية 🛠️"
-                    : "عذراً، لا يمكن للصنايعي طلب خدمة من صنايعي آخر بحسابه الحالي 👤"
-            );
+        // Restriction: Craftsmen cannot request services
+        if (userType === 'craftsman') {
+            toast.warning("عذراً، لا يمكن للصنايعي طلب خدمات. يجب أن يكون حسابك مستخدم عادي أو شركة للقيام بذلك 🛠️");
             return;
         }
 
         const paymentMethod = data.payment_method || "cash";
 
         try {
-            const payload = {
-                // 🔥 User Details
-                user_id: user?.id ? Number(user.id) : null,
+            const payload: any = {
+                // 🔥 Requester Details (Polymorphic)
+                user_id: userType === 'user' ? Number(user?.id) : null,
+                company_id: userType === 'company' ? Number(user?.id) : null,
+                requester_craftsman_id: null, // Craftsmen cannot request services due to guard above
+
                 name: data.name || user?.name || "زائر",
                 email: data.email || user?.email || "guest@example.com",
 
@@ -159,7 +158,7 @@ const RequestServiceSection: React.FC = () => {
                 title: "تم الإرسال بنجاح ✅",
                 message: `طلب ${data.service_name} قيد الانتظار حالياً — طريقة الدفع: ${paymentMethod === 'wallet' ? 'محفظة' : 'نقدي'}`,
                 recipientId: payload.user_id!,
-                recipientType: "user",
+                recipientType: (userType === "company" ? "company" : "user"),
                 type: "order_status",
                 orderId: serverId,
                 variant: "success",

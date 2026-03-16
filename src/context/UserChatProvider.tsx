@@ -5,12 +5,14 @@ import { useAuth } from "../hooks/useAuth";
 import { getFullImageUrl } from "../utils/imageUrl";
 import { useNotifications } from "./NotificationContext";
 import { getActiveServiceRequest } from "../Api/serviceRequest/serviceRequests.api";
+import { normalizeRole } from "./notification/notification.utils";
 
 /* ================= Types ================= */
 
 export interface ChatContact {
     id: number;
     name: string;
+    type: string;
     avatar?: string;
     unread_count: number;
 }
@@ -18,7 +20,9 @@ export interface ChatContact {
 export interface ChatMessage {
     id: number;
     sender_id: number;
+    sender_type: "user" | "worker" | "company";
     receiver_id: number;
+    receiver_type: "user" | "worker" | "company";
     message?: string;
     created_at: string;
     is_read?: boolean;
@@ -27,20 +31,7 @@ export interface ChatMessage {
     is_mine?: boolean;
 }
 
-interface UserChatsResponse {
-    data: Array<{
-        id: number;
-        name: string;
-        profile_photo?: string | null;
-        unread_count?: number | null;
-    }>;
-}
 
-interface MessagesResponse {
-    data: {
-        data: ChatMessage[];
-    };
-}
 
 interface Ctx {
     contacts: ChatContact[];
@@ -68,14 +59,16 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
 
     const contactsQuery = useQuery({
         queryKey: ["user-chats", user?.id],
-        enabled: !!user?.id && userType === "user",
-        refetchInterval: 30000, // Reduced pressure from 15s to 30s
+        enabled: !!user?.id && (userType === "user" || userType === "company"),
+        refetchInterval: 30000,
         queryFn: async (): Promise<ChatContact[]> => {
-            const res: UserChatsResponse = await chatApi.getUserChats(user!.id);
+            const res = await chatApi.getUserChats(user!.id, userType!);
+            const data = res.data || [];
 
-            return (res.data ?? []).map((c) => ({
+            return data.map((c: any) => ({
                 id: c.id,
                 name: c.name,
+                type: normalizeRole(c.type || "worker"),
                 avatar: getFullImageUrl(c.profile_photo ?? undefined),
                 unread_count: Number(c.unread_count ?? 0),
             }));
@@ -84,45 +77,36 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
 
     const { addNotification, markTypeAsRead } = useNotifications();
 
-    // Fallback: Watch for unread count changes in polling
+    // Polling notifications
     useEffect(() => {
         if (!contactsQuery.data) return;
-
         const currentTotal = contactsQuery.data.reduce((sum, c) => sum + c.unread_count, 0);
-
         if (currentTotal > prevTotalUnreadRef.current) {
-            console.log(`🕵️ Polling detected ${currentTotal - prevTotalUnreadRef.current} new message(s)`);
-
-            // Find which contact has new messages to get a better message
-            const diffContact = contactsQuery.data.find(c => {
-                // We know total increased, so any contact with unread_count > 0 is a candidate.
-                return c.unread_count > 0;
-            });
-
+            const diffContact = contactsQuery.data.find(c => c.unread_count > 0);
             addNotification({
                 title: "رسالة جديدة",
                 message: diffContact ? `رسالة جديدة من ${diffContact.name}` : "لديك رسائل جديدة",
                 type: "chat",
                 orderId: diffContact?.id || 0,
                 recipientId: user!.id,
-                recipientType: "user",
+                recipientType: userType as any,
             });
         }
-
         prevTotalUnreadRef.current = currentTotal;
     }, [contactsQuery.data, addNotification, user?.id]);
 
     const messagesQuery = useQuery({
         queryKey: ["user-messages", activeChat?.id, user?.id],
-        enabled: !!activeChat && !!user?.id && userType === "user",
-        refetchInterval: 20000, // Reduced from 10s to 20s
+        enabled: !!activeChat && !!user?.id && (userType === "user" || userType === "company"),
+        refetchInterval: 10000, 
         queryFn: async (): Promise<ChatMessage[]> => {
-            const res: MessagesResponse = await chatApi.getMessages(user!.id, activeChat!.id);
-            const raw = res.data?.data ?? [];
-
-            return raw.map((m) => ({
+            const res = await chatApi.getMessages(user!.id, activeChat!.id, userType!);
+            // Handle both {messages: []} and {data: {data: []}} structures
+            const raw = res.messages || (Array.isArray(res.data) ? res.data : res.data?.data) || [];
+            
+            return raw.map((m: any) => ({
                 ...m,
-                is_mine: m.sender_id === user!.id,
+                is_mine: (Number(m.sender_id) === Number(user!.id) && normalizeRole(m.sender_type) === normalizeRole(userType!)),
             }));
         },
     });
@@ -131,7 +115,7 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
 
     const sendTextMutation = useMutation({
         mutationFn: async (text: string) => {
-            await chatApi.sendChatMessage(user!.id, "user", activeChat!.id, "worker", text);
+            await chatApi.sendChatMessage(user!.id, userType!, activeChat!.id, activeChat!.type, text);
         },
         onSettled: () => {
             qc.invalidateQueries({ queryKey: ["user-messages", activeChat?.id, user?.id] });
@@ -141,7 +125,7 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
 
     const sendImageMutation = useMutation({
         mutationFn: async (file: File) => {
-            await chatApi.sendChatImage(user!.id, "user", activeChat!.id, "worker", file);
+            await chatApi.sendChatImage(user!.id, userType!, activeChat!.id, activeChat!.type, file);
         },
         onSettled: () => {
             qc.invalidateQueries({ queryKey: ["user-messages", activeChat?.id, user?.id] });
@@ -151,7 +135,7 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
 
     const sendAudioMutation = useMutation({
         mutationFn: async (blob: Blob) => {
-            await chatApi.sendChatAudio(user!.id, "user", activeChat!.id, "worker", blob);
+            await chatApi.sendChatAudio(user!.id, userType!, activeChat!.id, activeChat!.type, blob);
         },
         onSettled: () => {
             qc.invalidateQueries({ queryKey: ["user-messages", activeChat?.id, user?.id] });
@@ -159,46 +143,35 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
         },
     });
 
-    /* ================= Chat Access Check (Live Poll) ================= */
+    /* ================= Chat Access Check ================= */
 
     useEffect(() => {
         if (!activeChat || !user?.id) {
             setCanSendMessage(true);
             return;
         }
-
-        // Check immediately on chat open
         const check = () =>
-            getActiveServiceRequest('user', activeChat.id).then(({ status }) => {
-                setCanSendMessage(status === 'accepted');
-            }).catch(() => {/* silent */});
-
+            getActiveServiceRequest((userType === 'company' ? 'company' : 'user') as any, activeChat.id).then(({ status }) => {
+                setCanSendMessage(status === 'accepted' || status === 'pending');
+            }).catch(() => { });
         check();
-
-        // Re-check every 30s so chat locks automatically when service completes
-        const interval = setInterval(check, 20_000);
+        const interval = setInterval(check, 10_000);
         return () => clearInterval(interval);
-    }, [activeChat?.id, user?.id]);
+    }, [activeChat?.id, user?.id, userType]);
 
     /* ================= Mark As Read ================= */
 
     useEffect(() => {
         if (!activeChat || !user?.id) return;
-
-        // Clear chat notifications when a chat is opened
         markTypeAsRead("chat");
-
         qc.setQueryData(["user-chats", user.id], (old: ChatContact[] | undefined) => {
             if (!old) return old;
-            return old.map((c) =>
-                c.id === activeChat.id ? { ...c, unread_count: 0 } : c
-            );
+            return old.map((c) => c.id === activeChat.id ? { ...c, unread_count: 0 } : c);
         });
-
-        chatApi.markMessagesAsRead(user.id, activeChat.id, "user").catch(() => {
+        chatApi.markMessagesAsRead(user.id, userType!).catch(() => {
             qc.invalidateQueries({ queryKey: ["user-chats", user.id] });
         });
-    }, [activeChat, user?.id, qc, markTypeAsRead]);
+    }, [activeChat, user?.id, userType, qc, markTypeAsRead]);
 
     /* ================= Context Value ================= */
 

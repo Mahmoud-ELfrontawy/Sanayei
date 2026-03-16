@@ -98,6 +98,7 @@ export const useCraftsmanProfile = () => {
           id: data.id,
           name: data.name || "بدون اسم",
           jobTitle: data.service?.name || data.service_name || data.craft_type || "صنايعي محترف",
+          serviceId: data.service?.id || data.service_id,
           avatarUrl: avatar,
           coverUrl: avatar, // Using the same image as requested
           rating: Number(data.rating) || 0,

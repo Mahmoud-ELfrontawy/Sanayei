@@ -21,9 +21,12 @@ import {
 export const normalizeRole = (
     role: string
 ): Notification["recipientType"] => {
-    const r = String(role).toLowerCase();
-    if (r === "worker" || r === "craftsman") return "craftsman";
-    if (r === "company") return "company";
+    const r = String(role);
+    
+    // Handle Laravel Model Class Names
+    if (r.includes('Craftsman') || r.includes('Worker') || r === 'worker' || r === 'craftsman') return "craftsman";
+    if (r.includes('Company') || r === 'company') return "company";
+    
     return "user";
 };
 

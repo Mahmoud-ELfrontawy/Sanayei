@@ -143,13 +143,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             },
         ] : []),
 
-        ...(userType !== "company" ? [
-            {
-                title: "طلباتي",
-                path: "/store-orders",
-                icon: <FaBoxOpen size={20} />
-            },
-        ] : []),
+        {
+            title: "طلباتي (المتجر)",
+            path: "/store-orders",
+            icon: <FaShoppingCart size={20} />
+        },
+        {
+            title: "طلباتي (الخدمات)",
+            path: "/orders",
+            icon: <FaBoxOpen size={20} />
+        },
     ];
 
     return (

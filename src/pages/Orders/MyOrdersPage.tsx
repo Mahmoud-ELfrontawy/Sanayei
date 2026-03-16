@@ -75,7 +75,9 @@ function MyOrdersPage() {
             try {
                 if (showLoading && isMounted) setLoading(true);
                 let result;
-                if (isCraftsman) {
+                
+                // التأكد من جلب الطلبات الواردة لو كان الحساب "صنايعي"
+                if (userType === "craftsman") {
                     result = await getIncomingServiceRequests();
                 } else {
                     result = await getMyServiceRequests();
@@ -232,9 +234,38 @@ function MyOrdersPage() {
     };
 
     const handleStartChat = (order: any) => {
-        const contactInfo: ChatContact = isCraftsman
-            ? { id: order.user_id, name: order.name || "عميل", unread_count: 0 }
-            : { id: order.craftsman_id, name: order.craftsman?.name || "صنايعي", unread_count: 0 };
+        let recipientId = null;
+        let recipientType = "user";
+
+        if (isCraftsman) {
+            // Requester can be a Company, another Craftsman, or a User
+            if (order.company_id || order.company?.id) {
+                recipientId = order.company_id || order.company?.id;
+                recipientType = "company";
+            } else if (order.requester_craftsman_id || order.requester_craftsman?.id) {
+                recipientId = order.requester_craftsman_id || order.requester_craftsman?.id;
+                recipientType = "craftsman";
+            } else {
+                recipientId = order.user_id || order.user?.id;
+                recipientType = "user";
+            }
+        } else {
+            // Requester (User/Company) chatting with Craftsman
+            recipientId = order.craftsman_id || order.craftsman?.id;
+            recipientType = "craftsman";
+        }
+
+        if (!recipientId) {
+            toast.error("تعذر العثور على بيانات الطرف الآخر لبدء المحادثة");
+            return;
+        }
+
+        const contactInfo: ChatContact = {
+            id: Number(recipientId),
+            name: isCraftsman ? (order.name || order.user?.name || "عميل") : (order.craftsman?.name || "صنايعي"),
+            type: recipientType,
+            unread_count: 0
+        };
 
         setActiveChat(contactInfo);
         navigate("/dashboard/messages");

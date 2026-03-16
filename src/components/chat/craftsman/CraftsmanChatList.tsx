@@ -19,7 +19,7 @@ const CraftsmanChatList: React.FC = () => {
                 ) : (
                     contacts.map((c) => (
                         <div
-                            key={c.id}
+                            key={`${c.type}_${c.id}`}
                             className={`contact-item ${activeChat?.id === c.id ? "active" : ""
                                 }`}
                             onClick={() => setActiveChat(c)}

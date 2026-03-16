@@ -23,6 +23,8 @@ interface ProfileApiResponse {
   company?: ProfileApiResponse;
   data?: ProfileApiResponse;
   status?: 'approved' | 'pending' | 'rejected';
+  service_id?: number;
+  service?: { id: number };
 }
 
 class AuthService {
@@ -90,7 +92,8 @@ class AuthService {
       name: u.name || u.company_name || "",
       email: u.email || u.company_email || "",
       avatar: getFullImageUrl(u.profile_photo || u.company_logo || u.profile_image_url || u.avatar),
-      status: u.status
+      status: u.status,
+      service_id: u.service_id || u.service?.id
     };
   }
 

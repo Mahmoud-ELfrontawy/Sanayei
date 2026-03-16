@@ -2,7 +2,7 @@ import { NavLink, Link, useLocation } from "react-router-dom";
 import { IoIosArrowDown } from "react-icons/io";
 import { FiX, FiChevronLeft } from "react-icons/fi";
 import { useEffect, useRef, useState } from "react";
-import { FaUser, FaSignOutAlt, FaThLarge, FaBox, FaRegClock, FaCommentDots, FaBell, FaMoon, FaSun, FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaClipboardList, FaHeadset, FaInfoCircle } from "react-icons/fa";
+import { FaUser, FaUserPlus, FaSignOutAlt, FaThLarge, FaBox, FaRegClock, FaCommentDots, FaBell, FaMoon, FaSun, FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaClipboardList, FaHeadset, FaInfoCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { formatTimeAgo } from "../../../utils/timeAgo";
 import { getAvatarUrl } from "../../../utils/imageUrl";
@@ -48,10 +48,12 @@ const Header: React.FC = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
   const { isMobileMenuOpen, closeMobileMenu } = useUI();
 
   const dropdownRef = useRef<DropdownRef>(null);
   const notifDropdownRef = useRef<DropdownRef>(null);
+  const authDropdownRef = useRef<DropdownRef>(null);
   const { userNotifications, markAsRead, markAllAsRead, unreadCount } = useNotifications();
 
   /* ================= Helpers ================= */
@@ -81,6 +83,14 @@ const Header: React.FC = () => {
     e.preventDefault();
     setNotifOpen((prev) => !prev);
     setIsOpen(false);
+    setAuthOpen(false);
+  };
+
+  const toggleAuthDropdown = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setAuthOpen((prev) => !prev);
+    setNotifOpen(false);
+    setIsOpen(false);
   };
 
 
@@ -102,6 +112,9 @@ const Header: React.FC = () => {
     }
     if (notifDropdownRef.current && !notifDropdownRef.current.contains(target)) {
       setNotifOpen(false);
+    }
+    if (authDropdownRef.current && !authDropdownRef.current.contains(target)) {
+      setAuthOpen(false);
     }
   };
 
@@ -176,9 +189,30 @@ const Header: React.FC = () => {
                 <Button to="/login" variant="primary" className="header-btn">
                   اطلب الآن
                 </Button>
-                <Button to="/login" variant="outline" className="header-btn">
-                  تسجيل الدخول
-                </Button>
+                
+                <div className="header-auth-dropdown" ref={authDropdownRef}>
+                  <button 
+                    type="button" 
+                    className={`btn btn-outline header-btn header-auth-trigger ${authOpen ? 'active' : ''}`}
+                    onClick={toggleAuthDropdown}
+                  >
+                    <span>تسجيل الدخول</span>
+                    <IoIosArrowDown size={14} className={`arrow-icon ${authOpen ? 'rotate' : ''}`} />
+                  </button>
+
+                  {authOpen && (
+                    <div className="header-profile-dropdown auth-dropdown">
+                      <Link to="/login" className="header-dropdown-item" onClick={() => setAuthOpen(false)}>
+                        <FaUser size={18} />
+                        <span>تسجيل دخول</span>
+                      </Link>
+                      <Link to="/join" className="header-dropdown-item" onClick={() => setAuthOpen(false)}>
+                        <FaUserPlus size={18} />
+                        <span>إنشاء حساب</span>
+                      </Link>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           ) : (
@@ -192,6 +226,8 @@ const Header: React.FC = () => {
               >
                 {isDark ? <FaSun size={22} /> : <FaMoon size={22} />}
               </button>
+
+
               {/* Messages */}
               <Link
                 to="/dashboard/messages"
@@ -415,12 +451,20 @@ const Header: React.FC = () => {
               <Button to="/login" variant="primary" className="header-btn" onClick={closeMobileMenu}>
                 اطلب الآن
               </Button>
-              <Button to="/login" variant="outline" className="header-btn" onClick={closeMobileMenu}>
-                تسجيل الدخول
-              </Button>
+              <div className="mobile-auth-options">
+                <Button to="/login" variant="outline" className="header-btn w-100" onClick={closeMobileMenu}>
+                   <FaUser size={18} style={{marginLeft: '8px'}} />
+                   تسجيل الدخول
+                </Button>
+                <Button to="/join" variant="outline" className="header-btn w-100" onClick={closeMobileMenu}>
+                   <FaUserPlus size={18} style={{marginLeft: '8px'}} />
+                   إنشاء حساب
+                </Button>
+              </div>
             </div>
           ) : (
             <div className="mobile-auth">
+
               <Link
                 to={dashboardPath}
                 className="header-dropdown-item mobile-dashboard-btn"

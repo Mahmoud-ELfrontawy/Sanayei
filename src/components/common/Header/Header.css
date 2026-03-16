@@ -830,3 +830,76 @@ html[data-theme="dark"] .online-dot {
 html[data-theme="dark"] .mobile-social-footer a:hover {
     box-shadow: 0 8px 20px rgba(95, 168, 211, 0.2);
 }
+
+/* ================= Guest Auth Dropdown ================= */
+
+.header-auth-dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.header-auth-trigger {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    padding: 15px 30px !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+    line-height: normal;
+    min-height: 58px;
+    border-radius: var(--radius-btn);
+}
+
+.header-auth-trigger .arrow-icon {
+    transition: transform 0.3s ease;
+    opacity: 0.8;
+}
+
+.header-auth-trigger.active {
+    background: rgba(95, 168, 211, 0.1);
+}
+
+.header-auth-trigger.active .arrow-icon {
+    transform: rotate(180deg);
+}
+
+/* Make dropdown visible when open */
+.header-auth-dropdown .header-profile-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+    top: calc(100% + 15px);
+    right: 0;
+    left: auto;
+    min-width: 200px;
+    z-index: 1005;
+}
+
+.auth-dropdown::before {
+    left: auto;
+    right: 25px;
+}
+
+.mobile-auth-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.mobile-auth-options .header-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px !important;
+    padding: 12px !important;
+}
+
+/* Dark Mode Overrides for Guest Dropdown */
+html[data-theme="dark"] .header-auth-trigger.active {
+    background: rgba(255, 255, 255, 0.05);
+}

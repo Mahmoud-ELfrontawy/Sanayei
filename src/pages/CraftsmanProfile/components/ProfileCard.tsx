@@ -14,7 +14,7 @@ interface Props {
 }
 
 const ProfileCard: React.FC<Props> = ({ craftsman, isOwnProfile }) => {
-  const { userType, isAuthenticated } = useAuth();
+  const { user, userType, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const handleRequestService = () => {
@@ -24,12 +24,9 @@ const ProfileCard: React.FC<Props> = ({ craftsman, isOwnProfile }) => {
       return;
     }
 
-    if (userType === 'company' || userType === 'craftsman') {
-      toast.info(
-        userType === 'company'
-          ? "عذراً، يجب التسجيل بحساب مستخدم عادي لطلب خدمات الصنايعية 🛠️"
-          : "عذراً، لا يمكن للصنايعي طلب خدمة من صنايعي آخر بحسابه الحالي 👤"
-      );
+    // Restriction: Craftsmen cannot request same profession
+    if (userType === 'craftsman' && user?.service_id && craftsman.serviceId && user.service_id === craftsman.serviceId) {
+      toast.warning("عذراً، لا يمكنك طلب خدمة من صنايعي في نفس مجال تخصصك 🛠️");
       return;
     }
 

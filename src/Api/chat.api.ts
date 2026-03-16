@@ -1,4 +1,4 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { authStorage } from "../context/auth/auth.storage";
 
 /* ================= Base Config ================= */
@@ -27,9 +27,9 @@ const getFormDataHeaders = () => {
 export interface ChatMessage {
     id: number;
     sender_id: number;
-    sender_type: "user" | "worker";
+    sender_type: string;
     receiver_id: number;
-    receiver_type: "user" | "worker";
+    receiver_type: string;
     message?: string;
     message_type?: "text" | "image" | "audio";
     media_path?: string | null;
@@ -41,6 +41,7 @@ export interface ChatMessage {
 export interface ChatContact {
     id: number;
     name: string;
+    type: string; // Will contain class names like 'App\\Models\\User'
     profile_photo?: string;
     profile_image?: string;
     profile_image_url?: string;
@@ -60,11 +61,15 @@ export const getChatWorkers = async () => {
 
 /* ================= Get Messages ================= */
 
-export const getMessages = async (userId: number, workerId: number) => {
+export const getMessages = async (userId: number, workerId: number, userType: string) => {
+    // نمرر الـ user_type للمطابقة مع الباك إند (يجب أن يكون user أو company أو worker)
+    const mappedType = userType === "craftsman" ? "worker" : userType;
+    
     const response = await axios.get(`${BASE_URL}/chat/messages`, {
         params: {
             user_id: userId,
             worker_id: workerId,
+            user_type: mappedType
         },
         headers: getHeaders(),
     });
@@ -76,18 +81,18 @@ export const getMessages = async (userId: number, workerId: number) => {
 
 export const sendChatMessage = async (
     senderId: number,
-    senderType: "user" | "worker",
+    senderType: string,
     receiverId: number,
-    receiverType: "user" | "worker",
+    receiverType: string,
     message: string
 ) => {
     const response = await axios.post(
         `${BASE_URL}/chat/messages/send`,
         {
             sender_id: senderId,
-            sender_type: senderType,
+            sender_type: senderType === "craftsman" ? "worker" : senderType,
             receiver_id: receiverId,
-            receiver_type: receiverType,
+            receiver_type: receiverType === "craftsman" ? "worker" : receiverType,
             message,
         },
         { headers: getHeaders() }
@@ -100,17 +105,17 @@ export const sendChatMessage = async (
 
 export const sendChatImage = async (
     senderId: number,
-    senderType: "user" | "worker",
+    senderType: string,
     receiverId: number,
-    receiverType: "user" | "worker",
+    receiverType: string,
     file: File,
     message?: string
 ) => {
     const formData = new FormData();
     formData.append("sender_id", String(senderId));
-    formData.append("sender_type", senderType);
+    formData.append("sender_type", senderType === "craftsman" ? "worker" : senderType);
     formData.append("receiver_id", String(receiverId));
-    formData.append("receiver_type", receiverType);
+    formData.append("receiver_type", receiverType === "craftsman" ? "worker" : receiverType);
     formData.append("image", file);
     
     if (message) {
@@ -128,17 +133,17 @@ export const sendChatImage = async (
 
 export const sendChatAudio = async (
     senderId: number,
-    senderType: "user" | "worker",
+    senderType: string,
     receiverId: number,
-    receiverType: "user" | "worker",
+    receiverType: string,
     blob: Blob,
     duration?: number
 ) => {
     const formData = new FormData();
     formData.append("sender_id", String(senderId));
-    formData.append("sender_type", senderType);
+    formData.append("sender_type", senderType === "craftsman" ? "worker" : senderType);
     formData.append("receiver_id", String(receiverId));
-    formData.append("receiver_type", receiverType);
+    formData.append("receiver_type", receiverType === "craftsman" ? "worker" : receiverType);
     formData.append("audio", blob, "record.webm");
     
     if (duration) {
@@ -155,58 +160,39 @@ export const sendChatAudio = async (
 /* ================= Worker Chats ================= */
 
 export const getWorkerChats = async (workerId: number) => {
-    try {
-        const response = await axios.get(`${BASE_URL}/chat/worker-chats`, {
-            params: { worker_id: workerId },
-            headers: getHeaders(),
-        });
-
-        return response.data;
-    } catch (error) {
-        const err = error as AxiosError;
-
-        if (err.response?.status === 404) {
-            return { status: true, data: [] };
-        }
-
-        throw err;
-    }
+    const response = await axios.get(`${BASE_URL}/chat/worker-chats`, {
+        params: { worker_id: workerId },
+        headers: getHeaders(),
+    });
+    return response.data;
 };
 
 /* ================= User Chats ================= */
 
-export const getUserChats = async (userId: number) => {
-    try {
-        const response = await axios.get(`${BASE_URL}/chat/user-chats`, {
-            params: { user_id: userId },
-            headers: getHeaders(),
-        });
-
-        return response.data;
-    } catch (error) {
-        const err = error as AxiosError;
-
-        if (err.response?.status === 404) {
-            return { status: true, data: [] };
-        }
-
-        throw err;
-    }
+export const getUserChats = async (userId: number, userType: string) => {
+    const mappedType = userType === "craftsman" ? "worker" : userType;
+    const response = await axios.get(`${BASE_URL}/chat/user-chats`, {
+        params: { 
+            user_id: userId,
+            user_type: mappedType
+        },
+        headers: getHeaders(),
+    });
+    return response.data;
 };
 
 /* ================= Mark As Read ================= */
 
 export const markMessagesAsRead = async (
-    userId: number,
-    workerId: number,
-    type: "user" | "worker"
+    id: number,
+    type: string
 ) => {
+    const mappedType = type === "craftsman" ? "worker" : type;
     const response = await axios.post(
         `${BASE_URL}/chat/messages/mark-read`,
         {
-            user_id: userId,
-            worker_id: workerId,
-            type,
+            id,
+            type: mappedType,
         },
         { headers: getHeaders() }
     );
@@ -218,12 +204,13 @@ export const markMessagesAsRead = async (
 
 export const getUnreadMessagesCount = async (
     id: number,
-    type: "user" | "worker"
+    type: string
 ) => {
+    const mappedType = type === "craftsman" ? "worker" : type;
     const response = await axios.get(`${BASE_URL}/chat/unread-count`, {
         params: {
             id,
-            type,
+            type: mappedType,
         },
         headers: getHeaders(),
     });

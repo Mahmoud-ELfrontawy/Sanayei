@@ -1,6 +1,7 @@
 
 
 import { useEffect, type MutableRefObject } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { getEcho } from "../../utils/echo";
 import type { NewNotificationPayload } from "./notification.types";
 import { normalizeRole } from "./notification.utils";
@@ -18,6 +19,8 @@ export function useEchoNotifications({
     addNotificationRef,
     refreshUser,
 }: UseEchoNotificationsProps) {
+    const qc = useQueryClient();
+
     useEffect(() => {
         // Admins have their own AdminNotificationContext
         if (!user || !userType || userType === "admin") return;
@@ -29,13 +32,23 @@ export function useEchoNotifications({
 
         const prefixMap: Record<string, string> = {
             user:      "user",
-            craftsman: "worker",
+            craftsman: "worker", // Matches Broadcast::channel('notifications.worker.{id}')
             company:   "company",
         };
         const primaryChannel = `notifications.${prefixMap[role] ?? "user"}.${user.id}`;
         
+        console.log(`📡 [Echo] Attempting to subscribe to: ${primaryChannel} for role: ${role}`);
+        
         // 🔍 Subscribe to the primary channel authorized by backend
         const c = echo.private(primaryChannel);
+
+        c.on('subscription_error', (status: any) => {
+            console.error(`❌ [Echo] Subscription error for ${primaryChannel}:`, status);
+        });
+
+        c.on('subscribed', () => {
+            console.log(`✅ [Echo] Successfully subscribed to ${primaryChannel}`);
+        });
 
         // 🔬 Add global monitor to log any broadcasted event to the browser console for debugging
         if (echo.connector?.pusher?.bind_global) {
@@ -57,40 +70,48 @@ export function useEchoNotifications({
             company:   ".CompanyNotification",
         };
 
-        if (genericEventMap[role]) {
-            c.listen(genericEventMap[role], (e: any) => {
-                const isAdminMsg = e.type === "admin_message";
-                const isReview   = e.type === "product_review" || e.type === "new_review";
-
-                // Route review notifications correctly instead of treating as store_order
-                if (isReview) {
-                    addNotificationRef.current?.({
-                        title:         "تقييم جديد للمنتج ⭐",
-                        message:       e.message || `قام ${e.user_name || 'عميل'} بتقييم منتجك بـ ${e.rating || 5} نجوم`,
-                        type:          "product_review",
-                        orderId:       e.order_id || 0,
-                        recipientId:   user.id,
-                        recipientType: role,
-                        variant:       "success",
-                        eventId:       `echo_gen_rev_${e.id || Date.now()}`,
-                    });
-                    return;
-                }
-
-                addNotificationRef.current?.({
-                    title:         isAdminMsg ? "📢 رسالة من الإدارة" : "تنبيه جديد",
-                    message:       e.message || e.notification_text || "لديك إشعار جديد في حسابك",
-                    type:          isAdminMsg ? "admin_message" : (
-                                       role === "craftsman" ? "order_request" :
-                                       role === "company"   ? "store_order"   : "order_status"
-                                   ),
-                    orderId:       e.request_id || 0,
-                    recipientId:   user.id,
-                    recipientType: role,
-                    variant:       isAdminMsg ? "info" : "success",
-                    eventId:       `echo_${role}_${e.type || "notif"}_${Date.now()}`,
-                });
+        // Extra fallback for craftsmen if the event is named WorkerNotification
+        if (role === "craftsman") {
+            c.listen(".WorkerNotification", (e: any) => {
+                handleGenericNotification(e, role, user.id);
             });
+        }
+
+        const handleGenericNotification = (e: any, currentRole: string, userId: number) => {
+            const isAdminMsg = e.type === "admin_message";
+            const isReview   = e.type === "product_review" || e.type === "new_review";
+
+            if (isReview) {
+                addNotificationRef.current?.({
+                    title:         "تقييم جديد للمنتج ⭐",
+                    message:       e.message || `قام ${e.user_name || 'عميل'} بتقييم منتجك بـ ${e.rating || 5} نجوم`,
+                    type:          "product_review",
+                    orderId:       e.order_id || 0,
+                    recipientId:   userId,
+                    recipientType: currentRole as any,
+                    variant:       "success",
+                    eventId:       `echo_gen_rev_${e.id || Date.now()}`,
+                });
+                return;
+            }
+
+            addNotificationRef.current?.({
+                title:         isAdminMsg ? "📢 رسالة من الإدارة" : "تنبيه جديد",
+                message:       e.message || e.notification_text || "لديك إشعار جديد في حسابك",
+                type:          isAdminMsg ? "admin_message" : (
+                                   currentRole === "craftsman" ? "order_request" :
+                                   currentRole === "company"   ? "store_order"   : "order_status"
+                               ),
+                orderId:       e.request_id || 0,
+                recipientId:   userId,
+                recipientType: currentRole as any,
+                variant:       isAdminMsg ? "info" : "success",
+                eventId:       `echo_${currentRole}_${e.type || "notif"}_${Date.now()}`,
+            });
+        };
+
+        if (genericEventMap[role]) {
+            c.listen(genericEventMap[role], (e: any) => handleGenericNotification(e, role, user.id));
         }
 
         // ── 2b. Standard Laravel Notifications & Admin broadcasts ────────
@@ -127,19 +148,37 @@ export function useEchoNotifications({
 
         // ── 3. Chat messages ───────────────────────
         const handleNewMessage = (e: any) => {
+            console.log("📨 [Echo Chat Message]", e);
+            
+            // Invalidate chat queries to update UI in real-time
+            qc.invalidateQueries({ queryKey: ["user-messages"] });
+            qc.invalidateQueries({ queryKey: ["user-chats"] });
+            qc.invalidateQueries({ queryKey: ["worker-messages"] });
+            qc.invalidateQueries({ queryKey: ["worker-chats"] });
+
             addNotificationRef.current?.({
                 title:         "رسالة جديدة",
-                message:       e.notification_text || "لديك رسالة جديدة",
+                message:       e.message || e.notification_text || "لديك رسالة جديدة",
                 type:          "chat",
-                orderId:       e.message_id || 0,
+                orderId:       e.message_id || e.id || 0,
                 recipientId:   user.id,
                 recipientType: role,
-                eventId:       `chat_${e.message_id || Date.now()}`,
+                eventId:       `chat_${e.message_id || e.id || Date.now()}`,
             });
         };
-        [".new-message", "NewMessage", ".NewMessage"].forEach((evt) =>
-            c.listen(evt, handleNewMessage)
-        );
+        
+        const chatEvents = [
+            ".new-message", 
+            "NewMessage", 
+            ".NewMessage", 
+            "MessageSent", 
+            ".MessageSent", 
+            "message.sent", 
+            ".message.sent"
+        ];
+        chatEvents.forEach((evt) => {
+            c.listen(evt, handleNewMessage);
+        });
 
         // ── 4. Account status changes (trigger refreshUser) ──
         [
@@ -171,7 +210,7 @@ export function useEchoNotifications({
         // ── 6. Craftsman: specific order status ────
         if (role === "craftsman") {
             // 🚀 Real-time: New service request arrives instantly (no polling delay)
-            c.listen(".CraftsmanNewRequest", (e: any) => {
+            const handleNewRequest = (e: any) => {
                 const data = e.data || e;
                 addNotificationRef.current?.({
                     title:         "طلب خدمة جديد 🛠️",
@@ -183,7 +222,8 @@ export function useEchoNotifications({
                     variant:       "success",
                     eventId:       `echo_cm_new_${data.request_id || data.id || Date.now()}`,
                 });
-            });
+            };
+            c.listen(".CraftsmanNewRequest", handleNewRequest);
 
             c.listen(".CraftsmanRequestStatusUpdated", (e: any) => {
                 addNotificationRef.current?.({

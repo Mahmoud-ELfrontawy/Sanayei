@@ -41,15 +41,52 @@ const OrderTrackingMap: React.FC<OrderTrackingMapProps> = ({
     useEffect(() => {
         if (!navigator.geolocation) return;
 
-        const watchId = navigator.geolocation.watchPosition(
-            (pos) => {
-                setLiveLoc([pos.coords.latitude, pos.coords.longitude]);
-            },
-            (err) => console.error("Live tracking error:", err),
-            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-        );
+        const handleWatch = () => {
+            const watchId = navigator.geolocation.watchPosition(
+                (pos) => {
+                    setLiveLoc([pos.coords.latitude, pos.coords.longitude]);
+                },
+                (err) => {
+                    // Stop watching if denied or blocked
+                    if (err.code === 1) {
+                        navigator.geolocation.clearWatch(watchId);
+                    } else if (err.code !== 3) { // Ignore timeout (3)
+                        console.error("Live tracking error:", err);
+                    }
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+            return watchId;
+        };
 
-        return () => navigator.geolocation.clearWatch(watchId);
+        let watchId: number | null = null;
+
+        // Check permissions first to avoid browser-level console spam
+        if (navigator.permissions && navigator.permissions.query) {
+            navigator.permissions.query({ name: 'geolocation' as PermissionName }).then(status => {
+                if (status.state !== 'denied') {
+                    watchId = handleWatch();
+                }
+                
+                status.onchange = () => {
+                    if (status.state === 'denied' && watchId !== null) {
+                        navigator.geolocation.clearWatch(watchId);
+                        watchId = null;
+                    } else if (status.state !== 'denied' && watchId === null) {
+                        watchId = handleWatch();
+                    }
+                };
+            }).catch(() => {
+                // Fallback for browsers that don't support the permissions API
+                watchId = handleWatch();
+            });
+        } else {
+            watchId = handleWatch();
+        }
+
+        return () => {
+            if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+        };
     }, []);
 
     // 2. Bounds Calculation
