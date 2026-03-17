@@ -19,6 +19,9 @@ const RegisterCompanyPage: React.FC = () => {
         setShowPassword,
         onSubmit,
         setValue,
+        categories,
+        isLoadingCategories,
+        selectedCategory,
     } = useRegisterCompany();
 
     const [currentStep, setCurrentStep] = useState(1);
@@ -41,7 +44,12 @@ const RegisterCompanyPage: React.FC = () => {
         let fieldsToValidate: any[] = [];
         if (currentStep === 1) fieldsToValidate = ["company_name", "company_email", "company_password", "company_password_confirmation"];
         else if (currentStep === 2) fieldsToValidate = []; // Add file fields if they become required
-        else if (currentStep === 3) fieldsToValidate = ["company_phone_number", "company_whatsapp_number", "company_category"];
+        else if (currentStep === 3) {
+            fieldsToValidate = ["company_phone_number", "company_whatsapp_number", "company_category"];
+            if (selectedCategory === "other") {
+                fieldsToValidate.push("custom_category");
+            }
+        }
         else if (currentStep === 4) fieldsToValidate = ["company_city", "company_specific_address", "company_simple_hint"];
 
         const isStepValid = await trigger(fieldsToValidate);
@@ -234,14 +242,41 @@ const RegisterCompanyPage: React.FC = () => {
 
                                 <div className="auth-row">
                                     <div className="input-group flex-1">
-                                        <input
-                                            className="auth-input"
-                                            placeholder="تصنيف المنتجات (مثل: فلاتر مياه، قطع غيار)"
-                                            {...register("company_category", { required: "التصنيف مطلوب" })}
-                                        />
+                                        <label className="input-label-premium">تصنيف المنتجات</label>
+                                        <div className="custom-select-wrapper">
+                                            <select
+                                                className={`auth-input ${errors.company_category ? 'error' : ''}`}
+                                                {...register("company_category", { required: "يرجى اختيار تصنيف" })}
+                                                disabled={isLoadingCategories}
+                                            >
+                                                <option value="">{isLoadingCategories ? "جاري تحميل التصنيفات..." : "اختر تصنيف المتجر (نوع النشاط)"}</option>
+                                                {categories.map((cat: any) => (
+                                                    <option key={cat.id} value={cat.name}>
+                                                        {cat.name}
+                                                    </option>
+                                                ))}
+                                                <option value="other">أخري (إضافة نشاط جديد)</option>
+                                            </select>
+                                        </div>
                                         {errors.company_category && <span className="form-error">{errors.company_category.message}</span>}
                                     </div>
                                 </div>
+
+                                {selectedCategory === "other" && (
+                                    <div className="auth-row fade-in">
+                                        <div className="input-group flex-1">
+                                            <label className="input-label-premium">اكتب نشاط متجرك</label>
+                                            <input
+                                                className={`auth-input ${errors.custom_category ? 'error' : ''}`}
+                                                placeholder="مثال: مستلزمات سباكة، أدوات نجارة..."
+                                                {...register("custom_category", { 
+                                                    required: selectedCategory === "other" ? "يرجى كتابة التصنيف" : false 
+                                                })}
+                                            />
+                                            {errors.custom_category && <span className="form-error">{errors.custom_category.message}</span>}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
 

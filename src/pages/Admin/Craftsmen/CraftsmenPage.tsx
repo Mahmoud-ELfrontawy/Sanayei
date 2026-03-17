@@ -320,6 +320,9 @@ const CraftsmenPage: React.FC = () => {
                                     />
                                 </div>
                                 <h4>{selectedCraftsman.name}</h4>
+                                <p className="hero-email-text">
+                                    {selectedCraftsman.email || <span className="text-muted">البريد الإلكتروني غير متوفر</span>}
+                                </p>
                                 <span className={`status-pill ${selectedCraftsman.status}`}>
                                     {selectedCraftsman.status === 'approved' ? 'حساب معتمد' :
                                         selectedCraftsman.status === 'rejected' ? 'طلب مرفوض' :

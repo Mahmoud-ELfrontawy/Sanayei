@@ -22,3 +22,33 @@ export const register = async (payload: RegisterPayload) => {
 
   return response.data;
 };
+
+// يُرسل الـ OTP الذي كتبه المستخدم للتحقق منه وتسجيل الدخول
+export const verifyOtp = async (email: string, otp: string) => {
+  const response = await axios.post(
+    "/api/auth/verify-otp",
+    { email, otp },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    }
+  );
+  return response.data;
+};
+
+// يُعيد إرسال رابط التفعيل لإيميل المستخدم
+export const resendVerificationEmail = async (email: string) => {
+  const response = await axios.post(
+    "/api/auth/resend-verification",
+    { email },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    }
+  );
+  return response.data;
+};

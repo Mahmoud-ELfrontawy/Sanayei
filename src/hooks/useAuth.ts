@@ -16,12 +16,18 @@ export const useAuth = () => {
 
     const { setState, clearAuth, ...state } = context;
 
-    const login = useCallback(async (phoneOrEmail: string, password: string, shouldRedirect: boolean = true): Promise<boolean> => {
+    const login = useCallback(async (phoneOrEmail: string, password: string, shouldRedirect: boolean = true): Promise<boolean | { needsVerification: true; email: string }> => {
         // Reset state and set loading
         setState({ isLoading: true, user: null, isAuthenticated: false });
         
         try {
             const result = await authService.login(phoneOrEmail, password);
+
+            // If the account needs OTP verification, pass this info back to the caller
+            if (!result.success && result.needsVerification) {
+                setState({ isLoading: false });
+                return { needsVerification: true, email: result.email || phoneOrEmail };
+            }
 
             if (result.success && result.data) {
                 const { token, user, role } = result.data;

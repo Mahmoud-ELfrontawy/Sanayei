@@ -137,9 +137,20 @@ class AuthService {
       } catch (error: unknown) {
         lastError = error as AxiosError<AuthResponse>;
         
-        // 403 Forbidden - Account not active
+        // 403 Forbidden - Account not active or not verified
         if (lastError.response?.status === 403) {
-          return { success: false, error: lastError.response?.data?.message || "حسابك غير مفعل بعد." };
+          const msg = lastError.response?.data?.message || "";
+          // Check if it's specifically an email verification issue
+          const isVerificationIssue = /غير مفعل|not verified|verify|تفعيل|التحقق/.test(msg.toLowerCase());
+          if (isVerificationIssue) {
+            return { 
+              success: false, 
+              needsVerification: true, 
+              email: phoneOrEmail,
+              error: msg || "حسابك غير مفعل بعد، يرجى التحقق من بريدك الإلكتروني." 
+            };
+          }
+          return { success: false, error: msg || "حسابك غير مفعل بعد." };
         }
         
         // 422 Unprocessable - Specifically for Craftsman pending state

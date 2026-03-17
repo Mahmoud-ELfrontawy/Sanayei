@@ -10,6 +10,7 @@ export interface StoreRegisterPayload {
   company_city: string; // Governorate
   company_specific_address: string; // Detailed address
   company_category: string; // Product classification
+  custom_category?: string; // Manually entered category
   company_simple_hint: string; // About store
   company_logo?: FileList | File | null;
   tax_card?: FileList | File | null;

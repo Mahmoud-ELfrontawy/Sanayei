@@ -33,3 +33,51 @@
         display: none;
     }
 }
+
+/* ===== OTP UI - Premium Look ===== */
+.otp-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 30px 0 40px;
+    direction: ltr;
+}
+
+.otp-input-box {
+    width: 54px;
+    height: 68px;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-card-sm);
+    text-align: center;
+    font-size: 28px;
+    font-weight: 800;
+    background: var(--color-bg-main);
+    color: var(--color-primary);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.otp-input-box:focus {
+    border-color: var(--color-primary);
+    background: var(--color-bg-main);
+    box-shadow: 0 0 0 4px rgba(95, 168, 211, 0.15), 0 8px 20px rgba(95, 168, 211, 0.1);
+    outline: none;
+    transform: translateY(-4px);
+}
+
+.otp-input-box:not(:placeholder-shown) {
+    border-color: var(--color-primary);
+    background: rgba(95, 168, 211, 0.03);
+}
+
+@media (max-width: 500px) {
+    .otp-container {
+        gap: 8px;
+    }
+    .otp-input-box {
+        width: 44px;
+        height: 56px;
+        font-size: 22px;
+        border-radius: var(--radius-sm);
+    }
+}

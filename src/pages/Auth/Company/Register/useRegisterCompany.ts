@@ -4,18 +4,41 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { StoreRegisterPayload } from "../../../../Api/auth/registerCompany.api";
 import { registerCompany } from "../../../../Api/auth/registerCompany.api";
+import { useQuery } from "@tanstack/react-query";
+import { getPublicCategories } from "../../../../Api/store/publicStore.api";
+
 
 export const useRegisterCompany = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   
-  const form = useForm<StoreRegisterPayload>({
-    defaultValues: {}
+  const { data: categoriesData, isLoading: isLoadingCategories } = useQuery({
+    queryKey: ["public-categories"],
+    queryFn: getPublicCategories,
+    staleTime: 0, // Ensure we get fresh data from admin
   });
+
+  const categories = Array.isArray(categoriesData) ? categoriesData : categoriesData?.data || [];
+  
+  const form = useForm<StoreRegisterPayload>({
+    defaultValues: {
+      company_category: "",
+    }
+  });
+
+  const selectedCategory = form.watch("company_category");
+
 
   const onSubmit = async (data: StoreRegisterPayload) => {
     try {
-      const res = await registerCompany(data);
+      const payload = { ...data };
+      
+      // If 'other' is selected, use the custom_category value
+      if (payload.company_category === "other") {
+        payload.company_category = payload.custom_category || "عام";
+      }
+      
+      const res = await registerCompany(payload);
       if (res.success) {
         toast.success("تم إنشاء الحساب! يرجى التحقق من بريدك الإلكتروني لتنشيط الحساب والانتظار لموافقة الإدارة ✅", { autoClose: 7000 });
         navigate("/login", { state: { pendingCompany: true } });
@@ -49,5 +72,8 @@ export const useRegisterCompany = () => {
     showPassword,
     setShowPassword,
     onSubmit,
+    categories,
+    isLoadingCategories,
+    selectedCategory
   };
 };

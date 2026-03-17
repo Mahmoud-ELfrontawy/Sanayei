@@ -239,6 +239,17 @@
   transition: all 0.2s ease;
   font-size: 15px;
   color: var(--color-text-secondary);
+  overflow: hidden; /* 🛡️ Prevent child bleed */
+  max-width: 230px;
+}
+
+.worker-file-label span {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 10px; /* Space for the icon on the left/right */
+  text-align: right;
 }
 
 .worker-file-label:hover {

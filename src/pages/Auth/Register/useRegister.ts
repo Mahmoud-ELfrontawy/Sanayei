@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
-import { register as registerApi } from "../../../Api/user/register.api";
-import { setToastAfterReload } from "../../../utils/toastAfterReload";
+import { register as registerApi, resendVerificationEmail } from "../../../Api/user/register.api";
 
 export interface RegisterFormValues {
     name: string;
@@ -15,14 +15,24 @@ export interface RegisterFormValues {
     pledge: boolean;
 }
 
+// مراحل التسجيل:
+// 'form'    → عرض فورم التسجيل
+// 'pending' → تم التسجيل، في انتظار التحقق
+export type RegisterStep = "form" | "pending";
+
 export const useRegister = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [step, setStep] = useState<RegisterStep>("form");
+    const [registeredEmail, setRegisteredEmail] = useState("");
+    const [isResending, setIsResending] = useState(false);
+    const navigate = useNavigate();
 
     const form = useForm<RegisterFormValues>();
 
+    // الخطوة الأولى: إرسال بيانات التسجيل
     const onSubmit = async (data: RegisterFormValues) => {
         try {
-            const res = await registerApi({
+            await registerApi({
                 name: data.name,
                 email: data.email,
                 phone: data.phone,
@@ -30,38 +40,61 @@ export const useRegister = () => {
                 password_confirmation: data.password_confirmation,
             });
 
-            if (res?.status) {
-                setToastAfterReload(res.message || "تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني لتنشيط الحساب. 📧");
-                window.location.replace("/login");
-            } else if (res?.token) {
-                // Fallback for old behavior if needed, but preferred is redirect to login
-                setToastAfterReload("تم إنشاء الحساب! يرجى تفعيل بريدك الإلكتروني.");
-                window.location.replace("/login");
-            } else {
-                setToastAfterReload("تم إنشاء الحساب بنجاح 🎉");
-                window.location.replace("/login");
-            }
+            // OTP بيتبعت مباشرة → نحول المستخدم لصفحة إدخال الـ OTP
+            setRegisteredEmail(data.email);
+            navigate(`/verify-otp?email=${encodeURIComponent(data.email)}`);
+
         } catch (error: any) {
             console.error("Register Error:", error);
-            let message = "حدث خطأ أثناء إنشاء الحساب ❌";
-            
-            if (error.response?.data?.errors) {
-                const errors = error.response.data.errors;
-                
-                // Check for specific field errors for better Arabic messages
-                if (errors.email) {
-                    message = "هذا البريد الإلكتروني مسجل بالفعل ⚠️ يرجى استخدام بريد آخر أو تسجيل الدخول.";
-                } else if (errors.phone) {
-                    message = "رقم الهاتف غير صحيح أو مسجل مسبقاً 📱 يرجى التأكد من كتابة 11 رقم تبدأ بـ 01";
-                } else {
-                    const firstError = Object.values(errors)[0] as string[];
-                    message = firstError[0] || message;
+
+            const errors = error.response?.data?.errors || {};
+            const message = error.response?.data?.message || "";
+
+            // ✅ لو الإيميل موجود مسبقاً → بعت OTP جديد وحوّله لصفحة التفعيل
+            if (errors.email || message.toLowerCase().includes('email')) {
+                const emailVal = data.email;
+                try {
+                    await resendVerificationEmail(emailVal);
+                    toast.info("هذا الحساب موجود بالفعل. تم إرسال رمز تحقق جديد إلى بريدك الإلكتروني 📧");
+                    navigate(`/verify-otp?email=${encodeURIComponent(emailVal)}`);
+                } catch {
+                    toast.error("هذا البريد الإلكتروني مسجل بالفعل ⚠️ يرجى تسجيل الدخول أو استخدام بريد آخر.");
                 }
-            } else if (error.response?.data?.message) {
-                message = error.response.data.message;
+                return;
             }
 
-            toast.error(message);
+            // باقي الأخطاء
+            let errorMessage = "حدث خطأ أثناء إنشاء الحساب ❌";
+            if (errors.phone) {
+                errorMessage = "رقم الهاتف غير صحيح أو مسجل مسبقاً 📱 يرجى التأكد من كتابة 11 رقم تبدأ بـ 01";
+            } else if (Object.values(errors).length > 0) {
+                const firstError = Object.values(errors)[0] as string[];
+                errorMessage = firstError[0] || errorMessage;
+            } else if (message) {
+                errorMessage = message;
+            }
+
+            toast.error(errorMessage);
+        }
+    };
+
+    // إعادة إرسال رابط التفعيل
+    const onResend = async () => {
+        setIsResending(true);
+        try {
+            await resendVerificationEmail(registeredEmail);
+            toast.success("تم إرسال رابط التفعيل مرة أخرى 📧");
+        } catch {
+            toast.error("تعذر إعادة الإرسال، يرجى الانتظار قليلاً");
+        } finally {
+            setIsResending(false);
+        }
+    };
+
+    // التوجيه لصفحة الـ OTP
+    const goToOtpPage = () => {
+        if (registeredEmail) {
+            navigate(`/verify-otp?email=${encodeURIComponent(registeredEmail)}`);
         }
     };
 
@@ -70,5 +103,12 @@ export const useRegister = () => {
         showPassword,
         setShowPassword,
         onSubmit,
+        step,
+        setStep,
+        registeredEmail,
+        isResending,
+        onResend,
+        goToOtpPage,
     };
 };
+

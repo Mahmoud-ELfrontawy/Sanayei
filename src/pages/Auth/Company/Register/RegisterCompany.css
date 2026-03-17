@@ -303,3 +303,41 @@ html[data-theme="dark"] .prev-btn:hover {
   }
 }
 
+
+
+/* ===== File Uploads - Fix for long names ===== */
+.worker-file-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  background: var(--color-bg-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  overflow: hidden;
+  width: 100%;
+  max-width: 230px;
+}
+
+.worker-file-label span {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 10px;
+  text-align: right;
+}
+
+.worker-file-label:hover {
+  border-color: var(--color-primary);
+}
+
+.worker-file-label.has-file {
+  background: rgba(95, 168, 211, 0.1);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}

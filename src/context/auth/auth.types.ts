@@ -32,6 +32,8 @@ export interface LoginResult {
     role: UserRole;
   };
   error?: string;
+  needsVerification?: boolean;
+  email?: string;
 }
 
 export interface AuthResponse {

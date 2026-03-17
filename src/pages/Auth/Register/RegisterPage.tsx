@@ -1,4 +1,5 @@
-import { FiEye, FiEyeOff } from "react-icons/fi";
+import React, { useState } from "react";
+import { FiEye, FiEyeOff, FiArrowLeft, FiRefreshCw } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 import img1 from "../../../assets/images/cuate (3) 1.png";
@@ -9,7 +10,6 @@ import "./Register.css";
 import { FaGoogle } from "react-icons/fa6";
 import { RequestServiceInputSkeleton } from "../../Home/sections/RequestServiceSection/RequestServiceSkeleton";
 import TermsModal from "../../../components/ui/TermsModal/TermsModal";
-import { useState } from "react";
 import PasswordStrengthMeter from "../../../components/ui/PasswordStrengthMeter/PasswordStrengthMeter";
 import PhoneValidationMeter from "../../../components/ui/PhoneValidationMeter/PhoneValidationMeter";
 
@@ -23,11 +23,65 @@ const RegisterPage: React.FC = () => {
     setShowPassword,
     onSubmit,
     setValue,
+    step,
+    registeredEmail,
+    isResending,
+    onResend,
+    goToOtpPage,
   } = useRegister();
 
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [hasReadTerms, setHasReadTerms] = useState(false);
 
+  // ── شاشة الانتظار: تم التسجيل، في انتظار المستخدم يضغط رابط التفعيل ──
+  if (step === "pending") {
+    return (
+      <div className="auth-page-wrapper">
+        <div className="auth-card auth-card--split">
+          <div className="auth-form" style={{ justifyContent: "center", textAlign: "center" }}>
+            <div style={{ fontSize: "4rem", marginBottom: "1rem" }}>📧</div>
+            <h2 className="auth-title">تحقق من بريدك الإلكتروني</h2>
+            <p style={{ color: "var(--text-secondary)", marginBottom: "1.5rem", lineHeight: 1.8 }}>
+              أرسلنا رابط تفعيل إلى <strong style={{ color: "var(--primary)" }}>{registeredEmail}</strong>
+              <br />
+              افتح الرابط في إيميلك، وبعدها سيصلك رمز OTP لإتمام تسجيل الدخول.
+            </p>
+
+            <button
+              className="auth-btn"
+              onClick={goToOtpPage}
+              style={{ marginBottom: "1rem" }}
+            >
+              لدي الرمز، سأدخله الآن ✅
+            </button>
+
+            <button
+              type="button"
+              className="auth-btn"
+              disabled={isResending}
+              onClick={onResend}
+              style={{ background: "var(--surface-2)", color: "var(--text-primary)", border: "1px solid var(--border)" }}
+            >
+              <FiRefreshCw style={{ marginLeft: "0.5rem" }} />
+              {isResending ? "جاري الإرسال..." : "إعادة إرسال رابط التفعيل"}
+            </button>
+
+            <div className="auth-footer-link" style={{ marginTop: "1.5rem" }}>
+              <Link to="/login" style={{ color: "var(--primary)" }}>
+                <FiArrowLeft style={{ marginLeft: '4px' }} /> العودة لتسجيل الدخول
+              </Link>
+            </div>
+          </div>
+
+          <div className="auth-illustration">
+            <img src={img1} alt="Verify Email" className="register-img-custom" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── شاشة التسجيل الافتراضية (step === 'form') ──
   return (
     <div className="auth-page-wrapper">
       <div className="auth-card auth-card--split">
@@ -97,9 +151,7 @@ const RegisterPage: React.FC = () => {
                   })}
                 />
                 {errors.phone && (
-                  <span className="form-error">
-                    {errors.phone.message}
-                  </span>
+                  <span className="form-error">{errors.phone.message}</span>
                 )}
                 <PhoneValidationMeter phone={watch("phone") ?? ""} />
               </div>
@@ -131,7 +183,6 @@ const RegisterPage: React.FC = () => {
                     })}
                   />
                 )}
-
                 <button
                   type="button"
                   className="password-toggle"
@@ -141,9 +192,7 @@ const RegisterPage: React.FC = () => {
                 </button>
               </div>
               {errors.password && (
-                <span className="form-error">
-                  {errors.password.message}
-                </span>
+                <span className="form-error">{errors.password.message}</span>
               )}
               <PasswordStrengthMeter password={watch("password") ?? ""} />
             </div>
@@ -166,7 +215,6 @@ const RegisterPage: React.FC = () => {
                     })}
                   />
                 )}
-
                 <button
                   type="button"
                   className="password-toggle"
@@ -175,11 +223,8 @@ const RegisterPage: React.FC = () => {
                   {showPassword ? <FiEye /> : <FiEyeOff />}
                 </button>
               </div>
-
               {errors.password_confirmation && (
-                <span className="form-error">
-                  {errors.password_confirmation.message}
-                </span>
+                <span className="form-error">{errors.password_confirmation.message}</span>
               )}
             </div>
 

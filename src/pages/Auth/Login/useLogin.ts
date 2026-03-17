@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useAuth } from "../../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { resendVerificationEmail } from "../../../Api/user/register.api";
 
 /* ================= Types ================= */
 
@@ -31,9 +32,22 @@ export const useLogin = () => {
     const onSubmit = async (data: LoginFormValues) => {
         try {
             // Call login with shouldRedirect: false so we can show the toast and then navigate
-            const success = await login(data.email, data.password, false);
+            const result = await login(data.email, data.password, false);
             
-            if (success) {
+            // Check if account needs OTP verification
+            if (result && typeof result === 'object' && (result as any).needsVerification) {
+                const email = (result as any).email || data.email;
+                try {
+                    await resendVerificationEmail(email);
+                } catch {
+                    // Ignore resend errors, still navigate to OTP page
+                }
+                toast.info("حسابك غير مفعل، تم إرسال رمز التحقق إلى بريدك الإلكتروني 📧", { autoClose: 5000 });
+                navigate(`/verify-otp?email=${encodeURIComponent(email)}`);
+                return;
+            }
+
+            if (result) {
                 const name = localStorage.getItem('user_name') || "مرحباً";
                 const role = localStorage.getItem('userType');
                 const status = localStorage.getItem('user_status');
@@ -41,7 +55,7 @@ export const useLogin = () => {
                 if ((role === 'company' || role === 'craftsman') && status === 'pending') {
                     toast.info(`مرحباً ${name}، حسابك قيد المراجعة حالياً وسيتم تفعيله في أقرب وقت.`);
                 } else {
-                    toast.success("تم تسجيل الدخول بنجاح ✅");
+                    toast.success(`مرحباً بك ${name}! تم تسجيل الدخول بنجاح ✅`);
                 }
                 
                 // Navigate manually based on user role
@@ -54,7 +68,6 @@ export const useLogin = () => {
                 
             } else {
                 // Specific errors (like Blocked or Pending) are handled inside useAuth.login toast
-                // We don't need a generic toast here unless we want to catch specific logic.
             }
         } catch (error) {
             console.error("Login Error:", error);
