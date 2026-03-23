@@ -1,22 +1,19 @@
 import api from "./api";
 import type { Technician } from "../constants/technician";
 
-export const getTechnicians = async (): Promise<Technician[]> => {
-  const res = await api.get(
-    "/craftsmen"
-  );
+export const getTechnicians = async (serviceId?: number, filter?: string): Promise<Technician[]> => {
+  const params: Record<string, any> = {};
+  if (serviceId !== undefined) params.service_id = serviceId;
+  if (filter) params.filter = filter;
 
-  // ✅ حماية كاملة من undefined
-  if (Array.isArray(res.data)) {
-    return res.data;
-  }
+  const res = await api.get("/craftsmen", { params });
 
-  if (Array.isArray(res.data?.data)) {
-    return res.data.data;
-  }
-
+  if (Array.isArray(res.data)) return res.data;
+  if (Array.isArray(res.data?.data)) return res.data.data;
   return [];
 };
+
+
 
 export const getTechnicianById = async (id: string | number): Promise<any> => {
     const res = await api.get(`/craftsmen/${id}`);

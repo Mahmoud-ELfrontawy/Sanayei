@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import { IoIosArrowDown } from "react-icons/io";
-import { FaMoneyBillWave } from "react-icons/fa";
+import { FaMoneyBillWave, FaMapMarkerAlt, FaUsers } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { useRequestServiceData } from "../Home/sections/RequestServiceSection/useRequestServiceData";
 import { getTechnicians, getNearestTechnicians } from "../../Api/technicians.api";
@@ -18,44 +18,50 @@ import "./Services.css";
 
 const ServicesPage: React.FC = () => {
     const { services, governorates, loading } = useRequestServiceData();
-    const { user } = useAuth();
+    const { user, refreshUser } = useAuth();
     const location = useLocation();
+
+    // Refresh user data on mount to get latest profile location
+    useEffect(() => {
+        if (user) refreshUser();
+    }, [refreshUser]);
 
     const [search, setSearch] = useState("");
     const [serviceFilter, setServiceFilter] = useState("all");
     const [viewMode, setViewMode] = useState<"list" | "map">("list");
+    const [displayMode, setDisplayMode] = useState<"all" | "online" | "nearest">("all");
+    
+    const [cityFilter, setCityFilter] = useState("all");
+    const [priceFilter, setPriceFilter] = useState("all");
+
     const { location: userGeoLocation } = useGeoLocation();
 
-    // Determine the effective location: saved user location first, then GPS
+    // Saved user location takes priority over GPS
     const effectiveLocation = useMemo(() => {
-        if (user?.latitude && user?.longitude && !isNaN(Number(user.latitude)) && !isNaN(Number(user.longitude))) {
-            return { lat: Number(user.latitude), lng: Number(user.longitude) };
+        const uLat = Number(user?.latitude);
+        const uLng = Number(user?.longitude);
+
+        if (user && !isNaN(uLat) && !isNaN(uLng) && uLat !== 0 && uLng !== 0) {
+            return { lat: uLat, lng: uLng };
         }
         return userGeoLocation;
     }, [user, userGeoLocation]);
 
-    // Handle incoming state from Home page
+
+    // Scroll to craftsmen section when coming from Home page
     useEffect(() => {
         if (location.state?.serviceSlug) {
             setServiceFilter(location.state.serviceSlug);
-
-            // Scroll to craftsmen section
             setTimeout(() => {
-                const craftsmenSection = document.getElementById("craftsmen-section");
-                if (craftsmenSection) {
-                    craftsmenSection.scrollIntoView({ behavior: "smooth" });
-                }
-            }, 500); // Give it some time to render
+                document.getElementById("craftsmen-section")?.scrollIntoView({ behavior: "smooth" });
+            }, 500);
         }
-    }, [location.state, services]); // Depend on services to ensure it's available if needed, though state is primary here
-    const [cityFilter, setCityFilter] = useState("all");
-    const [priceFilter, setPriceFilter] = useState("all");
+    }, [location.state, services]);
 
-    // Technicians State
+    // ─── Technicians State ────────────────────────────────────────────────────
     const [technicians, setTechnicians] = useState<Technician[]>([]);
-    const [loadingTechs, setLoadingTechs] = useState(false); // Initialized to false
+    const [loadingTechs, setLoadingTechs] = useState(false);
 
-    // Helper for Price Level
     const getPriceLevel = (priceRange: string | null) => {
         if (!priceRange) return "unknown";
         const [, max] = priceRange.split("-").map(Number);
@@ -64,113 +70,89 @@ const ServicesPage: React.FC = () => {
         return "high";
     };
 
-    // Fetch Technicians
+    // ─── Fetch Logic ─────────────────────────────────────────────────────────
     useEffect(() => {
-        const selectedService = services.find(s => s.slug === serviceFilter);
-
-        // ✅ If we have an effective location and a specific service
-        if (effectiveLocation && selectedService) {
-            setLoadingTechs(true);
-            getNearestTechnicians(effectiveLocation.lat, effectiveLocation.lng, selectedService.id)
-                .then((nearest) => {
-                    if (nearest && nearest.length > 0) {
-                        setTechnicians(nearest);
-                    } else {
-                        // Fallback: If no one is near, get ALL technicians for this service
-                        getTechnicians().then(setTechnicians);
-                    }
-                })
-                .catch(() => getTechnicians().then(setTechnicians)) // Fallback on error
-                .finally(() => setLoadingTechs(false));
+        if (serviceFilter === "all") {
+            setTechnicians([]);
             return;
         }
 
-        // Generic fetch if no effective location or no service selected
+        const selectedService = services.find(s => s.slug === serviceFilter);
+        if (!selectedService) return;
+
         setLoadingTechs(true);
-        getTechnicians()
-            .then(setTechnicians)
-            .catch(err => console.error("Failed to load technicians", err))
-            .finally(() => setLoadingTechs(false));
-    }, [effectiveLocation, serviceFilter, services]); // Removed viewMode dependency from fetch to keep data consistent
 
+
+        if (displayMode === "nearest" && effectiveLocation) {
+            getNearestTechnicians(effectiveLocation.lat, effectiveLocation.lng, selectedService.id)
+                .then(setTechnicians)
+                .catch(() => {
+                    // Fallback to all if nearest fails
+                    getTechnicians(selectedService.id).then(setTechnicians);
+                })
+                .finally(() => setLoadingTechs(false));
+        } else {
+            // "all" or "online" (server filters by 'filter=online')
+            getTechnicians(selectedService.id, displayMode === "online" ? "online" : undefined)
+                .then(setTechnicians)
+                .catch(err => console.error("Failed to load technicians", err))
+                .finally(() => setLoadingTechs(false));
+        }
+    }, [effectiveLocation, serviceFilter, displayMode, services.length]);
+
+    // ─── Filtering ───────────────────────────────────────────────────────────
     const filteredServices = useMemo(() => {
-        return services.filter((service) => {
-            const matchSearch =
-                search === "" ||
-                service.name.toLowerCase().includes(search.toLowerCase());
-
-            const matchService =
-                serviceFilter === "all" ||
-                service.slug === serviceFilter;
-
-            return matchSearch && matchService;
+        return services.filter(service => {
+            const matchSearch = search === "" || service.name.toLowerCase().includes(search.toLowerCase());
+            const matchFilter = serviceFilter === "all" || service.slug === serviceFilter;
+            return matchSearch && matchFilter;
         });
     }, [services, search, serviceFilter]);
 
-    // Map Governorates to Technicians
-    const techniciansWithMappedGovernorates = useMemo(() => {
+    const techniciansWithGov = useMemo(() => {
         return technicians.map(t => {
             if (!t.governorate && t.governorate_id) {
                 const gov = governorates.find(g => g.id.toString() === t.governorate_id?.toString());
-                if (gov) {
-                    return { ...t, governorate: { id: gov.id, name: gov.name } };
-                }
+                if (gov) return { ...t, governorate: { id: gov.id, name: gov.name } };
             }
             return t;
         });
     }, [technicians, governorates]);
 
-    // Filter Technicians based on selected service, city, and price
     const filteredTechnicians = useMemo(() => {
         if (serviceFilter === "all") return [];
 
-        // Find the service object to get its ID (since filter sends slug)
         const selectedService = services.find(s => s.slug === serviceFilter);
         if (!selectedService) return [];
+        const selectedId = String(selectedService.id);
 
-        let result = techniciansWithMappedGovernorates.filter((t) => {
-            // ✅ Only show approved technicians
-            const isApproved = t.status === 'approved';
-            if (!isApproved) return false;
+        return techniciansWithGov.filter((t: any) => {
+            if (t.status && t.status !== 'approved') return false;
 
-            const matchService = t.service?.id === selectedService.id;
+            // Extra safety: some APIs might return all techs, so we filter by service ID here too
+            const techServiceId = String(t.service?.id ?? t.service_id ?? "");
+            if (techServiceId !== selectedId) return false;
 
-            const matchCity =
-                cityFilter === "all" ||
-                t.governorate?.name === cityFilter;
+            const matchCity = cityFilter === "all" || t.governorate?.name === cityFilter;
+            const matchPrice = priceFilter === "all" || getPriceLevel(t.price_range) === priceFilter;
 
-            const matchPrice =
-                priceFilter === "all" ||
-                getPriceLevel(t.price_range) === priceFilter;
-
-            return matchService && matchCity && matchPrice;
+            return matchCity && matchPrice;
         });
+    }, [techniciansWithGov, serviceFilter, services, cityFilter, priceFilter]);
 
-        // Slice the final filteredTechnicians to 10 when viewMode is 'map'
-        if (viewMode === 'map' && result.length > 10) {
-            return result.slice(0, 10);
-        }
-
-        return result;
-    }, [techniciansWithMappedGovernorates, serviceFilter, services, cityFilter, priceFilter, viewMode]); // Added viewMode to dependencies
-
-    // Handle request click in Service Card
+    // ─── Helpers ─────────────────────────────────────────────────────────────
     const handleServiceRequest = (service: any) => {
         setServiceFilter(service.slug);
-        // Scroll to craftsmen section
         setTimeout(() => {
-            const craftsmenSection = document.getElementById("craftsmen-section");
-            if (craftsmenSection) {
-                craftsmenSection.scrollIntoView({ behavior: "smooth" });
-            }
+            document.getElementById("craftsmen-section")?.scrollIntoView({ behavior: "smooth" });
         }, 100);
     };
+
+    const hasLocation = !!effectiveLocation;
 
     return (
         <section className="services-section">
             <div className="services-container">
-
-
                 <ServicesFilters
                     search={search}
                     onSearchChange={setSearch}
@@ -178,14 +160,11 @@ const ServicesPage: React.FC = () => {
                     onServiceChange={setServiceFilter}
                     services={services}
                     serviceValueType="slug"
-
-                    // New Filters Props
                     showCity={serviceFilter !== "all"}
                     city={cityFilter}
                     onCityChange={setCityFilter}
                     governorates={governorates}
                 >
-                    {/* Price Filter (Only show when a service is selected) */}
                     {serviceFilter !== "all" && (
                         <div className="sf-filter-item select-item">
                             <FaMoneyBillWave className="field-icon" />
@@ -209,7 +188,6 @@ const ServicesPage: React.FC = () => {
                     <ServicesSkeleton />
                 ) : (
                     <>
-                        {/* Services Grid — hidden when a specific service is selected */}
                         {serviceFilter === "all" && (
                             <div className="services-grid">
                                 {filteredServices.map((service) => (
@@ -222,27 +200,59 @@ const ServicesPage: React.FC = () => {
                             </div>
                         )}
 
-                        {/* Craftsmen Section (Only shows if a service is selected) */}
                         {serviceFilter !== "all" && (
                             <div id="craftsmen-section" className="craftsmen-section">
                                 <div className="craftsmen-section__header-row">
-                                    <h2 className="craftsmen-section__title">
-                                        صنايعية {services.find(s => s.slug === serviceFilter)?.name || ""}
-                                    </h2>
+                                    <div>
+                                        <h2 className="craftsmen-section__title">
+                                            صنايعية {services.find(s => s.slug === serviceFilter)?.name || ""}
+                                        </h2>
+                                        <p className="craftsmen-section__subtitle">
+                                            {displayMode === "all" && <><FaUsers /> عرض جميع المعتمدين</>}
+                                            {displayMode === "online" && <><span className="online-dot" /> عرض المتاحين الآن فقط</>}
+                                            {displayMode === "nearest" && <><FaMapMarkerAlt /> مرتبون حسب الأقرب إليك</>}
+                                        </p>
+                                    </div>
 
-                                    <div className="view-toggle">
-                                        <button
-                                            className={`toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
-                                            onClick={() => setViewMode('list')}
-                                        >
-                                            القائمة
-                                        </button>
-                                        <button
-                                            className={`toggle-btn ${viewMode === 'map' ? 'active' : ''}`}
-                                            onClick={() => setViewMode('map')}
-                                        >
-                                            الخريطة
-                                        </button>
+                                    <div className="craftsmen-section__controls">
+                                        <div className="display-mode-tabs">
+                                            <button 
+                                                className={`display-mode-btn ${displayMode === 'all' ? 'active' : ''}`}
+                                                onClick={() => setDisplayMode('all')}
+                                            >
+                                                الكل
+                                            </button>
+                                            <button 
+                                                className={`display-mode-btn online-btn ${displayMode === 'online' ? 'active' : ''}`}
+                                                onClick={() => setDisplayMode('online')}
+                                            >
+                                                <span className="online-dot" />
+                                                متصل الآن
+                                            </button>
+                                            {hasLocation && (
+                                                <button 
+                                                    className={`display-mode-btn ${displayMode === 'nearest' ? 'active' : ''}`}
+                                                    onClick={() => setDisplayMode('nearest')}
+                                                >
+                                                    الأقرب
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        <div className="view-toggle">
+                                            <button
+                                                className={`toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
+                                                onClick={() => setViewMode('list')}
+                                            >
+                                                القائمة
+                                            </button>
+                                            <button
+                                                className={`toggle-btn ${viewMode === 'map' ? 'active' : ''}`}
+                                                onClick={() => setViewMode('map')}
+                                            >
+                                                الخريطة
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -252,19 +262,22 @@ const ServicesPage: React.FC = () => {
                                     <TechnicianMap
                                         technicians={filteredTechnicians}
                                         userLocation={effectiveLocation}
+                                        displayMode={displayMode}
+                                        user={user}
                                     />
                                 ) : filteredTechnicians.length > 0 ? (
                                     <div className="workers-grid">
                                         {filteredTechnicians.map((t) => (
-                                            <TechnicianCard
-                                                key={t.id}
-                                                technician={t}
-                                            />
+                                            <TechnicianCard key={t.id} technician={t} />
                                         ))}
                                     </div>
                                 ) : (
                                     <div className="craftsmen-section__empty">
-                                        لا يوجد صنايعية متاحين لهذه الخدمة حالياً
+                                        {displayMode === "online" 
+                                            ? "لا يوجد صنايعية متاحين حالياً" 
+                                            : displayMode === "nearest" 
+                                            ? "لا يوجد صنايعية قريبون منك حالياً"
+                                            : "لا يوجد صنايعية متاحين لهذه الخدمة حالياً"}
                                     </div>
                                 )}
                             </div>

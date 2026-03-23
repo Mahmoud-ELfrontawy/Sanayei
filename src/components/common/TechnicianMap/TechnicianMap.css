@@ -37,10 +37,22 @@
     border-radius: 50%;
     object-fit: cover;
     margin-bottom: 12px;
-    border: 3px solid var(--color-primary);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
+
+.online-badge-map {
+    position: absolute;
+    bottom: 12px;
+    right: 5px;
+    width: 14px;
+    height: 14px;
+    background: #22c55e;
+    border: 2px solid white;
+    border-radius: 50%;
+    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
 
 .popup-content h4 {
     margin: 0 0 5px;
@@ -152,3 +164,95 @@ html[data-theme="dark"] .popup-content h4 {
 html[data-theme="dark"] .popup-content p {
     color: var(--color-text-secondary);
 }
+
+/* ==========================
+   Custom Photo Markers
+   ========================== */
+
+.custom-marker-wrapper {
+    background: transparent !important;
+    border: none !important;
+}
+
+.marker-container {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    background: #fff;
+    border: 3px solid var(--color-primary);
+    border-radius: 50%;
+    padding: 2px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 100;
+}
+
+.marker-container.user-marker {
+    border-color: #1d4ed8;
+    z-index: 200;
+}
+
+.marker-container img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.marker-pointer {
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px;
+    height: 12px;
+    background: inherit;
+    border-right: 3px solid inherit;
+    border-bottom: 3px solid inherit;
+    z-index: -1;
+}
+
+.marker-container:hover {
+    transform: scale(1.2) translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* Stylized Animated Line */
+.connecting-line-stylized {
+    animation: dashflow 1.5s linear infinite;
+}
+
+@keyframes dashflow {
+    to {
+        stroke-dashoffset: -25;
+    }
+}
+
+/* User Location Pulsing Effect */
+.user-location-pulse {
+    animation: pulseUser 2s ease-out infinite;
+    stroke-width: 2px;
+}
+
+@keyframes pulseUser {
+    0% {
+        stroke-opacity: 0.8;
+        fill-opacity: 0.2;
+        r: 15;
+    }
+    70% {
+        stroke-opacity: 0;
+        fill-opacity: 0;
+        r: 35;
+    }
+    100% {
+        stroke-opacity: 0;
+        fill-opacity: 0;
+        r: 40;
+    }
+}
+
+
