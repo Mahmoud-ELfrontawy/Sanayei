@@ -133,23 +133,15 @@ const AppRouter: React.FC = () => {
             <Route path="/profile" element={<ProfileMe />} />
             <Route path="/payment-result" element={<PaymentResult />} />
             <Route path="/request-service" element={<RequestServiceSection />} />
-            <Route path="/craftsman/:id" element={<CraftsmanProfilePage />} />
-            <Route path="/user/:id" element={<UserProfilePage />} />
-            <Route path="/company/:id" element={<CompanyPublicPage />} />
-            <Route path="/learn-more" element={<LearnMorePage />} />
-            {/* ===== Community Pages ===== */}
-            <Route path="/community" element={<CommunityProvider><CommunityPage /></CommunityProvider>} />
-            <Route path="/community/new" element={<CommunityProvider><CreatePostPage /></CommunityProvider>} />
-            <Route path="/community/:id" element={<CommunityProvider><PostDetailPage /></CommunityProvider>} />
-            {/* ===== Auth Pages ===== */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/register-worker" element={<RegisterWorkerPage />} />
-            <Route path="/register-company" element={<RegisterCompanyPage />} />
-            <Route path="/email/verify/:id/:hash" element={<VerifyEmailPage />} />
-            <Route path="/verify-otp" element={<VerifyOtpPage />} />
+
+            {/* ===== Craftsman Profile ===== */}
+            <Route path="/craftsman/profile">
+              <Route index element={<CraftsmanProfilePage />} />
+              <Route element={<EditProfileLayout />}>
+                <Route path="edit" element={<ProfileWorker />} />
+                <Route path="reviews" element={<CraftsmanDashboardReviews />} />
+              </Route>
+            </Route>
 
             {/* ===== User Profile ===== */}
             <Route path="/user/profile">
@@ -160,14 +152,25 @@ const AppRouter: React.FC = () => {
               </Route>
             </Route>
 
-            {/* ===== Craftsman Profile ===== */}
-            <Route path="/craftsman/profile">
-              <Route index element={<CraftsmanProfilePage />} />
-              <Route element={<EditProfileLayout />}>
-                <Route path="edit" element={<ProfileWorker />} />
-                <Route path="reviews" element={<CraftsmanDashboardReviews />} />
-              </Route>
-            </Route>
+            <Route path="/craftsman/:id" element={<CraftsmanProfilePage />} />
+            <Route path="/user/:id" element={<UserProfilePage />} />
+            <Route path="/company/:id" element={<CompanyPublicPage />} />
+            <Route path="/learn-more" element={<LearnMorePage />} />
+            
+            {/* ===== Community Pages ===== */}
+            <Route path="/community" element={<CommunityProvider><CommunityPage /></CommunityProvider>} />
+            <Route path="/community/new" element={<CommunityProvider><CreatePostPage /></CommunityProvider>} />
+            <Route path="/community/:id" element={<CommunityProvider><PostDetailPage /></CommunityProvider>} />
+            
+            {/* ===== Auth Pages ===== */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/register-worker" element={<RegisterWorkerPage />} />
+            <Route path="/register-company" element={<RegisterCompanyPage />} />
+            <Route path="/email/verify/:id/:hash" element={<VerifyEmailPage />} />
+            <Route path="/verify-otp" element={<VerifyOtpPage />} />
 
             {/* ===== Dashboards ===== */}
             <Route path="/dashboard" element={<DashboardLayout />}>

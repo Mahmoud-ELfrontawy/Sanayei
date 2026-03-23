@@ -68,12 +68,19 @@ const ServicesPage: React.FC = () => {
     useEffect(() => {
         const selectedService = services.find(s => s.slug === serviceFilter);
 
-        // ✅ If we have an effective location and a specific service, ALWAYS get nearest (up to 10)
+        // ✅ If we have an effective location and a specific service
         if (effectiveLocation && selectedService) {
             setLoadingTechs(true);
             getNearestTechnicians(effectiveLocation.lat, effectiveLocation.lng, selectedService.id)
-                .then(setTechnicians)
-                .catch(() => getTechnicians().then(setTechnicians)) // Fallback to all if nearest fails
+                .then((nearest) => {
+                    if (nearest && nearest.length > 0) {
+                        setTechnicians(nearest);
+                    } else {
+                        // Fallback: If no one is near, get ALL technicians for this service
+                        getTechnicians().then(setTechnicians);
+                    }
+                })
+                .catch(() => getTechnicians().then(setTechnicians)) // Fallback on error
                 .finally(() => setLoadingTechs(false));
             return;
         }

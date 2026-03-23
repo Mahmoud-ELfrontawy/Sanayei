@@ -269,8 +269,8 @@ const RegisterCompanyPage: React.FC = () => {
                                             <input
                                                 className={`auth-input ${errors.custom_category ? 'error' : ''}`}
                                                 placeholder="مثال: مستلزمات سباكة، أدوات نجارة..."
-                                                {...register("custom_category", { 
-                                                    required: selectedCategory === "other" ? "يرجى كتابة التصنيف" : false 
+                                                {...register("custom_category", {
+                                                    required: selectedCategory === "other" ? "يرجى كتابة التصنيف" : false
                                                 })}
                                             />
                                             {errors.custom_category && <span className="form-error">{errors.custom_category.message}</span>}

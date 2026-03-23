@@ -175,26 +175,31 @@ const ProfileFormBase = <T extends BaseProfileData>({
                         <div className="form-group full-width">
                             <h4 className="sub-title">معرض صور أعمالك</h4>
                             <div className="photos-manager-grid">
-                                {data.work_photos?.map((photo, index) => (
-                                    <div key={`existing-${index}`} className="photo-square">
-                                        <img src={getFullImageUrl(String(photo))} alt="Work" />
-                                        <button
-                                            type="button"
-                                            className="photo-remove-btn"
-                                            onClick={() => {
-                                                const existing = data.work_photos || [];
-                                                const deleted = data.delete_work_photos || [];
-                                                setData({
-                                                    ...data,
-                                                    work_photos: existing.filter((_, i) => i !== index),
-                                                    delete_work_photos: [...deleted, String(photo)]
-                                                });
-                                            }}
-                                        >
-                                            حذف
-                                        </button>
-                                    </div>
-                                ))}
+                                {data.work_photos?.map((photo, index) => {
+                                    const path = typeof photo === 'string' ? photo : (photo as any)?.photo_path || (photo as any)?.path || (photo as any)?.image_url || "";
+                                    if (!path && typeof photo === 'object') return null; // Skip invalid objects
+                                    
+                                    return (
+                                        <div key={`existing-${index}`} className="photo-square">
+                                            <img src={getFullImageUrl(path)} alt="Work" />
+                                            <button
+                                                type="button"
+                                                className="photo-remove-btn"
+                                                onClick={() => {
+                                                    const existing = data.work_photos || [];
+                                                    const deleted = data.delete_work_photos || [];
+                                                    setData({
+                                                        ...data,
+                                                        work_photos: existing.filter((_, i) => i !== index),
+                                                        delete_work_photos: [...deleted, path]
+                                                    });
+                                                }}
+                                            >
+                                                حذف
+                                            </button>
+                                        </div>
+                                    );
+                                })}
 
                                 {data.new_work_photos?.map((file, index) => (
                                     <div key={`new-${index}`} className="photo-square is-new">

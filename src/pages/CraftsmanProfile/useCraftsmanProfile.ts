@@ -29,16 +29,22 @@ export const useCraftsmanProfile = () => {
         let data: any;
         if (isOwnProfile) {
           rawResponse = await getCraftsmanProfile();
+          // Profile API usually returns { craftsman: { ... } } or just { ... }
+          data = rawResponse?.craftsman ?? rawResponse?.data ?? rawResponse;
         } else if (id) {
           rawResponse = await getTechnicianById(id);
+          // Public API might return the object directly via getTechnicianById
+          // If rawResponse is already the data object, don't try to go deeper if it has a 'data' property that isn't the wrapper
+          if (rawResponse && (rawResponse.id || rawResponse.name)) {
+            data = rawResponse;
+          } else {
+            data = rawResponse?.data ?? rawResponse;
+          }
         } else {
           setError("معرف المستخدم غير موجود");
           setLoading(false);
           return;
         }
-
-        // Normalize the data (handle different API wrapper structures)
-        data = rawResponse.craftsman ?? rawResponse.data ?? rawResponse;
 
         if (Array.isArray(data)) {
           data = data.find((item: any) => item.id) || {};
@@ -62,21 +68,23 @@ export const useCraftsmanProfile = () => {
 
         // Mapping API data to UI structure
 
-        // ✅ FIX: If own profile, fetch public profile data to get richer fields (service name, governorate name, reviews)
+        // ✅ FIX: If own profile, fetch public profile data to get richer fields
         if (isOwnProfile && data.id) {
           try {
             const publicData = await getTechnicianById(data.id);
-            // Merge public data into private data to fill gaps (like service object, reviews, work_photos)
-            data = {
-              ...data,
-              service: publicData.service || data.service,
-              service_name: publicData.service?.name || publicData.service_name || data.service_name,
-              governorate_id: publicData.governorate_id || data.governorate_id,
-              last_reviews: publicData.last_reviews || data.last_reviews,
-              rating: publicData.rating || data.rating,
-              work_photos: publicData.work_photos || data.work_photos,
-              experience_years: publicData.experience_years || data.experience_years,
-            };
+            if (publicData) {
+               // Merge public data into private data to fill gaps
+               data = {
+                 ...data,
+                 service: publicData.service || data.service,
+                 service_name: publicData.service?.name || publicData.service_name || data.service_name,
+                 governorate_id: publicData.governorate_id || data.governorate_id,
+                 last_reviews: publicData.last_reviews || data.last_reviews,
+                 rating: publicData.rating || data.rating,
+                 work_photos: publicData.work_photos || data.work_photos,
+                 experience_years: publicData.experience_years || data.experience_years,
+               };
+            }
           } catch (e) {
             console.warn("Failed to merge public profile data", e);
           }
@@ -86,21 +94,23 @@ export const useCraftsmanProfile = () => {
         let govName = "غير محدد";
         try {
           const govs = await getGovernorates();
-          const gov = govs.find(g => g.id.toString() === data.governorate_id?.toString());
-          if (gov) govName = gov.name;
+          if (Array.isArray(govs)) {
+            const gov = govs.find(g => g.id.toString() === data.governorate_id?.toString());
+            if (gov) govName = gov.name;
+          }
         } catch (e) {
-          // Fallback to address or "غير محدد"
+          // Fallback
         }
 
         const avatar = getAvatarUrl(data.profile_photo, data.name);
         // Mapping API data to UI structure
         const mappedData: CraftsmanProfileData = {
-          id: data.id,
+          id: data.id || 0,
           name: data.name || "بدون اسم",
           jobTitle: data.service?.name || data.service_name || data.craft_type || "صنايعي محترف",
           serviceId: data.service?.id || data.service_id,
           avatarUrl: avatar,
-          coverUrl: avatar, // Using the same image as requested
+          coverUrl: avatar, 
           rating: Number(data.rating) || 0,
           experienceYears: Number(data.experience_years) || 0,
           address: data.address || "غير محدد",
@@ -108,63 +118,49 @@ export const useCraftsmanProfile = () => {
           phone: data.phone || "غير متاح",
           about: data.description || "لا يوجد وصف حالياً",
           priceRange: data.price_range,
-          workDays: data.work_days,
+          workDays: Array.isArray(data.work_days) ? data.work_days : [],
           specialization: data.service?.name ? [data.service.name] : [],
           paymentMethods: ["الدفع النقدي (كاش)"],
           services: data.service?.name ? [data.service.name] : [],
           walletId: data.wallet?.id || data.wallet_id || null,
-          reviews: data.last_reviews?.map((r: any) => {
-            // 1. Attempt to find the best possible entity object
+          reviews: Array.isArray(data.last_reviews) ? data.last_reviews.map((r: any) => {
             const reviewer = r.user || r.company || r.reviewable || r.reviewer || r.client || {};
-            
-            // 2. Comprehensive Name extraction
-            // Fallback to "عميل رقم X" makes the auto-generated avatar unique for each user
             const reviewerName = 
-                r.user_name || 
-                r.company_name || 
-                r.userName || 
-                r.client_name || 
-                r.clientName ||
-                reviewer.company_name || 
-                reviewer.name || 
-                reviewer.full_name ||
-                r.name ||
+                r.user_name || r.company_name || r.userName || 
+                r.client_name || r.clientName || reviewer.company_name || 
+                reviewer.name || reviewer.full_name || r.name ||
                 (r.user_id ? `عميل رقم ${r.user_id}` : "عميل");
             
-            // 3. Comprehensive Photo extraction
-            // Priority: direct links > relation profile photos > avatars
             const photoPath = 
-                r.user_image || 
-                r.user_avatar || 
-                r.company_logo || 
-                r.client_image ||
-                reviewer.profile_image_url || 
-                reviewer.profile_photo || 
-                reviewer.company_logo || 
-                reviewer.logo || 
-                reviewer.avatar || 
-                reviewer.profile_image ||
-                reviewer.image ||
-                r.image;
+                r.user_image || r.user_avatar || r.company_logo || 
+                r.client_image || reviewer.profile_image_url || 
+                reviewer.profile_photo || reviewer.company_logo || 
+                reviewer.logo || reviewer.avatar || r.image;
 
             return {
               id: r.id,
               clientName: reviewerName,
               clientImage: getAvatarUrl(photoPath, reviewerName),
-              rating: r.rating,
-              comment: r.comment,
-              date: r.created_at?.split("T")[0]
+              rating: Number(r.rating) || 0,
+              comment: r.comment || "",
+              date: typeof r.created_at === 'string' ? r.created_at.split("T")[0] : ""
             };
-          }) || [],
-          portfolio: data.work_photos?.map((p: any, index: number) => ({
-            id: index,
-            title: `عمل رقم ${index + 1}`,
-            imageUrl: getFullImageUrl(p)
-          })) || []
+          }) : [],
+          portfolio: Array.isArray(data.work_photos) 
+            ? data.work_photos
+                .map((p: any) => typeof p === 'string' ? p : p?.photo_path || p?.path || p?.image_url || p?.imageUrl || "")
+                .filter((path: string) => !!path && path !== "")
+                .map((path: string, index: number) => ({
+                    id: index,
+                    title: `عمل رقم ${index + 1}`,
+                    imageUrl: getFullImageUrl(path)
+                })) 
+            : []
         };
 
         setCraftsman(mappedData);
       } catch (err) {
+        console.error("Craftsman Profile Fetch Error:", err);
         setError("حدث خطأ أثناء تحميل البيانات");
       } finally {
         setLoading(false);

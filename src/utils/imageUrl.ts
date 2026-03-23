@@ -5,8 +5,8 @@ const buildUiAvatar = (name?: string) => {
     )}&background=5FA8D3&color=fff&bold=true`;
 };
 
-export const getFullImageUrl = (path?: string | null) => {
-    if (!path || path === "null" || path === "undefined") return undefined;
+export const getFullImageUrl = (path?: any) => {
+    if (!path || typeof path !== "string" || path === "null" || path === "undefined") return undefined;
 
     // If it's already a full URL, return it.
     if (path.startsWith("http")) return path;

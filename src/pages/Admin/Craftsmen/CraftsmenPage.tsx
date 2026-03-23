@@ -9,7 +9,11 @@ import {
     FaDollarSign,
     FaFilter,
     FaTimes,
-    FaIdCard
+    FaIdCard,
+    FaPhone,
+    FaMapMarkerAlt,
+    FaEnvelope,
+    FaCalendarAlt
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import './CraftsmenPage.css';
@@ -321,6 +325,7 @@ const CraftsmenPage: React.FC = () => {
                                 </div>
                                 <h4>{selectedCraftsman.name}</h4>
                                 <p className="hero-email-text">
+                                    <FaEnvelope size={14} style={{ marginLeft: '6px', opacity: 0.7 }} />
                                     {selectedCraftsman.email || <span className="text-muted">البريد الإلكتروني غير متوفر</span>}
                                 </p>
                                 <span className={`status-pill ${selectedCraftsman.status}`}>
@@ -431,10 +436,31 @@ const CraftsmenPage: React.FC = () => {
                                         </div>
                                     </div>
                                     <div className="info-modern-item">
+                                        <FaPhone size={18} />
+                                        <div className="content">
+                                            <label>رقم الهاتف</label>
+                                            <a href={`tel:${selectedCraftsman.phone}`} dir="ltr">{selectedCraftsman.phone}</a>
+                                        </div>
+                                    </div>
+                                    <div className="info-modern-item">
+                                        <FaMapMarkerAlt size={18} />
+                                        <div className="content">
+                                            <label>المحافظة</label>
+                                            <span>{selectedCraftsman.governorate?.name || 'غير محدد'}</span>
+                                        </div>
+                                    </div>
+                                    <div className="info-modern-item">
                                         <FaDollarSign size={18} />
                                         <div className="content">
                                             <label>فئة السعر</label>
                                             <span>{selectedCraftsman.price_range}</span>
+                                        </div>
+                                    </div>
+                                    <div className="info-modern-item">
+                                        <FaCalendarAlt size={18} />
+                                        <div className="content">
+                                            <label>تاريخ الانضمام</label>
+                                            <span dir="ltr">{new Date(selectedCraftsman.joined_date).toLocaleDateString('ar-EG')}</span>
                                         </div>
                                     </div>
                                 </div>
