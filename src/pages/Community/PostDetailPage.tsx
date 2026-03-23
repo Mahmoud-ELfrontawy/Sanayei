@@ -1,24 +1,22 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
-    FaArrowRight, FaMapMarkerAlt, FaCheckCircle,
-    FaCamera, FaSpinner, FaTrash, FaGlobeAmericas, FaExclamationTriangle
+    FaArrowRight, FaMapMarkerAlt, FaSpinner, FaTrash,
+    FaMoneyBillWave, FaClock, FaComments, FaPaperPlane,
+    FaStar, FaCheckCircle, FaBriefcase, FaUserTie
 } from "react-icons/fa";
-import {
-    getCommunityPost, acceptCommunityPost, completeCommunityPost,
-    verifyCommunityPost, deleteCommunityPost,
-    type CommunityPost,
-} from "../../Api/community.api";
+import type { CommunityPost, ServiceOffer, CommunityComment } from "../../Api/community.api";
 import { useCommunity } from "../../context/CommunityContext";
 import { useAuth } from "../../hooks/useAuth";
 import { getAvatarUrl } from "../../utils/imageUrl";
 import { formatTimeAgo } from "../../utils/timeAgo";
 import { toast } from "react-toastify";
+import { MOCK_POSTS, MOCK_OFFERS, MOCK_COMMENTS } from "./mockData";
 import "./PostDetailPage.css";
 
 const CATEGORY_LABELS: Record<string, string> = {
-    electrical: "أعمال كهرباء", plumbing: "أعمال سباكة", masonry: "أعمال بناء",
-    carpentry: "أعمال نجارة", painting: "أعمال دهانات", ac: "تكييف وتبريد", other: "أخرى",
+    electrical: "⚡ أعمال كهرباء", plumbing: "🔧 أعمال سباكة", masonry: "🧱 أعمال بناء",
+    carpentry: "🪚 أعمال نجارة", painting: "🎨 أعمال دهانات", ac: "❄️ تكييف وتبريد", other: "🔨 أخرى",
 };
 
 const PostDetailPage: React.FC = () => {
@@ -28,92 +26,100 @@ const PostDetailPage: React.FC = () => {
     const { updatePost, removePost } = useCommunity();
 
     const [post, setPost] = useState<CommunityPost | null>(null);
+    const [offers, setOffers] = useState<ServiceOffer[]>([]);
+    const [comments, setComments] = useState<CommunityComment[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isActing, setIsActing] = useState(false);
-    const [afterImages, setAfterImages] = useState<File[]>([]);
-    const [afterPreviews, setAfterPreviews] = useState<string[]>([]);
-    const [showCompleteForm, setShowCompleteForm] = useState(false);
     const [lightboxImg, setLightboxImg] = useState<string | null>(null);
+
+    // Offer form
+    const [offerPrice, setOfferPrice] = useState("");
+    const [offerDesc, setOfferDesc] = useState("");
+    const [offerDays, setOfferDays] = useState("");
+    const [showOfferForm, setShowOfferForm] = useState(false);
+
+    // Comment form
+    const [commentBody, setCommentBody] = useState("");
+    const [showComments, setShowComments] = useState(false);
 
     useEffect(() => {
         if (!id) return;
         setIsLoading(true);
-        getCommunityPost(Number(id))
-            .then((res) => {
-                setPost(res.data ?? res);
-            })
-            .catch(() => toast.error("تعذر تحميل البلاغ"))
-            .finally(() => setIsLoading(false));
+        // MOCK MODE: load from static data
+        setTimeout(() => {
+            const found = MOCK_POSTS.find((p) => p.id === Number(id));
+            setPost(found || null);
+            setOffers([...MOCK_OFFERS]);
+            setIsLoading(false);
+        }, 300);
     }, [id]);
 
-    const refreshPost = async () => {
-        const res = await getCommunityPost(Number(id));
-        const updated = res.data ?? res;
+    const loadComments = async () => {
+        // MOCK MODE
+        setComments([...MOCK_COMMENTS]);
+        setShowComments(true);
+    };
+
+    const handleSubmitOffer = async () => {
+        if (!post || !offerPrice || !offerDesc || !offerDays) return;
+        setIsActing(true);
+        // MOCK MODE
+        const newOffer: ServiceOffer = {
+            id: Date.now(),
+            craftsman: { id: 999, name: "أنت", avatar: "", rating: 0, completed_jobs: 0 },
+            price: Number(offerPrice),
+            description: offerDesc,
+            delivery_days: Number(offerDays),
+            status: "pending",
+            created_at: new Date().toISOString(),
+        };
+        setOffers((prev) => [newOffer, ...prev]);
+        setOfferPrice(""); setOfferDesc(""); setOfferDays("");
+        setShowOfferForm(false);
+        toast.success("تم إرسال عرضك بنجاح! ✅");
+        setIsActing(false);
+    };
+
+    const handleAcceptOffer = async (offerId: number) => {
+        if (!post || !window.confirm("هل أنت متأكد من قبول هذا العرض؟")) return;
+        setIsActing(true);
+        // MOCK MODE
+        setOffers((prev) => prev.map((o) =>
+            o.id === offerId ? { ...o, status: "accepted" as const } : { ...o, status: "rejected" as const }
+        ));
+        const updated = { ...post, status: "in_progress" as const };
         setPost(updated);
         updatePost(updated);
+        toast.success("تم قبول العرض بنجاح! 🎉");
+        setIsActing(false);
     };
 
-    const handleAccept = async () => {
-        if (!post) return;
-        setIsActing(true);
-        try {
-            await acceptCommunityPost(post.id);
-            await refreshPost();
-            toast.success("أعلنت اهتمامك! سيتم التواصل مع صاحب البلاغ");
-        } catch {
-            toast.error("حدث خطأ، حاول مجدداً");
-        } finally { setIsActing(false); }
-    };
-
-    const handleComplete = async () => {
-        if (!post || afterImages.length === 0) return;
-        setIsActing(true);
-        try {
-            const fd = new FormData();
-            afterImages.forEach((f) => fd.append("after_images[]", f));
-            await completeCommunityPost(post.id, fd);
-            await refreshPost();
-            setShowCompleteForm(false);
-            toast.success("تم رفع صور الإنجاز! في انتظار تأكيد صاحب البلاغ");
-        } catch {
-            toast.error("حدث خطأ، حاول مجدداً");
-        } finally { setIsActing(false); }
-    };
-
-    const handleVerify = async () => {
-        if (!post) return;
-        setIsActing(true);
-        try {
-            await verifyCommunityPost(post.id);
-            await refreshPost();
-            toast.success(`🎉 تم التحقق! تم منح ${post.points_reward} نقطة للصنايعي`);
-        } catch {
-            toast.error("حدث خطأ، حاول مجدداً");
-        } finally { setIsActing(false); }
+    const handleAddComment = async () => {
+        if (!post || !commentBody.trim()) return;
+        // MOCK MODE
+        const newComment: CommunityComment = {
+            id: Date.now(),
+            body: commentBody,
+            user: { id: 999, name: "أنت", avatar: "", type: "craftsman" },
+            created_at: new Date().toISOString(),
+        };
+        setComments((prev) => [...prev, newComment]);
+        setCommentBody("");
+        toast.success("تم إضافة التعليق");
     };
 
     const handleDelete = async () => {
-        if (!post || !window.confirm("هل أنت متأكد من حذف هذا البلاغ؟")) return;
-        try {
-            await deleteCommunityPost(post.id);
-            removePost(post.id);
-            toast.success("تم حذف البلاغ");
-            navigate("/community");
-        } catch {
-            toast.error("حدث خطأ أثناء الحذف");
-        }
-    };
-
-    const handleAfterImages = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = Array.from(e.target.files ?? []).slice(0, 4);
-        setAfterImages(files);
-        setAfterPreviews(files.map((f) => URL.createObjectURL(f)));
+        if (!post || !window.confirm("هل أنت متأكد من حذف هذا الطلب؟")) return;
+        // MOCK MODE
+        removePost(post.id);
+        toast.success("تم حذف الطلب");
+        navigate("/community");
     };
 
     if (isLoading) {
         return (
-            <div className="post-detail-loading">
-                <FaSpinner className="post-detail-spinner" />
+            <div className="detail-loading">
+                <FaSpinner className="detail-spinner" />
                 <span>جاري التحميل...</span>
             </div>
         );
@@ -121,206 +127,318 @@ const PostDetailPage: React.FC = () => {
 
     if (!post) {
         return (
-            <div className="post-detail-error">
+            <div className="detail-error">
                 <span>🔍</span>
-                <p>لم يتم العثور على البلاغ</p>
-                <button className="fb-btn-primary" onClick={() => navigate("/community")}>العودة للمجتمع</button>
+                <p>لم يتم العثور على الطلب</p>
+                <button className="detail-btn-primary" onClick={() => navigate("/community")}>العودة لسوق الطلبات</button>
             </div>
         );
     }
 
     const isMine = post.user.id === Number(user?.id);
     const isCraftsman = userType === "craftsman";
-    const canAccept = isAuthenticated && isCraftsman && post.status === "open" && !post.user_has_accepted && !isMine;
-    const canComplete = isAuthenticated && isCraftsman && post.user_has_accepted && post.status === "in_progress";
-    const canVerify = isMine && post.status === "completed";
-    const isVerified = post.status === "verified";
+    const canOffer = isAuthenticated && isCraftsman && post.status === "open" && !post.has_offered && !isMine;
+    const canComment = isAuthenticated && isCraftsman;
+    const canAcceptOffer = isMine && post.status === "open";
+    const hasBudget = post.budget_min || post.budget_max;
 
-    const getStatusText = () => {
+    const getStatusInfo = () => {
         switch (post.status) {
-            case "open": return "متاح للمساعدة";
-            case "in_progress": return "صنايعي في الطريق";
-            case "completed": return "بانتظار تأكيد الإنجاز";
-            case "verified": return "تم حل المشكلة";
-            default: return post.status;
+            case "open": return { text: "مفتوح للعروض", className: "status-open" };
+            case "in_progress": return { text: "قيد التنفيذ", className: "status-progress" };
+            case "completed": return { text: "مكتمل", className: "status-done" };
+            default: return { text: post.status, className: "" };
         }
     };
+    const statusInfo = getStatusInfo();
 
     return (
-        <section className="fb-community-page" style={{ padding: "20px 16px" }}>
-            <div className="fb-detail-container">
-                <div className="fb-card fb-detail-card">
-                    {/* Header Controls */}
-                    <div className="post-detail-top-bar">
-                        <button className="post-detail-back-btn" onClick={() => navigate("/community")}>
-                            <FaArrowRight /> رجوع
+        <section className="detail-page">
+            <div className="detail-container">
+                {/* Top Bar */}
+                <div className="detail-top-bar">
+                    <button className="detail-back-btn" onClick={() => navigate("/community")}>
+                        <FaArrowRight /> العودة لسوق الطلبات
+                    </button>
+                    {isMine && (
+                        <button className="detail-delete-btn" onClick={handleDelete}>
+                            <FaTrash /> حذف الطلب
                         </button>
-                        {isMine && (
-                            <button className="post-detail-delete-btn" onClick={handleDelete} title="حذف البلاغ">
-                                <FaTrash /> حذف
-                            </button>
-                        )}
-                    </div>
+                    )}
+                </div>
 
-                    {/* Facebook Style Meta Header */}
-                    <div className="fb-post-header" style={{ marginBottom: "16px", marginTop: "12px" }}>
-                        <img
-                            src={getAvatarUrl(post.user.avatar, post.user.name)}
-                            alt={post.user.name}
-                            className="fb-post-avatar"
-                        />
-                        <div className="fb-post-header-info">
-                            <span className="fb-post-author-name">{post.user.name}</span>
-                            <div className="fb-post-meta">
-                                <span className="fb-post-time">{formatTimeAgo(post.created_at)}</span>
-                                <span className="fb-post-dot">•</span>
-                                <span className="fb-post-category">{CATEGORY_LABELS[post.category] || post.category}</span>
-                                <span className="fb-post-dot">•</span>
-                                <FaGlobeAmericas className="fb-post-privacy-icon" />
+                <div className="detail-grid">
+                    {/* ── Main Content ── */}
+                    <div className="detail-main">
+                        <div className="detail-card">
+                            {/* Header */}
+                            <div className="detail-header">
+                                <div className="detail-author">
+                                    <img
+                                        src={getAvatarUrl(post.user.avatar, post.user.name)}
+                                        alt={post.user.name}
+                                        className="detail-author-avatar"
+                                    />
+                                    <div className="detail-author-info">
+                                        <span className="detail-author-name">
+                                            {post.user.name}
+                                            {post.user.type === "company" && (
+                                                <span className="detail-company-badge">
+                                                    <FaBriefcase /> شركة
+                                                </span>
+                                            )}
+                                        </span>
+                                        <span className="detail-time">
+                                            <FaClock /> {formatTimeAgo(post.created_at)}
+                                        </span>
+                                    </div>
+                                </div>
+                                <span className={`detail-status ${statusInfo.className}`}>
+                                    {statusInfo.text}
+                                </span>
                             </div>
+
+                            {/* Category */}
+                            <span className="detail-category">
+                                {CATEGORY_LABELS[post.category] || post.category}
+                            </span>
+
+                            {/* Content */}
+                            <h1 className="detail-title">{post.title}</h1>
+                            <p className="detail-description">{post.description}</p>
+
+                            {/* Info Bar */}
+                            <div className="detail-info-bar">
+                                {hasBudget && (
+                                    <div className="detail-info-item budget">
+                                        <FaMoneyBillWave />
+                                        <div>
+                                            <span className="detail-info-label">الميزانية</span>
+                                            <span className="detail-info-value">
+                                                {post.budget_min && post.budget_max
+                                                    ? `${post.budget_min} - ${post.budget_max} ج.م`
+                                                    : post.budget_max
+                                                    ? `حتى ${post.budget_max} ج.م`
+                                                    : `من ${post.budget_min} ج.م`}
+                                            </span>
+                                        </div>
+                                    </div>
+                                )}
+                                {post.location && (
+                                    <div className="detail-info-item location">
+                                        <FaMapMarkerAlt />
+                                        <div>
+                                            <span className="detail-info-label">الموقع</span>
+                                            <span className="detail-info-value">{post.location}</span>
+                                        </div>
+                                    </div>
+                                )}
+                                <div className="detail-info-item offers">
+                                    <FaComments />
+                                    <div>
+                                        <span className="detail-info-label">العروض</span>
+                                        <span className="detail-info-value">{offers.length} عرض</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Images */}
+                            {post.images?.length > 0 && (
+                                <div className="detail-images">
+                                    {post.images.map((img, i) => (
+                                        <div key={i} className="detail-img-wrap" onClick={() => setLightboxImg(img)}>
+                                            <img src={img} alt={`صورة ${i + 1}`} loading="lazy" />
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
-                    </div>
 
-                    {/* Badges */}
-                    <div className="fb-post-badges" style={{ marginBottom: "16px" }}>
-                        {post.urgency === "urgent" && (
-                            <span className="fb-badge badge-urgent">
-                                <FaExclamationTriangle /> حالة طارئة
-                            </span>
-                        )}
-                        <span className={`fb-badge badge-status status-${post.status}`}>
-                            {getStatusText()}
-                        </span>
-                        {post.location && (
-                            <span className="fb-badge badge-location">
-                                <FaMapMarkerAlt /> {post.location}
-                            </span>
-                        )}
-                    </div>
+                        {/* ── Comments Section ── */}
+                        <div className="detail-card">
+                            <button className="detail-comments-toggle" onClick={!showComments ? loadComments : () => setShowComments(false)}>
+                                <FaComments />
+                                {showComments ? "إخفاء التعليقات" : `عرض التعليقات (${post.comments_count})`}
+                            </button>
 
-                    {/* Post Content */}
-                    <div className="fb-post-content" style={{ marginBottom: "20px" }}>
-                        <h1 className="fb-post-title" style={{ fontSize: "20px", marginBottom: "8px" }}>{post.title}</h1>
-                        <p className="fb-post-text" style={{ fontSize: "16px" }}>{post.description}</p>
-                    </div>
+                            {showComments && (
+                                <div className="detail-comments">
+                                    {comments.length === 0 && (
+                                        <p className="detail-no-comments">لا توجد تعليقات بعد</p>
+                                    )}
+                                    {comments.map((c) => (
+                                        <div key={c.id} className="detail-comment">
+                                            <img src={getAvatarUrl(c.user.avatar, c.user.name)} alt="" className="detail-comment-avatar" />
+                                            <div className="detail-comment-body">
+                                                <div className="detail-comment-header">
+                                                    <span className="detail-comment-name">{c.user.name}</span>
+                                                    {c.user.type === "craftsman" && (
+                                                        <span className="detail-craftsman-tag">صنايعي</span>
+                                                    )}
+                                                    <span className="detail-comment-time">{formatTimeAgo(c.created_at)}</span>
+                                                </div>
+                                                <p>{c.body}</p>
+                                            </div>
+                                        </div>
+                                    ))}
 
-                    {/* Images Gallery */}
-                    {post.images?.length > 0 && (
-                        <div className={`fb-post-images grid-${Math.min(post.images.length, 4)}`} style={{ marginBottom: "20px", borderRadius: "8px", overflow: "hidden" }}>
-                            {post.images.slice(0, 4).map((img, i) => (
-                                <div key={i} className="fb-img-wrapper" onClick={() => setLightboxImg(img)} style={{ cursor: "pointer" }}>
-                                    <img src={img} alt={`img-${i}`} />
-                                    {i === 3 && post.images.length > 4 && (
-                                        <div className="fb-img-overlay">
-                                            <span>+{post.images.length - 4}</span>
+                                    {canComment && (
+                                        <div className="detail-comment-form">
+                                            <input
+                                                type="text"
+                                                placeholder="اكتب تعليقاً..."
+                                                value={commentBody}
+                                                onChange={(e) => setCommentBody(e.target.value)}
+                                                onKeyDown={(e) => e.key === "Enter" && handleAddComment()}
+                                            />
+                                            <button onClick={handleAddComment} disabled={isActing || !commentBody.trim()}>
+                                                <FaPaperPlane />
+                                            </button>
                                         </div>
                                     )}
                                 </div>
-                            ))}
+                            )}
                         </div>
-                    )}
-
-                    {/* Stats & Points */}
-                    <div className="fb-post-stats" style={{ marginBottom: "20px" }}>
-                        <div className="fb-stat-left">
-                            <div className="fb-reaction-group">
-                                <span className="fb-reaction-icon">✋</span>
-                                <span className="fb-stat-text">{post.interested_count} مهتمين بالمساعدة</span>
-                            </div>
-                        </div>
-                        {post.points_reward > 0 && (
-                            <div className="fb-stat-right">
-                                <span className="fb-stat-text points-reward" style={{ fontSize: "16px" }}>🏆 {post.points_reward} نقطة</span>
-                            </div>
-                        )}
                     </div>
 
-                    {/* Acceptor Callout */}
-                    {post.acceptor && (
-                        <div className="post-detail-acceptor" style={{ margin: "20px 0", padding: "12px", background: "#f0f2f5", borderRadius: "8px", display: "flex", alignItems: "center", gap: "10px" }}>
-                            <span style={{ fontSize: "20px" }}>👷</span>
-                            <span>يعمل على هذا البلاغ:</span>
-                            <img src={getAvatarUrl(post.acceptor.avatar, post.acceptor.name)} alt={post.acceptor.name} style={{ width: "30px", height: "30px", borderRadius: "50%" }} />
-                            <strong>{post.acceptor.name}</strong>
-                        </div>
-                    )}
-
-                    {/* After images (after completion) */}
-                    {post.after_images && post.after_images.length > 0 && (
-                        <div className="post-detail-after-section" style={{ marginTop: "20px" }}>
-                            <h3 style={{ fontSize: "18px", marginBottom: "12px", color: "#137333" }}>✅ صور ما بعد الإصلاح</h3>
-                            <div className={`fb-post-images grid-${Math.min(post.after_images.length, 4)}`} style={{ borderRadius: "8px", overflow: "hidden" }}>
-                                {post.after_images.slice(0, 4).map((img, i) => (
-                                    <div key={i} className="fb-img-wrapper" onClick={() => setLightboxImg(img)} style={{ cursor: "pointer" }}>
-                                        <img src={img} alt={`after-${i}`} />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Verified Banner */}
-                    {isVerified && (
-                        <div className="post-detail-verified-banner" style={{ marginTop: "24px", padding: "16px", background: "#e6ffed", color: "#137333", borderRadius: "8px", display: "flex", gap: "12px", alignItems: "center" }}>
-                            <FaCheckCircle size={30} />
-                            <div>
-                                <strong style={{ display: "block", fontSize: "16px" }}>تم التحقق من إنجاز هذا البلاغ!</strong>
-                                <span>تم منح {post.points_reward} نقطة للصنايعي المنجز</span>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Action Buttons Container */}
-                    <div className="post-detail-actions" style={{ marginTop: "24px", display: "flex", flexDirection: "column", gap: "12px" }}>
-                        {canAccept && (
-                            <button className="fb-btn-primary full-width" style={{ padding: "12px", fontSize: "16px" }} onClick={handleAccept} disabled={isActing}>
-                                {isActing ? <FaSpinner className="post-detail-spinner" /> : "✋ أنا مهتم بإنجاز هذه المهمة"}
-                            </button>
-                        )}
-
-                        {canComplete && !showCompleteForm && (
-                            <button className="fb-btn-primary full-width" style={{ background: "#42b72a", padding: "12px", fontSize: "16px" }} onClick={() => setShowCompleteForm(true)}>
-                                <FaCamera /> رفع صور ما بعد الإصلاح
-                            </button>
-                        )}
-
-                        {canComplete && showCompleteForm && (
-                            <div className="post-detail-complete-form" style={{ background: "#f0f2f5", padding: "16px", borderRadius: "8px", border: "1px solid #ced0d4" }}>
-                                <h4 style={{ marginBottom: "12px" }}>رفع صور ما بعد الإصلاح لتأكيد الإنجاز</h4>
-                                <label htmlFor="after-imgs" style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "20px", background: "#fff", border: "2px dashed #ccd0d5", borderRadius: "8px", cursor: "pointer", marginBottom: "12px" }}>
-                                    {afterPreviews.length > 0 ? (
-                                        <div style={{ display: "flex", gap: "8px" }}>
-                                            {afterPreviews.map((p, i) => <img key={i} src={p} alt="" style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "4px" }} />)}
+                    {/* ── Sidebar: Offers ── */}
+                    <div className="detail-sidebar">
+                        {/* Submit Offer (Craftsman only) */}
+                        {canOffer && (
+                            <div className="detail-card offer-form-card">
+                                {!showOfferForm ? (
+                                    <button className="detail-submit-offer-btn" onClick={() => setShowOfferForm(true)}>
+                                        <FaPaperPlane /> قدّم عرضك الآن
+                                    </button>
+                                ) : (
+                                    <div className="offer-form">
+                                        <h3>
+                                            <FaUserTie /> تقديم عرض
+                                        </h3>
+                                        <div className="offer-form-field">
+                                            <label>السعر (ج.م)</label>
+                                            <input
+                                                type="number"
+                                                placeholder="أدخل السعر"
+                                                value={offerPrice}
+                                                onChange={(e) => setOfferPrice(e.target.value)}
+                                                min="1"
+                                            />
                                         </div>
-                                    ) : (
-                                        <><FaCamera size={24} color="#65676B" style={{ marginBottom: "8px" }} /><span style={{ color: "#65676B" }}>اضغط لاختيار الصور</span></>
-                                    )}
-                                </label>
-                                <input id="after-imgs" type="file" accept="image/*" multiple onChange={handleAfterImages} style={{ display: "none" }} />
-                                <button
-                                    className="fb-btn-primary full-width"
-                                    onClick={handleComplete}
-                                    disabled={isActing || afterImages.length === 0}
-                                    style={{ background: "#42b72a" }}
-                                >
-                                    {isActing ? <FaSpinner className="post-detail-spinner" /> : "إرسال للتحقق"}
-                                </button>
+                                        <div className="offer-form-field">
+                                            <label>مدة التسليم (بالأيام)</label>
+                                            <input
+                                                type="number"
+                                                placeholder="مثال: 3"
+                                                value={offerDays}
+                                                onChange={(e) => setOfferDays(e.target.value)}
+                                                min="1"
+                                            />
+                                        </div>
+                                        <div className="offer-form-field">
+                                            <label>وصف العرض</label>
+                                            <textarea
+                                                placeholder="اشرح كيف ستنفذ الخدمة..."
+                                                value={offerDesc}
+                                                onChange={(e) => setOfferDesc(e.target.value)}
+                                                rows={4}
+                                            />
+                                        </div>
+                                        <div className="offer-form-actions">
+                                            <button className="offer-cancel-btn" onClick={() => setShowOfferForm(false)} type="button">إلغاء</button>
+                                            <button
+                                                className="offer-submit-btn"
+                                                onClick={handleSubmitOffer}
+                                                disabled={isActing || !offerPrice || !offerDesc || !offerDays}
+                                            >
+                                                {isActing ? <FaSpinner className="detail-spinner" /> : <>إرسال العرض <FaPaperPlane /></>}
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
 
-                        {canVerify && (
-                            <button className="fb-btn-primary full-width" style={{ background: "#42b72a", padding: "12px", fontSize: "16px" }} onClick={handleVerify} disabled={isActing}>
-                                {isActing ? <FaSpinner className="post-detail-spinner" /> : <><FaCheckCircle /> تأكيد الإنجاز ومنح النقاط للصنايعي</>}
-                            </button>
+                        {post.has_offered && isCraftsman && (
+                            <div className="detail-card offered-notice">
+                                <FaCheckCircle />
+                                <span>لقد قدمت عرضك على هذا الطلب بالفعل</span>
+                            </div>
                         )}
+
+                        {/* Offers list */}
+                        <div className="detail-card offers-list-card">
+                            <h3 className="offers-title">
+                                <FaComments /> العروض المقدمة ({offers.length})
+                            </h3>
+
+                            {offers.length === 0 ? (
+                                <div className="offers-empty">
+                                    <span>📭</span>
+                                    <p>لا توجد عروض بعد. كن أول من يقدم عرضاً!</p>
+                                </div>
+                            ) : (
+                                <div className="offers-list">
+                                    {offers.map((offer) => (
+                                        <div key={offer.id} className={`offer-item ${offer.status === "accepted" ? "accepted" : ""}`}>
+                                            <div className="offer-header">
+                                                <div className="offer-craftsman">
+                                                    <img
+                                                        src={getAvatarUrl(offer.craftsman.avatar, offer.craftsman.name)}
+                                                        alt={offer.craftsman.name}
+                                                        className="offer-avatar"
+                                                    />
+                                                    <div className="offer-craftsman-info">
+                                                        <span className="offer-craftsman-name">{offer.craftsman.name}</span>
+                                                        <div className="offer-craftsman-rating">
+                                                            <FaStar className="star-icon" />
+                                                            <span>{offer.craftsman.rating || "جديد"}</span>
+                                                            <span className="offer-jobs">({offer.craftsman.completed_jobs} مهمة)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {offer.status === "accepted" && (
+                                                    <span className="offer-accepted-badge">
+                                                        <FaCheckCircle /> مقبول
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            <p className="offer-description">{offer.description}</p>
+
+                                            <div className="offer-details">
+                                                <div className="offer-price">
+                                                    <FaMoneyBillWave />
+                                                    <strong>{offer.price} ج.م</strong>
+                                                </div>
+                                                <div className="offer-delivery">
+                                                    <FaClock />
+                                                    <span>{offer.delivery_days} يوم</span>
+                                                </div>
+                                            </div>
+
+                                            {canAcceptOffer && offer.status === "pending" && (
+                                                <button
+                                                    className="offer-accept-btn"
+                                                    onClick={() => handleAcceptOffer(offer.id)}
+                                                    disabled={isActing}
+                                                >
+                                                    {isActing ? <FaSpinner className="detail-spinner" /> : <>قبول العرض <FaCheckCircle /></>}
+                                                </button>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
 
             {/* Lightbox */}
             {lightboxImg && (
-                <div className="post-detail-lightbox" onClick={() => setLightboxImg(null)} style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.9)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <img src={lightboxImg} alt="full" style={{ maxWidth: "90%", maxHeight: "90%", objectFit: "contain" }} />
+                <div className="detail-lightbox" onClick={() => setLightboxImg(null)}>
+                    <img src={lightboxImg} alt="full" />
                 </div>
             )}
         </section>

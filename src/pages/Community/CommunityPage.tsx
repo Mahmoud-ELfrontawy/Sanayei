@@ -1,44 +1,49 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaEdit, FaImage, FaMapMarkerAlt, FaSpinner, FaTrophy, FaSearch, FaFilter } from "react-icons/fa";
+import { FaSearch, FaFilter, FaPlus, FaSpinner, FaBriefcase, FaChevronDown } from "react-icons/fa";
 import { useCommunity } from "../../context/CommunityContext";
 import { useAuth } from "../../hooks/useAuth";
 import PostCard from "./PostCard";
-import PointsBadge from "./PointsBadge";
-import { getAvatarUrl } from "../../utils/imageUrl";
 import "./CommunityPage.css";
 
 const CATEGORIES = [
-    { value: "", label: "الكل" },
-    { value: "electrical", label: "كهرباء" },
-    { value: "plumbing", label: "سباكة" },
-    { value: "masonry", label: "بناء" },
-    { value: "carpentry", label: "نجارة" },
-    { value: "painting", label: "دهانات" },
-    { value: "ac", label: "تكييف" },
-    { value: "other", label: "أخرى" },
+    { value: "", label: "كل التخصصات" },
+    { value: "electrical", label: "⚡ كهرباء" },
+    { value: "plumbing", label: "🔧 سباكة" },
+    { value: "masonry", label: "🧱 بناء" },
+    { value: "carpentry", label: "🪚 نجارة" },
+    { value: "painting", label: "🎨 دهانات" },
+    { value: "ac", label: "❄️ تكييف" },
+    { value: "other", label: "🔨 أخرى" },
+];
+
+const STATUS_OPTIONS = [
+    { value: "", label: "كل الحالات" },
+    { value: "open", label: "مفتوح للعروض" },
+    { value: "in_progress", label: "قيد التنفيذ" },
+    { value: "completed", label: "مكتمل" },
 ];
 
 const CommunityPage: React.FC = () => {
-    const { user, isAuthenticated } = useAuth();
+    const { userType, isAuthenticated } = useAuth();
     const navigate = useNavigate();
     const {
-        posts, leaderboard, myPoints, isLoading, hasMore, filters,
-        setFilters, fetchPosts, fetchLeaderboard, fetchMyPoints,
+        posts, isLoading, hasMore, filters,
+        setFilters, fetchPosts,
     } = useCommunity();
 
     const [searchInput, setSearchInput] = useState("");
-    const [urgencyFilter, setUrgencyFilter] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("");
+    const [statusFilter, setStatusFilter] = useState("");
+    const [showFilters, setShowFilters] = useState(false);
 
-    // Initial load
+    const canCreateRequest = isAuthenticated && userType !== "craftsman";
+
     useEffect(() => {
         fetchPosts(true);
-        fetchLeaderboard();
-        if (isAuthenticated) fetchMyPoints();
     }, [filters]);
 
-    // Infinite scroll observer
+    // Infinite scroll
     const observer = useRef<IntersectionObserver | null>(null);
     const lastPostRef = useCallback((node: HTMLDivElement | null) => {
         if (isLoading) return;
@@ -50,184 +55,139 @@ const CommunityPage: React.FC = () => {
     }, [isLoading, hasMore]);
 
     const applyFilters = () => {
-        setFilters({ category: categoryFilter, urgency: urgencyFilter, search: searchInput });
+        setFilters({ category: categoryFilter, status: statusFilter, search: searchInput });
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === "Enter") applyFilters();
     };
 
+    const activeFiltersCount = [categoryFilter, statusFilter, searchInput].filter(Boolean).length;
+
     return (
-        <section className="fb-community-page">
-            <div className="fb-community-layout">
-                {/* ── LEFT SIDEBAR (Profile & Filters) ── */}
-                <aside className="fb-sidebar fb-left-sidebar desktop-only">
-                    <div className="fb-filters-card">
-                        <h4 className="fb-card-title"><FaFilter /> تصفية البلاغات</h4>
-                        
-                        <div className="fb-search-box">
-                            <FaSearch className="fb-search-icon" />
-                            <input
-                                type="text"
-                                placeholder="ابحث..."
-                                value={searchInput}
-                                onChange={(e) => setSearchInput(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                            />
+        <section className="mkt-page">
+            {/* Hero Header */}
+            <div className="mkt-hero">
+                <div className="mkt-hero-content">
+                    <div className="mkt-hero-text">
+                        <h1>
+                            <FaBriefcase className="mkt-hero-icon" />
+                            سوق الطلبات
+                        </h1>
+                        <p>انشر طلبك واحصل على أفضل العروض من الصنايعية المحترفين</p>
+                    </div>
+                    {canCreateRequest && (
+                        <button className="mkt-create-btn" onClick={() => navigate("/community/new")}>
+                            <FaPlus />
+                            <span>انشر طلب جديد</span>
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            {/* Filters */}
+            <div className="mkt-filters-wrapper">
+                <div className="mkt-filters-bar">
+                    <div className="mkt-search-box">
+                        <FaSearch className="mkt-search-icon" />
+                        <input
+                            type="text"
+                            placeholder="ابحث عن طلبات..."
+                            value={searchInput}
+                            onChange={(e) => setSearchInput(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                        />
+                    </div>
+
+                    <button
+                        className={`mkt-filter-toggle ${showFilters ? "active" : ""}`}
+                        onClick={() => setShowFilters(!showFilters)}
+                    >
+                        <FaFilter />
+                        <span>تصفية</span>
+                        {activeFiltersCount > 0 && (
+                            <span className="mkt-filter-badge">{activeFiltersCount}</span>
+                        )}
+                        <FaChevronDown className={`mkt-chevron ${showFilters ? "rotated" : ""}`} />
+                    </button>
+                </div>
+
+                {showFilters && (
+                    <div className="mkt-filters-panel">
+                        <div className="mkt-filter-group">
+                            <label>التخصص</label>
+                            <div className="mkt-pills">
+                                {CATEGORIES.map((c) => (
+                                    <button
+                                        key={c.value}
+                                        className={`mkt-pill ${categoryFilter === c.value ? "active" : ""}`}
+                                        onClick={() => setCategoryFilter(c.value)}
+                                    >
+                                        {c.label}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-
-                        <select
-                            value={categoryFilter}
-                            onChange={(e) => setCategoryFilter(e.target.value)}
-                            className="fb-filter-select"
-                        >
-                            {CATEGORIES.map((c) => (
-                                <option key={c.value} value={c.value}>{c.label}</option>
-                            ))}
-                        </select>
-
-                        <select
-                            value={urgencyFilter}
-                            onChange={(e) => setUrgencyFilter(e.target.value)}
-                            className="fb-filter-select"
-                        >
-                            <option value="">كل الأولويات</option>
-                            <option value="urgent">طارئ فقط</option>
-                            <option value="normal">عادي فقط</option>
-                        </select>
-
-                        <button className="fb-btn-primary full-width" onClick={applyFilters}>
+                        <div className="mkt-filter-group">
+                            <label>الحالة</label>
+                            <div className="mkt-pills">
+                                {STATUS_OPTIONS.map((s) => (
+                                    <button
+                                        key={s.value}
+                                        className={`mkt-pill ${statusFilter === s.value ? "active" : ""}`}
+                                        onClick={() => setStatusFilter(s.value)}
+                                    >
+                                        {s.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        <button className="mkt-apply-btn" onClick={applyFilters}>
                             تطبيق التصفية
                         </button>
                     </div>
+                )}
+            </div>
 
-                    {isAuthenticated && user && (
-                        <div className="fb-profile-card">
-                            <img 
-                                src={getAvatarUrl(user.avatar, user.name)} 
-                                alt={user.name} 
-                                className="fb-profile-avatar-large" 
-                            />
-                            <h3 className="fb-profile-name">{user.name}</h3>
-                            {myPoints ? (
-                                <div className="fb-profile-stats">
-                                    <PointsBadge badge={myPoints.badge} points={myPoints.total_points} />
-                                    <div className="fb-profile-stat-row">
-                                        <span>إنجازات:</span>
-                                        <strong>{myPoints.verified_jobs} خدمة مجتمعية</strong>
-                                    </div>
-                                    <div className="fb-profile-stat-row">
-                                        <span>قسائم السحب:</span>
-                                        <strong>{myPoints.draw_entries} 🎁</strong>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="community-loading"><FaSpinner className="community-spinner" /></div>
-                            )}
-                        </div>
-                    )}
-                </aside>
-
-                {/* ── CENTER COLUMN (Feed) ── */}
-                <main className="fb-feed-column">
-                    {/* Create Post Box */}
-                    {isAuthenticated && user && (
-                        <div className="fb-create-post-box">
-                            <div className="fb-create-top">
-                                <img 
-                                    src={getAvatarUrl(user.avatar, user.name)} 
-                                    alt={user.name} 
-                                    className="fb-create-avatar" 
+            {/* Posts Grid */}
+            <div className="mkt-content">
+                <div className="mkt-posts-grid">
+                    {posts.map((post, idx) => {
+                        const isLast = idx === posts.length - 1;
+                        return (
+                            <div key={post.id} ref={isLast ? lastPostRef : undefined}>
+                                <PostCard
+                                    post={post}
+                                    onClick={() => navigate(`/community/${post.id}`)}
                                 />
-                                <button className="fb-create-input-btn" onClick={() => navigate("/community/new")}>
-                                    شارك بلاغ جديد في مجتمعك يا {user.name.split(" ")[0]}...
-                                </button>
                             </div>
-                            <div className="fb-create-bottom">
-                                <button className="fb-create-action" onClick={() => navigate("/community/new")}>
-                                    <FaImage className="text-green" /> صورة المشكلة
-                                </button>
-                                <button className="fb-create-action" onClick={() => navigate("/community/new")}>
-                                    <FaMapMarkerAlt className="text-red" /> الموقع
-                                </button>
-                                <button className="fb-create-action" onClick={() => navigate("/community/new")}>
-                                    <FaEdit className="text-blue" /> التفاصيل
-                                </button>
-                            </div>
-                        </div>
-                    )}
+                        );
+                    })}
+                </div>
 
-                    {/* Posts List */}
-                    <div className="fb-posts-list">
-                        {posts.map((post, idx) => {
-                            const isLast = idx === posts.length - 1;
-                            return (
-                                <div key={post.id} ref={isLast ? lastPostRef : undefined}>
-                                    <PostCard
-                                        post={post}
-                                        onClick={() => navigate(`/community/${post.id}`)}
-                                    />
-                                </div>
-                            );
-                        })}
+                {isLoading && (
+                    <div className="mkt-loading">
+                        <FaSpinner className="mkt-spinner" />
+                        <span>جاري التحميل...</span>
+                    </div>
+                )}
 
-                        {isLoading && (
-                            <div className="community-loading fb-card">
-                                <FaSpinner className="community-spinner" />
-                                <span>جاري التحميل...</span>
-                            </div>
-                        )}
-
-                        {!isLoading && posts.length === 0 && (
-                            <div className="fb-empty-state fb-card">
-                                <span>🏘️</span>
-                                <p>لا يوجد بلاغات تطابق بحثك. كُن الأول وساعد مجتمعك!</p>
-                            </div>
-                        )}
-
-                        {!hasMore && posts.length > 0 && (
-                            <p className="fb-end-msg">لقد شاهدت جميع البلاغات 🏁</p>
+                {!isLoading && posts.length === 0 && (
+                    <div className="mkt-empty">
+                        <span className="mkt-empty-icon">📋</span>
+                        <h3>لا توجد طلبات حالياً</h3>
+                        <p>كن أول من ينشر طلب خدمة واحصل على عروض من الصنايعية!</p>
+                        {canCreateRequest && (
+                            <button className="mkt-create-btn" onClick={() => navigate("/community/new")}>
+                                <FaPlus /> انشر طلب جديد
+                            </button>
                         )}
                     </div>
-                </main>
+                )}
 
-                {/* ── RIGHT SIDEBAR (Leaderboard) ── */}
-                <aside className="fb-sidebar fb-right-sidebar desktop-only">
-                    <div className="fb-leaderboard-card">
-                        <div className="fb-leaderboard-header">
-                            <FaTrophy className="text-gold" />
-                            <h4>أبطال المجتمع</h4>
-                        </div>
-                        <p className="fb-leaderboard-subtitle">الأكثر مساهمة هذا الشهر</p>
-                        
-                        <div className="fb-leaderboard-list">
-                            {leaderboard.map((entry) => (
-                                <div key={entry.rank} className="fb-lb-item">
-                                    <div className="fb-lb-avatar-wrap">
-                                        <img
-                                            src={getAvatarUrl(entry.user.avatar, entry.user.name)}
-                                            alt={entry.user.name}
-                                            className="fb-lb-avatar"
-                                        />
-                                        <span className={`fb-lb-rank rank-${entry.rank}`}>
-                                            {entry.rank === 1 ? "🥇" : entry.rank === 2 ? "🥈" : entry.rank === 3 ? "🥉" : entry.rank}
-                                        </span>
-                                    </div>
-                                    <div className="fb-lb-info">
-                                        <span className="fb-lb-name">{entry.user.name}</span>
-                                        <span className="fb-lb-pts">{entry.total_points} نقطة</span>
-                                    </div>
-                                </div>
-                            ))}
-                            {leaderboard.length === 0 && (
-                                <div className="fb-empty-state small">
-                                    <span>🏆</span>
-                                    <p>لا يوجد إنجازات بعد</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </aside>
+                {!hasMore && posts.length > 0 && (
+                    <p className="mkt-end-msg">لقد شاهدت جميع الطلبات 🏁</p>
+                )}
             </div>
         </section>
     );

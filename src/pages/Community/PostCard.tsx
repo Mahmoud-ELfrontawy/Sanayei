@@ -1,17 +1,17 @@
-import { FaMapMarkerAlt, FaGlobeAmericas, FaEllipsisH, FaExclamationTriangle } from "react-icons/fa";
+import { FaMapMarkerAlt, FaMoneyBillWave, FaComments, FaClock, FaCheckCircle } from "react-icons/fa";
 import { formatTimeAgo } from "../../utils/timeAgo";
 import { getAvatarUrl } from "../../utils/imageUrl";
 import type { CommunityPost } from "../../Api/community.api";
 import "./PostCard.css";
 
-const CATEGORY_LABELS: Record<string, string> = {
-    electrical: "أعمال كهرباء",
-    plumbing: "أعمال سباكة",
-    masonry: "أعمال بناء",
-    carpentry: "أعمال نجارة",
-    painting: "أعمال دهانات",
-    ac: "تكييف وتبريد",
-    other: "أخرى",
+const CATEGORY_LABELS: Record<string, { label: string; emoji: string }> = {
+    electrical: { label: "كهرباء", emoji: "⚡" },
+    plumbing: { label: "سباكة", emoji: "🔧" },
+    masonry: { label: "بناء", emoji: "🧱" },
+    carpentry: { label: "نجارة", emoji: "🪚" },
+    painting: { label: "دهانات", emoji: "🎨" },
+    ac: { label: "تكييف", emoji: "❄️" },
+    other: { label: "أخرى", emoji: "🔨" },
 };
 
 interface PostCardProps {
@@ -20,117 +20,103 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
-    const isUrgent = post.urgency === "urgent";
+    const cat = CATEGORY_LABELS[post.category] || { label: post.category, emoji: "🔨" };
 
-    const getStatusText = () => {
+    const getStatusInfo = () => {
         switch (post.status) {
-            case "open": return "متاح للمساعدة";
-            case "in_progress": return "صنايعي في الطريق";
-            case "completed": return "بانتظار تأكيد الإنجاز";
-            case "verified": return "تم حل المشكلة";
-            default: return post.status;
+            case "open": return { text: "مفتوح للعروض", className: "status-open" };
+            case "in_progress": return { text: "قيد التنفيذ", className: "status-progress" };
+            case "completed": return { text: "مكتمل", className: "status-done" };
+            case "cancelled": return { text: "ملغي", className: "status-cancelled" };
+            default: return { text: post.status, className: "" };
         }
     };
 
+    const statusInfo = getStatusInfo();
+    const hasBudget = post.budget_min || post.budget_max;
+
     return (
-        <article className={`fb-post-card ${isUrgent ? 'is-urgent' : ''}`} onClick={onClick}>
-            {/* Header: Avatar, Name, Time, Privacy */}
-            <div className="fb-post-header">
-                <img
-                    src={getAvatarUrl(post.user.avatar, post.user.name)}
-                    alt={post.user.name}
-                    className="fb-post-avatar"
-                />
-                <div className="fb-post-header-info">
-                    <div className="fb-post-author-row">
-                        <span className="fb-post-author-name">{post.user.name}</span>
-                        {/* {post.user.type === 'company' && <FaCheckCircle className="verified-icon" />} */}
+        <article className="req-card" onClick={onClick}>
+            {/* Image OR Placeholder */}
+            <div className={`req-card-img ${!post.images || post.images.length === 0 ? "no-image" : ""}`}>
+                {post.images && post.images.length > 0 ? (
+                    <>
+                        <img src={post.images[0]} alt={post.title} loading="lazy" />
+                        {post.images.length > 1 && (
+                            <span className="req-card-img-count">+{post.images.length - 1}</span>
+                        )}
+                    </>
+                ) : (
+                    // Placeholder when no image exists
+                    <div className="req-card-img-placeholder">
+                        <span className="placeholder-icon">{cat.emoji}</span>
+                        <span className="placeholder-text">{cat.label}</span>
                     </div>
-                    <div className="fb-post-meta">
-                        <span className="fb-post-time">{formatTimeAgo(post.created_at)}</span>
-                        <span className="fb-post-dot">•</span>
-                        <span className="fb-post-category">{CATEGORY_LABELS[post.category] || post.category}</span>
-                        <span className="fb-post-dot">•</span>
-                        <FaGlobeAmericas className="fb-post-privacy-icon" />
-                    </div>
-                </div>
-                <button className="fb-post-options-btn" aria-label="خيارات المنشور">
-                    <FaEllipsisH />
-                </button>
-            </div>
-
-            {/* Badges Row (Urgency + Status + Location) */}
-            <div className="fb-post-badges">
-                {isUrgent && (
-                    <span className="fb-badge badge-urgent">
-                        <FaExclamationTriangle /> حالة طارئة
-                    </span>
                 )}
-                <span className={`fb-badge badge-status status-${post.status}`}>
-                    {getStatusText()}
+                <span className={`req-card-status-badge ${statusInfo.className}`}>
+                    {post.status === "completed" && <FaCheckCircle />}
+                    {statusInfo.text}
                 </span>
-                {post.location && (
-                    <span className="fb-badge badge-location">
-                        <FaMapMarkerAlt /> {post.location}
+            </div>
+
+            {/* Body */}
+            <div className="req-card-body">
+                {/* Category (Always visible) */}
+                <div className="req-card-top-row">
+                    <span className="req-card-category">
+                        {cat.emoji} {cat.label}
                     </span>
-                )}
-            </div>
-
-            {/* Post Content */}
-            <div className="fb-post-content">
-                {post.title && <h3 className="fb-post-title">{post.title}</h3>}
-                <p className="fb-post-text">{post.description}</p>
-            </div>
-
-            {/* Images Grid */}
-            {post.images && post.images.length > 0 && (
-                <div className={`fb-post-images grid-${Math.min(post.images.length, 4)}`}>
-                    {post.images.slice(0, 4).map((img, idx) => (
-                        <div key={idx} className="fb-img-wrapper">
-                            <img src={img} alt={`صورة المشكلة ${idx + 1}`} loading="lazy" />
-                            {idx === 3 && post.images.length > 4 && (
-                                <div className="fb-img-overlay">
-                                    <span>+{post.images.length - 4}</span>
-                                </div>
-                            )}
-                        </div>
-                    ))}
                 </div>
-            )}
 
-            {/* Stats Row */}
-            <div className="fb-post-stats">
-                <div className="fb-stat-left">
-                    {post.interested_count > 0 && (
-                        <div className="fb-reaction-group">
-                            <span className="fb-reaction-icon">✋</span>
-                            <span className="fb-stat-text">{post.interested_count} مهتمين بالمساعدة</span>
+                {/* Title */}
+                <h3 className="req-card-title">{post.title}</h3>
+
+                {/* Description */}
+                <p className="req-card-desc">{post.description}</p>
+
+                {/* Meta */}
+                <div className="req-card-meta">
+                    <div className="req-card-meta-row">
+                        {hasBudget && (
+                            <div className="req-card-meta-item budget">
+                                <FaMoneyBillWave />
+                                <span>
+                                    {post.budget_min && post.budget_max
+                                        ? `${post.budget_min} - ${post.budget_max} ج.م`
+                                        : post.budget_max
+                                        ? `حتى ${post.budget_max} ج.م`
+                                        : `من ${post.budget_min} ج.م`}
+                                </span>
+                            </div>
+                        )}
+                        <div className="req-card-meta-item offers">
+                            <FaComments />
+                            <span>{post.offers_count} عرض</span>
+                        </div>
+                    </div>
+                    {post.location && (
+                        <div className="req-card-meta-item location">
+                            <FaMapMarkerAlt />
+                            <span>{post.location}</span>
                         </div>
                     )}
                 </div>
-                {post.points_reward > 0 && (
-                    <div className="fb-stat-right">
-                        <span className="fb-stat-text points-reward">🏆 {post.points_reward} نقطة</span>
-                    </div>
-                )}
-            </div>
 
-            {/* Action Buttons (No Comments) */}
-            <div className="fb-post-actions">
-                <button 
-                    className={`fb-action-btn ${post.user_has_accepted ? 'active' : ''}`}
-                    onClick={(e) => { e.stopPropagation(); onClick(); }}
-                >
-                    <span className="action-icon">✋</span>
-                    <span className="action-text">{post.user_has_accepted ? 'تم تسجيل الاهتمام' : 'مهتم بالمساعدة'}</span>
-                </button>
-                <button 
-                    className="fb-action-btn share-btn"
-                    onClick={(e) => { e.stopPropagation(); /* share logic */ }}
-                >
-                    <span className="action-icon">📤</span>
-                    <span className="action-text">مشاركة</span>
-                </button>
+                {/* Footer */}
+                <div className="req-card-footer">
+                    <div className="req-card-author">
+                        <img
+                            src={getAvatarUrl(post.user.avatar, post.user.name)}
+                            alt={post.user.name}
+                            className="req-card-avatar"
+                        />
+                        <span className="req-card-author-name">{post.user.name}</span>
+                    </div>
+                    <span className="req-card-time">
+                        <FaClock />
+                        {formatTimeAgo(post.created_at)}
+                    </span>
+                </div>
             </div>
         </article>
     );

@@ -1,36 +1,47 @@
 import api from "./api";
 
+export interface ServiceOffer {
+    id: number;
+    craftsman: {
+        id: number;
+        name: string;
+        avatar: string;
+        rating: number;
+        completed_jobs: number;
+    };
+    price: number;
+    description: string;
+    delivery_days: number;
+    status: "pending" | "accepted" | "rejected";
+    created_at: string;
+}
+
 export interface CommunityPost {
     id: number;
     title: string;
     description: string;
     category: string;
-    urgency: "urgent" | "normal";
+    budget_min?: number;
+    budget_max?: number;
     location: string;
     latitude?: number;
     longitude?: number;
     images: string[];
-    before_images?: string[];
-    after_images?: string[];
-    status: "open" | "in_progress" | "completed" | "verified";
+    status: "open" | "in_progress" | "completed" | "cancelled";
     user: {
         id: number;
         name: string;
         avatar: string;
         type: string;
     };
-    acceptor?: {
-        id: number;
-        name: string;
-        avatar: string;
-    };
+    accepted_offer?: ServiceOffer;
+    offers_count: number;
+    offers?: ServiceOffer[];
     comments_count: number;
-    interested_count: number;
-    points_reward: number;
     created_at: string;
     updated_at: string;
     is_mine: boolean;
-    user_has_accepted: boolean;
+    has_offered: boolean;
 }
 
 export interface CommunityComment {
@@ -40,45 +51,18 @@ export interface CommunityComment {
         id: number;
         name: string;
         avatar: string;
+        type: string;
     };
     created_at: string;
-}
-
-export interface LeaderboardEntry {
-    rank: number;
-    user: {
-        id: number;
-        name: string;
-        avatar: string;
-    };
-    total_points: number;
-    verified_jobs: number;
-    badge: "bronze" | "silver" | "gold" | "platinum";
-}
-
-export interface PointsHistory {
-    id: number;
-    action: string;
-    points: number;
-    post_title?: string;
-    created_at: string;
-}
-
-export interface MyPoints {
-    total_points: number;
-    verified_jobs: number;
-    badge: "bronze" | "silver" | "gold" | "platinum";
-    history: PointsHistory[];
-    next_draw_date: string;
-    draw_entries: number;
 }
 
 // ── Feed ──────────────────────────────────────────────
 export const getCommunityPosts = async (params?: {
     page?: number;
     category?: string;
-    urgency?: string;
-    governorate?: string;
+    status?: string;
+    budget_min?: number;
+    budget_max?: number;
     search?: string;
 }) => {
     const res = await api.get("community/posts", { params });
@@ -103,21 +87,23 @@ export const deleteCommunityPost = async (id: number) => {
     return res.data;
 };
 
-// ── Accept / Complete / Verify ──────────────────────────
-export const acceptCommunityPost = async (id: number) => {
-    const res = await api.post(`community/posts/${id}/accept`);
+// ── Offers ──────────────────────────────────────────────
+export const getPostOffers = async (postId: number) => {
+    const res = await api.get(`community/posts/${postId}/offers`);
     return res.data;
 };
 
-export const completeCommunityPost = async (id: number, formData: FormData) => {
-    const res = await api.post(`community/posts/${id}/complete`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-    });
+export const submitOffer = async (postId: number, data: {
+    price: number;
+    description: string;
+    delivery_days: number;
+}) => {
+    const res = await api.post(`community/posts/${postId}/offers`, data);
     return res.data;
 };
 
-export const verifyCommunityPost = async (id: number) => {
-    const res = await api.post(`community/posts/${id}/verify`);
+export const acceptOffer = async (postId: number, offerId: number) => {
+    const res = await api.post(`community/posts/${postId}/offers/${offerId}/accept`);
     return res.data;
 };
 
@@ -129,16 +115,5 @@ export const getCommunityComments = async (postId: number) => {
 
 export const addCommunityComment = async (postId: number, body: string) => {
     const res = await api.post(`community/posts/${postId}/comments`, { body });
-    return res.data;
-};
-
-// ── Points & Leaderboard ──────────────────────────────────
-export const getCommunityLeaderboard = async () => {
-    const res = await api.get("community/leaderboard");
-    return res.data;
-};
-
-export const getMyPoints = async () => {
-    const res = await api.get("community/my-points");
     return res.data;
 };

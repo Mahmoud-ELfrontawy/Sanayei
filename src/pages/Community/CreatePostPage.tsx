@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaArrowRight, FaMapMarkerAlt, FaCamera, FaExclamationTriangle, FaCheckCircle } from "react-icons/fa";
-import { createCommunityPost } from "../../Api/community.api";
+import { FaArrowRight, FaMapMarkerAlt, FaCamera, FaCheckCircle, FaMoneyBillWave } from "react-icons/fa";
+// import { createCommunityPost } from "../../Api/community.api"; // TODO: uncomment when switching to real API
 import { useCommunity } from "../../context/CommunityContext";
 import { toast } from "react-toastify";
 import "./CreatePostPage.css";
@@ -16,7 +16,7 @@ const CATEGORIES = [
     { value: "other", label: "🔨 أخرى" },
 ];
 
-const STEPS = ["تفاصيل المشكلة", "الصور والموقع", "مراجعة ونشر"];
+const STEPS = ["تفاصيل الخدمة", "الميزانية والصور", "مراجعة ونشر"];
 
 const CreatePostPage: React.FC = () => {
     const navigate = useNavigate();
@@ -27,7 +27,8 @@ const CreatePostPage: React.FC = () => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState("electrical");
-    const [urgency, setUrgency] = useState<"urgent" | "normal">("normal");
+    const [budgetMin, setBudgetMin] = useState("");
+    const [budgetMax, setBudgetMax] = useState("");
     const [location, setLocation] = useState("");
     const [images, setImages] = useState<File[]>([]);
     const [previews, setPreviews] = useState<string[]>([]);
@@ -40,28 +41,34 @@ const CreatePostPage: React.FC = () => {
 
     const handleSubmit = async () => {
         setIsSubmitting(true);
-        try {
-            const formData = new FormData();
-            formData.append("title", title);
-            formData.append("description", description);
-            formData.append("category", category);
-            formData.append("urgency", urgency);
-            formData.append("location", location);
-            images.forEach((img) => formData.append("images[]", img));
-
-            const res = await createCommunityPost(formData);
-            prependPost(res.data ?? res);
-            toast.success("تم نشر البلاغ بنجاح! 🎉");
-            navigate("/community");
-        } catch {
-            toast.error("حدث خطأ أثناء النشر، حاول مجدداً");
-        } finally {
-            setIsSubmitting(false);
-        }
+        // MOCK MODE: create post locally
+        await new Promise((r) => setTimeout(r, 500));
+        const mockPost = {
+            id: Date.now(),
+            title,
+            description,
+            category,
+            budget_min: budgetMin ? Number(budgetMin) : undefined,
+            budget_max: budgetMax ? Number(budgetMax) : undefined,
+            location,
+            images: previews,
+            status: "open" as const,
+            user: { id: 999, name: "أنت", avatar: "", type: "user" },
+            offers_count: 0,
+            comments_count: 0,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            is_mine: true,
+            has_offered: false,
+        };
+        prependPost(mockPost);
+        toast.success("تم نشر طلب الخدمة بنجاح! 🎉");
+        navigate("/community");
+        setIsSubmitting(false);
     };
 
     const canProceedStep0 = title.trim().length >= 5 && description.trim().length >= 10;
-    const canProceedStep1 = true; // images optional
+    const canProceedStep1 = true;
 
     return (
         <section className="create-post-page">
@@ -70,7 +77,7 @@ const CreatePostPage: React.FC = () => {
                 <button className="create-post-back-btn" onClick={() => (step > 0 ? setStep(step - 1) : navigate("/community"))}>
                     <FaArrowRight />
                 </button>
-                <h1>نشر بلاغ جديد</h1>
+                <h1>نشر طلب خدمة جديد</h1>
             </div>
 
             {/* Progress */}
@@ -89,28 +96,11 @@ const CreatePostPage: React.FC = () => {
                 {/* ── Step 0: Details ── */}
                 {step === 0 && (
                     <div className="create-post-step-content">
-                        <div className="create-post-urgency-toggle">
-                            <button
-                                className={`urgency-btn normal ${urgency === "normal" ? "active" : ""}`}
-                                onClick={() => setUrgency("normal")}
-                                type="button"
-                            >
-                                عادي
-                            </button>
-                            <button
-                                className={`urgency-btn urgent ${urgency === "urgent" ? "active" : ""}`}
-                                onClick={() => setUrgency("urgent")}
-                                type="button"
-                            >
-                                <FaExclamationTriangle /> طارئ
-                            </button>
-                        </div>
-
                         <div className="create-post-field">
-                            <label>عنوان المشكلة *</label>
+                            <label>عنوان الخدمة المطلوبة *</label>
                             <input
                                 type="text"
-                                placeholder="مثال: ماس كهربي في مسجد النور"
+                                placeholder="مثال: تركيب وصلات كهرباء في شقة جديدة"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                                 maxLength={100}
@@ -135,9 +125,9 @@ const CreatePostPage: React.FC = () => {
                         </div>
 
                         <div className="create-post-field">
-                            <label>وصف المشكلة بالتفصيل *</label>
+                            <label>وصف الخدمة بالتفصيل *</label>
                             <textarea
-                                placeholder="اشرح المشكلة بالتفصيل حتى يتمكن الصنايعي من الاستعداد المناسب..."
+                                placeholder="اشرح بالتفصيل ماذا تحتاج حتى يتمكن الصنايعي من تقديم عرض مناسب..."
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 rows={5}
@@ -156,11 +146,32 @@ const CreatePostPage: React.FC = () => {
                     </div>
                 )}
 
-                {/* ── Step 1: Images & Location ── */}
+                {/* ── Step 1: Budget, Images & Location ── */}
                 {step === 1 && (
                     <div className="create-post-step-content">
                         <div className="create-post-field">
-                            <label><FaCamera /> صور المشكلة (حتى 4 صور)</label>
+                            <label><FaMoneyBillWave /> الميزانية المتوقعة (ج.م)</label>
+                            <div className="create-post-budget-row">
+                                <input
+                                    type="number"
+                                    placeholder="من"
+                                    value={budgetMin}
+                                    onChange={(e) => setBudgetMin(e.target.value)}
+                                    min="0"
+                                />
+                                <span className="budget-separator">إلى</span>
+                                <input
+                                    type="number"
+                                    placeholder="إلى"
+                                    value={budgetMax}
+                                    onChange={(e) => setBudgetMax(e.target.value)}
+                                    min="0"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="create-post-field">
+                            <label><FaCamera /> صور توضيحية (حتى 4 صور)</label>
                             <label htmlFor="post-images" className="create-post-upload-area">
                                 {previews.length > 0 ? (
                                     <div className="create-post-previews">
@@ -190,7 +201,7 @@ const CreatePostPage: React.FC = () => {
                             <label><FaMapMarkerAlt /> الموقع (المنطقة أو الحي)</label>
                             <input
                                 type="text"
-                                placeholder="مثال: مسجد النور، شارع السلام، القاهرة"
+                                placeholder="مثال: مدينة نصر، القاهرة"
                                 value={location}
                                 onChange={(e) => setLocation(e.target.value)}
                             />
@@ -210,12 +221,19 @@ const CreatePostPage: React.FC = () => {
                     <div className="create-post-step-content">
                         <div className="create-post-preview-card">
                             <div className="create-post-preview-header">
-                                <span className={`create-post-preview-badge ${urgency}`}>
-                                    {urgency === "urgent" ? "⚠️ طارئ" : "✅ عادي"}
-                                </span>
                                 <span className="create-post-preview-cat">
                                     {CATEGORIES.find((c) => c.value === category)?.label}
                                 </span>
+                                {(budgetMin || budgetMax) && (
+                                    <span className="create-post-preview-budget">
+                                        <FaMoneyBillWave />
+                                        {budgetMin && budgetMax
+                                            ? `${budgetMin} - ${budgetMax} ج.م`
+                                            : budgetMax
+                                            ? `حتى ${budgetMax} ج.م`
+                                            : `من ${budgetMin} ج.م`}
+                                    </span>
+                                )}
                             </div>
                             <h2>{title}</h2>
                             <p>{description}</p>
@@ -238,7 +256,7 @@ const CreatePostPage: React.FC = () => {
                                 onClick={handleSubmit}
                                 disabled={isSubmitting}
                             >
-                                {isSubmitting ? "جاري النشر..." : "🚀 نشر البلاغ"}
+                                {isSubmitting ? "جاري النشر..." : "🚀 نشر الطلب"}
                             </button>
                         </div>
                     </div>
