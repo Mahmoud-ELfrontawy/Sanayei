@@ -1,5 +1,14 @@
 import api from "./api";
 
+export interface LeaderboardEntry {
+    id: number;
+    name: string;
+    avatar: string;
+    points: number;
+    rank: number;
+    badge: 'bronze' | 'silver' | 'gold' | 'platinum';
+}
+
 export interface ServiceOffer {
     id: number;
     craftsman: {

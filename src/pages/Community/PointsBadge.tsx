@@ -15,7 +15,7 @@ interface PointsBadgeProps {
 }
 
 const PointsBadge: React.FC<PointsBadgeProps> = ({ badge, points, showLabel = true, size = "md" }) => {
-    const config = BADGE_CONFIG[badge] ?? BADGE_CONFIG.bronze;
+    const config = BADGE_CONFIG[badge as keyof typeof BADGE_CONFIG] ?? BADGE_CONFIG.bronze;
     return (
         <span
             className={`points-badge points-badge-${size}`}

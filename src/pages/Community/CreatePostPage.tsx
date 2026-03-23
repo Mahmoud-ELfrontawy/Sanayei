@@ -30,18 +30,20 @@ const CreatePostPage: React.FC = () => {
     const [budgetMin, setBudgetMin] = useState("");
     const [budgetMax, setBudgetMax] = useState("");
     const [location, setLocation] = useState("");
-    const [images, setImages] = useState<File[]>([]);
+    // const [images, setImages] = useState<File[]>([]);
+
     const [previews, setPreviews] = useState<string[]>([]);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files ?? []).slice(0, 4);
-        setImages(files);
+        // setImages(files); // Unused in mock mode
         setPreviews(files.map((f) => URL.createObjectURL(f)));
     };
 
     const handleSubmit = async () => {
         setIsSubmitting(true);
         // MOCK MODE: create post locally
+        
         await new Promise((r) => setTimeout(r, 500));
         const mockPost = {
             id: Date.now(),
