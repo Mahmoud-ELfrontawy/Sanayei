@@ -1,4 +1,4 @@
-.company-profile-container {
+﻿.company-profile-container {
     padding: 2rem;
     max-width: 1000px;
     margin: 0 auto;
@@ -7,18 +7,18 @@
 
 .profile-header {
     margin-bottom: 2rem;
-    border-bottom: 2px solid #f0f0f0;
+    border-bottom: 2px solid var(--slate-100);
     padding-bottom: 1rem;
 }
 
 .profile-header h2 {
-    color: #333;
+    color: var(--slate-800);
     font-size: 1.8rem;
     margin-bottom: 0.5rem;
 }
 
 .profile-header p {
-    color: #666;
+    color: var(--slate-500);
 }
 
 .profile-edit-form {
@@ -28,11 +28,11 @@
 }
 
 .profile-card {
-    background: #fff;
+    background: var(--white);
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    border: 1px solid #eee;
+    border: 1px solid var(--slate-100);
 }
 
 .card-header {
@@ -40,7 +40,7 @@
     align-items: center;
     gap: 0.8rem;
     margin-bottom: 1.5rem;
-    color: var(--primary-color, #2b6cb0);
+    color: var(--color-primary);
 }
 
 .card-header h3 {
@@ -55,23 +55,23 @@
     gap: 1.5rem;
     padding: 1.5rem 2rem;
     border: none;
-    background: #fff;
+    background: var(--white);
     transition: all 0.3s ease;
 }
 
 .status-display-card.approved {
-    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-    border-right: 5px solid #22c55e;
+    background: linear-gradient(135deg, var(--emerald-50) 0%, var(--emerald-100) 100%);
+    border-right: 5px solid var(--success);
 }
 
 .status-display-card.pending {
-    background: linear-gradient(135deg, #fffaf5 0%, #fff7ed 100%);
-    border-right: 5px solid #f97316;
+    background: linear-gradient(135deg, var(--gold-50) 0%, var(--gold-100) 100%);
+    border-right: 5px solid var(--warning);
 }
 
 .status-display-card.rejected {
-    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-    border-right: 5px solid #ef4444;
+    background: linear-gradient(135deg, var(--error-light) 0%, var(--error-border) 100%);
+    border-right: 5px solid var(--error);
 }
 
 .status-icon-box {
@@ -85,9 +85,9 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
-.approved .status-icon-box { color: #22c55e; }
-.pending .status-icon-box { color: #f97316; }
-.rejected .status-icon-box { color: #ef4444; }
+.approved .status-icon-box { color: var(--success); }
+.pending .status-icon-box { color: var(--warning); }
+.rejected .status-icon-box { color: var(--error); }
 
 .status-text-content h3 {
     margin: 0 0 0.3rem 0;
@@ -95,9 +95,9 @@
     font-weight: 700;
 }
 
-.approved .status-text-content h3 { color: #166534; }
-.pending .status-text-content h3 { color: #9a3412; }
-.rejected .status-text-content h3 { color: #991b1b; }
+.approved .status-text-content h3 { color: var(--emerald-strong); }
+.pending .status-text-content h3 { color: var(--gold-800); }
+.rejected .status-text-content h3 { color: var(--error-text); }
 
 .status-text-content p {
     margin: 0;
@@ -105,9 +105,9 @@
     line-height: 1.5;
 }
 
-.approved .status-text-content p { color: #15803d; }
-.pending .status-text-content p { color: #c2410c; }
-.rejected .status-text-content p { color: #b91c1c; }
+.approved .status-text-content p { color: var(--emerald-strong); }
+.pending .status-text-content p { color: var(--gold-800); }
+.rejected .status-text-content p { color: var(--error-text); }
 
 /* Logo Upload Section */
 .logo-upload-wrapper {
@@ -121,8 +121,8 @@
     height: 120px;
     border-radius: 12px;
     overflow: hidden;
-    background: #f8f9fa;
-    border: 2px dashed #ddd;
+    background: var(--slate-50);
+    border: 2px dashed var(--slate-200);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -135,7 +135,7 @@
 }
 
 .logo-placeholder {
-    color: #aaa;
+    color: var(--slate-400);
     font-size: 0.9rem;
 }
 
@@ -144,8 +144,8 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.6rem 1.2rem;
-    background: #f0f7ff;
-    color: #0066cc;
+    background: var(--chat-blue-bg);
+    color: var(--color-primary);
     border-radius: 8px;
     cursor: pointer;
     transition: 0.2s;
@@ -153,12 +153,12 @@
 }
 
 .upload-btn:hover {
-    background: #e1efff;
+    background: var(--chat-blue-bg);
 }
 
 .upload-btn.has-file {
-    background: #e6fffa;
-    color: #2c7a7b;
+    background: var(--teal-50);
+    color: var(--teal-700);
 }
 
 /* Form Grid */
@@ -181,13 +181,13 @@
 .input-field label {
     font-size: 0.9rem;
     font-weight: 600;
-    color: #555;
+    color: var(--slate-500);
 }
 
 .input-field input, 
 .input-field textarea {
     padding: 0.8rem;
-    border: 1.5px solid #e0e0e0;
+    border: 1.5px solid var(--slate-200);
     border-radius: 8px;
     font-size: 0.95rem;
     transition: 0.2s;
@@ -206,13 +206,13 @@
 }
 
 .input-field input[readonly] {
-    background: #f8f9fa;
-    color: #888;
+    background: var(--slate-50);
+    color: var(--slate-400);
     cursor: not-allowed;
 }
 
 .input-field small {
-    color: #999;
+    color: var(--slate-400);
     font-size: 0.8rem;
 }
 
@@ -229,7 +229,7 @@
     gap: 0.6rem;
     padding: 0.8rem 2rem;
     background: var(--color-primary);
-    color: #fff;
+    color: var(--white);
     border: none;
     border-radius: 8px;
     font-size: 1rem;
@@ -261,8 +261,8 @@
 .spinner {
     width: 40px;
     height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid var(--primary-color, #2b6cb0);
+    border: 4px solid var(--slate-100);
+    border-top: 4px solid var(--color-primary);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 20px;
@@ -311,7 +311,7 @@ html[data-theme="dark"] .status-display-card.pending {
 
 html[data-theme="dark"] .status-display-card.rejected {
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
-    border-right-color: #ef4444;
+    border-right-color: var(--error);
 }
 
 html[data-theme="dark"] .status-icon-box {
@@ -416,3 +416,4 @@ html[data-theme="dark"] .profile-loading p {
         justify-content: center;
     }
 }
+

@@ -50,7 +50,7 @@ function getStrengthInfo(password: string): StrengthInfo {
     const normalizedScore = Math.min(4, score);
 
     if (!hasMix || score <= 1) {
-        return { level: "weak", score: 1, label: "ضعيفة جداً", color: "#ef4444", tips };
+        return { level: "weak", score: 1, label: "ضعيفة جداً", color: "var(--color-error)", tips };
     }
     if (score === 2) {
         return { level: "fair", score: 2, label: "مقبولة", color: "#f97316", tips };
@@ -99,3 +99,4 @@ const PasswordStrengthMeter: React.FC<PasswordStrengthMeterProps> = ({ password 
 };
 
 export default PasswordStrengthMeter;
+

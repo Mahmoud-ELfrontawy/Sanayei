@@ -1,4 +1,4 @@
-.admin-products-container {
+﻿.admin-products-container {
     padding: 2rem;
     animation: fadeIn 0.5s ease-out;
 }
@@ -25,7 +25,7 @@
 }
 
 .admin-products-header p {
-    color: #64748b;
+    color: var(--slate-500);
     font-size: 1rem;
 }
 
@@ -38,7 +38,7 @@
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     margin-bottom: 2rem;
     align-items: center;
-    border: 1px solid #f1f5f9;
+    border: 1px solid var(--slate-100);
 }
 
 .admin-products-search-wrapper {
@@ -50,10 +50,10 @@
     width: 100%;
     padding: 0.8rem 1rem 0.8rem 2.8rem;
     border-radius: 12px;
-    border: 1.5px solid #e2e8f0;
+    border: 1.5px solid var(--slate-200);
     font-size: 0.95rem;
     transition: all 0.3s ease;
-    background: #f8fafc;
+    background: var(--slate-50);
 }
 
 .admin-products-search-wrapper input:focus {
@@ -68,7 +68,7 @@
     left: 1rem;
     top: 50%;
     transform: translateY(-50%);
-    color: #94a3b8;
+    color: var(--slate-400);
 }
 
 .admin-products-table-wrapper {
@@ -79,7 +79,7 @@
     width: 100%;
     display: block;
     -webkit-overflow-scrolling: touch;
-    border: 1px solid #f1f5f9;
+    border: 1px solid var(--slate-100);
 }
 
 .admin-products-table {
@@ -90,17 +90,17 @@
 }
 
 .admin-products-table th {
-    background: #f8fafc;
+    background: var(--slate-50);
     padding: 1.25rem 1.5rem;
-    color: #475569;
+    color: var(--slate-600);
     font-weight: 700;
     font-size: 0.9rem;
-    border-bottom: 2px solid #f1f5f9;
+    border-bottom: 2px solid var(--slate-100);
 }
 
 .admin-products-table td {
     padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--slate-100);
     vertical-align: middle;
 }
 
@@ -115,19 +115,19 @@
     height: 48px;
     border-radius: 10px;
     object-fit: cover;
-    background: #f1f5f9;
+    background: var(--slate-100);
 }
 
 .admin-product-name-info h4 {
     margin: 0;
     font-size: 0.95rem;
     font-weight: 700;
-    color: #1e293b;
+    color: var(--slate-800);
 }
 
 .admin-product-name-info span {
     font-size: 0.8rem;
-    color: #64748b;
+    color: var(--slate-500);
 }
 
 .admin-company-badge {
@@ -144,7 +144,7 @@
 
 .admin-price-cell {
     font-weight: 700;
-    color: #1e293b;
+    color: var(--slate-800);
 }
 
 .admin-stock-badge {
@@ -183,13 +183,13 @@
 }
 
 .admin-action-btn.view {
-    background: #f1f5f9;
-    color: #475569;
+    background: var(--slate-100);
+    color: var(--slate-600);
 }
 
 .admin-action-btn.view:hover {
-    background: #e2e8f0;
-    color: #1e293b;
+    background: var(--slate-200);
+    color: var(--slate-800);
 }
 
 .admin-action-btn.delete {
@@ -237,7 +237,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: #f1f5f9;
+    background: var(--slate-100);
     border: none;
     display: flex;
     align-items: center;
@@ -248,7 +248,7 @@
 }
 
 .admin-modal-close:hover {
-    background: #e2e8f0;
+    background: var(--slate-200);
     transform: rotate(90deg);
 }
 
@@ -267,8 +267,8 @@
     aspect-ratio: 1;
     object-fit: contain;
     border-radius: 20px;
-    background: #f8fafc;
-    border: 1px solid #f1f5f9;
+    background: var(--slate-50);
+    border: 1px solid var(--slate-100);
 }
 
 .admin-modal-gallery {
@@ -307,21 +307,21 @@
 
 .admin-info-item label {
     display: block;
-    color: #64748b;
+    color: var(--slate-500);
     font-size: 0.85rem;
     margin-bottom: 0.25rem;
 }
 
 .admin-info-item p {
     font-weight: 600;
-    color: #1e293b;
+    color: var(--slate-800);
     margin: 0;
 }
 
 .admin-modal-description {
     line-height: 1.7;
-    color: #475569;
-    background: #f8fafc;
+    color: var(--slate-600);
+    background: var(--slate-50);
     padding: 1.5rem;
     border-radius: 16px;
     margin-top: 1rem;
@@ -339,13 +339,13 @@
 .admin-loading-state {
     padding: 5rem;
     text-align: center;
-    color: #94a3b8;
+    color: var(--slate-400);
 }
 
 .admin-empty-state {
     padding: 5rem;
     text-align: center;
-    color: #94a3b8;
+    color: var(--slate-400);
 }
 
 .admin-empty-state p {
@@ -406,3 +406,4 @@ html[data-theme="dark"] .admin-stock-badge.out-stock { background: rgba(153, 27,
 html[data-theme="dark"] .admin-modal-description {
     color: var(--color-text-secondary);
 }
+

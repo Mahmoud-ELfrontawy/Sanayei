@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { FiShoppingCart, FiClock, FiCheckCircle, FiPackage, FiTruck, FiXCircle, FiCheck, FiPrinter } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { getStoreOrders, updateOrderStatus } from "../../../../Api/auth/Company/storeManagement.api";
@@ -280,8 +280,8 @@ const OrdersTracking: React.FC = () => {
                     </table>
                 ) : (
                     <div className="empty-orders" style={{ padding: '5rem', textAlign: 'center' }}>
-                        <FiShoppingCart size={60} color="#cbd5e1" />
-                        <p style={{ marginTop: '1.5rem', color: '#94a3b8', fontSize: '1.1rem' }}>لا يوجد طلبات واردة حالياً</p>
+                        <FiShoppingCart size={60} color="var(--slate-300)" />
+                        <p style={{ marginTop: '1.5rem', color: 'var(--slate-400)', fontSize: '1.1rem' }}>لا يوجد طلبات واردة حالياً</p>
                     </div>
                 )}
             </div>
@@ -290,3 +290,4 @@ const OrdersTracking: React.FC = () => {
 };
 
 export default OrdersTracking;
+

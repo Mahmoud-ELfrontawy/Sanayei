@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+﻿import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import {
     FiPackage, FiShoppingCart, FiStar, FiChevronDown
@@ -172,7 +172,7 @@ const StoreProductList: React.FC<StoreProductListProps> = ({ categoryId, searchQ
                     ))}
                 </div>
             ) : products.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "4rem", color: "#94a3b8" }}>
+                <div style={{ textAlign: "center", padding: "4rem", color: "var(--slate-400)" }}>
                     <FiShoppingCart size={48} />
                     <p style={{ marginTop: "1rem" }}>لا توجد منتجات في هذه الفئة حالياً</p>
                 </div>
@@ -255,3 +255,4 @@ const StoreProductList: React.FC<StoreProductListProps> = ({ categoryId, searchQ
 };
 
 export default StoreProductList;
+

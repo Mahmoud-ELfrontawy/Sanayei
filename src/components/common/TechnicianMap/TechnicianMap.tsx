@@ -82,8 +82,8 @@ const TechnicianMap: React.FC<TechnicianMapProps> = ({ technicians, userLocation
                         <CircleMarker
                             center={[userLocation.lat, userLocation.lng]}
                             pathOptions={{
-                                color: '#3b82f6',
-                                fillColor: '#3b82f6',
+                                color: 'var(--color-primary)',
+                                fillColor: 'var(--color-primary)',
                                 fillOpacity: 0.2,
                                 weight: 2,
                                 className: 'user-location-pulse'
@@ -95,7 +95,7 @@ const TechnicianMap: React.FC<TechnicianMapProps> = ({ technicians, userLocation
                             icon={createMarkerIcon(
                                 user?.avatar || user?.profile_photo || user?.profile_image, 
                                 user?.name || "أنا", 
-                                '#1d4ed8', 
+                                'var(--blue-700)', 
                                 true
                             )}
                             zIndexOffset={1000}
@@ -116,7 +116,7 @@ const TechnicianMap: React.FC<TechnicianMapProps> = ({ technicians, userLocation
                     const tLng = Number(tech.longitude);
                     const isOnline = tech.is_online || (tech.last_seen && (new Date().getTime() - new Date(tech.last_seen).getTime() < 300000));
                     
-                    const markerColor = isOnline ? '#22c55e' : '#f59e0b';
+                    const markerColor = isOnline ? 'var(--success)' : 'var(--amber-500)';
                     const distance = userLocation ? calculateDistance(userLocation.lat, userLocation.lng, tLat, tLng) : null;
 
                     return (
@@ -178,3 +178,4 @@ const TechnicianMap: React.FC<TechnicianMapProps> = ({ technicians, userLocation
 };
 
 export default TechnicianMap;
+

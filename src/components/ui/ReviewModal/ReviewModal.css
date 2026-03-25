@@ -1,4 +1,4 @@
-.review-modal-overlay {
+﻿.review-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -155,7 +155,7 @@
 .submit-review-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    background: #94a3b8;
+    background: var(--slate-400);
     box-shadow: none;
 }
 
@@ -204,4 +204,5 @@ html[data-theme="dark"] .review-form-group textarea {
 html[data-theme="dark"] .review-form-group textarea:focus {
     background: #1a1d27;
 }
+
 

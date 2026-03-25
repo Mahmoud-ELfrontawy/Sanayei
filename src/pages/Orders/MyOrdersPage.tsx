@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+﻿import React, { useState, useEffect, useMemo } from "react";
 import ReviewModal from "../../components/ui/ReviewModal/ReviewModal";
 import OrderTrackingMap from "../../components/common/OrderTrackingMap/OrderTrackingMap";
 import { useNavigate, Link } from "react-router-dom";
@@ -517,8 +517,8 @@ function MyOrdersPage() {
                             <OrderSkeleton />
                         </>
                     ) : error ? (
-                        <div className="empty-state" style={{ borderColor: "#fee2e2" }}>
-                            <p className="empty-text" style={{ color: "#ef4444" }}>{error}</p>
+                        <div className="empty-state" style={{ borderColor: "var(--error-light)" }}>
+                            <p className="empty-text" style={{ color: "var(--color-error)" }}>{error}</p>
                             <div style={{ marginTop: "20px" }}>
                                 <button onClick={() => window.location.reload()} className="btn-premium btn-accept" style={{ width: "auto", display: "inline-flex" }}>تحميل مرة أخرى</button>
                             </div>

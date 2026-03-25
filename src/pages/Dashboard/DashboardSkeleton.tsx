@@ -17,7 +17,7 @@ const DashboardSkeleton: React.FC<DashboardSkeletonProps> = ({ withSidebar = tru
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "25px", marginBottom: "40px" }}>
                 {[1, 2, 3].map((i) => (
-                    <div key={i} style={{ padding: "24px", background: "white", borderRadius: "16px", border: "1px solid #f1f5f9", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}>
+                    <div key={i} style={{ padding: "24px", background: "var(--white)", borderRadius: "16px", border: "1px solid var(--slate-100)", boxShadow: "0 4px 6px -1px var(--black-10)" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
                             <Skeleton variant="circular" width={44} height={44} />
                             <Skeleton height="20px" width="70px" borderRadius="10px" />
@@ -28,11 +28,11 @@ const DashboardSkeleton: React.FC<DashboardSkeletonProps> = ({ withSidebar = tru
                 ))}
             </div>
 
-            <div style={{ padding: "28px", background: "white", borderRadius: "20px", border: "1px solid #f1f5f9", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}>
+            <div style={{ padding: "28px", background: "var(--white)", borderRadius: "20px", border: "1px solid var(--slate-100)", boxShadow: "0 4px 6px -1px var(--black-10)" }}>
                 <Skeleton height="32px" width="220px" style={{ marginBottom: "25px" }} />
                 <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
                     {[1, 2, 3, 4].map((i) => (
-                        <div key={i} style={{ display: "flex", alignItems: "center", gap: "18px", paddingBottom: "18px", borderBottom: "1px solid #f8fafc" }}>
+                        <div key={i} style={{ display: "flex", alignItems: "center", gap: "18px", paddingBottom: "18px", borderBottom: "1px solid var(--slate-50)" }}>
                             <Skeleton variant="circular" width={48} height={48} />
                             <div style={{ flex: 1 }}>
                                 <Skeleton height="20px" width="90%" style={{ marginBottom: "6px" }} />

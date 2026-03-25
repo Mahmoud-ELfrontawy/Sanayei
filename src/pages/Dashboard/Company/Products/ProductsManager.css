@@ -1,4 +1,4 @@
-.products-manager-container {
+﻿.products-manager-container {
     width: 100%;
     padding: 2rem;
     direction: rtl;
@@ -38,14 +38,14 @@
 }
 
 .add-btn-premium.disabled {
-    background: #cbd5e1 !important;
+    background: var(--slate-300) !important;
     cursor: not-allowed !important;
     transform: none !important;
     box-shadow: none !important;
 }
 
 .add-btn-premium.disabled:hover {
-    background: #cbd5e1 !important;
+    background: var(--slate-300) !important;
 }
 
 .approval-warning-banner {
@@ -84,7 +84,7 @@
 }
 
 .products-table th {
-    background: #f8fafc;
+    background: var(--slate-50);
     padding: 1.5rem 1rem;
     font-size: 15px;
     font-weight: 800;
@@ -177,7 +177,7 @@
     height: 40px;
     border-radius: 10px;
     background: #eff6ff;
-    color: #2563eb;
+    color: var(--primary);
     border: none;
     display: flex;
     align-items: center;
@@ -188,7 +188,7 @@
 }
 
 .edit-btn-mini:hover {
-    background: #2563eb;
+    background: var(--primary);
     color: #fff;
 }
 
@@ -287,8 +287,8 @@
 }
 
 .cancel-btn {
-    background: #f1f5f9;
-    color: #475569;
+    background: var(--slate-100);
+    color: var(--slate-600);
     padding: 1rem 2rem;
     border: none;
     border-radius: 12px;
@@ -305,7 +305,7 @@
     gap: 0.8rem;
     cursor: pointer;
     width: 100%;
-    color: #64748b;
+    color: var(--slate-500);
     font-size: 14px;
     font-weight: 600;
     min-height: 100px;
@@ -326,7 +326,7 @@
     gap: 6px;
     margin-top: 10px;
     background: #fff5f5;
-    color: #ef4444;
+    color: var(--error);
     border: 1px solid #fee2e2;
     border-radius: 8px;
     padding: 6px 14px;
@@ -334,16 +334,16 @@
     cursor: pointer;
     transition: 0.2s;
 }
-.remove-img-btn:hover { background: #ef4444; color: white; }
+.remove-img-btn:hover { background: var(--error); color: white; }
 
 /* Form section separator titles */
 .form-section-title {
     font-size: 13px;
     font-weight: 800;
-    color: #94a3b8;
+    color: var(--slate-400);
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--slate-100);
     padding-bottom: 8px;
     margin: 0;
 }
@@ -359,7 +359,7 @@
 .modal-header-row h3 {
     font-size: 20px;
     font-weight: 800;
-    color: #1e293b;
+    color: var(--slate-800);
     margin: 0;
 }
 
@@ -367,17 +367,17 @@
     width: 36px;
     height: 36px;
     border-radius: 10px;
-    background: #f1f5f9;
+    background: var(--slate-100);
     border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 18px;
     cursor: pointer;
-    color: #64748b;
+    color: var(--slate-500);
     transition: 0.2s;
 }
-.close-modal-btn:hover { background: #ef4444; color: white; }
+.close-modal-btn:hover { background: var(--error); color: white; }
 
 /* Toggle checkbox label */
 .toggle-label {
@@ -387,7 +387,7 @@
     cursor: pointer;
     font-size: 14px;
     font-weight: 700;
-    color: #475569;
+    color: var(--slate-600);
     padding-top: 1.8rem;
 }
 
@@ -409,7 +409,7 @@
     flex: 1;
     font-size: 14px;
     font-weight: 700;
-    color: #64748b;
+    color: var(--slate-500);
 }
 
 .add-gallery-btn {
@@ -441,7 +441,7 @@
     height: 90px;
     border-radius: 10px;
     overflow: hidden;
-    border: 2px solid #e2e8f0;
+    border: 2px solid var(--slate-200);
 }
 
 .gallery-preview-item img {
@@ -467,7 +467,7 @@
     cursor: pointer;
     transition: 0.2s;
 }
-.remove-gallery-img:hover { background: #ef4444; }
+.remove-gallery-img:hover { background: var(--error); }
 
 /* Full-width field */
 .input-field.full-width { grid-column: 1 / -1; }
@@ -491,7 +491,7 @@
     display: inline-block;
     font-size: 11px;
     font-weight: 700;
-    color: #2563eb;
+    color: var(--primary);
     background: #eff6ff;
     border: 1px solid #bfdbfe;
     padding: 1px 8px;
@@ -777,3 +777,4 @@ html[data-theme="dark"] select option {
         height: 75px;
     }
 }
+

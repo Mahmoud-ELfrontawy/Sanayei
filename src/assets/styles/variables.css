@@ -1,104 +1,319 @@
-:root {
-    /* ============================= */
-    /* Primary Brand Colors */
-    /* ============================= */
+﻿:root {
+    /* ========================================================= */
+    /* 1. Surfaces (Backgrounds) */
+    /* ========================================================= */
+    --bg-app: #FFFFFF;
+    --bg-section: #F5F7FA;
+    --bg-dark: #1B1B1B;
+    --bg-overlay: rgba(0, 0, 0, 0.5);
 
-    /* اللون الأساسي للبراند (أزرار – لينكات – أيقونات) */
-    --color-primary: #5FA8D3;
+    /* ========================================================= */
+    /* 2. Text */
+    /* ========================================================= */
+    --text-base: #1B1B1B;
+    --text-heading: #1B1B1B;
+    --text-muted: #3E5871;
+    --text-accent: #5FA8D3;
+    --text-description: #2E3A46;
+    --text-on-primary: #FFFFFF;
 
-    /* Hover / Active للـ primary */
-    --color-primary-hover: #5598C0;
+    /* ========================================================= */
+    /* 3. Borders */
+    /* ========================================================= */
+    --border-light: #D6DDE5;
+    --border-medium: #E0E6ED;
+    --border-focus: var(--primary);
 
-    /* Deep Navy for overlays and banners */
-    --color-navy-deep: #0B1E33;
+    /* ========================================================= */
+    /* 4. Brand & UI Status */
+    /* ========================================================= */
+    --primary: #5FA8D3;
+    --primary-hover: #5598C0;
+    --navy-deep: #0B1E33;
+    --navy-deep-rgb: 11, 30, 51;
 
-    /* ============================= */
-    /* Dark & Text Colors */
-    /* ============================= */
+    /* RGB Support for Transparency */
+    --primary-rgb: 95, 168, 211;
+    --success-rgb: 76, 175, 80;
+    --warning-rgb: 255, 193, 7;
+    --error-rgb: 244, 67, 54;
 
-    /* لون النص الأساسي + Footer */
-    --color-text-main: #1B1B1B;
+    --success: #4CAF50;
+    --warning: #FFC107;
+    --error: #F44336;
+    --error-dark: #dc2626;
 
-    /* لون نصوص ثانوية وعناوين فرعية */
-    --color-text-secondary: #3E5871 ;
-    /* لون نصوص إضافية / خطوط مميزة */
-    --color-text-accent: #5FA8D3;
+    /* ========================================================= */
+    /* 5. UI Utilities & Accents */
+    /* ========================================================= */
+    --white: #ffffff;
+    --black: #000000;
+    
+    --black-02: rgba(0, 0, 0, 0.02);
+    --black-03: rgba(0, 0, 0, 0.03);
+    --black-04: rgba(0, 0, 0, 0.04);
+    --black-05: rgba(0, 0, 0, 0.05);
+    --black-06: rgba(0, 0, 0, 0.06);
+    --black-08: rgba(0, 0, 0, 0.08);
+    --black-10: rgba(0, 0, 0, 0.1);
+    --black-12: rgba(0, 0, 0, 0.12);
+    --black-15: rgba(0, 0, 0, 0.15);
+    --black-20: rgba(0, 0, 0, 0.2);
+    --black-25: rgba(0, 0, 0, 0.25);
+    --black-30: rgba(0, 0, 0, 0.3);
+    --black-40: rgba(0, 0, 0, 0.4);
+    --black-50: rgba(0, 0, 0, 0.5);
+    
+    --white-05: rgba(255, 255, 255, 0.05);
+    --white-06: rgba(255, 255, 255, 0.06);
+    --white-08: rgba(255, 255, 255, 0.08);
+    --white-10: rgba(255, 255, 255, 0.1);
+    --white-12: rgba(255, 255, 255, 0.12);
+    --white-15: rgba(255, 255, 255, 0.15);
+    --white-20: rgba(255, 255, 255, 0.2);
+    --white-60: rgba(255, 255, 255, 0.6);
+    --white-65: rgba(255, 255, 255, 0.65);
+    --white-70: rgba(255, 255, 255, 0.7);
+    --white-75: rgba(255, 255, 255, 0.75);
+    --white-80: rgba(255, 255, 255, 0.8);
+    --white-90: rgba(255, 255, 255, 0.9);
+    --white-95: rgba(255, 255, 255, 0.95);
 
-    /* لون النصوص الصغيرة جدًا (p – descriptions) */
-    --color-text-muted: #2E3A46;
+    --footer-bg: linear-gradient(180deg, rgba(10, 12, 14, 0.95), rgba(16, 18, 20, 0.98));
+    --footer-bg-dark: #091a2b;
 
-    /* ============================= */
-    /* Background Colors */
-    /* ============================= */
+    --gray-50: #f9f9f9;
+    --gray-100: #f6f6f6;
+    --gray-200: #eeeeee;
+    --gray-300: #cccccc;
+    --gray-400: #888888;
+    --gray-500: #666666;
+    --gray-900: #111111;
 
-    /* خلفية عامة للموقع */
-    --color-bg-main: #FFFFFF;
+    /* Slate Scale (Common in Store/Modern sections) */
+    --slate-50:  #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1;
+    --slate-400: #94a3b8;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-800: #1e293b;
+    --slate-900: #0f172a;
 
-    /* خلفيات سكاشن */
-    --color-bg-section: #F5F7FA;
+    --craftsman: #FF9800;
+    --company: #2196F3;
+    --orange-accent: #f59e0b;
+    --orange-accent-10: rgba(245, 158, 11, 0.1);
+    --orange-accent-15: rgba(245, 158, 11, 0.15);
+    
+    --slate-alpha-20: rgba(30, 41, 59, 0.2);
+    --slate-alpha-40: rgba(30, 41, 59, 0.4);
+    --slate-alpha-90: rgba(30, 41, 59, 0.9);
 
-    /* خلفية داكنة (Footer / Overlays) */
-    --color-bg-dark: #1B1B1B;
+    --emerald-50: rgba(16, 185, 129, 0.05);
+    --emerald-100: rgba(16, 185, 129, 0.1);
 
-    /* ============================= */
-    /* UI Utility Colors */
-    /* ============================= */
+    --pink-50: rgba(219, 39, 119, 0.05);
+    --pink-700: #be185d;
 
-    --color-border: #E0E6ED;
-    --color-divider: #D6DDE5;
+    --amber-50: rgba(245, 158, 11, 0.05);
 
-    --color-success: #4CAF50;
-    --color-warning: #FFC107;
-    --color-error: #F44336;
+    /* Status Specific Scales */
+    --purple-100: #f3e8ff;
+    --purple-700: #7e22ce;
+    --purple-light: #ba68c8;
+    
+    --green-light: #81c784;
+    
+    --error-light: #fee2e2;
+    --error-border: #fecaca;
+    --error-text: #991b1b;
 
-    /* ============================= */
-    /* Radius & Transitions */
-    /* ============================= */
+    --pink-light: #f9a8d4;
+    --blue-light: #7dd3fc;
+    
+    --orange-light: #ffb74d;
+    --blue-status: #64b5f6;
 
-        /* للأزرار و Inputs */
-        --radius-btn: 4px;
+    --warning-dark: #b48905;
 
-        /* لعناصر صغيرة (badges, icons bg) */
-        --radius-sm: 6px;
+    /* Review/Social Specifics */
+    --star-active: #f59e0b; /* Aligned with amber-500 */
+    --star-legacy: #FF8031;
+    --whatsapp-red: #dc2626;
+    --whatsapp-green: #25d366;
 
-        /* للكروت الصغيرة */
-        --radius-card-sm: 12px;
+    /* Chat & UI Extended */
+    --slate-text: #718096;
+    --slate-dark: #2d3748;
+    --slate-bg-light: #edf2f7;
+    --slate-border: #e2e8f0;
+    
+    --red-50:  #fff5f5;
+    --red-100: #fed7d7;
+    --red-200: #feb2b2;
+    --red-500: #f56565;
+    --red-600: #e53e3e;
+    --red-700: #c53030;
+    --red-800: #9b2c2c;
 
-        /* للكروت الرئيسية / sections */
-        --radius-card: 16px;
+    --gold-50:  #fffbeb;
+    --gold-100: #fef3c7;
+    --gold-200: #fde68a;
+    --gold-300: #fcd34d;
+    --gold-400: #fbbf24;
+    --gold-700: #b45309;
+    --gold-800: #92400e;
 
-        /* مودال / drawers */
-        --radius-lg: 20px;
+    --emerald-strong: #166534;
+    --teal-700: #2c7a7b;
 
-        --transition-fast: 0.2s ease;
-        --transition-main: 0.3s ease;
-    }
+    --chat-blue-light: #4a9fcc;
+    --chat-blue-bg: #f0f7ff;
 
-/* ============================= */
-/* 🌙 Dark Mode Variables       */
-/* ============================= */
+    /* Store Specifics */
+    --blue-600: #2563eb;
+    --emerald-500: #10b981;
+    --amber-50: #fffbeb;
+    --amber-500: #f59e0b;
+
+    /* Orange Scale (Admin/Wallet) */
+    --orange-50:  #fff7ed;
+    --orange-100: #ffedd5;
+    --orange-200: #fed7aa;
+    --orange-300: #fdba74;
+    --orange-400: #fb923c;
+    --orange-500: #f97316;
+    --orange-600: #ea580c;
+    --orange-700: #c2410c;
+    --orange-800: #9a3412;
+    --orange-900: #7c2d12;
+
+    /* Blue Scale (General/Community) */
+    --blue-50:  #eff6ff;
+    --blue-100: #dbeafe;
+    --blue-200: #bfdbfe;
+    --blue-300: #93c5fd;
+    --blue-400: #60a5fa;
+    --blue-500: #3b82f6;
+    --blue-600: #2563eb;
+    --blue-700: #1d4ed8;
+    --blue-800: #1e40af;
+    --blue-900: #1e3a8a;
+
+    /* Community Specifics */
+    --comm-blue: #1a6fb5;
+    --comm-blue-hover: #1b8dd6;
+    --comm-dark-bg: #1e2028;
+    --comm-slate: #b0b8cc;
+
+    /* Status Extended (Common in Store/Dashboard) */
+    --status-pending-bg:    #fff3e0;
+    --status-pending-text:  #e65100;
+    --status-process-bg:    #e3f2fd;
+    --status-process-text:  #1976d2;
+    --status-ship-bg:       #f3e5f5;
+    --status-ship-text:     #7b1fa2;
+    --status-complete-bg:   #e8f5e9;
+    --status-complete-text: #2e7d32;
+
+    /* ========================================================= */
+    /* 6. Gradients */
+    /* ========================================================= */
+    --gradient-primary: linear-gradient(45deg, #4A5D6E, #5FA8D3);
+    --gradient-dark: linear-gradient(135deg, var(--text-accent) 0%, #1a334d 100%);
+    --gradient-deep: linear-gradient(135deg, #162431 0%, #0b141d 100%);
+
+    /* ========================================================= */
+    /* 7. Radius & Transitions */
+    /* ========================================================= */
+    --radius-btn: 4px;
+    --radius-sm: 6px;
+    --radius-card-sm: 12px;
+    --radius-card: 16px;
+    --radius-lg: 20px;
+
+    --transition-fast: 0.2s ease;
+    --transition-main: 0.3s ease;
+
+    /* ========================================================= */
+    /* LEGACY MAPPINGS (Ensures existing code doesn't break)     */
+    /* ========================================================= */
+    --color-primary: var(--primary);
+    --color-primary-hover: var(--primary-hover);
+    --color-navy-deep: var(--navy-deep);
+
+    --color-text-main: var(--text-base);
+    --color-text-secondary: var(--text-muted);
+    --color-text-accent: var(--text-accent);
+    --color-text-muted: var(--text-description);
+
+    --color-bg-main: var(--bg-app);
+    --color-bg-section: var(--bg-section);
+    --color-bg-dark: var(--bg-dark);
+
+    --color-border: var(--border-medium);
+    --color-divider: var(--border-light);
+
+    --color-success: var(--success);
+    --color-warning: var(--warning);
+    --color-error: var(--error);
+}
+
+/* ========================================================= */
+/* 🌙 DARK MODE                                              */
+/* ========================================================= */
 html[data-theme="dark"] {
-    /* Primary – slightly lighter for contrast on dark bg */
-    --color-primary: #7ec8f0;
-    --color-primary-hover: #5598C0;
+    /* Surfaces */
+    --bg-app: #0f1117;
+    --bg-section: #1a1d27;
+    --bg-dark: #060810;
+    --bg-overlay: rgba(0, 0, 0, 0.75);
 
     /* Text */
-    --color-text-main: #e2e8f0;
-    --color-text-secondary: #94a3b8;
-    --color-text-accent: #cbd5e1;
-    --color-text-muted: #64748b;
-
-    /* Backgrounds */
-    --color-bg-main: #0f1117;
-    --color-bg-section: #1a1d27;
-    --color-bg-dark: #060810;
+    --text-base: #e2e8f0;
+    --text-heading: #ffffff;
+    --text-muted: #94a3b8;
+    --text-accent: #cbd5e1;
+    --text-description: #64748b;
 
     /* Borders */
-    --color-border: #2d3748;
-    --color-divider: #2d3748;
+    --border-light: #2d3748;
+    --border-medium: #2d3748;
 
-    /* Status colors remain the same */
-    --color-success: #4CAF50;
-    --color-warning: #FFC107;
-    --color-error: #F44336;
+    /* Brand & UI Status */
+    --primary: #7ec8f0;
+    --primary-hover: #5598C0;
+    --primary-rgb: 126, 200, 240;
+
+    /* Gradients (Dark adjusted) */
+    --gradient-primary: linear-gradient(45deg, #1e3a5f, #7ec8f0);
+    --gradient-dark: linear-gradient(135deg, #162431 0%, #0b141d 100%);
+    --gradient-deep: linear-gradient(135deg, #0f172a, #020617);
+
+    /* Alphas for Dark Mode */
+    --white-90: rgba(15, 17, 23, 0.9);
+    --white-80: rgba(15, 17, 23, 0.8);
+    --white-10: rgba(255, 255, 255, 0.1);
+    --white-05: rgba(255, 255, 255, 0.05);
+    --white-03: rgba(255, 255, 255, 0.03);
+    --black-05: rgba(255, 255, 255, 0.05);
+    --black-10: rgba(255, 255, 255, 0.1);
+    --black-20: rgba(255, 255, 255, 0.2);
+    --black-30: rgba(255, 255, 255, 0.3);
+    --black-45: rgba(0, 0, 0, 0.45);
+    
+    /* Primary RGB Alpha Helpers */
+    --primary-rgb: 95, 168, 211;
+    --primary-10: rgba(var(--primary-rgb), 0.1);
+    --primary-20: rgba(var(--primary-rgb), 0.2);
+    --primary-25: rgba(var(--primary-rgb), 0.25);
+    --primary-30: rgba(var(--primary-rgb), 0.3);
+    --primary-35: rgba(var(--primary-rgb), 0.35);
+    --primary-40: rgba(var(--primary-rgb), 0.4);
+    --primary-50: rgba(var(--primary-rgb), 0.5);
+
+    /* Status colors remain identical in dark mode for this theme */
 }

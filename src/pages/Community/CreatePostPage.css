@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════
+﻿/* ═══════════════════════════════════════════════
    Create Service Request – Premium Form Design
    ═══════════════════════════════════════════════ */
 
@@ -73,7 +73,7 @@ html[data-theme="dark"] .create-post-page {
     gap: 8px;
     flex: 1;
     position: relative;
-    color: #94a3b8;
+    color: var(--slate-400);
     font-size: 13px;
     font-weight: 500;
     transition: color 0.3s ease;
@@ -86,7 +86,7 @@ html[data-theme="dark"] .create-post-page {
     left: calc(-50% + 24px);
     right: calc(50% + 24px);
     height: 2px;
-    background: #e2e8f0;
+    background: var(--slate-200);
     z-index: 0;
     transition: background 0.4s ease;
 }
@@ -104,7 +104,7 @@ html[data-theme="dark"] .create-post-step:not(:last-child)::after {
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    border: 2px solid #e2e8f0;
+    border: 2px solid var(--slate-200);
     background: var(--background-color, #fff);
     display: flex;
     align-items: center;
@@ -114,7 +114,7 @@ html[data-theme="dark"] .create-post-step:not(:last-child)::after {
     position: relative;
     z-index: 1;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    color: #94a3b8;
+    color: var(--slate-400);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
@@ -159,7 +159,7 @@ html[data-theme="dark"] .create-post-step-circle {
     flex-direction: column;
     gap: 24px;
     background: var(--background-color, #fff);
-    border: 1px solid var(--border-color, #e2e8f0);
+    border: 1px solid var(--border-color, var(--slate-200));
     border-radius: 28px;
     padding: 40px;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
@@ -187,23 +187,23 @@ html[data-theme="dark"] .create-post-step-content {
 .create-post-field label {
     font-size: 15px;
     font-weight: 700;
-    color: var(--text-primary, #1e293b);
+    color: var(--text-primary, var(--slate-800));
     display: flex;
     align-items: center;
     gap: 6px;
 }
 
 html[data-theme="dark"] .create-post-field label {
-    color: #e2e8f0;
+    color: var(--slate-200);
 }
 
 .create-post-field input,
 .create-post-field textarea {
     padding: 16px 20px;
-    border: 1.5px solid var(--border-color, #e2e8f0);
+    border: 1.5px solid var(--border-color, var(--slate-200));
     border-radius: 16px;
-    background: var(--background-color, #f8fafc);
-    color: var(--text-primary, #1e293b);
+    background: var(--background-color, var(--slate-50));
+    color: var(--text-primary, var(--slate-800));
     font-size: 15px;
     font-family: inherit;
     outline: none;
@@ -215,7 +215,7 @@ html[data-theme="dark"] .create-post-field input,
 html[data-theme="dark"] .create-post-field textarea {
     background: #171920;
     border-color: #363a4d;
-    color: #e2e8f0;
+    color: var(--slate-200);
 }
 
 .create-post-field input:focus,
@@ -233,7 +233,7 @@ html[data-theme="dark"] .create-post-field textarea:focus {
 
 .create-post-char {
     font-size: 12px;
-    color: var(--text-secondary, #94a3b8);
+    color: var(--text-secondary, var(--slate-400));
     text-align: left;
 }
 
@@ -246,10 +246,10 @@ html[data-theme="dark"] .create-post-field textarea:focus {
 
 .create-post-cat-btn {
     padding: 10px 20px;
-    border: 1.5px solid var(--border-color, #e2e8f0);
+    border: 1.5px solid var(--border-color, var(--slate-200));
     border-radius: 50px;
-    background: var(--background-color, #f8fafc);
-    color: var(--text-primary, #475569);
+    background: var(--background-color, var(--slate-50));
+    color: var(--text-primary, var(--slate-600));
     font-size: 14px;
     font-weight: 500;
     font-family: inherit;
@@ -279,7 +279,7 @@ html[data-theme="dark"] .create-post-cat-btn {
 
 /* ── Upload Area ─────────────────────────────── */
 .create-post-upload-area {
-    border: 2px dashed var(--border-color, #cbd5e1);
+    border: 2px dashed var(--border-color, var(--slate-300));
     border-radius: 20px;
     padding: 48px 24px;
     display: flex;
@@ -287,7 +287,7 @@ html[data-theme="dark"] .create-post-cat-btn {
     align-items: center;
     gap: 12px;
     cursor: pointer;
-    color: var(--text-secondary, #94a3b8);
+    color: var(--text-secondary, var(--slate-400));
     transition: all 0.3s ease;
     text-align: center;
     background: var(--background-color, #fafbfc);
@@ -318,7 +318,7 @@ html[data-theme="dark"] .create-post-upload-area {
 
 .create-post-upload-area small {
     font-size: 13px;
-    color: var(--text-secondary, #94a3b8);
+    color: var(--text-secondary, var(--slate-400));
 }
 
 /* ── Image Previews ──────────────────────────── */
@@ -373,12 +373,12 @@ html[data-theme="dark"] .create-post-upload-area {
 .create-post-back-step-btn {
     flex: 1;
     padding: 18px;
-    background: var(--background-color, #f8fafc);
-    border: 1.5px solid var(--border-color, #e2e8f0);
+    background: var(--background-color, var(--slate-50));
+    border: 1.5px solid var(--border-color, var(--slate-200));
     border-radius: 16px;
     font-size: 16px;
     font-weight: 600;
-    color: var(--text-primary, #475569);
+    color: var(--text-primary, var(--slate-600));
     cursor: pointer;
     font-family: inherit;
     transition: all 0.2s ease;
@@ -430,10 +430,10 @@ html[data-theme="dark"] .create-post-back-step-btn {
 .create-post-budget-row input {
     flex: 1;
     padding: 16px 20px;
-    border: 1.5px solid var(--border-color, #e2e8f0);
+    border: 1.5px solid var(--border-color, var(--slate-200));
     border-radius: 16px;
-    background: var(--background-color, #f8fafc);
-    color: var(--text-primary, #1e293b);
+    background: var(--background-color, var(--slate-50));
+    color: var(--text-primary, var(--slate-800));
     font-size: 15px;
     font-family: inherit;
     outline: none;
@@ -443,7 +443,7 @@ html[data-theme="dark"] .create-post-back-step-btn {
 html[data-theme="dark"] .create-post-budget-row input {
     background: #171920;
     border-color: #363a4d;
-    color: #e2e8f0;
+    color: var(--slate-200);
 }
 
 .create-post-budget-row input:focus {
@@ -454,14 +454,14 @@ html[data-theme="dark"] .create-post-budget-row input {
 .budget-separator {
     font-size: 15px;
     font-weight: 700;
-    color: var(--text-secondary, #94a3b8);
+    color: var(--text-secondary, var(--slate-400));
     white-space: nowrap;
 }
 
 /* ── Preview Card (Step 3) ───────────────────── */
 .create-post-preview-card {
-    background: var(--background-color, #f8fafc);
-    border: 1.5px solid var(--border-color, #e2e8f0);
+    background: var(--background-color, var(--slate-50));
+    border: 1.5px solid var(--border-color, var(--slate-200));
     border-radius: 20px;
     padding: 24px;
     display: flex;
@@ -505,18 +505,18 @@ html[data-theme="dark"] .create-post-preview-card {
 .create-post-preview-card h2 {
     font-size: 20px;
     font-weight: 800;
-    color: var(--text-primary, #1e293b);
+    color: var(--text-primary, var(--slate-800));
     margin: 0;
     letter-spacing: -0.3px;
 }
 
 html[data-theme="dark"] .create-post-preview-card h2 {
-    color: #f1f5f9;
+    color: var(--slate-100);
 }
 
 .create-post-preview-card p {
     font-size: 14px;
-    color: var(--text-secondary, #64748b);
+    color: var(--text-secondary, var(--slate-500));
     line-height: 1.7;
     margin: 0;
 }
@@ -551,9 +551,9 @@ html[data-theme="dark"] .create-post-preview-card h2 {
     flex: 1;
     padding: 14px;
     border-radius: 16px;
-    border: 1.5px solid var(--border-color, #e2e8f0);
-    background: var(--background-color, #f8fafc);
-    color: var(--text-primary, #475569);
+    border: 1.5px solid var(--border-color, var(--slate-200));
+    background: var(--background-color, var(--slate-50));
+    color: var(--text-primary, var(--slate-600));
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
@@ -572,7 +572,7 @@ html[data-theme="dark"] .create-post-preview-card h2 {
 }
 
 .urgency-btn.urgent.active {
-    border-color: #ef4444;
+    border-color: var(--error);
     background: rgba(239, 68, 68, 0.08);
     color: #dc2626;
 }
@@ -639,3 +639,4 @@ html[data-theme="dark"] .create-post-preview-card h2 {
         align-self: center;
     }
 }
+

@@ -1,4 +1,4 @@
-/* terms-modal-overlay */
+﻿/* terms-modal-overlay */
 .terms-modal-overlay {
     position: fixed;
     top: 0;
@@ -165,35 +165,36 @@
 }
 
 .agree-btn.disabled {
-    background: #e2e8f0;
-    color: #94a3b8;
+    background: var(--slate-200);
+    color: var(--slate-400);
     cursor: not-allowed;
 }
 
 /* cancel-terms-btn */
 .cancel-terms-btn {
     padding: 10px 25px;
-    background: #f1f5f9;
-    color: #475569;
+    background: var(--slate-100);
+    color: var(--slate-600);
     border-radius: var(--radius-btn);
     font-weight: 600;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--slate-300);
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .cancel-terms-btn:hover {
-    background: #e2e8f0;
+    background: var(--slate-200);
 }
 
 /* Dark Theme specific */
 html[data-theme="dark"] .cancel-terms-btn {
     background: #334155;
-    color: #e2e8f0;
-    border-color: #475569;
+    color: var(--slate-200);
+    border-color: var(--slate-600);
 }
 
 html[data-theme="dark"] .agree-btn.disabled {
-    background: #1e293b;
-    color: #475569;
+    background: var(--slate-800);
+    color: var(--slate-600);
 }
+

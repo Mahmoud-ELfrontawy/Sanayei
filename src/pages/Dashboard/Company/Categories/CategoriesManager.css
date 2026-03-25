@@ -1,4 +1,4 @@
-.categories-manager-container {
+﻿.categories-manager-container {
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
@@ -9,7 +9,7 @@
 .manager-header {
     margin-bottom: 3rem;
     padding-bottom: 1.5rem;
-    border-bottom: 2px solid #f1f5f9;
+    border-bottom: 2px solid var(--slate-100);
 }
 
 .manager-header h2 {
@@ -224,3 +224,4 @@
         grid-template-columns: 1fr;
     }
 }
+

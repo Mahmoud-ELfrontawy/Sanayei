@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import { FiPlus, FiTrash2, FiPackage, FiImage, FiX, FiEdit, FiAlertCircle } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { getStoreProducts, addStoreProduct, getStoreCategories, deleteStoreProduct } from "../../../../Api/auth/Company/storeManagement.api";
@@ -272,7 +272,7 @@ const ProductsManager: React.FC = () => {
                                     <input type="number" min="0" value={newProduct.price} onChange={handleChange("price")} placeholder="0.00" />
                                 </div>
                                 <div className="input-field">
-                                    <label>قيمة الخصم (اختياري) <small style={{color:'#94a3b8', fontWeight:'400'}}></small></label>
+                                    <label>قيمة الخصم (اختياري) <small style={{color:'var(--slate-400)', fontWeight:'400'}}></small></label>
                                     <input type="number" min="0" value={newProduct.discount_price} onChange={handleChange("discount_price")} placeholder="مثال: 50 يعني السعر النهائي = السعر الأصلي - 50" />
                                 </div>
                             </div>
@@ -334,7 +334,7 @@ const ProductsManager: React.FC = () => {
                             <div className="input-field full-width">
                                 <label>بادج المنتج (اختياري)</label>
                                 <input value={newProduct.badge} onChange={handleChange("badge")} placeholder="مثال: صنايعي بريميوم" />
-                                <small style={{ color: '#94a3b8', fontSize: '12px' }}>يظهر كشارة مميزة على المنتج في القائمة</small>
+                                <small style={{ color: 'var(--slate-400)', fontSize: '12px' }}>يظهر كشارة مميزة على المنتج في القائمة</small>
                             </div>
 
                             {/* ── Section: Images ── */}
@@ -441,7 +441,7 @@ const ProductsManager: React.FC = () => {
                                         {prod.discount_price && Number(prod.discount_price) > 0 ? (
                                             <>
                                                 <span>{(Number(prod.price) - Number(prod.discount_price)).toLocaleString()} ج.م</span>
-                                                <small style={{ textDecoration: 'line-through', color: '#94a3b8', marginRight: '6px' }}>
+                                                <small style={{ textDecoration: 'line-through', color: 'var(--slate-400)', marginRight: '6px' }}>
                                                     {Number(prod.price).toLocaleString()}
                                                 </small>
                                             </>
@@ -471,8 +471,8 @@ const ProductsManager: React.FC = () => {
                     </table>
                 ) : (
                     <div className="empty-products" style={{ padding: '4rem', textAlign: 'center' }}>
-                        <FiPackage size={50} color="#cbd5e1" />
-                        <p style={{ marginTop: '1rem', color: '#94a3b8' }}>لا يوجد منتجات معروضة حالياً، ابدأ بإضافة أول منتج!</p>
+                        <FiPackage size={50} color="var(--slate-300)" />
+                        <p style={{ marginTop: '1rem', color: 'var(--slate-400)' }}>لا يوجد منتجات معروضة حالياً، ابدأ بإضافة أول منتج!</p>
                     </div>
                 )}
             </div>
@@ -481,3 +481,4 @@ const ProductsManager: React.FC = () => {
 };
 
 export default ProductsManager;
+

@@ -1,4 +1,4 @@
-.order-tracking-map-wrapper {
+﻿.order-tracking-map-wrapper {
     position: relative;
     border-radius: 12px;
     overflow: hidden;
@@ -10,10 +10,10 @@
 .tracking-map-empty {
     padding: 2rem;
     text-align: center;
-    background: #f8fafc;
-    border: 1px dashed #cbd5e1;
+    background: var(--slate-50);
+    border: 1px dashed var(--slate-300);
     border-radius: 12px;
-    color: #64748b;
+    color: var(--slate-500);
     font-weight: 500;
 }
 
@@ -28,13 +28,13 @@
 
 .tracking-popup-content strong {
     font-size: 1rem;
-    color: #1e293b;
+    color: var(--slate-800);
     margin: 0;
 }
 
 .tracking-popup-content span {
     font-size: 0.8rem;
-    color: #64748b;
+    color: var(--slate-500);
 }
 
 .tracking-popup.craftsman .leaflet-popup-content-wrapper {
@@ -43,7 +43,7 @@
 }
 
 .tracking-popup.user .leaflet-popup-content-wrapper {
-    border: 2px solid #ef4444;
+    border: 2px solid var(--error);
     border-radius: 10px;
 }
 
@@ -70,7 +70,7 @@
 
 /* Distance label on polyline */
 .line-distance-label {
-    background: #1e293b !important;
+    background: var(--slate-800) !important;
     color: #fff !important;
     border: 2px solid #3b82f6 !important;
     border-radius: 20px !important;
@@ -84,3 +84,4 @@
 .line-distance-label::before {
     display: none !important;
 }
+

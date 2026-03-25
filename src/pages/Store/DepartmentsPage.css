@@ -47,7 +47,7 @@
 
 .dept-card-premium:hover {
     transform: translateY(-5px);
-    box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 16px 32px -8px var(--black-08);
     border-color: var(--color-primary);
 }
 
@@ -67,7 +67,7 @@
 
 .dept-card-premium:hover .dept-icon-wrapper {
     background-color: var(--color-primary);
-    color: #fff;
+    color: var(--white);
     transform: scale(1.1) rotate(5deg);
 }
 

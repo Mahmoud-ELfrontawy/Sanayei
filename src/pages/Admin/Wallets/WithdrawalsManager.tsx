@@ -101,7 +101,7 @@ const WithdrawalsManager = () => {
                 {loading ? (
                     <div style={{ textAlign: 'center', padding: '5rem' }}>جاري التحميل...</div>
                 ) : requests.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '5rem', background: 'white', borderRadius: '24px', color: '#64748b' }}>
+                    <div style={{ textAlign: 'center', padding: '5rem', background: 'var(--white)', borderRadius: '24px', color: 'var(--slate-400)' }}>
                         🎉 لا توجد طلبات سحب معلقة حالياً
                     </div>
                 ) : (
@@ -113,7 +113,7 @@ const WithdrawalsManager = () => {
                                 </div>
                                 <div className="req-main-info">
                                     <span className="req-name">{req.requestable?.name || 'مستخدم'}</span>
-                                    <small style={{ color: '#64748b' }}>طلب #{req.id} • {new Date(req.created_at).toLocaleDateString('ar-EG')}</small>
+                                    <small style={{ color: 'var(--slate-400)' }}>طلب #{req.id} • {new Date(req.created_at).toLocaleDateString('ar-EG')}</small>
                                     
                                     <div className="payout-details-box">
                                         {req.payout_method === 'mobile_wallet' ? (

@@ -67,8 +67,8 @@ const AdminLiveMap: React.FC = () => {
     if (error && users.length === 0 && craftsmen.length === 0) {
         return (
             <div className="admin-live-map-container" style={{ padding: '2rem', textAlign: 'center' }}>
-                <h2 style={{ color: '#ef4444', marginBottom: '1rem' }}>⚠️ خطأ في تحميل الخريطة</h2>
-                <p style={{ color: '#64748b', fontSize: '1.2rem' }}>{error}</p>
+                <h2 style={{ color: 'var(--color-error)', marginBottom: '1rem' }}>⚠️ خطأ في تحميل الخريطة</h2>
+                <p style={{ color: 'var(--slate-500)', fontSize: '1.2rem' }}>{error}</p>
                 <button 
                     onClick={() => window.location.reload()} 
                     style={{ marginTop: '2rem', padding: '10px 20px', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '1rem' }}
@@ -159,3 +159,4 @@ const AdminLiveMap: React.FC = () => {
 };
 
 export default AdminLiveMap;
+

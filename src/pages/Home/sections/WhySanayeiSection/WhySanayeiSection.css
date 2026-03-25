@@ -41,7 +41,7 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: rgba(95, 168, 211, 0.2);
+    background: rgba(var(--primary-rgb), 0.2);
     color: var(--color-primary);
     display: flex;
     align-items: center;
@@ -51,7 +51,7 @@
 }
 .why-icon:hover{
     background : var(--color-primary);
-    color: white;
+    color: var(--white);
 }
 
 .why-value {

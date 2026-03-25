@@ -16,7 +16,7 @@
     font-weight: 700;
     border-radius: var(--radius-btn);
     background: var(--color-primary);
-    color: #fff;
+    color: var(--white);
     text-decoration: none;
     transition: var(--transition-main);
 }

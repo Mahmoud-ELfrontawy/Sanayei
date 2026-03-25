@@ -1,4 +1,4 @@
-.profile-completion-wrapper {
+﻿.profile-completion-wrapper {
     background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
     border-radius: 20px;
     padding: 24px;
@@ -12,7 +12,7 @@
 }
 
 html[data-theme="dark"] .profile-completion-wrapper {
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    background: linear-gradient(135deg, var(--slate-800) 0%, #0f172a 100%);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -98,7 +98,7 @@ html[data-theme="dark"] .progress-bar-track {
 
 .progress-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, #5FA8D3 0%, #3498db 50%, #2980b9 100%);
+    background: linear-gradient(90deg, var(--primary) 0%, #3498db 50%, #2980b9 100%);
     background-size: 200% 100%;
     animation: gradient-shift 3s infinite linear;
     border-radius: 10px;
@@ -163,7 +163,7 @@ html[data-theme="dark"] .completion-tips {
 }
 
 html[data-theme="dark"] .tip-item {
-    background: #1e293b;
+    background: var(--slate-800);
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -233,3 +233,4 @@ html[data-theme="dark"] .tip-item {
         grid-template-columns: 1fr;
     }
 }
+

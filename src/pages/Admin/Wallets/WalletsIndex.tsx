@@ -193,7 +193,7 @@ const WalletsIndex = () => {
                             </tr>
                         ) : wallets.length === 0 ? (
                             <tr>
-                                <td colSpan={5} style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
+                                <td colSpan={5} style={{ textAlign: 'center', padding: '3rem', color: 'var(--slate-400)' }}>
                                     لم يتم العثور على أي محافظ تطابق البحث
                                 </td>
                             </tr>

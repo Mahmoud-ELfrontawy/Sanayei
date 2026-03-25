@@ -1,9 +1,9 @@
 .skeleton-loader {
     background: linear-gradient(
         110deg,
-        #ececec 30%,
-        #f5f5f5 50%,
-        #ececec 70%
+        var(--slate-200) 30%,
+        var(--slate-100) 50%,
+        var(--slate-200) 70%
     );
     background-size: 200% 100%;
     animation: skeleton-loading 1.5s ease-in-out infinite;

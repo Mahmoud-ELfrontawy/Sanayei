@@ -31,7 +31,7 @@
     display: inline-block;
     padding: 10px 24px;
     background: var(--color-primary);
-    color: #fff;
+    color: var(--white);
     border-radius: 50px;
     font-weight: 700;
     font-size: 16px;
@@ -146,13 +146,13 @@
     width: 70px;
     height: 70px;
     background: var(--color-primary);
-    color: #fff;
+    color: var(--white);
     border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 15px;
-    box-shadow: 0 15px 30px rgba(95, 168, 211, 0.4);
+    box-shadow: 0 15px 30px rgba(var(--primary-rgb), 0.4);
     z-index: 10;
     animation: float 4s ease-in-out infinite;
 }
@@ -202,7 +202,7 @@
     width: 80px;
     height: 80px;
     background: linear-gradient(135deg, var(--color-primary) 0%, #7ec4ed 100%);
-    color: #fff;
+    color: var(--white);
     border-radius: 24px;
     display: flex;
     align-items: center;
@@ -238,7 +238,7 @@
     padding: 100px 40px;
     border-radius: 50px;
     text-align: center;
-    color: #fff;
+    color: var(--white);
     position: relative;
     overflow: hidden;
 }
@@ -273,14 +273,14 @@
 
 .lm-btn-primary {
     background: var(--color-primary);
-    color: #fff;
+    color: var(--white);
     border: none;
     box-shadow: 0 15px 35px rgba(95, 168, 211, 0.3);
 }
 
 .lm-btn-outline {
     background: transparent;
-    color: #fff;
+    color: var(--white);
     border: 2px solid rgba(255,255,255,0.3);
 }
 
@@ -289,8 +289,8 @@
 }
 
 .lm-btn-outline:hover {
-    background: rgba(255,255,255,0.1);
-    border-color: #fff;
+    background: var(--white-10);
+    border-color: var(--white);
 }
 
 /* ==========================
@@ -349,7 +349,7 @@ html[data-theme="dark"] .lm-pillar-card {
 
 html[data-theme="dark"] .lm-image-placeholder {
     border-color: var(--color-bg-section);
-    box-shadow: 0 40px 100px rgba(0,0,0,0.4);
+    box-shadow: 0 40px 100px var(--black-40);
 }
 
 html[data-theme="dark"] .lm-cta-inner {

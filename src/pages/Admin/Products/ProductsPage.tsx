@@ -100,7 +100,7 @@ const ProductsPage: React.FC = () => {
             <div className="admin-products-header">
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                        <Link to="/admin" style={{ color: '#64748b', textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+                        <Link to="/admin" style={{ color: 'var(--slate-500)', textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
                             <FiArrowRight />
                         </Link>
                         <h1>إدارة المنتجات</h1>
@@ -109,9 +109,9 @@ const ProductsPage: React.FC = () => {
                 </div>
 
                 <div style={{ display: 'flex', gap: '1rem' }}>
-                    <div className="stat-card-mini" style={{ background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', textAlign: 'center', minWidth: '120px' }}>
-                        <div style={{ fontSize: '0.8rem', color: '#64748b' }}>إجمالي المنتجات</div>
-                        <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#1e293b' }}>{stats.total}</div>
+                    <div className="stat-card-mini" style={{ background: 'var(--slate-50)', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', textAlign: 'center', minWidth: '120px' }}>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--slate-500)'}}>إجمالي المنتجات</div>
+                        <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--slate-800)'}}>{stats.total}</div>
                     </div>
                     <div className="stat-card-mini" style={{ background: '#fff1f2', padding: '1rem', borderRadius: '12px', border: '1px solid #fecaca', textAlign: 'center', minWidth: '120px' }}>
                         <div style={{ fontSize: '0.8rem', color: '#991b1b' }}>نفذ من المخزون</div>
@@ -192,9 +192,8 @@ const ProductsPage: React.FC = () => {
                                                 width: '8px',
                                                 height: '8px',
                                                 borderRadius: '50%',
-                                                background: prod.is_active ? '#22c55e' : '#94a3b8'
-                                            }} />
-                                            <span style={{ fontSize: '0.85rem', color: prod.is_active ? '#22c55e' : '#64748b', fontWeight: 600 }}>
+                                                background: prod.is_active ? '#22c55e' : 'var(--slate-400)'}} />
+                                            <span style={{ fontSize: '0.85rem', color: prod.is_active ? '#22c55e' : 'var(--slate-500)', fontWeight: 600 }}>
                                                 {prod.is_active ? 'نشط' : 'متوقف'}
                                             </span>
                                         </div>
@@ -288,7 +287,7 @@ const ProductsPage: React.FC = () => {
                                         </div>
                                     </div>
 
-                                    <label style={{ color: '#64748b', fontSize: '0.85rem' }}>الوصف</label>
+                                    <label style={{ color: 'var(--slate-500)', fontSize: '0.85rem' }}>الوصف</label>
                                     <div className="admin-modal-description">
                                         {selectedProduct.description || "لا يوجد وصف لهذا المنتج."}
                                     </div>
@@ -303,3 +302,4 @@ const ProductsPage: React.FC = () => {
 };
 
 export default ProductsPage;
+

@@ -98,7 +98,7 @@
   border-color: var(--color-primary);
   color: var(--color-primary);
   transform: scale(1.1);
-  box-shadow: 0 0 15px rgba(var(--color-primary-rgb), 0.2);
+  box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.2);
 }
 
 .step-item.completed .step-circle {
@@ -166,7 +166,7 @@
 
 .submit-btn {
   background: var(--color-primary);
-  box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
 }
 
 /* ===== Animations ===== */
@@ -257,7 +257,7 @@
 }
 
 .worker-file-label.has-file {
-  background: rgba(var(--color-primary-rgb), 0.1);
+  background: rgba(var(--primary-rgb), 0.1);
   border-color: var(--color-primary);
   color: var(--color-primary);
 }

@@ -3,7 +3,7 @@ import type { LeaderboardEntry } from "../../Api/community.api";
 const BADGE_CONFIG = {
     bronze: { label: "برونزي", color: "#cd7f32", emoji: "🥉" },
     silver: { label: "فضي", color: "#9ca3af", emoji: "🥈" },
-    gold: { label: "ذهبي", color: "#f59e0b", emoji: "🥇" },
+    gold: { label: "ذهبي", color: "var(--amber-500)", emoji: "🥇" },
     platinum: { label: "بلاتيني", color: "#6366f1", emoji: "💎" },
 };
 
@@ -33,3 +33,4 @@ const PointsBadge: React.FC<PointsBadgeProps> = ({ badge, points, showLabel = tr
 };
 
 export default PointsBadge;
+

@@ -60,14 +60,14 @@
 .otp-input-box:focus {
     border-color: var(--color-primary);
     background: var(--color-bg-main);
-    box-shadow: 0 0 0 4px rgba(95, 168, 211, 0.15), 0 8px 20px rgba(95, 168, 211, 0.1);
+    box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.15), 0 8px 20px rgba(var(--primary-rgb), 0.1);
     outline: none;
     transform: translateY(-4px);
 }
 
 .otp-input-box:not(:placeholder-shown) {
     border-color: var(--color-primary);
-    background: rgba(95, 168, 211, 0.03);
+    background: rgba(var(--primary-rgb), 0.03);
 }
 
 @media (max-width: 500px) {

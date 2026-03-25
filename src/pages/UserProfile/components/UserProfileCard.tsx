@@ -39,7 +39,7 @@ const UserProfileCard: React.FC<Props> = ({ user, isOwnProfile }) => {
                         fontSize: '0.95rem',
                         marginBottom: '8px'
                     }}>
-                        <FaPhoneAlt size={16} color="#5FA8D3" />
+                        <FaPhoneAlt size={16} color="var(--primary)" />
                         <span>{user.phone}</span>
                     </div>
                     <div className="info-item" style={{
@@ -50,7 +50,7 @@ const UserProfileCard: React.FC<Props> = ({ user, isOwnProfile }) => {
                         color: 'var(--color-text-secondary)',
                         fontSize: '0.95rem'
                     }}>
-                        <FaEnvelope size={16} color="#5FA8D3" />
+                        <FaEnvelope size={16} color="var(--primary)" />
                         <span>{user.email}</span>
                     </div>
                 </div>

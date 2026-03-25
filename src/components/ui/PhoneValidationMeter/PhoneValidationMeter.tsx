@@ -38,7 +38,7 @@ function getValidationInfo(phone: string): ValidationInfo {
     if (score === 2 && checks.length11) score = 3;
 
     if (!checks.isDigits || (phone.length > 0 && !checks.startsCorrect && phone.length >= 3)) {
-        return { level: "invalid", score: 1, label: "رقم غير صحيح", color: "#ef4444", tips };
+        return { level: "invalid", score: 1, label: "رقم غير صحيح", color: "var(--color-error)", tips };
     }
 
     if (score === 2) {
@@ -49,7 +49,7 @@ function getValidationInfo(phone: string): ValidationInfo {
         return { level: "valid", score: 3, label: "رقم صحيح ✓", color: "#22c55e", tips: [] };
     }
 
-    return { level: "partial", score: 1, label: "أكمل الرقم", color: "#cbd5e1", tips };
+    return { level: "partial", score: 1, label: "أكمل الرقم", color: "var(--slate-300)", tips };
 }
 
 const PhoneValidationMeter: React.FC<PhoneValidationMeterProps> = ({ phone }) => {
@@ -88,3 +88,4 @@ const PhoneValidationMeter: React.FC<PhoneValidationMeterProps> = ({ phone }) =>
 };
 
 export default PhoneValidationMeter;
+

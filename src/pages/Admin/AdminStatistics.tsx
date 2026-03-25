@@ -296,11 +296,11 @@ const AdminStatistics: React.FC = () => {
     // Map notification types to icons and colors
     const notifMeta: Record<string, { icon: React.ReactNode; color: string; label: string }> = {
         new_registration: { icon: <FaUsers />, color: "#3b82f6", label: "تسجيل جديد" },
-        new_review: { icon: <FaStar />, color: "#f59e0b", label: "تقييم جديد" },
+        new_review: { icon: <FaStar />, color: "var(--amber-500)", label: "تقييم جديد" },
         new_product: { icon: <FaBoxOpen />, color: "#8b5cf6", label: "منتج جديد" },
         new_request: { icon: <FaFileAlt />, color: "#10b981", label: "طلب خدمة" },
         profile_update: { icon: <FaUsers />, color: "#6366f1", label: "تحديث ملف" },
-        account_status_audit: { icon: <FaBuilding />, color: "#ef4444", label: "تغيير حالة" },
+        account_status_audit: { icon: <FaBuilding />, color: "var(--color-error)", label: "تغيير حالة" },
         system_alert: { icon: <FaBell />, color: "#ec4899", label: "تنبيه نظام" },
     };
 
@@ -371,7 +371,7 @@ const AdminStatistics: React.FC = () => {
                                 padding={0.35}
                                 groupMode="grouped"
                                 theme={nivoBarTheme}
-                                colors={["#3b82f6", "#f59e0b"]}
+                                colors={["#3b82f6", "var(--amber-500)"]}
                                 borderRadius={5}
                                 axisBottom={{ tickSize: 5, tickPadding: 10, tickRotation: -40 }}
                                 axisLeft={{
@@ -418,7 +418,7 @@ const AdminStatistics: React.FC = () => {
                                 margin={{ top: 20, right: 30, bottom: 50, left: 55 }}
                                 padding={0.45}
                                 theme={nivoBarTheme}
-                                colors={["#f59e0b"]}
+                                colors={["var(--amber-500)"]}
                                 borderRadius={6}
                                 axisBottom={{ tickSize: 5, tickPadding: 10 }}
                                 axisLeft={{
@@ -491,3 +491,4 @@ const AdminStatistics: React.FC = () => {
 };
 
 export default AdminStatistics;
+
