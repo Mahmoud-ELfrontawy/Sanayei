@@ -46,8 +46,8 @@
     right: 5px;
     width: 14px;
     height: 14px;
-    background: #22c55e;
-    border: 2px solid white;
+    background: var(--success);
+    border: 2px solid var(--white);
     border-radius: 50%;
     z-index: 2;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
@@ -104,8 +104,8 @@
 
 .btn-request {
     background: var(--color-primary);
-    color: #fff;
-    box-shadow: 0 6px 15px rgba(85, 152, 192, 0.3);
+    color: var(--white);
+    box-shadow: 0 6px 15px rgba(var(--primary-rgb), 0.3);
 }
 
 .btn-request:hover {
@@ -115,13 +115,13 @@
 }
 
 .btn-profile {
-    background: #FFB340;
-    color: #fff;
+    background: var(--orange-400);
+    color: var(--white);
     box-shadow: 0 6px 15px rgba(255, 179, 64, 0.25);
 }
 
 .btn-profile:hover {
-    background: #e6a139;
+    background: var(--orange-600);
     transform: translateY(-3px);
     box-shadow: 0 10px 20px rgba(255, 179, 64, 0.35);
 }
@@ -131,7 +131,7 @@
    ========================== */
 .line-distance-label {
     background: var(--color-navy-deep) !important;
-    color: #fff !important;
+    color: var(--white) !important;
     border: 2px solid var(--color-primary) !important;
     border-radius: 25px !important;
     padding: 4px 12px !important;
@@ -178,7 +178,7 @@ html[data-theme="dark"] .popup-content p {
     position: relative;
     width: 48px;
     height: 48px;
-    background: #fff;
+    background: var(--white);
     border: 3px solid var(--color-primary);
     border-radius: 50%;
     padding: 2px;
@@ -191,7 +191,7 @@ html[data-theme="dark"] .popup-content p {
 }
 
 .marker-container.user-marker {
-    border-color: #1d4ed8;
+    border-color: var(--blue-700);
     z-index: 200;
 }
 

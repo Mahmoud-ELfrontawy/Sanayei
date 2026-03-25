@@ -272,7 +272,7 @@ const CraftsmenPage: React.FC = () => {
                                 <td>{craftsman.governorate?.name || 'غير محدد'}</td>
                                 <td>
                                     <div className="rating-mini">
-                                        <FaStar size={14} fill="#f59e0b" color="#f59e0b" />
+                                        <FaStar size={14} fill="var(--amber-500)" color="var(--amber-500)" />
                                         <span>{craftsman.rating || 'جديد'}</span>
                                     </div>
                                 </td>
@@ -392,7 +392,7 @@ const CraftsmenPage: React.FC = () => {
 
                             <div className="metrics-grid">
                                 <div className="metric-item">
-                                    <FaStar size={20} color="#f59e0b" />
+                                    <FaStar size={20} color="var(--amber-500)" />
                                     <span className="m-value">{selectedCraftsman.rating}</span>
                                     <span className="m-label">التقييم</span>
                                 </div>

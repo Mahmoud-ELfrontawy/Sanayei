@@ -88,7 +88,7 @@ const TechnicianCard: React.FC<Props> = ({ technician }) => {
                     <div className="tech-card__rating">
                         <FaStar className="tech-card__star" />
                         <span>{technician.rating || "5.0"}</span>
-                        <span style={{ color: '#92400e', opacity: 0.6, fontWeight: 500 }}>
+                        <span style={{ color: 'var(--amber-800)', opacity: 0.6, fontWeight: 500 }}>
                             ({technician.reviews_count || 0})
                         </span>
                     </div>

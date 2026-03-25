@@ -1,4 +1,4 @@
-.about-section {
+﻿.about-section {
     width: 100%;
     padding: 80px 20px;
     background: var(--color-bg-main);
@@ -53,7 +53,7 @@
     left: 80%;
     transform: translateX(-50%);
     border-radius: 40px;
-    background: #fff;
+    background: var(--white);
     z-index: 80;
 }
 
@@ -63,7 +63,7 @@
     bottom: -110px;
     width: 240px;
     height: 180px;
-    background-image: radial-gradient(rgba(11, 30, 51, 0.15) 2.2px, transparent 0);
+    background-image: radial-gradient(rgba(var(--navy-deep-rgb), 0.15) 2.2px, transparent 0);
     background-size: 20px 20px;
     z-index: 1;
 }
@@ -74,7 +74,7 @@
     left: -20px;
     width: 150px;
     height: 150px;
-    background: #3E587133;
+    background: rgba(var(--slate-800-rgb), 0.2);
     border-radius: 25px;
 }
 
@@ -151,7 +151,7 @@
 
 .btn-primary-about {
     background: var(--color-primary);
-    color: #fff;
+    color: var(--white);
 }
 
 .btn-primary-about:hover {
@@ -344,7 +344,7 @@
 
     /* 2nd list item icon -> gray */
     .about-features li:nth-child(2) .icon {
-        background: #f1f5f9;
+        background: var(--slate-100);
         color: var(--color-primary);
     }
 
@@ -381,7 +381,7 @@
         padding: 16px 24px;
         font-size: 18px;
         border-radius: 12px;
-        background: linear-gradient(135deg, var(--color-primary) 0%, #3e5871 100%);
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--slate-800) 100%);
         box-shadow: 0 8px 24px rgba(95, 168, 211, 0.3);
         border: 1px solid rgba(255,255,255,0.1);
         transition: transform 0.2s ease, box-shadow 0.2s ease;

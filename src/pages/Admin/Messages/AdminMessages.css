@@ -1,10 +1,10 @@
-/* AdminMessages.css — Admin Messaging Center */
+﻿/* AdminMessages.css — Admin Messaging Center */
 
 .admin-msg-page {
     padding: 2rem;
     min-height: 100vh;
     background: var(--bg-primary, #0f1117);
-    color: var(--text-primary, #e2e8f0);
+    color: var(--text-primary, var(--slate-200));
     direction: rtl;
     font-family: 'Cairo', 'Segoe UI', sans-serif;
 }
@@ -41,7 +41,7 @@
 .admin-msg-header p {
     margin: 0;
     font-size: 0.85rem;
-    color: var(--text-muted, #94a3b8);
+    color: var(--text-muted, var(--slate-400));
 }
 
 /* ── Tabs ─────────────────────────────────────── */
@@ -63,7 +63,7 @@
     font-weight: 600;
     transition: all 0.25s ease;
     background: transparent;
-    color: var(--text-muted, #94a3b8);
+    color: var(--text-muted, var(--slate-400));
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -75,7 +75,7 @@
 }
 .admin-msg-tab:hover:not(.active) {
     background: rgba(255,255,255,0.07);
-    color: var(--text-primary, #e2e8f0);
+    color: var(--text-primary, var(--slate-200));
 }
 
 /* ── Layout ───────────────────────────────────── */
@@ -103,7 +103,7 @@
     font-size: 1.05rem;
     font-weight: 700;
     margin: 0 0 1.2rem;
-    color: var(--text-primary, #e2e8f0);
+    color: var(--text-primary, var(--slate-200));
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -114,7 +114,7 @@
     display: block;
     font-size: 0.82rem;
     font-weight: 600;
-    color: var(--text-muted, #94a3b8);
+    color: var(--text-muted, var(--slate-400));
     margin-bottom: 0.4rem;
     text-transform: uppercase;
     letter-spacing: 0.03em;
@@ -127,7 +127,7 @@
     border-radius: 10px;
     border: 1px solid rgba(255,255,255,0.1);
     background: rgba(255,255,255,0.05);
-    color: var(--text-primary, #e2e8f0);
+    color: var(--text-primary, var(--slate-200));
     font-size: 0.92rem;
     font-family: inherit;
     outline: none;
@@ -157,7 +157,7 @@
     border-radius: 50px;
     border: 1.5px solid rgba(255,255,255,0.12);
     background: transparent;
-    color: var(--text-muted, #94a3b8);
+    color: var(--text-muted, var(--slate-400));
     font-size: 0.82rem;
     font-weight: 600;
     cursor: pointer;
@@ -171,7 +171,7 @@
 }
 .audience-chip:hover:not(.selected) {
     border-color: rgba(255,255,255,0.25);
-    color: var(--text-primary, #e2e8f0);
+    color: var(--text-primary, var(--slate-200));
 }
 
 /* Recipient search */
@@ -186,7 +186,7 @@
     right: 0.8rem;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--text-muted, #94a3b8);
+    color: var(--text-muted, var(--slate-400));
     pointer-events: none;
 }
 .recipient-results {
@@ -213,7 +213,7 @@
     background: rgba(99,102,241,0.15);
 }
 .recipient-result-item strong { font-size: 0.9rem; }
-.recipient-result-item span  { font-size: 0.78rem; color: var(--text-muted, #94a3b8); }
+.recipient-result-item span  { font-size: 0.78rem; color: var(--text-muted, var(--slate-400)); }
 .recipient-selected {
     margin-top: 0.5rem;
     padding: 0.5rem 0.8rem;
@@ -262,7 +262,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: var(--text-muted, #94a3b8);
+    color: var(--text-muted, var(--slate-400));
     margin-bottom: 0.8rem;
     display: flex;
     align-items: center;
@@ -294,7 +294,7 @@
 .admin-msg-list-item-title {
     font-weight: 700;
     font-size: 0.92rem;
-    color: var(--text-primary, #e2e8f0);
+    color: var(--text-primary, var(--slate-200));
 }
 .admin-msg-badge {
     font-size: 0.7rem;
@@ -308,7 +308,7 @@
 .admin-msg-badge.individual { background: rgba(234,179,8,0.15); color: #fbbf24; }
 .admin-msg-list-item-body {
     font-size: 0.85rem;
-    color: var(--text-muted, #94a3b8);
+    color: var(--text-muted, var(--slate-400));
     line-height: 1.5;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -330,16 +330,17 @@
 .admin-msg-empty {
     text-align: center;
     padding: 2.5rem 1rem;
-    color: var(--text-muted, #94a3b8);
+    color: var(--text-muted, var(--slate-400));
 }
 .admin-msg-empty svg { font-size: 2.5rem; margin-bottom: 0.7rem; opacity: 0.4; }
 
 /* ── Light mode overrides ─────────────────────── */
-[data-theme='light'] .admin-msg-page       { background: #f8fafc; color: #1e293b; }
-[data-theme='light'] .admin-msg-card        { background: #fff; border-color: #e2e8f0; }
-[data-theme='light'] .admin-msg-tabs        { background: #f1f5f9; }
+[data-theme='light'] .admin-msg-page       { background: var(--slate-50); color: var(--slate-800); }
+[data-theme='light'] .admin-msg-card        { background: #fff; border-color: var(--slate-200); }
+[data-theme='light'] .admin-msg-tabs        { background: var(--slate-100); }
 [data-theme='light'] .admin-msg-form input,
 [data-theme='light'] .admin-msg-form textarea,
-[data-theme='light'] .admin-msg-form select { background: #f8fafc; color: #1e293b; border-color: #cbd5e1; }
-[data-theme='light'] .admin-msg-list-item   { background: #f8fafc; border-color: #e2e8f0; }
-[data-theme='light'] .recipient-results     { background: #fff; border-color: #e2e8f0; }
+[data-theme='light'] .admin-msg-form select { background: var(--slate-50); color: var(--slate-800); border-color: var(--slate-300); }
+[data-theme='light'] .admin-msg-list-item   { background: var(--slate-50); border-color: var(--slate-200); }
+[data-theme='light'] .recipient-results     { background: #fff; border-color: var(--slate-200); }
+

@@ -84,7 +84,7 @@ const UserDashboard: React.FC = () => {
             ) : (
                 <div className="max-w-7xl mx-auto px-4 -mt-12 relative z-20">
                     {isBlocked && (
-                        <div className="approval-warning-banner blocked" style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div className="approval-warning-banner blocked" style={{ background: 'var(--error-light)', border: '1px solid var(--error-border)', color: 'var(--error-text)', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
                             <FiAlertCircle />
                             <span>حسابك محظور من قبل الإدارة. يرجى التواصل مع <Link to="/contact" style={{ textDecoration: 'underline' }}>الدعم الفني</Link> لحل المشكلة.</span>
                         </div>

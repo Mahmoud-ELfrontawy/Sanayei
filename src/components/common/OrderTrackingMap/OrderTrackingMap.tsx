@@ -183,12 +183,12 @@ const OrderTrackingMap: React.FC<OrderTrackingMapProps> = ({
                 {hasUserLoc && (
                     <CircleMarker
                         center={[uLat, uLng]}
-                        pathOptions={{ color: '#ef4444', fillColor: '#fee2e2', fillOpacity: 0.9, weight: 3 }}
+                        pathOptions={{ color: 'var(--color-error)', fillColor: '#fee2e2', fillOpacity: 0.9, weight: 3 }}
                         radius={12}
                     >
                         <Popup className="tracking-popup user">
                             <div className="tracking-popup-content">
-                                <FaUser size={20} color="#ef4444" />
+                                <FaUser size={20} color="var(--color-error)" />
                                 <strong>{userName}</strong>
                                 <span>موقع طلب الخدمة</span>
                             </div>
@@ -227,3 +227,4 @@ const OrderTrackingMap: React.FC<OrderTrackingMapProps> = ({
 };
 
 export default OrderTrackingMap;
+

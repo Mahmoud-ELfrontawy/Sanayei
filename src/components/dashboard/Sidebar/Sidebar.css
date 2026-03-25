@@ -1,4 +1,4 @@
-.dashboard-sidebar {
+﻿.dashboard-sidebar {
     width: 280px;
     height: 100vh;
     background-color: var(--color-bg-main);
@@ -118,7 +118,7 @@
     align-items: center;
     gap: 6px;
     background: #fef2f2;
-    color: #ef4444;
+    color: var(--error);
     font-size: 0.75rem;
     font-weight: 600;
     padding: 4px 10px;
@@ -279,7 +279,7 @@
 }
 
 .sidebar-badge {
-    background-color: #ef4444;
+    background-color: var(--error);
     color: #ffffff;
     font-size: 11px;
     font-weight: 700;
@@ -377,4 +377,5 @@ html[data-theme="dark"] .link-icon .notification-badge-header {
 html[data-theme="dark"] .nav-link.has-unread {
     background: rgba(244, 67, 54, 0.08);
 }
+
 

@@ -227,9 +227,9 @@ const RequestServiceForm: React.FC<Props> = ({
                     className="hsq-form-input"
                     disabled
                     style={{
-                        backgroundColor: '#f5f5f5',
+                        backgroundColor: 'var(--slate-100)',
                         cursor: 'not-allowed',
-                        color: '#666'
+                        color: 'var(--slate-500)'
                     }}
                 >
                     <option>
@@ -403,7 +403,7 @@ const RequestServiceForm: React.FC<Props> = ({
                                             <span>⭐</span>
                                             <span>{selectedCraftsmanDetails.rating || "5.0"}</span>
                                             {selectedCraftsmanDetails.reviews_count && (
-                                                <span style={{ fontSize: '11px', opacity: 0.7, marginInlineStart: '2px' }}>
+                                                <span style={{ fontSize: '11px', opacity: 0.7, marginInlineStart: '2px', color: 'var(--amber-800)' }}>
                                                     ({selectedCraftsmanDetails.reviews_count})
                                                 </span>
                                             )}

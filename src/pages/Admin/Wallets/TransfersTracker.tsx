@@ -104,7 +104,7 @@ const TransfersTracker = () => {
                         {loading ? (
                             <tr><td colSpan={6} style={{ textAlign: 'center', padding: '3rem' }}>جاري التحميل...</td></tr>
                         ) : transfers.length === 0 ? (
-                            <tr><td colSpan={6} style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>لا توجد عمليات تحويل مسجلة</td></tr>
+                            <tr><td colSpan={6} style={{ textAlign: 'center', padding: '3rem', color: 'var(--slate-500)'}}>لا توجد عمليات تحويل مسجلة</td></tr>
                         ) : (
                             transfers.map(t => (
                                 <tr key={t.id}>
@@ -157,3 +157,4 @@ const TransfersTracker = () => {
 };
 
 export default TransfersTracker;
+

@@ -166,7 +166,7 @@ const CompanyPublicPage: React.FC = () => {
                             {reviews.length > 0 && (
                                 <div className="cpub-stat">
                                     <div className="cpub-avg-stars">
-                                        <FiStar fill="#f59e0b" color="#f59e0b" />
+                                        <FiStar fill="var(--amber-500)" color="var(--amber-500)" />
                                         <strong>
                                             {(reviews.reduce((acc, r) => acc + (Number(r.rating) || 0), 0) / reviews.length).toFixed(1)}
                                         </strong>
@@ -295,3 +295,4 @@ const CompanyPublicPage: React.FC = () => {
 };
 
 export default CompanyPublicPage;
+

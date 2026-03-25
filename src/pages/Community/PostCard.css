@@ -1,11 +1,11 @@
-/* ═══════════════════════════════════════════════
+﻿/* ═══════════════════════════════════════════════
    Marketplace – Service Request Card
    ═══════════════════════════════════════════════ */
 
 .req-card {
     background: var(--background-color, #fff);
     border-radius: 16px;
-    border: 1px solid var(--border-color, #e2e8f0);
+    border: 1px solid var(--border-color, var(--slate-200));
     overflow: hidden;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -36,7 +36,7 @@ html[data-theme="dark"] .req-card:hover {
     width: 100%;
     height: 150px;
     overflow: hidden;
-    background: #e2e8f0;
+    background: var(--slate-200);
 }
 
 html[data-theme="dark"] .req-card-img {
@@ -70,7 +70,7 @@ html[data-theme="dark"] .req-card-img.no-image {
 .placeholder-text {
     font-size: 14px;
     font-weight: 700;
-    color: var(--text-secondary, #64748b);
+    color: var(--text-secondary, var(--slate-500));
 }
 
 html[data-theme="dark"] .placeholder-text {
@@ -190,14 +190,14 @@ html[data-theme="dark"] .req-card-category {
 
 .req-card-status-inline.status-cancelled {
     background: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
+    color: var(--error);
 }
 
 /* ── Title & Desc ────────────────────────────── */
 .req-card-title {
     font-size: 16px;
     font-weight: 700;
-    color: var(--text-primary, #1e293b);
+    color: var(--text-primary, var(--slate-800));
     margin: 0;
     line-height: 1.4;
     min-height: 44px; /* 16px * 1.4 * 2 lines */
@@ -208,12 +208,12 @@ html[data-theme="dark"] .req-card-category {
 }
 
 html[data-theme="dark"] .req-card-title {
-    color: #f1f5f9;
+    color: var(--slate-100);
 }
 
 .req-card-desc {
     font-size: 13px;
-    color: var(--text-secondary, #64748b);
+    color: var(--text-secondary, var(--slate-500));
     line-height: 1.6;
     margin: 0 0 8px; /* Added slight bottom margin before meta */
     min-height: 41px; /* 13px * 1.6 * 2 lines */
@@ -249,7 +249,7 @@ html[data-theme="dark"] .req-card-desc {
     gap: 5px;
     font-size: 13px;
     font-weight: 500;
-    color: var(--text-secondary, #64748b);
+    color: var(--text-secondary, var(--slate-500));
 }
 
 html[data-theme="dark"] .req-card-meta-item {
@@ -281,7 +281,7 @@ html[data-theme="dark"] .req-card-meta-item.offers {
     justify-content: space-between;
     padding-top: 10px;
     margin-top: 12px; /* Margin from meta instead of auto */
-    border-top: 1px solid var(--border-color, #f1f5f9);
+    border-top: 1px solid var(--border-color, var(--slate-100));
 }
 
 html[data-theme="dark"] .req-card-footer {
@@ -299,7 +299,7 @@ html[data-theme="dark"] .req-card-footer {
     height: 28px;
     border-radius: 50%;
     object-fit: cover;
-    border: 1px solid var(--border-color, #e2e8f0);
+    border: 1px solid var(--border-color, var(--slate-200));
 }
 
 .req-card-author-name {
@@ -317,9 +317,10 @@ html[data-theme="dark"] .req-card-author-name {
     align-items: center;
     gap: 5px;
     font-size: 12px;
-    color: var(--text-secondary, #94a3b8);
+    color: var(--text-secondary, var(--slate-400));
 }
 
 html[data-theme="dark"] .req-card-time {
     color: #6b7488;
 }
+

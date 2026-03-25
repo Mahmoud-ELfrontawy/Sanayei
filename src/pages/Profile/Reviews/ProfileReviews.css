@@ -1,4 +1,4 @@
-.profile-reviews-container {
+﻿.profile-reviews-container {
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
@@ -7,12 +7,12 @@
 .profile-reviews-container h2 {
   font-size: 24px;
   font-weight: 600;
-  color: #333;
+  color: var(--slate-800);
   margin-bottom: 8px;
 }
 
 .reviews-subtitle {
-  color: #666;
+  color: var(--slate-500);
   font-size: 14px;
   margin-bottom: 24px;
 }
@@ -30,8 +30,8 @@
 .spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #4A5D6E;
+  border: 4px solid var(--slate-100);
+  border-top: 4px solid var(--color-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -42,7 +42,7 @@
 }
 
 .loading-state p {
-  color: #666;
+  color: var(--slate-500);
   font-size: 16px;
 }
 
@@ -52,7 +52,7 @@
   align-items: center;
   justify-content: center;
   padding: 60px 20px;
-  color: #d32f2f;
+  color: var(--error);
   font-size: 16px;
 }
 
@@ -70,13 +70,13 @@
 .empty-state p {
   font-size: 18px;
   font-weight: 500;
-  color: #333;
+  color: var(--slate-800);
   margin: 0;
 }
 
 .empty-state span {
   font-size: 14px;
-  color: #666;
+  color: var(--slate-500);
 }
 
 /* Reviews Grid */
@@ -88,8 +88,8 @@
 
 /* Review Card */
 .user-review-card {
-  background: #ffffff;
-  border: 1px solid #edf2f7;
+  background: var(--white);
+  border: 1px solid var(--slate-100);
   border-radius: 20px;
   padding: 24px;
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -118,8 +118,8 @@
   height: 52px;
   border-radius: 50%;
   padding: 2px;
-  border: 2px solid #5FA8D3;
-  background: #fff;
+  border: 2px solid var(--primary);
+  background: var(--white);
   flex-shrink: 0;
 }
 
@@ -137,7 +137,7 @@
 .craftsman-name-link {
   font-weight: 700;
   font-size: 16px;
-  color: #1a202c;
+  color: var(--slate-900);
   margin: 0 0 4px 0;
 }
 
@@ -146,22 +146,22 @@
   align-items: center;
   gap: 3px;
   margin-bottom: 4px;
-  background: #fff3cd;
+  background: var(--gold-50);
   padding: 3px 10px;
   border-radius: 12px;
-  border: 1px solid #ffeeba;
+  border: 1px solid var(--gold-100);
 }
 
 .review-date-label {
   font-size: 12px;
-  color: #a0aec0;
+  color: var(--slate-400);
   font-weight: 500;
 }
 
 /* Review Comment */
 .review-comment-body {
   flex: 1;
-  background: #f8fafc;
+  background: var(--slate-50);
   border-radius: 12px;
   padding: 16px;
   position: relative;
@@ -171,7 +171,7 @@
   margin: 0;
   font-size: 14px;
   line-height: 1.7;
-  color: #4a5568;
+  color: var(--slate-600);
   font-weight: 500;
   font-style: italic;
 }
@@ -215,3 +215,4 @@
 [dir="rtl"] .rating-stars {
   direction: ltr;
 }
+

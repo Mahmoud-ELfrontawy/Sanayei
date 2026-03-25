@@ -59,14 +59,14 @@ const AdminDashboard = () => {
     // Map notification types to display info
     const notifMeta: Record<string, { icon: React.ReactNode; color: string; label: string }> = {
         new_registration: { icon: <FaUsers />, color: '#3b82f6', label: 'تسجيل جديد' },
-        new_review: { icon: <FaStar />, color: '#f59e0b', label: 'تقييم جديد' },
+        new_review: { icon: <FaStar />, color: 'var(--amber-500)', label: 'تقييم جديد' },
         new_product: { icon: <FaBoxOpen />, color: '#8b5cf6', label: 'منتج جديد' },
         new_request: { icon: <FaFileAlt />, color: '#10b981', label: 'طلب خدمة' },
         profile_update: { icon: <FaUser />, color: '#6366f1', label: 'تحديث ملف' },
-        account_status_audit: { icon: <FaHardHat />, color: '#ef4444', label: 'تغيير حالة' },
+        account_status_audit: { icon: <FaHardHat />, color: 'var(--color-error)', label: 'تغيير حالة' },
         system_alert: { icon: <FaBell />, color: '#ec4899', label: 'تنبيه نظام' },
         wallet_transaction: { icon: <FaDollarSign />, color: '#10b981', label: 'معاملة مالية' },
-        withdrawal_request: { icon: <FaDollarSign />, color: '#f59e0b', label: 'طلب سحب' },
+        withdrawal_request: { icon: <FaDollarSign />, color: 'var(--amber-500)', label: 'طلب سحب' },
     };
 
     return (
@@ -124,16 +124,16 @@ const AdminDashboard = () => {
             <div className="adm-quick-links">
                 {[
                     { to: '/admin/users', icon: <FaUser />, label: 'المستخدمون', color: '#3b82f6' },
-                    { to: '/admin/craftsmen', icon: <FaHardHat />, label: 'الصنايعية', color: '#f59e0b' },
-                    { to: '/admin/live-map', icon: <FaMapMarkedAlt />, label: 'خريطة النظام', color: '#ef4444' },
+                    { to: '/admin/craftsmen', icon: <FaHardHat />, label: 'الصنايعية', color: 'var(--amber-500)'},
+                    { to: '/admin/live-map', icon: <FaMapMarkedAlt />, label: 'خريطة النظام', color: 'var(--color-error)'},
                     { to: '/admin/services', icon: <FaTools />, label: 'الخدمات', color: '#8b5cf6' },
                     { to: '/admin/governorates', icon: <FaMapMarkerAlt />, label: 'المحافظات', color: '#10b981' },
                     { to: '/admin/categories', icon: <FaTags />, label: 'التصنيفات', color: '#0ea5e9' },
-                    { to: '/admin/reviews', icon: <FaCommentAlt />, label: 'التقييمات', color: '#ef4444' },
+                    { to: '/admin/reviews', icon: <FaCommentAlt />, label: 'التقييمات', color: 'var(--color-error)'},
                     { to: '/admin/requests', icon: <FaRegFileAlt />, label: 'الطلبات', color: '#f97316' },
                     { to: '/admin/products', icon: <FaBoxOpen />, label: 'المنتجات', color: '#6366f1' },
                     { to: '/admin/wallets', icon: <FaDollarSign />, label: 'المحافظ', color: '#10b981' },
-                    { to: '/admin/withdrawals', icon: <FaDollarSign />, label: 'طلبات السحب', color: '#f59e0b' },
+                    { to: '/admin/withdrawals', icon: <FaDollarSign />, label: 'طلبات السحب', color: 'var(--amber-500)'},
                     { to: '/admin/transfers', icon: <FaRegFileAlt />, label: 'التحويلات', color: '#6366f1' },
                 ].map(item => (
                     <Link key={item.to} to={item.to} className="adm-quick-link" style={{ '--link-color': item.color } as any}>
@@ -169,7 +169,7 @@ const AdminDashboard = () => {
                     </div>
 
                     {notifications.length === 0 ? (
-                        <div style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8' }}>
+                        <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--slate-400)'}}>
                             📭 لا توجد إشعارات حتى الآن — ستظهر هنا فور حدوث أي نشاط جديد
                         </div>
                     ) : (

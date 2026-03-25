@@ -1,4 +1,4 @@
-.dashboard-page {
+﻿.dashboard-page {
     display: flex;
     flex-direction: column;
     gap: 30px;
@@ -6,7 +6,7 @@
 
 /* ================= Premium Dashboard Header ================= */
 .dashboard-header-premium {
-    background: linear-gradient(135deg, #5FA8D3, #4389b1, #2d5a75);
+    background: linear-gradient(135deg, var(--primary), var(--blue-700), var(--blue-800));
     padding: 48px 32px 80px;
     border-radius: 40px;
     margin-bottom: 32px;
@@ -33,7 +33,7 @@
     right: -10%;
     width: 40%;
     height: 80%;
-    background: #60a5fa;
+    background: var(--blue-400);
     border-radius: 50%;
     filter: blur(120px);
 }
@@ -44,7 +44,7 @@
     left: -10%;
     width: 30%;
     height: 60%;
-    background: #fb923c;
+    background: var(--orange-400);
     border-radius: 50%;
     filter: blur(100px);
 }
@@ -59,15 +59,15 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--white-08);
     backdrop-filter: blur(12px);
     padding: 10px 20px;
     border-radius: 100px;
-    color: #f0f9ff;
+    color: var(--blue-status-light);
     font-size: 15px;
     font-weight: 700;
     margin-bottom: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--white-15);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
@@ -84,7 +84,7 @@
     height: 100%;
     width: 100%;
     border-radius: 50%;
-    background-color: #4ade80;
+    background-color: var(--success);
     opacity: 0.75;
     animation: ping-premium 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
@@ -102,14 +102,14 @@
     border-radius: 50%;
     height: 10px;
     width: 10px;
-    background-color: #22c55e;
+    background-color: var(--color-success);
 }
 
 .dashboard-header-premium h1 {
     font-size: 2.2rem;
     font-weight: 900;
     margin-bottom: 10px;
-    color: #fff;
+    color: var(--white);
     letter-spacing: -0.5px;
 }
 
@@ -209,11 +209,11 @@
 }
 
 .dashboard-section {
-    background: white;
+    background: var(--white);
     padding: 25px;
     border-radius: 12px;
     border: 1px solid var(--color-border);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 4px 12px var(--black-03);
 }
 
 .section-header {
@@ -226,7 +226,7 @@
 .section-header h2 {
     font-size: 1.5rem;
     font-weight: 800;
-    color: #1a1a1a;
+    color: var(--slate-800);
     position: relative;
     padding-right: 18px;
     margin: 0;
@@ -240,7 +240,7 @@
     transform: translateY(-50%);
     width: 5px;
     height: 32px;
-    background: linear-gradient(to bottom, var(--color-primary), #5FA8D3);
+    background: linear-gradient(to bottom, var(--color-primary), var(--primary));
     border-radius: 10px;
 }
 
@@ -275,14 +275,14 @@
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background: #ffffff;
+    background: var(--white);
     border-radius: 20px;
-    border: 1px solid #f1f5f9;
+    border: 1px solid var(--slate-100);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .craftsman-mini-card:hover {
-    background: #ffffff;
+    background: var(--white);
     border-color: var(--color-primary);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     transform: translateY(-3px);
@@ -343,8 +343,8 @@
 .c-avatar {
     width: 40px;
     height: 40px;
-    background: #e2e8f0;
-    color: #64748b;
+    background: var(--slate-200);
+    color: var(--slate-500);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -382,7 +382,7 @@
     align-items: center;
     gap: 6px;
     padding: 8px 16px;
-    background: white;
+    background: var(--white);
     border: 1px solid var(--color-border);
     border-radius: 6px;
     color: var(--color-text-main);
@@ -407,10 +407,10 @@
 .no-data-premium {
     text-align: center;
     padding: 60px 40px;
-    background: #f8fafc;
+    background: var(--slate-50);
     border-radius: 24px;
-    border: 1px dashed #e2e8f0;
-    color: #94a3b8;
+    border: 1px dashed var(--slate-200);
+    color: var(--slate-400);
     width: 100%;
 }
 
@@ -462,3 +462,4 @@ html[data-theme="dark"] .no-data-premium {
     background: var(--color-bg-section);
     border-color: var(--color-border);
 }
+

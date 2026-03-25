@@ -44,7 +44,7 @@ const CraftsmanStatistics: React.FC = () => {
                     { keys: ['accepted', 'approved', 'inprogress'], label: 'مقبول', color: 'var(--color-primary)' },
                     { keys: ['pending', 'new', 'waiting'], label: 'قيد الانتظار', color: 'var(--color-warning)' },
                     { keys: ['cancelled', 'canceled'], label: 'ملغي', color: 'var(--color-error)' },
-                    { keys: ['rejected', 'refused'], label: 'مرفوض', color: '#64748b' }
+                    { keys: ['rejected', 'refused'], label: 'مرفوض', color: 'var(--slate-500)'}
                 ];
 
                 const pieData = statusConfig.map(config => {
@@ -113,7 +113,7 @@ const CraftsmanStatistics: React.FC = () => {
         },
         tooltip: {
             container: {
-                background: '#ffffff',
+                background: 'var(--white)',
                 color: 'var(--color-text-main)',
                 fontSize: 12,
                 borderRadius: '8px',
@@ -179,7 +179,7 @@ const CraftsmanStatistics: React.FC = () => {
                                     arcLinkLabelsThickness={2}
                                     arcLinkLabelsColor={{ from: 'color' }}
                                     arcLabelsSkipAngle={10}
-                                    arcLabelsTextColor="#ffffff"
+                                    arcLabelsTextColor="var(--white)"
                                     legends={[]}
                                 />
                             ) : (
@@ -236,7 +236,7 @@ const CraftsmanStatistics: React.FC = () => {
                                 }}
                                 labelSkipWidth={12}
                                 labelSkipHeight={12}
-                                labelTextColor="#ffffff"
+                                labelTextColor="var(--white)"
                             />
                         ) : (
                             <div className="chart-empty">لا توجد بيانات متاحة</div>
@@ -256,3 +256,4 @@ const CraftsmanStatistics: React.FC = () => {
 };
 
 export default CraftsmanStatistics;
+

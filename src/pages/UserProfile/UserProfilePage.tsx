@@ -67,9 +67,9 @@ const UserProfilePage: React.FC = () => {
             <div
                 className="profile-cover"
                 style={{
-                    backgroundColor: "var(--color-primary)",
+                    backgroundColor: "var(--primary)",
                     opacity: 0.8,
-                    background: "linear-gradient(45deg, #4A5D6E, #5FA8D3)"
+                    background: "var(--gradient-primary)"
                 }}
             ></div>
 
@@ -128,8 +128,8 @@ const UserProfilePage: React.FC = () => {
                         ) : (
                             <div className="fade-enter">
                                 <div className="info-section" style={{ textAlign: "center", padding: "40px" }}>
-                                    <FaRegComments size={48} color="#ccc" style={{ marginBottom: "20px" }} />
-                                    <p style={{ color: "#888", fontSize: "1.1rem" }}>لا توجد نشاطات عامة لعرضها حالياً</p>
+                                    <FaRegComments size={48} color="var(--gray-300)" style={{ marginBottom: "20px" }} />
+                                    <p style={{ color: "var(--gray-400)", fontSize: "1.1rem" }}>لا توجد نشاطات عامة لعرضها حالياً</p>
                                 </div>
                             </div>
                         )}

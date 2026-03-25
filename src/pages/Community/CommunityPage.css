@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════
+﻿/* ═══════════════════════════════════════════════
    Marketplace – Service Requests Page
    ═══════════════════════════════════════════════ */
 
@@ -99,7 +99,7 @@ html[data-theme="dark"] .mkt-page {
 .mkt-create-btn:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
-    background: #f8fafc;
+    background: var(--slate-50);
 }
 
 .mkt-create-btn:active {
@@ -120,7 +120,7 @@ html[data-theme="dark"] .mkt-page {
     align-items: center;
     gap: 16px;
     background: var(--background-color, #fff);
-    border: 1px solid var(--border-color, #e2e8f0);
+    border: 1px solid var(--border-color, var(--slate-200));
     border-radius: 24px;
     padding: 10px 16px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
@@ -147,7 +147,7 @@ html[data-theme="dark"] .mkt-filters-bar {
 .mkt-search-icon {
     position: absolute;
     right: 20px;
-    color: #94a3b8;
+    color: var(--slate-400);
     font-size: 20px;
 }
 
@@ -158,17 +158,17 @@ html[data-theme="dark"] .mkt-filters-bar {
     border-radius: 16px;
     background: transparent;
     font-size: 16px;
-    color: var(--text-primary, #1e293b);
+    color: var(--text-primary, var(--slate-800));
     font-family: inherit;
     outline: none;
 }
 
 html[data-theme="dark"] .mkt-search-box input {
-    color: #e2e8f0;
+    color: var(--slate-200);
 }
 
 .mkt-search-box input::placeholder {
-    color: #94a3b8;
+    color: var(--slate-400);
 }
 
 .mkt-filter-toggle {
@@ -176,8 +176,8 @@ html[data-theme="dark"] .mkt-search-box input {
     align-items: center;
     gap: 10px;
     padding: 14px 28px;
-    background: #f1f5f9;
-    color: #475569;
+    background: var(--slate-100);
+    color: var(--slate-600);
     border: none;
     border-radius: 16px;
     font-size: 16px;
@@ -232,7 +232,7 @@ html[data-theme="dark"] .mkt-filter-toggle.active {
 
 .mkt-filters-panel {
     background: var(--background-color, #fff);
-    border: 1px solid var(--border-color, #e2e8f0);
+    border: 1px solid var(--border-color, var(--slate-200));
     border-radius: 16px;
     padding: 20px;
     margin-top: 12px;
@@ -274,10 +274,10 @@ html[data-theme="dark"] .mkt-filter-group label {
 
 .mkt-pill {
     padding: 8px 16px;
-    border: 1px solid var(--border-color, #e2e8f0);
+    border: 1px solid var(--border-color, var(--slate-200));
     border-radius: 24px;
-    background: var(--background-color, #f8fafc);
-    color: var(--text-primary, #475569);
+    background: var(--background-color, var(--slate-50));
+    color: var(--text-primary, var(--slate-600));
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
@@ -353,7 +353,7 @@ html[data-theme="dark"] .mkt-pill.active {
     justify-content: center;
     gap: 10px;
     padding: 40px;
-    color: var(--text-secondary, #64748b);
+    color: var(--text-secondary, var(--slate-500));
     font-size: 15px;
 }
 
@@ -370,7 +370,7 @@ html[data-theme="dark"] .mkt-pill.active {
 .mkt-empty {
     text-align: center;
     padding: 60px 20px;
-    color: var(--text-secondary, #64748b);
+    color: var(--text-secondary, var(--slate-500));
 }
 
 .mkt-empty-icon {
@@ -387,7 +387,7 @@ html[data-theme="dark"] .mkt-pill.active {
 }
 
 html[data-theme="dark"] .mkt-empty h3 {
-    color: #e2e8f0;
+    color: var(--slate-200);
 }
 
 .mkt-empty p {
@@ -397,7 +397,7 @@ html[data-theme="dark"] .mkt-empty h3 {
 
 .mkt-end-msg {
     text-align: center;
-    color: var(--text-secondary, #94a3b8);
+    color: var(--text-secondary, var(--slate-400));
     padding: 30px 0;
     font-weight: 500;
     font-size: 14px;
@@ -465,3 +465,4 @@ html[data-theme="dark"] .mkt-empty h3 {
         padding: 24px 16px 60px;
     }
 }
+

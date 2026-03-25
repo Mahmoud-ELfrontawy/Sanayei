@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FiList, FiPackage, FiShoppingCart } from "react-icons/fi";
+import { FiList, FiPackage, FiShoppingCart, FiSearch } from "react-icons/fi";
 import StoreProductList from "./StoreProductList";
 import ProductDetails from "./ProductDetails";
 import StoreOrdersPage from "./StoreOrdersPage";
@@ -85,6 +85,7 @@ const StorePage: React.FC = () => {
                     </div>
 
                     <div className="store-nav-search">
+                        <FiSearch className="nav-search-icon" />
                         <input
                             type="text"
                             placeholder="ابحث في المتجر..."

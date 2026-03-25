@@ -62,7 +62,7 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, var(--color-primary), #7cc4e8);
+    background: linear-gradient(90deg, var(--color-primary), var(--blue-300));
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.4s ease;
@@ -132,7 +132,7 @@
 .service-link-card {
     width: 100%;
     background: var(--color-primary);
-    color: #fff;
+    color: var(--white);
     font-weight: 700;
     font-size: 20px;
     text-decoration: none;
@@ -229,7 +229,7 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: #3E587133;
+    background: rgba(var(--slate-800-rgb), 0.2);
     margin-bottom: 20px;
 }
 

@@ -173,7 +173,7 @@ const ServiceRequestsPage = () => {
                                     <td>
                                         <div style={{ fontSize: '0.85rem' }}>
                                             <div>{request.province}</div>
-                                            <div style={{ color: '#64748b' }}>{request.address}</div>
+                                            <div style={{ color: 'var(--slate-500)'}}>{request.address}</div>
                                         </div>
                                     </td>
                                     <td>
@@ -189,7 +189,7 @@ const ServiceRequestsPage = () => {
                                                 <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>{request.craftsman.name}</span>
                                             </div>
                                         ) : (
-                                            <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>غير محدد</span>
+                                            <span style={{ fontSize: '0.8rem', color: 'var(--slate-400)'}}>غير محدد</span>
                                         )}
                                     </td>
                                     <td>
@@ -265,7 +265,7 @@ const ServiceRequestsPage = () => {
                             </div>
                         </form>
                         <div className="modal-footer">
-                            <button type="button" onClick={handleCloseEdit} style={{ padding: '0.75rem 1.5rem', border: 'none', background: '#f1f5f9', borderRadius: 6, cursor: 'pointer', fontWeight: 600 }}>إلغاء</button>
+                            <button type="button" onClick={handleCloseEdit} style={{ padding: '0.75rem 1.5rem', border: 'none', background: 'var(--slate-100)', borderRadius: 6, cursor: 'pointer', fontWeight: 600 }}>إلغاء</button>
                             <button type="submit" onClick={handleUpdate} style={{ padding: '0.75rem 1.5rem', border: 'none', background: '#4f46e5', color: 'white', borderRadius: 6, cursor: 'pointer', fontWeight: 600 }}>حفظ التعديلات</button>
                         </div>
                     </div>

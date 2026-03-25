@@ -138,7 +138,7 @@ const WalletDetails = () => {
                         <tbody>
                             {!wallet?.transactions?.data?.length ? (
                                 <tr>
-                                    <td colSpan={4} style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8' }}>
+                                    <td colSpan={4} style={{ textAlign: 'center', padding: '3rem', color: 'var(--slate-400)'}}>
                                         لا توجد معاملات مسجلة لهذه المحفظة
                                     </td>
                                 </tr>
@@ -162,7 +162,7 @@ const WalletDetails = () => {
                                             )}
                                         </td>
                                         <td>
-                                            <span className="tx-meta" style={{ color: '#64748b' }}>
+                                            <span className="tx-meta" style={{ color: 'var(--slate-500)'}}>
                                                 {new Date(tx.created_at).toLocaleString('ar-EG')}
                                             </span>
                                         </td>
@@ -260,3 +260,4 @@ const WalletDetails = () => {
 };
 
 export default WalletDetails;
+

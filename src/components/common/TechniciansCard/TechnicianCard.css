@@ -1,4 +1,4 @@
-/* ============================================
+﻿/* ============================================
    TechnicianCard – Premium Profile Card
    ============================================ */
 
@@ -173,7 +173,7 @@
     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
 }
 
-.tech-card__status-dot.offline { background: #cbd5e1; }
+.tech-card__status-dot.offline { background: var(--slate-300); }
 
 /* ── Tags Row ── */
 .tech-card__tags {
@@ -210,7 +210,7 @@
 }
 
 .tech-card__star {
-    color: #f59e0b;
+    color: var(--amber-500);
     font-size: 16px;
 }
 
@@ -369,4 +369,5 @@ html[data-theme="dark"] .tech-card__btn--outline:hover {
     color: var(--color-primary);
     border-color: var(--color-primary);
 }
+
 

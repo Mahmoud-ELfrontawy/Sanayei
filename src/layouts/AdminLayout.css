@@ -1,4 +1,4 @@
-.admin-root {
+﻿.admin-root {
   display: flex;
   height: 100vh;
   background-color: var(--color-bg-section);
@@ -520,7 +520,7 @@ html[data-theme="dark"] .admin-notif-item.unread {
 }
 
 html[data-theme="dark"] .admin-notif-time {
-  color: #64748b;
+  color: var(--slate-500);
 }
 
 html[data-theme="dark"] .admin-notif-icon.new_registration { background: #1e3a5f; color: #7ec8f0; }
@@ -583,3 +583,4 @@ html[data-theme="dark"] .admin-loading {
   background-color: var(--color-bg-main);
   color: var(--color-text-main);
 }
+

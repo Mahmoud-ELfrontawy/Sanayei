@@ -20,13 +20,13 @@
 }
 
 .notification-card {
-    background: white;
+    background: var(--white);
     padding: 20px;
     border-radius: 12px;
     display: flex;
     gap: 15px;
     position: relative;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px var(--black-05);
     transition: transform 0.2s;
 }
 
@@ -41,7 +41,7 @@
 .notif-icon-box {
     width: 45px;
     height: 45px;
-    background: rgba(var(--color-primary-rgb), 0.1);
+    background: var(--primary-10);
     color: var(--color-primary);
     border-radius: 10px;
     display: flex;
@@ -65,7 +65,7 @@
 
 .notif-time {
     font-size: 0.8rem;
-    color: #999;
+    color: var(--slate-400);
     display: flex;
     align-items: center;
     gap: 5px;
@@ -124,7 +124,7 @@
    🌙 Notifications Dark Mode Refinements
    ========================================= */
 html[data-theme="dark"] .notification-card {
-    background: #1a1d21;
+    background: var(--slate-900);
     border-color: var(--color-border);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
@@ -143,7 +143,7 @@ html[data-theme="dark"] .notif-content p {
 
 html[data-theme="dark"] .notification-card.unread {
     border-right-color: var(--color-primary);
-    background: #1e2227;
+    background: var(--slate-800);
 }
 
 html[data-theme="dark"] .notif-time {

@@ -57,7 +57,7 @@ const ReviewsPage = () => {
             <FaStar
                 key={i}
                 size={14}
-                color={i < rating ? "#f59e0b" : "#d1d5db"}
+                color={i < rating ? "var(--amber-500)" : "#d1d5db"}
             />
         ));
     };
@@ -143,7 +143,7 @@ const ReviewsPage = () => {
                                                     <span>{review.comment}</span>
                                                 </div>
                                             ) : (
-                                                <span style={{ color: '#94a3b8', fontStyle: 'italic' }}>بدون تعليق</span>
+                                                <span style={{ color: 'var(--slate-400)', fontStyle: 'italic' }}>بدون تعليق</span>
                                             )}
                                         </div>
                                     </td>

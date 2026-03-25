@@ -1,4 +1,4 @@
-/* ReviewsPage.css */
+﻿/* ReviewsPage.css */
 .reviews-container {
     padding: 2.5rem;
     background-color: var(--color-bg-section);
@@ -9,7 +9,7 @@
 
 .reviews-premium-header {
     margin-bottom: 3rem;
-    background: linear-gradient(135deg, #f59e0b 0%, var(--color-text-accent) 100%);
+    background: linear-gradient(135deg, var(--amber-500) 0%, var(--color-text-accent) 100%);
     border-radius: var(--radius-card);
     padding: 2.5rem;
     color: white;
@@ -101,7 +101,7 @@
 .rating-stars {
     display: flex;
     gap: 2px;
-    color: #f59e0b;
+    color: var(--amber-500);
 }
 
 .review-comment {
@@ -121,8 +121,8 @@
 
 .action-btn.delete:hover {
     background: #fee2e2;
-    border-color: #ef4444;
-    color: #ef4444;
+    border-color: var(--error);
+    color: var(--error);
 }
 
 /* =========================================
@@ -221,4 +221,5 @@ html[data-theme="dark"] .rating-stars {
 html[data-theme="dark"] .action-btn.delete {
     background: rgba(239, 68, 68, 0.1);
 }
+
 

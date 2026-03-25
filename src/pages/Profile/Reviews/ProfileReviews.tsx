@@ -56,7 +56,7 @@ const ProfileReviews: React.FC = () => {
       <div className="profile-reviews-container">
         <h2>المراجعات</h2>
         <div className="empty-state">
-          <FaStar size={48} color="#ddd" />
+          <FaStar size={48} color="var(--slate-200)" />
           <p>لم تكتب أي تقييمات بعد</p>
           <span>عندما تقوم بتقييم صنايعي، ستظهر تقييماتك هنا</span>
         </div>
@@ -90,7 +90,7 @@ const ProfileReviews: React.FC = () => {
                     <FaStar
                       key={i}
                       size={14}
-                      color={i < review.rating ? "#FF8031" : "#e4e5e9"}
+                      color={i < review.rating ? "var(--star-legacy)" : "var(--slate-200)"}
                     />
                   ))}
                 </div>

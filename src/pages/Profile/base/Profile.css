@@ -1,4 +1,4 @@
-/* ================= Global Profile Containers ================= */
+﻿/* ================= Global Profile Containers ================= */
 .profile-content-container {
   width: 100%;
   max-width: 1200px;
@@ -39,8 +39,8 @@
   padding: 5px;
   background: white;
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.03);
+  box-shadow: 0 4px 20px var(--black-08);
+  border: 1px solid var(--black-03);
 }
 
 .tab-item {
@@ -70,13 +70,13 @@
   background: white;
   border-radius: 20px;
   padding: 30px;
-  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.02);
+  box-shadow: 0 4px 25px var(--black-04);
+  border: 1px solid var(--black-02);
 }
 
 .card-header {
   margin-bottom: 25px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--slate-100);
   padding-bottom: 15px;
 }
 
@@ -93,8 +93,8 @@
   overflow: hidden;
   margin-bottom: 24px;
   background: white;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--black-05);
+  box-shadow: 0 4px 20px var(--black-04);
 }
 
 .status-display-card::after {
@@ -107,25 +107,25 @@
 }
 
 .status-display-card.approved {
-  background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
-  border-color: #bcf0da;
+  background: linear-gradient(135deg, var(--emerald-50) 0%, var(--white) 100%);
+  border-color: var(--emerald-100);
 }
-.status-display-card.approved::after { background: #22c55e; }
+.status-display-card.approved::after { background: var(--success); }
 
 .status-display-card.pending {
-  background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
-  border-color: #fde68a;
+  background: linear-gradient(135deg, var(--gold-50) 0%, var(--white) 100%);
+  border-color: var(--gold-200);
 }
-.status-display-card.pending::after { background: #f59e0b; }
+.status-display-card.pending::after { background: var(--amber-500); }
 
 .status-display-card.rejected, .status-display-card.blocked {
-  background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%);
-  border-color: #fecaca;
+  background: linear-gradient(135deg, var(--error-light) 0%, var(--white) 100%);
+  border-color: var(--error-border);
 }
-.status-display-card.rejected::after, .status-display-card.blocked::after { background: #ef4444; }
+.status-display-card.rejected::after, .status-display-card.blocked::after { background: var(--error); }
 
 html[data-theme="dark"] .status-display-card {
-  background: #1e293b;
+  background: var(--slate-800);
   border-color: rgba(255, 255, 255, 0.05);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
@@ -143,17 +143,17 @@ html[data-theme="dark"] .status-display-card {
 }
 
 .status-display-card.approved .status-icon-box {
-  background: #ffffff;
-  color: #22c55e;
+  background: var(--white);
+  color: var(--success);
 }
 .status-display-card.pending .status-icon-box {
-  background: #ffffff;
-  color: #f59e0b;
+  background: var(--white);
+  color: var(--amber-500);
 }
 .status-display-card.rejected .status-icon-box,
 .status-display-card.blocked .status-icon-box {
-  background: #ffffff !important;
-  color: #ef4444;
+  background: var(--white) !important;
+  color: var(--error);
 }
 
 html[data-theme="dark"] .status-icon-box {
@@ -170,10 +170,10 @@ html[data-theme="dark"] .status-icon-box {
   margin-bottom: 4px;
 }
 
-.status-display-card.approved .status-text-content h3 { color: #166534; }
-.status-display-card.pending .status-text-content h3  { color: #92400e; }
+.status-display-card.approved .status-text-content h3 { color: var(--emerald-strong); }
+.status-display-card.pending .status-text-content h3  { color: var(--gold-800); }
 .status-display-card.rejected .status-text-content h3,
-.status-display-card.blocked .status-text-content h3 { color: #991b1b; }
+.status-display-card.blocked .status-text-content h3 { color: var(--error-text); }
 
 html[data-theme="dark"] .status-display-card.approved .status-text-content h3 { color: #4ade80; }
 html[data-theme="dark"] .status-display-card.pending .status-text-content h3  { color: #fbbf24; }
@@ -194,7 +194,7 @@ html[data-theme="dark"] .status-display-card {
 .card-title {
   font-size: 19px;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--slate-800);
   position: relative;
   display: inline-block;
 }
@@ -218,7 +218,7 @@ html[data-theme="dark"] .status-display-card {
   align-items: center;
   text-align: center;
   gap: 25px;
-  background: linear-gradient(to left, #ffffff, #f8fafc);
+  background: linear-gradient(to left, var(--white), var(--slate-50));
 }
 
 .avatar-upload-wrapper {
@@ -240,7 +240,7 @@ html[data-theme="dark"] .status-display-card {
   border-radius: 50%;
   object-fit: cover;
   border: 4px solid white;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px var(--black-10);
   transition: transform 0.3s ease;
 }
 
@@ -267,12 +267,12 @@ html[data-theme="dark"] .status-display-card {
 .avatar-info h3 {
   font-size: 22px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--slate-900);
   margin-bottom: 4px;
 }
 
 .avatar-info p {
-  color: #64748b;
+  color: var(--slate-500);
   font-size: 15px;
 }
 
@@ -302,7 +302,7 @@ html[data-theme="dark"] .status-display-card {
 .input-label {
   font-size: 14px;
   font-weight: 700;
-  color: #475569;
+  color: var(--slate-600);
   margin-bottom: 4px;
 }
 
@@ -310,8 +310,8 @@ html[data-theme="dark"] .status-display-card {
   display: flex;
   align-items: center;
   height: 54px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--slate-50);
+  border: 1px solid var(--slate-200);
   border-radius: 12px;
   padding: 0 16px;
   transition: all 0.3s ease;
@@ -320,7 +320,7 @@ html[data-theme="dark"] .status-display-card {
 .input-line:focus-within {
   border-color: var(--color-primary);
   background: white;
-  box-shadow: 0 0 0 4px rgba(95, 168, 211, 0.1);
+  box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.1);
 }
 
 .custom-input {
@@ -330,12 +330,12 @@ html[data-theme="dark"] .status-display-card {
   outline: none;
   font-size: 16px;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--slate-800);
   width: 100%;
 }
 
 .custom-input::placeholder {
-  color: #94a3b8;
+  color: var(--slate-400);
   font-weight: 400;
 }
 
@@ -353,7 +353,7 @@ html[data-theme="dark"] .status-display-card {
 .sub-title {
   font-size: 17px;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--slate-800);
   margin-bottom: 15px;
 }
 
@@ -378,17 +378,17 @@ html[data-theme="dark"] .status-display-card {
 .work-day-checkbox span {
   display: inline-block;
   padding: 10px 20px;
-  background: #f1f5f9;
+  background: var(--slate-100);
   border-radius: 10px;
   font-weight: 600;
   font-size: 15px;
-  color: #475569;
+  color: var(--slate-600);
   border: 1px solid transparent;
   transition: all 0.2s ease;
 }
 
 .work-day-checkbox:hover span {
-  background: #e2e8f0;
+  background: var(--slate-200);
 }
 
 .work-day-checkbox input:checked + span {
@@ -407,17 +407,17 @@ html[data-theme="dark"] .status-display-card {
     flex: 1;
     padding: 14px;
     border-radius: 12px;
-    background: #f1f5f9;
-    color: #475569;
+    background: var(--slate-100);
+    color: var(--slate-600);
     font-weight: 700;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--slate-200);
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .gender-btn.active {
     background: var(--color-primary);
-    color: white;
+    color: var(--white);
     border-color: var(--color-primary);
     box-shadow: 0 4px 12px rgba(95, 168, 211, 0.2);
 }
@@ -434,7 +434,7 @@ html[data-theme="dark"] .status-display-card {
     aspect-ratio: 1;
     border-radius: 14px;
     overflow: hidden;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--slate-200);
 }
 
 .photo-square img {
@@ -449,7 +449,7 @@ html[data-theme="dark"] .status-display-card {
     left: 0;
     right: 0;
     background: rgba(220, 38, 38, 0.85);
-    color: white;
+    color: var(--white);
     border: none;
     padding: 6px 0;
     font-size: 12px;
@@ -461,14 +461,14 @@ html[data-theme="dark"] .status-display-card {
 .photo-add-square {
     aspect-ratio: 1;
     border-radius: 14px;
-    border: 2px dashed #cbd5e1;
-    background: #f8fafc;
+    border: 2px dashed var(--slate-300);
+    background: var(--slate-50);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: #64748b;
+    color: var(--slate-500);
     gap: 8px;
     font-weight: 600;
     font-size: 13px;
@@ -477,7 +477,7 @@ html[data-theme="dark"] .status-display-card {
 
 .photo-add-square:hover {
     border-color: var(--color-primary);
-    background: #f0f9ff;
+    background: var(--blue-50);
     color: var(--color-primary);
 }
 
@@ -486,7 +486,7 @@ html[data-theme="dark"] .status-display-card {
   border-radius: 16px;
   overflow: hidden;
   height: 350px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--slate-200);
 }
 
 /* ================= Action Buttons ================= */
@@ -520,18 +520,18 @@ html[data-theme="dark"] .status-display-card {
 }
 
 .btn-delete-profile {
-  background: #fee2e2;
-  color: #b91c1c;
+  background: var(--error-light);
+  color: var(--error-text);
   padding: 14px 30px;
   border-radius: 14px;
   font-weight: 700;
-  border: 1px solid #fecaca;
+  border: 1px solid var(--error-border);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .btn-delete-profile:hover {
-  background: #ef4444;
+  background: var(--error);
   color: white;
 }
 
@@ -559,13 +559,13 @@ html[data-theme="dark"] .status-display-card {
 }
 
 .confirm-modal h3 {
-  color: #991b1b;
+  color: var(--error-text);
   font-size: 22px;
   margin-bottom: 12px;
 }
 
 .confirm-modal p {
-  color: #475569;
+  color: var(--slate-600);
   line-height: 1.6;
 }
 
@@ -577,7 +577,7 @@ html[data-theme="dark"] .status-display-card {
 
 .btn-confirm-cancel {
   flex: 1;
-  background: #f1f5f9;
+  background: var(--slate-100);
   border: none;
   padding: 12px;
   border-radius: 12px;
@@ -587,7 +587,7 @@ html[data-theme="dark"] .status-display-card {
 
 .btn-confirm-delete {
   flex: 1;
-  background: #dc2626;
+  background: var(--error-dark);
   color: white;
   border: none;
   padding: 12px;
@@ -643,8 +643,8 @@ html[data-theme="dark"] .status-display-card {
 html[data-theme="dark"] .tabs-container,
 html[data-theme="dark"] .profile-card,
 html[data-theme="dark"] .confirm-modal {
-    background: #1e293b;
-    border-color: #334155;
+    background: var(--slate-800);
+    border-color: var(--slate-700);
 }
 
 html[data-theme="dark"] .tab-item {
@@ -653,7 +653,7 @@ html[data-theme="dark"] .tab-item {
 
 html[data-theme="dark"] .tab-item.active {
     background: var(--color-primary);
-    color: white;
+    color: var(--white);
 }
 
 html[data-theme="dark"] .card-title,
@@ -665,16 +665,16 @@ html[data-theme="dark"] .spec-value {
 }
 
 html[data-theme="dark"] .card-header {
-    border-color: #334155;
+    border-color: var(--slate-700);
 }
 
 html[data-theme="dark"] .avatar-card {
-    background: linear-gradient(to left, #1e293b, #0f172a);
+    background: linear-gradient(to left, var(--slate-800), var(--slate-900));
 }
 
 html[data-theme="dark"] .profile-preview-img,
 html[data-theme="dark"] .camera-icon-badge {
-    border-color: #1e293b;
+    border-color: var(--slate-800);
 }
 
 html[data-theme="dark"] .input-line,
@@ -682,13 +682,13 @@ html[data-theme="dark"] .work-day-checkbox span,
 html[data-theme="dark"] .gender-btn,
 html[data-theme="dark"] .photo-add-square,
 html[data-theme="dark"] .btn-confirm-cancel {
-    background: #0f172a;
-    border-color: #334155;
+    background: var(--slate-900);
+    border-color: var(--slate-700);
     color: var(--color-text-secondary);
 }
 
 html[data-theme="dark"] .input-line:focus-within {
-    background: #0f172a;
+    background: var(--slate-900);
     border-color: var(--color-primary);
 }
 
@@ -699,16 +699,16 @@ html[data-theme="dark"] .input-label {
 html[data-theme="dark"] .work-day-checkbox input:checked + span,
 html[data-theme="dark"] .gender-btn.active {
     background: var(--color-primary);
-    color: white;
+    color: var(--white);
     border-color: var(--color-primary);
 }
 
 html[data-theme="dark"] .photo-square {
-    border-color: #334155;
+    border-color: var(--slate-700);
 }
 
 html[data-theme="dark"] .map-wrapper {
-    border-color: #334155;
+    border-color: var(--slate-700);
 }
 
 html[data-theme="dark"] .btn-delete-profile {
@@ -718,8 +718,8 @@ html[data-theme="dark"] .btn-delete-profile {
 }
 
 html[data-theme="dark"] .btn-delete-profile:hover {
-    background: #dc2626;
-    color: white;
+    background: var(--error-dark);
+    color: var(--white);
 }
 
 
@@ -729,3 +729,4 @@ html[data-theme="dark"] .btn-delete-profile:hover {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+

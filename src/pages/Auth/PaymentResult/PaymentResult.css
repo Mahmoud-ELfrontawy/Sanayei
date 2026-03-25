@@ -4,7 +4,7 @@
     align-items: center;
     min-height: 80vh;
     padding: 20px;
-    background: #f8f9fa;
+    background: var(--slate-50);
 }
 
 .payment-result-card {
@@ -18,11 +18,11 @@
 }
 
 .payment-result-card.success {
-    border-top: 6px solid #28a745;
+    border-top: 6px solid var(--success);
 }
 
 .payment-result-card.failed {
-    border-top: 6px solid #dc3545;
+    border-top: 6px solid var(--error);
 }
 
 .result-icon {
@@ -31,7 +31,7 @@
 }
 
 .icon-success {
-    color: #28a745;
+    color: var(--success);
 }
 
 .icon-failed {

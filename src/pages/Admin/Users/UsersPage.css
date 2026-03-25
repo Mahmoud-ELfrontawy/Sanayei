@@ -1,4 +1,4 @@
-/* UsersPage.css */
+﻿/* UsersPage.css */
 .users-container {
     padding: 2.5rem;
     background-color: var(--color-bg-section);
@@ -319,7 +319,7 @@
 /* Role Badges & Avatars */
 .user-avatar-mini.admin { background-color: var(--color-text-accent); }
 .user-avatar-mini.craftsman { background-color: var(--color-primary); }
-.user-avatar-mini.user { background-color: #64748b; }
+.user-avatar-mini.user { background-color: var(--slate-500); }
 
 .role-badge {
     padding: 0.25rem 0.75rem;
@@ -328,9 +328,9 @@
     font-weight: 700;
 }
 
-.role-badge.admin { background: #f1f5f9; color: var(--color-text-accent); border: 1px solid var(--color-divider); white-space: nowrap; }
+.role-badge.admin { background: var(--slate-100); color: var(--color-text-accent); border: 1px solid var(--color-divider); white-space: nowrap; }
 .role-badge.craftsman { background: #e0f2fe; color: #0369a1; white-space: nowrap; }
-.role-badge.user { background: #f8fafc; color: #64748b; white-space: nowrap; }
+.role-badge.user { background: var(--slate-50); color: var(--slate-500); white-space: nowrap; }
 
 /* Verification Button */
 .verify-btn {
@@ -455,7 +455,7 @@
 
 .detail-avatar.admin { background-color: var(--color-text-accent); }
 .detail-avatar.craftsman { background-color: var(--color-primary); }
-.detail-avatar.user { background-color: #64748b; }
+.detail-avatar.user { background-color: var(--slate-500); }
 .detail-avatar.company { background-color: #8b5cf6; }
 
 .user-id-tag {
@@ -575,7 +575,7 @@
 }
 
 .activity-item.pulse-green { border-right: 4px solid #10b981; }
-.activity-item.pulse-red { border-right: 4px solid #ef4444; }
+.activity-item.pulse-red { border-right: 4px solid var(--error); }
 .activity-item.highlight { background: #f0f9ff; border-color: #bae6fd; }
 
 /* Security Section */
@@ -685,7 +685,7 @@
 
 .control-action-card:hover {
     border-color: var(--color-primary);
-    background: #f8fafc;
+    background: var(--slate-50);
     transform: translateX(-5px);
     box-shadow: -5px 5px 15px rgba(0,0,0,0.05);
 }
@@ -909,7 +909,7 @@
 }
 
 .action-btn.edit:hover { background: #eff6ff; border-color: #3b82f6; color: #3b82f6; }
-.action-btn.delete:hover { background: #fef2f2; border-color: #ef4444; color: #ef4444; }
+.action-btn.delete:hover { background: #fef2f2; border-color: var(--error); color: var(--error); }
 
 /* Modal Styles */
 .modal-overlay {
@@ -1024,7 +1024,7 @@
     justify-content: flex-end;
     gap: 1rem;
     padding: 1.5rem 2rem;
-    background: #f8fafc;
+    background: var(--slate-50);
     border-top: 1px solid var(--color-divider);
     border-bottom-left-radius: var(--radius-card);
     border-bottom-right-radius: var(--radius-card);
@@ -1122,7 +1122,7 @@
 }
 
 .detail-rating .stars {
-    color: #f59e0b;
+    color: var(--amber-500);
     font-size: 1.1rem;
     letter-spacing: 2px;
 }
@@ -1235,7 +1235,7 @@
 .modal-btn.primary:hover { background: var(--color-primary-hover); }
 
 .modal-btn.secondary { background: white; color: var(--color-text-accent); }
-.modal-btn.secondary:hover { background: #f1f5f9; }
+.modal-btn.secondary:hover { background: var(--slate-100); }
 
 .modal-btn.danger { background: #fef2f2; color: var(--color-error); border-color: #fee2e2; }
 .modal-btn.danger:hover { background: #fee2e2; }
@@ -1311,11 +1311,11 @@ html[data-theme="dark"] .refresh-btn:hover {
 
 html[data-theme="dark"] .status-badge-modern.active { background: rgba(22, 101, 52, 0.2); color: #4ade80; border-color: rgba(74, 222, 128, 0.3); }
 html[data-theme="dark"] .status-badge-modern.banned { background: rgba(153, 27, 27, 0.2); color: #f87171; border-color: rgba(248, 113, 113, 0.3); }
-html[data-theme="dark"] .status-badge-modern.inactive { background: rgba(55, 65, 81, 0.2); color: #94a3b8; border-color: rgba(148, 163, 184, 0.3); }
+html[data-theme="dark"] .status-badge-modern.inactive { background: rgba(55, 65, 81, 0.2); color: var(--slate-400); border-color: rgba(148, 163, 184, 0.3); }
 
 html[data-theme="dark"] .role-badge.admin { background: #1e2435; color: #a5b4fc; border-color: #312e81; }
 html[data-theme="dark"] .role-badge.craftsman { background: #1a2e35; color: #7ec8f0; border-color: #0c4a6e; }
-html[data-theme="dark"] .role-badge.user { background: #1e1e1e; color: #94a3b8; border-color: #334155; }
+html[data-theme="dark"] .role-badge.user { background: #1e1e1e; color: var(--slate-400); border-color: #334155; }
 
 html[data-theme="dark"] .control-action-card {
     background: var(--color-bg-main);
@@ -1345,7 +1345,7 @@ html[data-theme="dark"] .security-item {
 
 html[data-theme="dark"] .security-item code {
     background: #2d3748;
-    color: #e2e8f0;
+    color: var(--slate-200);
 }
 
 html[data-theme="dark"] .admin-user-modal {
@@ -1434,5 +1434,6 @@ html[data-theme="dark"] .info-modern-item .content label {
 
 html[data-theme="dark"] .user-id-tag {
     background: #2d3748;
-    color: #94a3b8;
+    color: var(--slate-400);
 }
+

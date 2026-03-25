@@ -81,9 +81,9 @@ const VerifyEmailPage: React.FC = () => {
                     {status === "error" && (
                         <>
                             <div className="verification-icon error animate-shake">
-                                <FaExclamationTriangle size={80} color="#ef4444" />
+                                <FaExclamationTriangle size={80} color="var(--color-error)" />
                             </div>
-                            <h2 className="auth-title" style={{ color: '#ef4444' }}>فشل التحقق</h2>
+                            <h2 className="auth-title" style={{ color: 'var(--color-error)'}}>فشل التحقق</h2>
                             <p style={{ fontSize: '1.1rem', marginBottom: '20px' }}>{message}</p>
                             <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
                                 <Link to="/register" className="auth-btn" style={{ flex: 1, background: 'var(--color-bg-dark)', color: 'var(--color-text-main)' }}>
@@ -129,3 +129,4 @@ const VerifyEmailPage: React.FC = () => {
 };
 
 export default VerifyEmailPage;
+

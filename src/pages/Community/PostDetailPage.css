@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════
+﻿/* ═══════════════════════════════════════════════
    Marketplace – Service Request Detail Page
    ═══════════════════════════════════════════════ */
 
@@ -25,7 +25,7 @@ html[data-theme="dark"] .detail-page {
     justify-content: center;
     gap: 10px;
     min-height: 60vh;
-    color: var(--text-secondary, #64748b);
+    color: var(--text-secondary, var(--slate-500));
     font-size: 16px;
 }
 
@@ -41,15 +41,15 @@ html[data-theme="dark"] .detail-page {
 .detail-error {
     text-align: center;
     padding: 80px 20px;
-    color: var(--text-secondary, #64748b);
+    color: var(--text-secondary, var(--slate-500));
 }
 
 .detail-error span { font-size: 48px; display: block; margin-bottom: 16px; }
 .detail-error p { font-size: 16px; margin-bottom: 20px; }
 
 .detail-btn-primary {
-    background: linear-gradient(135deg, #1a6fb5, #1b8dd6);
-    color: #fff;
+    background: linear-gradient(135deg, var(--comm-blue), var(--comm-blue-hover));
+    color: var(--white);
     border: none;
     border-radius: 10px;
     padding: 12px 28px;
@@ -72,8 +72,8 @@ html[data-theme="dark"] .detail-page {
     align-items: center;
     gap: 8px;
     background: var(--background-color, #fff);
-    border: 1px solid var(--border-color, #e2e8f0);
-    color: var(--text-primary, #475569);
+    border: 1px solid var(--border-color, var(--slate-200));
+    color: var(--text-primary, var(--slate-600));
     padding: 10px 20px;
     border-radius: 10px;
     font-size: 14px;
@@ -100,7 +100,7 @@ html[data-theme="dark"] .detail-back-btn {
     gap: 6px;
     background: rgba(239, 68, 68, 0.08);
     border: 1px solid rgba(239, 68, 68, 0.2);
-    color: #ef4444;
+    color: var(--error);
     padding: 10px 20px;
     border-radius: 10px;
     font-size: 14px;
@@ -131,7 +131,7 @@ html[data-theme="dark"] .detail-back-btn {
 /* ── Card Base ───────────────────────────────── */
 .detail-card {
     background: var(--background-color, #fff);
-    border: 1px solid var(--border-color, #e2e8f0);
+    border: 1px solid var(--border-color, var(--slate-200));
     border-radius: 24px;
     padding: 32px;
     margin-bottom: 24px;
@@ -163,7 +163,7 @@ html[data-theme="dark"] .detail-card {
     height: 48px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid var(--border-color, #e2e8f0);
+    border: 2px solid var(--border-color, var(--slate-200));
 }
 
 .detail-author-info {
@@ -175,14 +175,14 @@ html[data-theme="dark"] .detail-card {
 .detail-author-name {
     font-size: 16px;
     font-weight: 700;
-    color: var(--text-primary, #1e293b);
+    color: var(--text-primary, var(--slate-800));
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
 html[data-theme="dark"] .detail-author-name {
-    color: #f1f5f9;
+    color: var(--slate-100);
 }
 
 .detail-company-badge {
@@ -202,7 +202,7 @@ html[data-theme="dark"] .detail-author-name {
     align-items: center;
     gap: 5px;
     font-size: 13px;
-    color: var(--text-secondary, #94a3b8);
+    color: var(--text-secondary, var(--slate-400));
 }
 
 .detail-status {
@@ -246,20 +246,20 @@ html[data-theme="dark"] .detail-category {
 .detail-title {
     font-size: 28px;
     font-weight: 900;
-    color: var(--text-primary, #1e293b);
+    color: var(--text-primary, var(--slate-800));
     margin: 0 0 16px;
     line-height: 1.4;
     letter-spacing: -0.5px;
 }
 
 html[data-theme="dark"] .detail-title {
-    color: #f1f5f9;
+    color: var(--slate-100);
 }
 
 .detail-description {
     font-size: 15px;
     line-height: 1.8;
-    color: var(--text-primary, #475569);
+    color: var(--text-primary, var(--slate-600));
     margin: 0 0 20px;
     white-space: pre-wrap;
     word-break: break-word;
@@ -275,9 +275,9 @@ html[data-theme="dark"] .detail-description {
     flex-wrap: wrap;
     gap: 20px;
     padding: 20px;
-    background: var(--background-color, #f8fafc);
+    background: var(--background-color, var(--slate-50));
     border-radius: 16px;
-    border: 1px solid var(--border-color, #e2e8f0);
+    border: 1px solid var(--border-color, var(--slate-200));
     margin-bottom: 24px;
 }
 
@@ -291,7 +291,7 @@ html[data-theme="dark"] .detail-info-bar {
     align-items: center;
     gap: 10px;
     font-size: 14px;
-    color: var(--text-secondary, #64748b);
+    color: var(--text-secondary, var(--slate-500));
 }
 
 .detail-info-item svg {
@@ -301,7 +301,7 @@ html[data-theme="dark"] .detail-info-bar {
     padding: 10px;
     border-radius: 50%;
     background: var(--background-color, #fff);
-    border: 1px solid var(--border-color, #e2e8f0);
+    border: 1px solid var(--border-color, var(--slate-200));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -319,7 +319,7 @@ html[data-theme="dark"] .detail-info-item svg {
 .detail-info-label {
     display: block;
     font-size: 11px;
-    color: var(--text-secondary, #94a3b8);
+    color: var(--text-secondary, var(--slate-400));
     font-weight: 500;
 }
 
@@ -331,7 +331,7 @@ html[data-theme="dark"] .detail-info-item svg {
 }
 
 html[data-theme="dark"] .detail-info-value {
-    color: #e2e8f0;
+    color: var(--slate-200);
 }
 
 /* ── Images ──────────────────────────────────── */
@@ -388,7 +388,7 @@ html[data-theme="dark"] .detail-comments-toggle {
 
 .detail-no-comments {
     text-align: center;
-    color: var(--text-secondary, #94a3b8);
+    color: var(--text-secondary, var(--slate-400));
     font-size: 14px;
     padding: 16px 0;
 }
@@ -397,7 +397,7 @@ html[data-theme="dark"] .detail-comments-toggle {
     display: flex;
     gap: 10px;
     padding: 12px;
-    background: var(--background-color, #f8fafc);
+    background: var(--background-color, var(--slate-50));
     border-radius: 12px;
 }
 
@@ -420,7 +420,7 @@ html[data-theme="dark"] .detail-comment {
 .detail-comment-body p {
     margin: 6px 0 0;
     font-size: 14px;
-    color: var(--text-primary, #475569);
+    color: var(--text-primary, var(--slate-600));
     line-height: 1.5;
 }
 
@@ -441,7 +441,7 @@ html[data-theme="dark"] .detail-comment-body p {
 }
 
 html[data-theme="dark"] .detail-comment-name {
-    color: #e2e8f0;
+    color: var(--slate-200);
 }
 
 .detail-craftsman-tag {
@@ -455,7 +455,7 @@ html[data-theme="dark"] .detail-comment-name {
 
 .detail-comment-time {
     font-size: 11px;
-    color: var(--text-secondary, #94a3b8);
+    color: var(--text-secondary, var(--slate-400));
 }
 
 .detail-comment-form {
@@ -467,19 +467,19 @@ html[data-theme="dark"] .detail-comment-name {
 .detail-comment-form input {
     flex: 1;
     padding: 10px 14px;
-    border: 1px solid var(--border-color, #e2e8f0);
+    border: 1px solid var(--border-color, var(--slate-200));
     border-radius: 24px;
     background: var(--background-color, #fff);
     font-size: 14px;
     font-family: inherit;
-    color: var(--text-primary, #1e293b);
+    color: var(--text-primary, var(--slate-800));
     outline: none;
 }
 
 html[data-theme="dark"] .detail-comment-form input {
     background: #262936;
     border-color: #363a4d;
-    color: #e2e8f0;
+    color: var(--slate-200);
 }
 
 .detail-comment-form button {
@@ -487,8 +487,8 @@ html[data-theme="dark"] .detail-comment-form input {
     height: 40px;
     border-radius: 50%;
     border: none;
-    background: linear-gradient(135deg, #1a6fb5, #1b8dd6);
-    color: #fff;
+    background: linear-gradient(135deg, var(--comm-blue), var(--comm-blue-hover));
+    color: var(--white);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -526,8 +526,8 @@ html[data-theme="dark"] .offer-form-card {
 .detail-submit-offer-btn {
     width: 100%;
     padding: 16px;
-    background: linear-gradient(135deg, #1a6fb5, #1b8dd6);
-    color: #fff;
+    background: linear-gradient(135deg, var(--comm-blue), var(--comm-blue-hover));
+    color: var(--white);
     border: none;
     border-radius: 12px;
     font-size: 16px;
@@ -549,7 +549,7 @@ html[data-theme="dark"] .offer-form-card {
 .offer-form h3 {
     font-size: 17px;
     font-weight: 700;
-    color: var(--text-primary, #1e293b);
+    color: var(--text-primary, var(--slate-800));
     margin: 0 0 16px;
     display: flex;
     align-items: center;
@@ -557,7 +557,7 @@ html[data-theme="dark"] .offer-form-card {
 }
 
 html[data-theme="dark"] .offer-form h3 {
-    color: #f1f5f9;
+    color: var(--slate-100);
 }
 
 .offer-form-field {
@@ -568,7 +568,7 @@ html[data-theme="dark"] .offer-form h3 {
     display: block;
     font-size: 13px;
     font-weight: 700;
-    color: var(--text-primary, #475569);
+    color: var(--text-primary, var(--slate-600));
     margin-bottom: 6px;
 }
 
@@ -580,12 +580,12 @@ html[data-theme="dark"] .offer-form-field label {
 .offer-form-field textarea {
     width: 100%;
     padding: 11px 14px;
-    border: 1px solid var(--border-color, #e2e8f0);
+    border: 1px solid var(--border-color, var(--slate-200));
     border-radius: 10px;
-    background: var(--background-color, #f8fafc);
+    background: var(--background-color, var(--slate-50));
     font-size: 14px;
     font-family: inherit;
-    color: var(--text-primary, #1e293b);
+    color: var(--text-primary, var(--slate-800));
     outline: none;
     transition: border-color 0.2s ease;
     resize: vertical;
@@ -595,7 +595,7 @@ html[data-theme="dark"] .offer-form-field input,
 html[data-theme="dark"] .offer-form-field textarea {
     background: #171920;
     border-color: #363a4d;
-    color: #e2e8f0;
+    color: var(--slate-200);
 }
 
 .offer-form-field input:focus,
@@ -613,12 +613,12 @@ html[data-theme="dark"] .offer-form-field textarea {
 .offer-cancel-btn {
     flex: 1;
     padding: 12px;
-    background: var(--background-color, #f8fafc);
-    border: 1px solid var(--border-color, #e2e8f0);
+    background: var(--background-color, var(--slate-50));
+    border: 1px solid var(--border-color, var(--slate-200));
     border-radius: 10px;
     font-size: 14px;
     font-weight: 600;
-    color: var(--text-primary, #475569);
+    color: var(--text-primary, var(--slate-600));
     cursor: pointer;
     font-family: inherit;
     transition: all 0.2s ease;
@@ -679,7 +679,7 @@ html[data-theme="dark"] .offer-cancel-btn {
 .offers-title {
     font-size: 16px;
     font-weight: 700;
-    color: var(--text-primary, #1e293b);
+    color: var(--text-primary, var(--slate-800));
     margin: 0 0 16px;
     display: flex;
     align-items: center;
@@ -687,13 +687,13 @@ html[data-theme="dark"] .offer-cancel-btn {
 }
 
 html[data-theme="dark"] .offers-title {
-    color: #f1f5f9;
+    color: var(--slate-100);
 }
 
 .offers-empty {
     text-align: center;
     padding: 24px 12px;
-    color: var(--text-secondary, #94a3b8);
+    color: var(--text-secondary, var(--slate-400));
 }
 
 .offers-empty span { font-size: 36px; display: block; margin-bottom: 8px; }
@@ -707,8 +707,8 @@ html[data-theme="dark"] .offers-title {
 
 .offer-item {
     padding: 20px;
-    background: var(--background-color, #f8fafc);
-    border: 1px solid var(--border-color, #e2e8f0);
+    background: var(--background-color, var(--slate-50));
+    border: 1px solid var(--border-color, var(--slate-200));
     border-radius: 16px;
     transition: all 0.3s ease;
 }
@@ -747,7 +747,7 @@ html[data-theme="dark"] .offer-item {
     height: 36px;
     border-radius: 50%;
     object-fit: cover;
-    border: 1px solid var(--border-color, #e2e8f0);
+    border: 1px solid var(--border-color, var(--slate-200));
 }
 
 .offer-craftsman-info {
@@ -763,7 +763,7 @@ html[data-theme="dark"] .offer-item {
 }
 
 html[data-theme="dark"] .offer-craftsman-name {
-    color: #e2e8f0;
+    color: var(--slate-200);
 }
 
 .offer-craftsman-rating {
@@ -771,7 +771,7 @@ html[data-theme="dark"] .offer-craftsman-name {
     align-items: center;
     gap: 4px;
     font-size: 12px;
-    color: var(--text-secondary, #94a3b8);
+    color: var(--text-secondary, var(--slate-400));
 }
 
 .star-icon {
@@ -780,7 +780,7 @@ html[data-theme="dark"] .offer-craftsman-name {
 }
 
 .offer-jobs {
-    color: var(--text-secondary, #94a3b8);
+    color: var(--text-secondary, var(--slate-400));
     font-size: 11px;
 }
 
@@ -799,7 +799,7 @@ html[data-theme="dark"] .offer-craftsman-name {
 .offer-description {
     font-size: 13px;
     line-height: 1.6;
-    color: var(--text-primary, #475569);
+    color: var(--text-primary, var(--slate-600));
     margin: 0 0 12px;
 }
 
@@ -828,7 +828,7 @@ html[data-theme="dark"] .offer-description {
     align-items: center;
     gap: 5px;
     font-size: 13px;
-    color: var(--text-secondary, #64748b);
+    color: var(--text-secondary, var(--slate-500));
     font-weight: 500;
 }
 
@@ -1009,6 +1009,7 @@ html[data-theme="dark"] .offer-description {
     }
 }
 
+<<<<<<< HEAD
 /* ═══════════════════════════════════════════════
    NEW: Locked Banner, Verified, Urgency, After-Images
    ═══════════════════════════════════════════════ */
@@ -1171,3 +1172,5 @@ html[data-theme="dark"] .detail-images-title {
     flex-shrink: 0;
 }
 
+=======
+>>>>>>> acbf1a6d72aea948d916438e13936e87e8a8f4ae

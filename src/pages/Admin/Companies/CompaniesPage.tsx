@@ -250,7 +250,7 @@ const CompaniesPage: React.FC = () => {
 
                             <div className="metrics-grid">
                                 <div className="metric-item">
-                                    <FaStar size={20} color="#f59e0b" />
+                                    <FaStar size={20} color="var(--amber-500)" />
                                     <span className="m-value">{(Math.random() * 2 + 3).toFixed(1)}</span>
                                     <span className="m-label">تقييم المتجر</span>
                                 </div>
@@ -375,3 +375,4 @@ const CompaniesPage: React.FC = () => {
 };
 
 export default CompaniesPage;
+

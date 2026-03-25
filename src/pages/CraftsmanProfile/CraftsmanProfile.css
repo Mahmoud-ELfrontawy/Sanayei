@@ -1,4 +1,4 @@
-/* =========================================
+﻿/* =========================================
    1. الهيكل العام للصفحة (Layout)
    ========================================= */
 .profile-page-wrapper {
@@ -20,7 +20,7 @@
   transition: height 0.3s ease;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
-  background-color: #4A5D6E; /* Fallback */
+  background-color: var(--text-muted); /* Fallback */
 }
 
 .profile-cover::before {
@@ -57,7 +57,7 @@
 }
 
 .craftsman-card {
-  background: #ffffff;
+  background: var(--white);
   border-radius: 25px;
   padding: 30px 20px;
   text-align: center;
@@ -73,8 +73,8 @@
   margin: 0 auto 20px;
   border-radius: 50%;
   padding: 5px;
-  border: 3px solid #5FA8D3;
-  background-color: #fff;
+  border: 3px solid var(--primary);
+    background-color: var(--white);
   overflow: hidden;
   position: relative;
 }
@@ -84,13 +84,13 @@
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
-  border: 4px solid #fff;
+  border: 4px solid var(--white);
 }
 
 .craftsman-name {
   font-size: 26px;
   font-weight: 800; /* Bolder */
-  color: #1a1a1a;  /* Sharper black */
+  color: var(--slate-900);  /* Sharper black */
   margin-bottom: 5px;
 }
 
@@ -105,7 +105,7 @@
   display: flex;
   justify-content: center;
   gap: 6px;
-  color: #FF8031;
+  color: var(--star-legacy);
   margin-bottom: 12px;
   font-size: 18px;
 }
@@ -132,17 +132,17 @@
    ========================================= */
 .profile-content-area {
   flex: 1;
-  background: #ffffff;
+  background: var(--white);
   border-radius: 25px;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.04);
   padding: 40px;
   min-height: 600px;
-  border: 1px solid #e0e0e0; /* Slightly darker border */
+  border: 1px solid var(--slate-200); /* Slightly darker border */
 }
 
 .info-text-val {
   font-size: 17px;
-  color: #1a1a1a; /* Sharper */
+  color: var(--slate-900); /* Sharper */
   font-weight: 700;
 }
 
@@ -151,7 +151,7 @@
   display: flex;
   justify-content: flex-start;
   gap: 40px;
-  border-bottom: 2px solid #f5f5f5;
+  border-bottom: 2px solid var(--slate-100);
   margin-bottom: 40px;
   padding-bottom: 0;
 }
@@ -161,7 +161,7 @@
   border: none;
   font-size: 18px;
   font-weight: 600;
-  color: #888;
+  color: var(--slate-400);
   padding: 0 0 15px;
   cursor: pointer;
   position: relative;
@@ -169,7 +169,7 @@
 }
 
 .tab-btn.active {
-  color: #5FA8D3;
+  color: var(--primary);
 }
 
 .tab-btn.active::after {
@@ -179,7 +179,7 @@
   left: 0;
   width: 100%;
   height: 3px;
-  background: #5FA8D3;
+  background: var(--primary);
   border-radius: 5px;
 }
 
@@ -201,7 +201,7 @@
 }
 
 .info-title svg {
-  color: #5FA8D3;
+  color: var(--primary);
   font-size: 22px;
 }
 
@@ -218,8 +218,8 @@
   align-items: center;
   gap: 10px;
   font-size: 17px;
-  color: #2c3e50; /* Sharper secondary color */
-  background: #f8f9fa;
+  color: var(--slate-700); /* Sharper secondary color */
+  background: var(--slate-50);
   padding: 12px 18px;
   border-radius: 10px;
   font-weight: 700; /* Bolder text labels */
@@ -229,7 +229,7 @@
   color: var(--color-text-muted);
   line-height: 1.8;
   font-size: 17px;
-  background: #fdfdfd;
+  background: var(--white);
   padding: 24px;
   border-radius: 15px;
   border: 1px dashed var(--color-divider);
@@ -244,10 +244,10 @@
 .info-section.half {
   flex: 1;
   min-width: 250px;
-  background: #fcfcfc;
+  background: var(--slate-50);
   padding: 20px;
   border-radius: 15px;
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--slate-100);
 }
 
 .info-text-val {
@@ -315,7 +315,7 @@
 }
 
 .portfolio-overlay span {
-  color: #fff;
+  color: var(--white);
   font-weight: 700;
   font-size: 15px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
@@ -348,7 +348,7 @@
   font-size: 18px;
   color: var(--color-text-muted);
   font-weight: 600;
-  background: #f0f4f8;
+  background: var(--slate-100);
   padding: 4px 12px;
   border-radius: 20px;
 }
@@ -362,8 +362,8 @@
 }
 
 .review-card {
-  background: #ffffff;
-  border: 1px solid #edf2f7;
+  background: var(--white);
+  border: 1px solid var(--slate-100);
   border-radius: 20px;
   padding: 24px;
   position: relative;
@@ -384,7 +384,7 @@
   position: absolute;
   top: 20px;
   left: 20px;
-  color: #edf2f7;
+  color: var(--slate-100);
   font-size: 26px;
 }
 
@@ -401,8 +401,8 @@
   height: 60px;
   border-radius: 50%;
   padding: 2px;
-  border: 2px solid #5FA8D3;
-  background: #fff;
+  border: 2px solid var(--primary);
+  background: var(--white);
 }
 
 .reviewer-img {
@@ -419,7 +419,7 @@
 .reviewer-name {
   font-weight: 700;
   font-size: 18px;
-  color: #1a202c;
+  color: var(--slate-900);
   margin-bottom: 4px;
 }
 
@@ -431,7 +431,7 @@
 
 .review-date {
   font-size: 15px;
-  color: #a0aec0;
+  color: var(--slate-400);
   font-weight: 500;
 }
 
@@ -530,8 +530,8 @@
 }
 
 .view-all-btn {
-  background: #cee1ec;
-  color: #fff;
+  background: var(--chat-blue-light);
+  color: var(--white);
   border: none;
   padding: 10px 40px;
   border-radius: 8px;
@@ -542,7 +542,7 @@
 }
 
 .view-all-btn:hover {
-  background-color: #0b3c59;
+  background-color: var(--color-primary-dark);
 }
 
 /* =========================================
@@ -630,13 +630,13 @@ html[data-theme="dark"] .profile-page-wrapper {
 html[data-theme="dark"] .craftsman-card,
 html[data-theme="dark"] .profile-content-area,
 html[data-theme="dark"] .dashboard-reviews-container {
-    background: #1e293b;
-    border-color: #334155;
+    background: var(--slate-800);
+    border-color: var(--slate-700);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
 html[data-theme="dark"] .craftsman-img-wrapper {
-    background-color: #1e293b;
+    background-color: var(--slate-800);
     border-color: var(--color-primary);
 }
 
@@ -647,19 +647,19 @@ html[data-theme="dark"] .reviewer-name {
 }
 
 html[data-theme="dark"] .info-list li {
-    background: #0f172a;
+    background: var(--slate-900);
     color: var(--color-text-secondary);
 }
 
 html[data-theme="dark"] .description-text {
-    background: #0f172a;
-    border-color: #334155;
+    background: var(--slate-900);
+    border-color: var(--slate-700);
     color: var(--color-text-secondary);
 }
 
 html[data-theme="dark"] .info-section.half {
-    background: #0f172a;
-    border-color: #334155;
+    background: var(--slate-900);
+    border-color: var(--slate-700);
 }
 
 html[data-theme="dark"] .profile-tabs {
@@ -668,12 +668,12 @@ html[data-theme="dark"] .profile-tabs {
 }
 
 html[data-theme="dark"] .tab-btn {
-    color: #64748b;
+    color: var(--slate-500);
 }
 
 html[data-theme="dark"] .review-card {
-    background: #0f172a;
-    border-color: #334155;
+    background: var(--slate-900);
+    border-color: var(--slate-700);
 }
 
 html[data-theme="dark"] .review-text {
@@ -681,20 +681,20 @@ html[data-theme="dark"] .review-text {
 }
 
 html[data-theme="dark"] .review-quote-icon {
-    color: #1e293b;
+    color: var(--slate-800);
 }
 
 html[data-theme="dark"] .reviews-count {
-    background: #0f172a;
+    background: var(--slate-900);
     color: var(--color-text-secondary);
 }
 
 html[data-theme="dark"] .no-reviews-msg {
-    background: #0f172a;
+    background: var(--slate-900);
 }
 
 html[data-theme="dark"] .portfolio-item {
-    border-color: #334155;
+    border-color: var(--slate-700);
 }
 
 /* =========================================
@@ -702,12 +702,12 @@ html[data-theme="dark"] .portfolio-item {
    ========================================= */
 .craftsman-wallet-transfer-box {
     margin: 18px 0 20px;
-    background: linear-gradient(135deg, #0f172a, #1e293b);
+    background: linear-gradient(135deg, #0f172a, var(--slate-800));
     border: 1px solid #334155;
     border-radius: 14px;
     padding: 14px 18px;
     text-align: center;
-    color: #fff;
+    color: var(--white);
 }
 
 .cwt-label {
@@ -726,7 +726,7 @@ html[data-theme="dark"] .portfolio-item {
 .cwt-number {
     font-size: 2rem;
     font-weight: 900;
-    color: #5FA8D3;
+    color: var(--primary);
     font-family: monospace;
     letter-spacing: 2px;
     line-height: 1;
@@ -742,5 +742,6 @@ html[data-theme="dark"] .portfolio-item {
 
 /* Light mode version */
 html:not([data-theme="dark"]) .craftsman-wallet-transfer-box {
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+    background: linear-gradient(135deg, var(--slate-900) 0%, var(--blue-900) 100%);
 }
+

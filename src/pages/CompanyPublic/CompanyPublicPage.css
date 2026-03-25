@@ -1,4 +1,4 @@
-/* =============================
+﻿/* =============================
    Company Public Profile Page
    Uses CSS variables from variables.css
    ============================= */
@@ -347,7 +347,7 @@
     color: var(--color-text-secondary);
 }
 
-.cpub-product-rating .star-on  { color: #f59e0b; fill: #f59e0b; }
+.cpub-product-rating .star-on  { color: var(--amber-500); fill: var(--amber-500); }
 .cpub-product-rating .star-off { color: var(--color-border); }
 
 /* ── Reviews grid ── */
@@ -439,7 +439,7 @@ html[data-theme="dark"] .cpub-reviewer-type.user {
     margin-top: 4px;
 }
 
-.cpub-review-stars .star-on  { color: #f59e0b; fill: #f59e0b; }
+.cpub-review-stars .star-on  { color: var(--amber-500); fill: var(--amber-500); }
 .cpub-review-stars .star-off { color: var(--color-border); }
 
 .cpub-review-comment {
@@ -465,7 +465,7 @@ html[data-theme="dark"] .cpub-reviewer-type.user {
     display: flex;
     align-items: center;
     gap: 6px;
-    color: #f59e0b;
+    color: var(--amber-500);
 }
 
 .cpub-review-meta-row {
@@ -506,3 +506,4 @@ html[data-theme="dark"] .cpub-reviewer-type.user {
         grid-template-columns: 1fr;
     }
 }
+

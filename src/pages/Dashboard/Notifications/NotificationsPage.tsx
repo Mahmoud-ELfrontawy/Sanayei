@@ -16,10 +16,10 @@ const NotificationsPage: React.FC = () => {
 
     const getIcon = (type: string) => {
         switch (type) {
-            case 'order_status': return <FaCheckCircle size={20} color="#10b981" />;
-            case 'store_order': return <FaShoppingCart size={20} color="#3b82f6" />;
-            case 'order_request': return <FaTools size={20} color="#f59e0b" />;
-            default: return <FaBell size={20} color="#64748b" />;
+            case 'order_status': return <FaCheckCircle size={20} color="var(--success)" />;
+            case 'store_order': return <FaShoppingCart size={20} color="var(--color-primary)" />;
+            case 'order_request': return <FaTools size={20} color="var(--amber-500)" />;
+            default: return <FaBell size={20} color="var(--slate-500)" />;
         }
     };
 

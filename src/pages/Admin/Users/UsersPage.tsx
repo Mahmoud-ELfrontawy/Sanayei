@@ -352,7 +352,7 @@ const UsersPage = () => {
                                     </span>
                                 </td>
                                 <td>
-                                    {user.is_admin ? <FaShieldAlt size={18} color="#10b981" /> : <FaTimes size={18} color="#94a3b8" />}
+                                    {user.is_admin ? <FaShieldAlt size={18} color="#10b981" /> : <FaTimes size={18} color="var(--slate-400)" />}
                                 </td>
                                 <td>
                                     <span className={`status-badge-modern ${user.is_active ? 'active' : 'banned'}`}>

@@ -70,7 +70,7 @@ const CompanyProfilePage: React.FC = () => {
                                     <>
                                         نأسف، تم حظر حسابك من قبل الإدارة. يرجى التواصل مع الدعم الفني لحل المشكلة:
                                         <br />
-                                        <a href="https://wa.me/201026605030" target="_blank" rel="noreferrer" style={{ color: '#dc2626', fontWeight: 'bold', textDecoration: 'underline' }}>تواصل عبر واتساب</a>
+                                        <a href="https://wa.me/201026605030" target="_blank" rel="noreferrer" style={{ color: 'var(--whatsapp-red)', fontWeight: 'bold', textDecoration: 'underline' }}>تواصل عبر واتساب</a>
                                     </>
                                 ) :
                                     'جاري مراجعة بياناتك من قبل الإدارة، ستتمكن من رفع المنتجات فور اعتماد الحساب.'}
