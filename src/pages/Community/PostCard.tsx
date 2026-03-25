@@ -2,17 +2,9 @@ import { FaMapMarkerAlt, FaMoneyBillWave, FaComments, FaClock, FaCheckCircle } f
 import { formatTimeAgo } from "../../utils/timeAgo";
 import { getAvatarUrl } from "../../utils/imageUrl";
 import type { CommunityPost } from "../../Api/community.api";
+import { communityImageUrl } from "../../Api/community.api";
 import "./PostCard.css";
 
-const CATEGORY_LABELS: Record<string, { label: string; emoji: string }> = {
-    electrical: { label: "كهرباء", emoji: "⚡" },
-    plumbing: { label: "سباكة", emoji: "🔧" },
-    masonry: { label: "بناء", emoji: "🧱" },
-    carpentry: { label: "نجارة", emoji: "🪚" },
-    painting: { label: "دهانات", emoji: "🎨" },
-    ac: { label: "تكييف", emoji: "❄️" },
-    other: { label: "أخرى", emoji: "🔨" },
-};
 
 interface PostCardProps {
     post: CommunityPost;
@@ -20,13 +12,15 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
-    const cat = CATEGORY_LABELS[post.category] || { label: post.category, emoji: "🔨" };
+    const label = post.service?.name || post.category || "طلب خدمة";
+    const emoji = post.service?.icon || "🔨";
 
     const getStatusInfo = () => {
         switch (post.status) {
             case "open": return { text: "مفتوح للعروض", className: "status-open" };
             case "in_progress": return { text: "قيد التنفيذ", className: "status-progress" };
             case "completed": return { text: "مكتمل", className: "status-done" };
+            case "verified": return { text: "مُتحقق منه ✓", className: "status-verified" };
             case "cancelled": return { text: "ملغي", className: "status-cancelled" };
             default: return { text: post.status, className: "" };
         }
@@ -41,7 +35,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
             <div className={`req-card-img ${!post.images || post.images.length === 0 ? "no-image" : ""}`}>
                 {post.images && post.images.length > 0 ? (
                     <>
-                        <img src={post.images[0]} alt={post.title} loading="lazy" />
+                        <img src={communityImageUrl(post.images[0])} alt={post.title} loading="lazy" />
                         {post.images.length > 1 && (
                             <span className="req-card-img-count">+{post.images.length - 1}</span>
                         )}
@@ -49,8 +43,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
                 ) : (
                     // Placeholder when no image exists
                     <div className="req-card-img-placeholder">
-                        <span className="placeholder-icon">{cat.emoji}</span>
-                        <span className="placeholder-text">{cat.label}</span>
+                        <span className="placeholder-icon">{emoji}</span>
+                        <span className="placeholder-text">{label}</span>
                     </div>
                 )}
                 <span className={`req-card-status-badge ${statusInfo.className}`}>
@@ -64,7 +58,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
                 {/* Category (Always visible) */}
                 <div className="req-card-top-row">
                     <span className="req-card-category">
-                        {cat.emoji} {cat.label}
+                        {emoji} {label}
                     </span>
                 </div>
 

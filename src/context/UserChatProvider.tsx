@@ -5,6 +5,7 @@ import { useAuth } from "../hooks/useAuth";
 import { getFullImageUrl } from "../utils/imageUrl";
 import { useNotifications } from "./NotificationContext";
 import { getActiveServiceRequest } from "../Api/serviceRequest/serviceRequests.api";
+import { getActiveCommunityChat } from "../Api/community.api";
 import { normalizeRole } from "./notification/notification.utils";
 
 /* ================= Types ================= */
@@ -15,6 +16,7 @@ export interface ChatContact {
     type: string;
     avatar?: string;
     unread_count: number;
+    isCommunityChat?: boolean; // فتح/غلق الشات بناءً على طلبات المجتمع
 }
 
 export interface ChatMessage {
@@ -98,12 +100,12 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
     const messagesQuery = useQuery({
         queryKey: ["user-messages", activeChat?.id, user?.id],
         enabled: !!activeChat && !!user?.id && (userType === "user" || userType === "company"),
-        refetchInterval: 10000, 
+        refetchInterval: 10000,
         queryFn: async (): Promise<ChatMessage[]> => {
             const res = await chatApi.getMessages(user!.id, activeChat!.id, userType!);
             // Handle both {messages: []} and {data: {data: []}} structures
             const raw = res.messages || (Array.isArray(res.data) ? res.data : res.data?.data) || [];
-            
+
             return raw.map((m: any) => ({
                 ...m,
                 is_mine: (Number(m.sender_id) === Number(user!.id) && normalizeRole(m.sender_type) === normalizeRole(userType!)),
@@ -150,16 +152,22 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
             setCanSendMessage(true);
             return;
         }
-        const check = () =>
-            getActiveServiceRequest((userType === 'company' ? 'company' : 'user') as any, activeChat.id).then(({ status }) => {
-                // الشات يفتح فقط عندما يتم قبول الطلب رسميًا
-                // ويقفل إذا كان قيد الانتظار أو انتهى (completed)
-                setCanSendMessage(status === 'accepted');
-            }).catch(() => { });
+        const check = async () => {
+            if (activeChat.isCommunityChat) {
+                // ✔ نظام المجتمع: الشات يفتح فقط لما in_progress
+                const { status } = await getActiveCommunityChat(activeChat.id);
+                setCanSendMessage(status === 'in_progress');
+            } else {
+                // نظام الخدمات العادية
+                getActiveServiceRequest((userType === 'company' ? 'company' : 'user') as any, activeChat.id)
+                    .then(({ status }) => { setCanSendMessage(status === 'accepted'); })
+                    .catch(() => {});
+            }
+        };
         check();
         const interval = setInterval(check, 10_000);
         return () => clearInterval(interval);
-    }, [activeChat?.id, user?.id, userType]);
+    }, [activeChat?.id, activeChat?.isCommunityChat, user?.id, userType]);
 
     /* ================= Mark As Read ================= */
 

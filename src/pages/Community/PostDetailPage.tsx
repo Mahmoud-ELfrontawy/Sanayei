@@ -3,21 +3,30 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
     FaArrowRight, FaMapMarkerAlt, FaSpinner, FaTrash,
     FaMoneyBillWave, FaClock, FaComments, FaPaperPlane,
-    FaStar, FaCheckCircle, FaBriefcase, FaUserTie
+    FaStar, FaCheckCircle, FaBriefcase, FaUserTie, FaLock, FaBolt,
+    FaCommentDots
 } from "react-icons/fa";
 import type { CommunityPost, ServiceOffer, CommunityComment } from "../../Api/community.api";
+import {
+    getCommunityPost,
+    getPostOffers,
+    submitOffer,
+    acceptOffer,
+    verifyCommunityPost,
+    getCommunityComments,
+    addCommunityComment,
+    deleteCommunityPost,
+    communityImageUrl,
+} from "../../Api/community.api";
 import { useCommunity } from "../../context/CommunityContext";
 import { useAuth } from "../../hooks/useAuth";
 import { getAvatarUrl } from "../../utils/imageUrl";
 import { formatTimeAgo } from "../../utils/timeAgo";
 import { toast } from "react-toastify";
-import { MOCK_POSTS, MOCK_OFFERS, MOCK_COMMENTS } from "./mockData";
+import { useUserChat } from "../../context/UserChatProvider";
+import { useCraftsmanChat } from "../../context/CraftsmanChatProvider";
 import "./PostDetailPage.css";
 
-const CATEGORY_LABELS: Record<string, string> = {
-    electrical: "⚡ أعمال كهرباء", plumbing: "🔧 أعمال سباكة", masonry: "🧱 أعمال بناء",
-    carpentry: "🪚 أعمال نجارة", painting: "🎨 أعمال دهانات", ac: "❄️ تكييف وتبريد", other: "🔨 أخرى",
-};
 
 const PostDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -32,6 +41,10 @@ const PostDetailPage: React.FC = () => {
     const [isActing, setIsActing] = useState(false);
     const [lightboxImg, setLightboxImg] = useState<string | null>(null);
 
+    // شات — يجب يكون فوق كل الكود (Rules of Hooks)
+    const userChat = useUserChat();
+    const craftsmanChat = useCraftsmanChat();
+
     // Offer form
     const [offerPrice, setOfferPrice] = useState("");
     const [offerDesc, setOfferDesc] = useState("");
@@ -41,79 +54,140 @@ const PostDetailPage: React.FC = () => {
     // Comment form
     const [commentBody, setCommentBody] = useState("");
     const [showComments, setShowComments] = useState(false);
+    const [commentsLoaded, setCommentsLoaded] = useState(false);
 
+    /* ── Load post + offers ── */
     useEffect(() => {
         if (!id) return;
         setIsLoading(true);
-        // MOCK MODE: load from static data
-        setTimeout(() => {
-            const found = MOCK_POSTS.find((p) => p.id === Number(id));
-            setPost(found || null);
-            setOffers([...MOCK_OFFERS]);
-            setIsLoading(false);
-        }, 300);
+
+        const load = async () => {
+            try {
+                const [postRes, offersRes] = await Promise.all([
+                    getCommunityPost(Number(id)),
+                    getPostOffers(Number(id)),
+                ]);
+                const postData: CommunityPost = postRes.data ?? postRes;
+                const offersData: ServiceOffer[] = offersRes.data ?? offersRes ?? [];
+                setPost(postData);
+                setOffers(offersData);
+            } catch {
+                toast.error("فشل تحميل بيانات الطلب");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        load();
     }, [id]);
 
+    /* ── Load comments ── */
     const loadComments = async () => {
-        // MOCK MODE
-        setComments([...MOCK_COMMENTS]);
-        setShowComments(true);
+        if (commentsLoaded) { setShowComments(true); return; }
+        try {
+            const res = await getCommunityComments(Number(id));
+            setComments(res.data ?? res ?? []);
+            setCommentsLoaded(true);
+            setShowComments(true);
+        } catch {
+            toast.error("فشل تحميل التعليقات");
+        }
     };
 
+    /* ── Submit Offer ── */
     const handleSubmitOffer = async () => {
         if (!post || !offerPrice || !offerDesc || !offerDays) return;
         setIsActing(true);
-        // MOCK MODE
-        const newOffer: ServiceOffer = {
-            id: Date.now(),
-            craftsman: { id: 999, name: "أنت", avatar: "", rating: 0, completed_jobs: 0 },
-            price: Number(offerPrice),
-            description: offerDesc,
-            delivery_days: Number(offerDays),
-            status: "pending",
-            created_at: new Date().toISOString(),
-        };
-        setOffers((prev) => [newOffer, ...prev]);
-        setOfferPrice(""); setOfferDesc(""); setOfferDays("");
-        setShowOfferForm(false);
-        toast.success("تم إرسال عرضك بنجاح! ✅");
-        setIsActing(false);
+        try {
+            const res = await submitOffer(Number(id), {
+                price: Number(offerPrice),
+                description: offerDesc,
+                delivery_days: Number(offerDays),
+            });
+            const newOffer: ServiceOffer = res.data ?? res;
+            setOffers((prev) => [newOffer, ...prev]);
+            setPost((p) => p ? { ...p, has_offered: true, offers_count: (p.offers_count ?? 0) + 1 } : p);
+            setOfferPrice(""); setOfferDesc(""); setOfferDays("");
+            setShowOfferForm(false);
+            toast.success("تم إرسال عرضك بنجاح! ✅");
+        } catch (err: any) {
+            toast.error(err?.response?.data?.message || "حدث خطأ أثناء إرسال العرض");
+        } finally {
+            setIsActing(false);
+        }
     };
 
+    /* ── Accept Offer ── */
     const handleAcceptOffer = async (offerId: number) => {
         if (!post || !window.confirm("هل أنت متأكد من قبول هذا العرض؟")) return;
         setIsActing(true);
-        // MOCK MODE
-        setOffers((prev) => prev.map((o) =>
-            o.id === offerId ? { ...o, status: "accepted" as const } : { ...o, status: "rejected" as const }
-        ));
-        const updated = { ...post, status: "in_progress" as const };
-        setPost(updated);
-        updatePost(updated);
-        toast.success("تم قبول العرض بنجاح! 🎉");
-        setIsActing(false);
+        try {
+            await acceptOffer(Number(id), offerId);
+            // جيب بيانات البوست كاملة عشان نجيب acceptor الجديد
+            const fresh = await getCommunityPost(Number(id));
+            const updatedPost: CommunityPost = fresh.data ?? fresh;
+            setPost(updatedPost);
+            updatePost(updatedPost);
+            setOffers((prev) =>
+                prev.map((o) => o.id === offerId
+                    ? { ...o, status: "accepted" as const }
+                    : { ...o, status: "rejected" as const }
+                )
+            );
+            toast.success("تم قبول العرض! جاري التنفيذ 🎉");
+        } catch (err: any) {
+            toast.error(err?.response?.data?.message || "حدث خطأ");
+        } finally {
+            setIsActing(false);
+        }
     };
 
+    /* ── Add Comment ── */
     const handleAddComment = async () => {
         if (!post || !commentBody.trim()) return;
-        // MOCK MODE
-        const newComment: CommunityComment = {
-            id: Date.now(),
-            body: commentBody,
-            user: { id: 999, name: "أنت", avatar: "", type: "craftsman" },
-            created_at: new Date().toISOString(),
-        };
-        setComments((prev) => [...prev, newComment]);
-        setCommentBody("");
-        toast.success("تم إضافة التعليق");
+        setIsActing(true);
+        try {
+            const res = await addCommunityComment(Number(id), commentBody.trim());
+            const newComment: CommunityComment = res.data ?? res;
+            setComments((prev) => [...prev, newComment]);
+            setPost((p) => p ? { ...p, comments_count: (p.comments_count ?? 0) + 1 } : p);
+            setCommentBody("");
+            toast.success("تم إضافة التعليق ✅");
+        } catch (err: any) {
+            toast.error(err?.response?.data?.message || "فشل إرسال التعليق");
+        } finally {
+            setIsActing(false);
+        }
     };
 
+    /* ── Delete Post ── */
     const handleDelete = async () => {
         if (!post || !window.confirm("هل أنت متأكد من حذف هذا الطلب؟")) return;
-        // MOCK MODE
-        removePost(post.id);
-        toast.success("تم حذف الطلب");
-        navigate("/community");
+        try {
+            await deleteCommunityPost(Number(id));
+            removePost(post.id);
+            toast.success("تم حذف الطلب");
+            navigate("/community");
+        } catch {
+            toast.error("فشل حذف الطلب");
+        }
+    };
+
+    /* ── Verify/Complete Post ── */
+    const handleVerify = async () => {
+        if (!post || !window.confirm("هل تؤكد استلام الخدمة المكتملة؟ سيتم تحويل النقاط للصنايعي.")) return;
+        setIsActing(true);
+        try {
+            await verifyCommunityPost(Number(id));
+            const fresh = await getCommunityPost(Number(id));
+            const updatedPost: CommunityPost = fresh.data ?? fresh;
+            setPost(updatedPost);
+            updatePost(updatedPost);
+            toast.success("تم تأكيد الإكمال وصرف المكافأة! 🎉");
+        } catch (err: any) {
+            toast.error(err?.response?.data?.message || "فشل تأكيد الإكمال");
+        } finally {
+            setIsActing(false);
+        }
     };
 
     if (isLoading) {
@@ -135,18 +209,62 @@ const PostDetailPage: React.FC = () => {
         );
     }
 
-    const isMine = post.user.id === Number(user?.id);
+    const userId = Number(user?.id);
+    const isMine = post.is_mine
+        || (post.user_id != null && Number(post.user_id) === userId)
+        || (post.company_id != null && Number(post.company_id) === userId)
+        || (post.user?.id != null && Number(post.user?.id) === userId);
+
     const isCraftsman = userType === "craftsman";
+    const isLocked = post.status === "in_progress" || post.status === "completed" || post.status === "verified" || post.status === "cancelled";
     const canOffer = isAuthenticated && isCraftsman && post.status === "open" && !post.has_offered && !isMine;
-    const canComment = isAuthenticated && isCraftsman;
+    const canComment = isAuthenticated && !isLocked;
     const canAcceptOffer = isMine && post.status === "open";
-    const hasBudget = post.budget_min || post.budget_max;
+
+    // شات المجتمع بيتفتح لصاحب الطلب + الصنايعي المقبول فقط وبس لما الحالة in_progress
+    const isAcceptor = isCraftsman && post.acceptor?.id === Number(user?.id);
+    const canChat = (isMine || isAcceptor) && post.status === "in_progress";
+    const canVerify = isMine && post.status === "in_progress";
+
+    // ديبك: شوف حالة العروض والمتغيرات
+    console.log('[Community] DEBUG:', {
+        userId,
+        userType,
+        is_mine_api: post.is_mine,
+        post_user_id: post.user_id,
+        post_company_id: post.company_id,
+        post_user_obj_id: post.user?.id,
+        isMine,
+        canAcceptOffer,
+        post_status: post.status,
+        offers: offers.map(o => ({ id: o.id, status: o.status })),
+    });
+    const handleStartChat = () => {
+        if (!post.acceptor) return;
+
+        const receiverType: "worker" | "company" | "user" = isMine
+            ? "worker"
+            : post.user.type === "company" ? "company" : "user";
+
+        const receiver = isMine
+            ? { id: post.acceptor.id, name: post.acceptor.name }
+            : { id: post.user.id, name: post.user.name };
+
+        const contact = { ...receiver, type: receiverType, avatar: undefined, unread_count: 0, isCommunityChat: true };
+
+        if (isCraftsman) craftsmanChat.setActiveChat(contact);
+        else userChat.setActiveChat(contact);
+
+        navigate("/dashboard/messages");
+    };
 
     const getStatusInfo = () => {
         switch (post.status) {
             case "open": return { text: "مفتوح للعروض", className: "status-open" };
             case "in_progress": return { text: "قيد التنفيذ", className: "status-progress" };
             case "completed": return { text: "مكتمل", className: "status-done" };
+            case "verified": return { text: "مُتحقق منه ✓", className: "status-verified" };
+            case "cancelled": return { text: "ملغي", className: "status-cancelled" };
             default: return { text: post.status, className: "" };
         }
     };
@@ -166,6 +284,42 @@ const PostDetailPage: React.FC = () => {
                         </button>
                     )}
                 </div>
+
+                {/* Locked Banner */}
+                {isLocked && (
+                    <div className={`detail-locked-banner ${post.status === "verified" ? "verified" : post.status === "cancelled" ? "cancelled" : ""}`}>
+                        <FaLock />
+                        <div>
+                            <strong>
+                                {post.status === "in_progress" && "هذا الطلب قيد التنفيذ حالياً"}
+                                {post.status === "completed" && "تم إكمال هذا الطلب"}
+                                {post.status === "verified" && "تم التحقق من إكمال هذا الطلب ✓"}
+                                {post.status === "cancelled" && "تم إلغاء هذا الطلب"}
+                            </strong>
+                            <p>
+                                {post.status === "in_progress" && "تم قبول عرض صنايعي وهو يعمل على تنفيذ الخدمة."}
+                                {post.status === "completed" && "انتهى الصنايعي من تنفيذ الخدمة وبانتظار تأكيد صاحب الطلب."}
+                                {post.status === "verified" && "تم التحقق من الإكمال من قِبل صاحب الطلب. أُضيفت النقاط للصنايعي."}
+                                {post.status === "cancelled" && "قام صاحب الطلب بإلغاء هذا الطلب ولم يعد متاحاً للعروض."}
+                            </p>
+                            {/* أزرار الشات والتحقق فقط لما الطلب in_progress */}
+                            {(canChat || canVerify) && (
+                                <div className="detail-locked-actions">
+                                    {canChat && (
+                                        <button className="detail-chat-btn" onClick={handleStartChat}>
+                                            <FaCommentDots /> تواصل عبر المحادثة
+                                        </button>
+                                    )}
+                                    {canVerify && (
+                                        <button className="detail-verify-btn" onClick={handleVerify} disabled={isActing}>
+                                            {isActing ? <FaSpinner className="spin" /> : <><FaCheckCircle /> تأكيد الإكمال واستلام الخدمة</>}
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
 
                 <div className="detail-grid">
                     {/* ── Main Content ── */}
@@ -193,14 +347,19 @@ const PostDetailPage: React.FC = () => {
                                         </span>
                                     </div>
                                 </div>
-                                <span className={`detail-status ${statusInfo.className}`}>
-                                    {statusInfo.text}
-                                </span>
+                                <div className="detail-badges">
+                                    {post.urgency === "urgent" && (
+                                        <span className="detail-urgent-badge"><FaBolt /> عاجل</span>
+                                    )}
+                                    <span className={`detail-status ${statusInfo.className}`}>
+                                        {statusInfo.text}
+                                    </span>
+                                </div>
                             </div>
 
                             {/* Category */}
                             <span className="detail-category">
-                                {CATEGORY_LABELS[post.category] || post.category}
+                                {post.service ? `${post.service.icon || "🔨"} ${post.service.name}` : post.category}
                             </span>
 
                             {/* Content */}
@@ -209,21 +368,6 @@ const PostDetailPage: React.FC = () => {
 
                             {/* Info Bar */}
                             <div className="detail-info-bar">
-                                {hasBudget && (
-                                    <div className="detail-info-item budget">
-                                        <FaMoneyBillWave />
-                                        <div>
-                                            <span className="detail-info-label">الميزانية</span>
-                                            <span className="detail-info-value">
-                                                {post.budget_min && post.budget_max
-                                                    ? `${post.budget_min} - ${post.budget_max} ج.م`
-                                                    : post.budget_max
-                                                    ? `حتى ${post.budget_max} ج.م`
-                                                    : `من ${post.budget_min} ج.م`}
-                                            </span>
-                                        </div>
-                                    </div>
-                                )}
                                 {post.location && (
                                     <div className="detail-info-item location">
                                         <FaMapMarkerAlt />
@@ -240,23 +384,50 @@ const PostDetailPage: React.FC = () => {
                                         <span className="detail-info-value">{offers.length} عرض</span>
                                     </div>
                                 </div>
+                                <div className="detail-info-item points">
+                                    <span>🏆</span>
+                                    <div>
+                                        <span className="detail-info-label">المكافأة</span>
+                                        <span className="detail-info-value">{post.points_reward ?? 50} نقطة</span>
+                                    </div>
+                                </div>
                             </div>
 
-                            {/* Images */}
+                            {/* Before Images */}
                             {post.images?.length > 0 && (
-                                <div className="detail-images">
-                                    {post.images.map((img, i) => (
-                                        <div key={i} className="detail-img-wrap" onClick={() => setLightboxImg(img)}>
-                                            <img src={img} alt={`صورة ${i + 1}`} loading="lazy" />
-                                        </div>
-                                    ))}
+                                <div className="detail-images-section">
+                                    <h4 className="detail-images-title">صور الطلب</h4>
+                                    <div className="detail-images">
+                                        {post.images.map((img, i) => (
+                                            <div key={i} className="detail-img-wrap" onClick={() => setLightboxImg(communityImageUrl(img))}>
+                                                <img src={communityImageUrl(img)} alt={`صورة ${i + 1}`} loading="lazy" />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* After Images (completion) */}
+                            {post.after_images && post.after_images.length > 0 && (
+                                <div className="detail-images-section after">
+                                    <h4 className="detail-images-title after">✅ صور ما بعد التنفيذ</h4>
+                                    <div className="detail-images">
+                                        {post.after_images.map((img, i) => (
+                                            <div key={i} className="detail-img-wrap after" onClick={() => setLightboxImg(communityImageUrl(img))}>
+                                                <img src={communityImageUrl(img)} alt={`بعد ${i + 1}`} loading="lazy" />
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             )}
                         </div>
 
-                        {/* ── Comments Section ── */}
+                        {/* ── Comments ── */}
                         <div className="detail-card">
-                            <button className="detail-comments-toggle" onClick={!showComments ? loadComments : () => setShowComments(false)}>
+                            <button
+                                className="detail-comments-toggle"
+                                onClick={!showComments ? loadComments : () => setShowComments(false)}
+                            >
                                 <FaComments />
                                 {showComments ? "إخفاء التعليقات" : `عرض التعليقات (${post.comments_count})`}
                             </button>
@@ -282,7 +453,7 @@ const PostDetailPage: React.FC = () => {
                                         </div>
                                     ))}
 
-                                    {canComment && (
+                                    {canComment ? (
                                         <div className="detail-comment-form">
                                             <input
                                                 type="text"
@@ -290,12 +461,17 @@ const PostDetailPage: React.FC = () => {
                                                 value={commentBody}
                                                 onChange={(e) => setCommentBody(e.target.value)}
                                                 onKeyDown={(e) => e.key === "Enter" && handleAddComment()}
+                                                disabled={isActing}
                                             />
                                             <button onClick={handleAddComment} disabled={isActing || !commentBody.trim()}>
-                                                <FaPaperPlane />
+                                                {isActing ? <FaSpinner className="detail-spinner" /> : <FaPaperPlane />}
                                             </button>
                                         </div>
-                                    )}
+                                    ) : isLocked ? (
+                                        <div className="detail-comments-locked">
+                                            <FaLock /> التعليقات مغلقة — الطلب {statusInfo.text}
+                                        </div>
+                                    ) : null}
                                 </div>
                             )}
                         </div>
@@ -312,14 +488,12 @@ const PostDetailPage: React.FC = () => {
                                     </button>
                                 ) : (
                                     <div className="offer-form">
-                                        <h3>
-                                            <FaUserTie /> تقديم عرض
-                                        </h3>
+                                        <h3><FaUserTie /> تقديم عرض</h3>
                                         <div className="offer-form-field">
                                             <label>السعر (ج.م)</label>
                                             <input
                                                 type="number"
-                                                placeholder="أدخل السعر"
+                                                placeholder="أدخل سعرك"
                                                 value={offerPrice}
                                                 onChange={(e) => setOfferPrice(e.target.value)}
                                                 min="1"
@@ -338,7 +512,7 @@ const PostDetailPage: React.FC = () => {
                                         <div className="offer-form-field">
                                             <label>وصف العرض</label>
                                             <textarea
-                                                placeholder="اشرح كيف ستنفذ الخدمة..."
+                                                placeholder="اشرح كيف ستنفذ الخدمة، وما يميز عرضك..."
                                                 value={offerDesc}
                                                 onChange={(e) => setOfferDesc(e.target.value)}
                                                 rows={4}
@@ -366,7 +540,7 @@ const PostDetailPage: React.FC = () => {
                             </div>
                         )}
 
-                        {/* Offers list */}
+                        {/* Offers List */}
                         <div className="detail-card offers-list-card">
                             <h3 className="offers-title">
                                 <FaComments /> العروض المقدمة ({offers.length})
@@ -380,7 +554,10 @@ const PostDetailPage: React.FC = () => {
                             ) : (
                                 <div className="offers-list">
                                     {offers.map((offer) => (
-                                        <div key={offer.id} className={`offer-item ${offer.status === "accepted" ? "accepted" : ""}`}>
+                                        <div
+                                            key={offer.id}
+                                            className={`offer-item ${offer.status === "accepted" ? "accepted" : offer.status === "rejected" ? "rejected" : ""}`}
+                                        >
                                             <div className="offer-header">
                                                 <div className="offer-craftsman">
                                                     <img
@@ -402,6 +579,9 @@ const PostDetailPage: React.FC = () => {
                                                         <FaCheckCircle /> مقبول
                                                     </span>
                                                 )}
+                                                {offer.status === "rejected" && (
+                                                    <span className="offer-rejected-badge">مرفوض</span>
+                                                )}
                                             </div>
 
                                             <p className="offer-description">{offer.description}</p>
@@ -415,6 +595,7 @@ const PostDetailPage: React.FC = () => {
                                                     <FaClock />
                                                     <span>{offer.delivery_days} يوم</span>
                                                 </div>
+                                                <span className="offer-time">{formatTimeAgo(offer.created_at)}</span>
                                             </div>
 
                                             {canAcceptOffer && offer.status === "pending" && (

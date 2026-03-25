@@ -6,6 +6,7 @@ import { getFullImageUrl } from "../utils/imageUrl";
 import { normalizeArray } from "../utils/normalizeResponse";
 import { useNotifications } from "./NotificationContext";
 import { getActiveServiceRequest } from "../Api/serviceRequest/serviceRequests.api";
+import { getActiveCommunityChat } from "../Api/community.api";
 import { normalizeRole } from "./notification/notification.utils";
 
 /* ===================================================== */
@@ -18,6 +19,7 @@ export interface ChatContact {
   type: string;
   avatar?: string;
   unread_count: number;
+  isCommunityChat?: boolean; // فتح/غلق الشات بناءً على طلبات المجتمع
 }
 
 export interface ChatMessage {
@@ -88,10 +90,10 @@ export const CraftsmanChatProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     if (!contactsQuery.data) return;
     const currentTotal = contactsQuery.data.reduce((sum, c) => sum + (c.unread_count || 0), 0);
-    
+
     if (currentTotal > prevTotalUnreadRef.current) {
       const diffContact = contactsQuery.data.find(c => c.unread_count > 0);
-      
+
       if (diffContact) {
         addNotification({
           title: "رسالة جديدة",
@@ -115,9 +117,9 @@ export const CraftsmanChatProvider: React.FC<{ children: React.ReactNode }> = ({
       // Handle both {messages: []} and {data: {data: []}} structures
       const raw = res.messages || (Array.isArray(res.data) ? res.data : res.data?.data) || [];
 
-      return raw.map((m: any) => ({ 
-        ...m, 
-        is_mine: (Number(m.sender_id) === Number(user!.id) && normalizeRole(m.sender_type) === "craftsman") 
+      return raw.map((m: any) => ({
+        ...m,
+        is_mine: (Number(m.sender_id) === Number(user!.id) && normalizeRole(m.sender_type) === "craftsman")
       }));
     },
   });
@@ -159,17 +161,22 @@ export const CraftsmanChatProvider: React.FC<{ children: React.ReactNode }> = ({
       setCanSendMessage(true);
       return;
     }
-    const check = () =>
-      getActiveServiceRequest('craftsman', activeChat.id).then(({ status }) => {
-        // الشات يفتح فقط عندما يتم قبول الطلب رسميًا من الصنايعي
-        // ويقفل إذا كان قيد الانتظار أو انتهى (completed)
-        setCanSendMessage(status === 'accepted');
-      }).catch(() => {});
-    
+    const check = async () => {
+      if (activeChat.isCommunityChat) {
+        // ✔ نظام المجتمع: الشات يفتح فقط لما in_progress
+        const { status } = await getActiveCommunityChat(activeChat.id);
+        setCanSendMessage(status === 'in_progress');
+      } else {
+        // نظام الخدمات العادية
+        getActiveServiceRequest('craftsman', activeChat.id)
+          .then(({ status }) => { setCanSendMessage(status === 'accepted'); })
+          .catch(() => {});
+      }
+    };
     check();
-    const interval = setInterval(check, 10_000); // Changed to 10s for better sync
+    const interval = setInterval(check, 10_000);
     return () => clearInterval(interval);
-  }, [activeChat?.id, user?.id]);
+  }, [activeChat?.id, activeChat?.isCommunityChat, user?.id]);
 
   useEffect(() => {
     if (!activeChat || !user?.id) return;

@@ -544,8 +544,8 @@ html[data-theme="dark"] .create-post-preview-card h2 {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-/* ── Urgency buttons (kept for compatibility) ── */
-.create-post-urgency-toggle { display: flex; gap: 12px; }
+/* ── Urgency buttons ───────────────────────────── */
+.urgency-toggle-group { display: flex; gap: 12px; }
 
 .urgency-btn {
     flex: 1;
@@ -554,7 +554,7 @@ html[data-theme="dark"] .create-post-preview-card h2 {
     border: 1.5px solid var(--border-color, #e2e8f0);
     background: var(--background-color, #f8fafc);
     color: var(--text-primary, #475569);
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     cursor: pointer;
     font-family: inherit;
@@ -565,7 +565,13 @@ html[data-theme="dark"] .create-post-preview-card h2 {
     gap: 8px;
 }
 
-.urgency-btn.normal.active {
+html[data-theme="dark"] .urgency-btn {
+    background: #262936;
+    border-color: #363a4d;
+    color: #b0b8cc;
+}
+
+.urgency-btn.active {
     border-color: #22c55e;
     background: rgba(34, 197, 94, 0.08);
     color: #15803d;
@@ -576,6 +582,22 @@ html[data-theme="dark"] .create-post-preview-card h2 {
     background: rgba(239, 68, 68, 0.08);
     color: #dc2626;
 }
+
+/* ── Urgency preview badge ──────────────────── */
+.create-post-urgency-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 700;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    padding: 5px 12px;
+    border-radius: 20px;
+}
+
+
 
 /* ── Preview badge ───────────────────────────── */
 .create-post-preview-badge {

@@ -1,12 +1,19 @@
 import api from "./api";
+import { getFullImageUrl } from "../utils/imageUrl";
+
+// ── Base URL helper ───────────────────────────────────
+export const communityImageUrl = (path: string | null | undefined): string => {
+    return getFullImageUrl(path) || "";
+};
+
+// ── Interfaces ───────────────────────────────────────
 
 export interface LeaderboardEntry {
-    id: number;
-    name: string;
-    avatar: string;
-    points: number;
     rank: number;
-    badge: 'bronze' | 'silver' | 'gold' | 'platinum';
+    user: { id: number; name: string; avatar: string | null };
+    total_points: number;
+    verified_jobs: number;
+    badge: "bronze" | "silver" | "gold" | "platinum";
 }
 
 export interface ServiceOffer {
@@ -14,7 +21,7 @@ export interface ServiceOffer {
     craftsman: {
         id: number;
         name: string;
-        avatar: string;
+        avatar: string | null;
         rating: number;
         completed_jobs: number;
     };
@@ -29,23 +36,44 @@ export interface CommunityPost {
     id: number;
     title: string;
     description: string;
-    category: string;
+    service?: {
+        id: number;
+        name: string;
+        icon: string;
+    };
+    category: string; // fallback or legacy
+    urgency: "urgent" | "normal";
     budget_min?: number;
     budget_max?: number;
-    location: string;
+    location?: string;
     latitude?: number;
     longitude?: number;
-    images: string[];
-    status: "open" | "in_progress" | "completed" | "cancelled";
+    images: string[];          // before images
+    after_images?: string[];   // after (completion) images
+    status: "open" | "in_progress" | "completed" | "verified" | "cancelled";
+    points_reward: number;
+    user_id?: number | null;
+    company_id?: number | null;
     user: {
         id: number;
         name: string;
-        avatar: string;
+        avatar: string | null;
         type: string;
     };
+    company?: {
+        id: number;
+        name: string;
+        avatar: string | null;
+    } | null;
+    acceptor?: {
+        id: number;
+        name: string;
+        avatar: string | null;
+    } | null;
     accepted_offer?: ServiceOffer;
     offers_count: number;
     offers?: ServiceOffer[];
+    interests_count?: number;
     comments_count: number;
     created_at: string;
     updated_at: string;
@@ -59,7 +87,7 @@ export interface CommunityComment {
     user: {
         id: number;
         name: string;
-        avatar: string;
+        avatar: string | null;
         type: string;
     };
     created_at: string;
@@ -70,9 +98,8 @@ export const getCommunityPosts = async (params?: {
     page?: number;
     category?: string;
     status?: string;
-    budget_min?: number;
-    budget_max?: number;
     search?: string;
+    urgency?: string;
 }) => {
     const res = await api.get("community/posts", { params });
     return res.data;
@@ -83,7 +110,7 @@ export const getCommunityPost = async (id: number) => {
     return res.data;
 };
 
-// ── Create ──────────────────────────────────────────────
+// ── Create / Delete ──────────────────────────────────
 export const createCommunityPost = async (formData: FormData) => {
     const res = await api.post("community/posts", formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -96,17 +123,16 @@ export const deleteCommunityPost = async (id: number) => {
     return res.data;
 };
 
-// ── Offers ──────────────────────────────────────────────
+// ── Offers ────────────────────────────────────────────
 export const getPostOffers = async (postId: number) => {
     const res = await api.get(`community/posts/${postId}/offers`);
     return res.data;
 };
 
-export const submitOffer = async (postId: number, data: {
-    price: number;
-    description: string;
-    delivery_days: number;
-}) => {
+export const submitOffer = async (
+    postId: number,
+    data: { price: number; description: string; delivery_days: number }
+) => {
     const res = await api.post(`community/posts/${postId}/offers`, data);
     return res.data;
 };
@@ -116,7 +142,28 @@ export const acceptOffer = async (postId: number, offerId: number) => {
     return res.data;
 };
 
-// ── Comments ──────────────────────────────────────────────
+export const verifyCommunityPost = async (postId: number) => {
+    const res = await api.post(`community/posts/${postId}/verify`);
+    return res.data;
+};
+
+// ── Chat Access Check (منفصل عن نظام الخدمات) ────────────────
+/**
+ * يتحقق إذا كان هناك طلب مجتمع نشط (in_progress) بين المستخدم الحالي والصنايعي
+ * يُستخدم من Chat Providers بدل getActiveServiceRequest للمحادثات القادمة من المجتمع
+ */
+export const getActiveCommunityChat = async (
+    craftsmanId: number
+): Promise<{ status: "in_progress" | "verified" | "completed" | "cancelled" | null }> => {
+    try {
+        const res = await api.get(`community/active-chat/${craftsmanId}`);
+        return { status: res.data?.status ?? null };
+    } catch {
+        return { status: null };
+    }
+};
+
+// ── Comments ──────────────────────────────────────────
 export const getCommunityComments = async (postId: number) => {
     const res = await api.get(`community/posts/${postId}/comments`);
     return res.data;
@@ -124,5 +171,16 @@ export const getCommunityComments = async (postId: number) => {
 
 export const addCommunityComment = async (postId: number, body: string) => {
     const res = await api.post(`community/posts/${postId}/comments`, { body });
+    return res.data;
+};
+
+// ── Leaderboard & Points ─────────────────────────────
+export const getCommunityLeaderboard = async () => {
+    const res = await api.get("community/leaderboard");
+    return res.data;
+};
+
+export const getMyPoints = async () => {
+    const res = await api.get("community/my-points");
     return res.data;
 };

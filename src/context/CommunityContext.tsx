@@ -1,13 +1,11 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
 import type { CommunityPost } from "../Api/community.api";
-import { MOCK_POSTS } from "../pages/Community/mockData";
+import { getCommunityPosts } from "../Api/community.api";
 
 interface Filters {
     category: string;
     status: string;
     search: string;
-    budget_min?: number;
-    budget_max?: number;
 }
 
 interface CommunityContextValue {
@@ -28,67 +26,46 @@ export const CommunityProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const [posts, setPosts] = useState<CommunityPost[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [hasMore, setHasMore] = useState(false);
-    const [filters, setFilters] = useState<Filters>({ category: "", status: "", search: "" });
+    const [page, setPage] = useState(1);
+    const [filters, setFiltersState] = useState<Filters>({ category: "", status: "", search: "" });
 
-    // ── MOCK MODE: Use static data instead of API ──
+    const setFilters = useCallback((f: Filters) => {
+        setFiltersState(f);
+        setPage(1);
+    }, []);
+
     const fetchPosts = useCallback(async (reset = false) => {
+        if (isLoading) return;
         setIsLoading(true);
-        // Simulate network delay
-        await new Promise((r) => setTimeout(r, 300));
+        try {
+            const currentPage = reset ? 1 : page;
+            const res = await getCommunityPosts({
+                page: currentPage,
+                category: filters.category || undefined,
+                status: filters.status || undefined,
+                search: filters.search || undefined,
+            });
 
-        let filtered = [...MOCK_POSTS];
+            // Handle both paginated and plain array responses
+            const newPosts: CommunityPost[] = res.data ?? res;
+            const lastPage: number = res.last_page ?? 1;
+            const currentPageReturned: number = res.current_page ?? currentPage;
 
-        // Apply filters
-        if (filters.category) {
-            filtered = filtered.filter((p) => p.category === filters.category);
+            if (reset || currentPage === 1) {
+                setPosts(newPosts);
+                setPage(2);
+            } else {
+                setPosts((prev) => [...prev, ...newPosts]);
+                setPage((p) => p + 1);
+            }
+            setHasMore(currentPageReturned < lastPage);
+        } catch (err) {
+            console.error("Failed to load community posts", err);
+            setHasMore(false);
+        } finally {
+            setIsLoading(false);
         }
-        if (filters.status) {
-            filtered = filtered.filter((p) => p.status === filters.status);
-        }
-        if (filters.search) {
-            const q = filters.search.toLowerCase();
-            filtered = filtered.filter(
-                (p) => p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q)
-            );
-        }
-
-        if (reset) {
-            setPosts(filtered);
-        } else {
-            setPosts(filtered);
-        }
-        setHasMore(false);
-        setIsLoading(false);
-    }, [filters]);
-
-    // ── TODO: Replace mock mode with real API calls ──
-    // const fetchPosts = useCallback(async (reset = false) => {
-    //     setIsLoading(true);
-    //     try {
-    //         const currentPage = reset ? 1 : page;
-    //         const res = await getCommunityPosts({
-    //             page: currentPage,
-    //             category: filters.category || undefined,
-    //             status: filters.status || undefined,
-    //             search: filters.search || undefined,
-    //             budget_min: filters.budget_min || undefined,
-    //             budget_max: filters.budget_max || undefined,
-    //         });
-    //         const newPosts: CommunityPost[] = res.data ?? res;
-    //         if (reset) {
-    //             setPosts(newPosts);
-    //             setPage(2);
-    //         } else {
-    //             setPosts((prev) => [...prev, ...newPosts]);
-    //             setPage((p) => p + 1);
-    //         }
-    //         setHasMore(newPosts.length >= 10);
-    //     } catch {
-    //         setHasMore(false);
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-    // }, [page, filters]);
+    }, [page, filters, isLoading]);
 
     const updatePost = useCallback((updated: CommunityPost) => {
         setPosts((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));

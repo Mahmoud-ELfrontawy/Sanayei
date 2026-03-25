@@ -11,17 +11,15 @@ export const getFullImageUrl = (path?: any) => {
     // If it's already a full URL, return it.
     if (path.startsWith("http")) return path;
 
-    // Remove leading slash to prevent double slashes.
-    let cleanPath = path.startsWith("/") ? path.substring(1) : path;
-
     // Normalize common Laravel storage prefixes.
-    if (cleanPath.startsWith("storage/app/public/")) {
-        cleanPath = cleanPath.substring("storage/app/public/".length);
-    } else if (cleanPath.startsWith("storage/")) {
-        cleanPath = cleanPath.substring("storage/".length);
-    }
+    let cleanPath = path;
+    if (cleanPath.startsWith("/storage/app/public/")) cleanPath = cleanPath.substring(20);
+    else if (cleanPath.startsWith("storage/app/public/")) cleanPath = cleanPath.substring(19);
+    else if (cleanPath.startsWith("/storage/")) cleanPath = cleanPath.substring(9);
+    else if (cleanPath.startsWith("storage/")) cleanPath = cleanPath.substring(8);
+    else if (cleanPath.startsWith("/")) cleanPath = cleanPath.substring(1);
 
-    const BASE_URL = "/storage/app/public/";
+    const BASE_URL = "https://sanay3i.net/storage/app/public/";
     return `${BASE_URL}${cleanPath}`;
 };
 

@@ -1,76 +1,93 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaArrowRight, FaMapMarkerAlt, FaCamera, FaCheckCircle, FaMoneyBillWave } from "react-icons/fa";
-// import { createCommunityPost } from "../../Api/community.api"; // TODO: uncomment when switching to real API
+import { FaArrowRight, FaMapMarkerAlt, FaCamera, FaCheckCircle, FaBolt, FaClock, FaSpinner } from "react-icons/fa";
+import { createCommunityPost } from "../../Api/community.api";
+import { getServices } from "../../Api/services.api";
+import type { Service } from "../../constants/service";
 import { useCommunity } from "../../context/CommunityContext";
+import { useAuth } from "../../hooks/useAuth";
 import { toast } from "react-toastify";
 import "./CreatePostPage.css";
 
-const CATEGORIES = [
-    { value: "electrical", label: "⚡ كهرباء" },
-    { value: "plumbing", label: "🔧 سباكة" },
-    { value: "masonry", label: "🧱 بناء" },
-    { value: "carpentry", label: "🪚 نجارة" },
-    { value: "painting", label: "🎨 دهانات" },
-    { value: "ac", label: "❄️ تكييف" },
-    { value: "other", label: "🔨 أخرى" },
-];
-
-const STEPS = ["تفاصيل الخدمة", "الميزانية والصور", "مراجعة ونشر"];
+const STEPS = ["تفاصيل الخدمة", "الصور والموقع", "مراجعة ونشر"];
 
 const CreatePostPage: React.FC = () => {
     const navigate = useNavigate();
     const { prependPost } = useCommunity();
+    const { user } = useAuth();
     const [step, setStep] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [category, setCategory] = useState("electrical");
-    const [budgetMin, setBudgetMin] = useState("");
-    const [budgetMax, setBudgetMax] = useState("");
+    const [categories, setCategories] = useState<Service[]>([]);
+    const [category, setCategory] = useState<string | number>("");
+    const [urgency, setUrgency] = useState<"normal" | "urgent">("normal");
     const [location, setLocation] = useState("");
-    // const [images, setImages] = useState<File[]>([]);
-
+    const [images, setImages] = useState<File[]>([]);
     const [previews, setPreviews] = useState<string[]>([]);
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // Fetch real services from API
+    useEffect(() => {
+        const fetchCats = async () => {
+            try {
+                const data = await getServices();
+                setCategories(data);
+                if (data.length > 0) setCategory(data[0].id); // Default to first service ID
+            } catch (err) {
+                console.error("Failed to fetch services", err);
+                toast.error("فشل تحميل قائمة التخصصات");
+            } finally {
+                setIsLoadingCategories(false);
+            }
+        };
+        fetchCats();
+    }, []);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files ?? []).slice(0, 4);
-        // setImages(files); // Unused in mock mode
+        setImages(files);
         setPreviews(files.map((f) => URL.createObjectURL(f)));
     };
 
     const handleSubmit = async () => {
         setIsSubmitting(true);
-        // MOCK MODE: create post locally
-        
-        await new Promise((r) => setTimeout(r, 500));
-        const mockPost = {
-            id: Date.now(),
-            title,
-            description,
-            category,
-            budget_min: budgetMin ? Number(budgetMin) : undefined,
-            budget_max: budgetMax ? Number(budgetMax) : undefined,
-            location,
-            images: previews,
-            status: "open" as const,
-            user: { id: 999, name: "أنت", avatar: "", type: "user" },
-            offers_count: 0,
-            comments_count: 0,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            is_mine: true,
-            has_offered: false,
-        };
-        prependPost(mockPost);
-        toast.success("تم نشر طلب الخدمة بنجاح! 🎉");
-        navigate("/community");
-        setIsSubmitting(false);
+        try {
+            const formData = new FormData();
+            formData.append("title", title.trim());
+            formData.append("description", description.trim());
+            formData.append("category", String(category));
+            formData.append("urgency", urgency);
+            if (location.trim()) formData.append("location", location.trim());
+            images.forEach((img) => formData.append("images[]", img));
+
+            const res = await createCommunityPost(formData);
+            const newPost = res.data ?? res;
+
+            prependPost({
+                ...newPost,
+                images: newPost.images ?? previews,
+                user: newPost.user ?? { id: user?.id ?? 0, name: user?.name ?? "أنت", avatar: null, type: "user" },
+                offers_count: 0,
+                comments_count: 0,
+                is_mine: true,
+                has_offered: false,
+            });
+
+            toast.success("تم نشر طلب الخدمة بنجاح! 🎉");
+            navigate("/community");
+        } catch (err: any) {
+            const msg = err?.response?.data?.message || "حدث خطأ أثناء النشر، حاول مجدداً";
+            toast.error(msg);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const canProceedStep0 = title.trim().length >= 5 && description.trim().length >= 10;
-    const canProceedStep1 = true;
 
     return (
         <section className="create-post-page">
@@ -105,37 +122,63 @@ const CreatePostPage: React.FC = () => {
                                 placeholder="مثال: تركيب وصلات كهرباء في شقة جديدة"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
-                                maxLength={100}
+                                maxLength={150}
                             />
-                            <span className="create-post-char">{title.length}/100</span>
+                            <span className="create-post-char">{title.length}/150</span>
                         </div>
 
                         <div className="create-post-field">
                             <label>تصنيف التخصص *</label>
-                            <div className="create-post-categories">
-                                {CATEGORIES.map((c) => (
-                                    <button
-                                        key={c.value}
-                                        type="button"
-                                        className={`create-post-cat-btn ${category === c.value ? "active" : ""}`}
-                                        onClick={() => setCategory(c.value)}
-                                    >
-                                        {c.label}
-                                    </button>
-                                ))}
+                            {isLoadingCategories ? (
+                                <div className="create-post-cats-loading">
+                                    <FaSpinner className="spin-icon" /> جاري تحميل الخدمات...
+                                </div>
+                            ) : (
+                                <div className="create-post-categories">
+                                    {categories.map((c) => (
+                                        <button
+                                            key={c.id}
+                                            type="button"
+                                            className={`create-post-cat-btn ${category === c.id ? "active" : ""}`}
+                                            onClick={() => setCategory(c.id)}
+                                        >
+                                            {c.name}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="create-post-field">
+                            <label>درجة الأولوية</label>
+                            <div className="urgency-toggle-group">
+                                <button
+                                    type="button"
+                                    className={`urgency-btn ${urgency === "normal" ? "active" : ""}`}
+                                    onClick={() => setUrgency("normal")}
+                                >
+                                    <FaClock /> عادي
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`urgency-btn urgent ${urgency === "urgent" ? "active" : ""}`}
+                                    onClick={() => setUrgency("urgent")}
+                                >
+                                    <FaBolt /> عاجل (+٥٠ نقطة للصنايعي)
+                                </button>
                             </div>
                         </div>
 
                         <div className="create-post-field">
                             <label>وصف الخدمة بالتفصيل *</label>
                             <textarea
-                                placeholder="اشرح بالتفصيل ماذا تحتاج حتى يتمكن الصنايعي من تقديم عرض مناسب..."
+                                placeholder="اشرح بالتفصيل ماذا تحتاج حتى يتمكن الصنايعية من تقديم عروض مناسبة..."
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 rows={5}
-                                maxLength={1000}
+                                maxLength={2000}
                             />
-                            <span className="create-post-char">{description.length}/1000</span>
+                            <span className="create-post-char">{description.length}/2000</span>
                         </div>
 
                         <button
@@ -148,30 +191,9 @@ const CreatePostPage: React.FC = () => {
                     </div>
                 )}
 
-                {/* ── Step 1: Budget, Images & Location ── */}
+                {/* ── Step 1: Images & Location ── */}
                 {step === 1 && (
                     <div className="create-post-step-content">
-                        <div className="create-post-field">
-                            <label><FaMoneyBillWave /> الميزانية المتوقعة (ج.م)</label>
-                            <div className="create-post-budget-row">
-                                <input
-                                    type="number"
-                                    placeholder="من"
-                                    value={budgetMin}
-                                    onChange={(e) => setBudgetMin(e.target.value)}
-                                    min="0"
-                                />
-                                <span className="budget-separator">إلى</span>
-                                <input
-                                    type="number"
-                                    placeholder="إلى"
-                                    value={budgetMax}
-                                    onChange={(e) => setBudgetMax(e.target.value)}
-                                    min="0"
-                                />
-                            </div>
-                        </div>
-
                         <div className="create-post-field">
                             <label><FaCamera /> صور توضيحية (حتى 4 صور)</label>
                             <label htmlFor="post-images" className="create-post-upload-area">
@@ -191,6 +213,7 @@ const CreatePostPage: React.FC = () => {
                             </label>
                             <input
                                 id="post-images"
+                                ref={fileInputRef}
                                 type="file"
                                 accept="image/*"
                                 multiple
@@ -200,7 +223,7 @@ const CreatePostPage: React.FC = () => {
                         </div>
 
                         <div className="create-post-field">
-                            <label><FaMapMarkerAlt /> الموقع (المنطقة أو الحي)</label>
+                            <label><FaMapMarkerAlt /> الموقع (الحي أو المنطقة)</label>
                             <input
                                 type="text"
                                 placeholder="مثال: مدينة نصر، القاهرة"
@@ -211,7 +234,7 @@ const CreatePostPage: React.FC = () => {
 
                         <div className="create-post-step-btns">
                             <button className="create-post-back-step-btn" onClick={() => setStep(0)}>← رجوع</button>
-                            <button className="create-post-next-btn" onClick={() => setStep(2)} disabled={!canProceedStep1}>
+                            <button className="create-post-next-btn" onClick={() => setStep(2)}>
                                 التالي →
                             </button>
                         </div>
@@ -224,16 +247,11 @@ const CreatePostPage: React.FC = () => {
                         <div className="create-post-preview-card">
                             <div className="create-post-preview-header">
                                 <span className="create-post-preview-cat">
-                                    {CATEGORIES.find((c) => c.value === category)?.label}
+                                    {categories.find((c) => c.id === Number(category))?.name || "تخصص غير محدد"}
                                 </span>
-                                {(budgetMin || budgetMax) && (
-                                    <span className="create-post-preview-budget">
-                                        <FaMoneyBillWave />
-                                        {budgetMin && budgetMax
-                                            ? `${budgetMin} - ${budgetMax} ج.م`
-                                            : budgetMax
-                                            ? `حتى ${budgetMax} ج.م`
-                                            : `من ${budgetMin} ج.م`}
+                                {urgency === "urgent" && (
+                                    <span className="create-post-urgency-badge">
+                                        <FaBolt /> عاجل
                                     </span>
                                 )}
                             </div>
