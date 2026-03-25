@@ -99,8 +99,9 @@ const CompanyProfilePage: React.FC = () => {
                                 type="file"
                                 hidden
                                 accept="image/*"
-                                {...register("company_logo")}
-                                onChange={handleLogoChange}
+                                {...register("company_logo", {
+                                    onChange: handleLogoChange
+                                })}
                             />
                         </label>
                     </div>

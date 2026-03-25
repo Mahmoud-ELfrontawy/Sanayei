@@ -29,7 +29,7 @@ export const useCompanyProfile = () => {
         try {
             const res = await updateCompanyProfile(data);
             if (res.success) {
-                toast.info("جاري مراجعة البيانات — ستبقى بياناتك الحالية كما هي حتى تتم الموافقة عليها من الإدارة.");
+                toast.success("تم حفظ البيانات بنجاح ✅");
                 // ✅ تحديث auth context فقط (لتحديث الـ status) بدون إعادة جلب بيانات المتجر
                 await refreshUser();
             } else {

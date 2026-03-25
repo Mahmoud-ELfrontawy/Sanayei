@@ -34,7 +34,7 @@ const ProfileCard: React.FC<Props> = ({ craftsman, isOwnProfile }) => {
       state: {
         industrial_type: craftsman.id?.toString(),
         industrial_name: craftsman.name,
-        service_type: craftsman.jobTitle,
+        service_type: craftsman.serviceId?.toString(),
         price: craftsman.priceRange,
       }
     });

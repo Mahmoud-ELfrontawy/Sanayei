@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { getCraftsmanProfile } from "../../Api/auth/Worker/profileWorker.api";
-import { getTechnicianById } from "../../Api/technicians.api";
+import { getTechnicianById, getTechnicians } from "../../Api/technicians.api";
 import { getAvatarUrl, getFullImageUrl } from "../../utils/imageUrl";
 
 import { getGovernorates } from "../../Api/serviceRequest/governorates.api";
@@ -66,7 +66,19 @@ export const useCraftsmanProfile = () => {
           }
         }
 
-        // Mapping API data to UI structure
+        // ✅ IMPORTANT: Public Detail API (/craftsmen/{id}) doesn't return price_range/work_days
+        // But the List API (/craftsmen) does. We fetch them if missing.
+        if (id && !isOwnProfile && (!data.price_range || !data.work_days)) {
+          try {
+             const allTechs = await getTechnicians(data.service_id || data.service?.id);
+             const matched = allTechs.find((t: any) => String(t.id) === String(id));
+             if (matched) {
+                data = { ...data, ...matched };
+             }
+          } catch (e) {
+             console.warn("Failed to enrichment craftsman data from list", e);
+          }
+        }
 
         // ✅ FIX: If own profile, fetch public profile data to get richer fields
         if (isOwnProfile && data.id) {
@@ -76,13 +88,12 @@ export const useCraftsmanProfile = () => {
                // Merge public data into private data to fill gaps
                data = {
                  ...data,
-                 service: publicData.service || data.service,
-                 service_name: publicData.service?.name || publicData.service_name || data.service_name,
-                 governorate_id: publicData.governorate_id || data.governorate_id,
-                 last_reviews: publicData.last_reviews || data.last_reviews,
+                 ...publicData,
                  rating: publicData.rating || data.rating,
                  work_photos: publicData.work_photos || data.work_photos,
                  experience_years: publicData.experience_years || data.experience_years,
+                 price_range: publicData.price_range || data.price_range,
+                 work_days: publicData.work_days || data.work_days,
                };
             }
           } catch (e) {
@@ -116,26 +127,41 @@ export const useCraftsmanProfile = () => {
           address: data.address || "غير محدد",
           governorate: govName,
           phone: data.phone || "غير متاح",
-          about: data.description || "لا يوجد وصف حالياً",
-          priceRange: data.price_range,
-          workDays: Array.isArray(data.work_days) ? data.work_days : [],
+          about: data.description || data.about || data.bio || "لا يوجد وصف حالياً",
+          priceRange: data.price_range || data.priceRange || data.rate || data.price || "حسب الاتفاق",
+          workDays: (() => {
+            const days = data.work_days || data.workDays || data.working_days || data.workingDays || data.schedule;
+            if (Array.isArray(days)) return days;
+            if (typeof days === 'string' && days) {
+              try {
+                const parsed = JSON.parse(days);
+                return Array.isArray(parsed) ? parsed : [];
+              } catch (e) {
+                return days.includes(',') ? days.split(',').map(d => d.trim()) : (days ? [days] : []);
+              }
+            }
+            return [];
+          })(),
           specialization: data.service?.name ? [data.service.name] : [],
           paymentMethods: ["الدفع النقدي (كاش)"],
           services: data.service?.name ? [data.service.name] : [],
           walletId: data.wallet?.id || data.wallet_id || null,
           reviews: Array.isArray(data.last_reviews) ? data.last_reviews.map((r: any) => {
-            const reviewer = r.user || r.company || r.reviewable || r.reviewer || r.client || {};
-            const reviewerName = 
-                r.user_name || r.company_name || r.userName || 
-                r.client_name || r.clientName || reviewer.company_name || 
-                reviewer.name || reviewer.full_name || r.name ||
-                (r.user_id ? `عميل رقم ${r.user_id}` : "عميل");
+            const reviewer = r.company || r.user || r.reviewable || r.reviewer || r.client || {};
             
+            // ✅ Prioritize Company Name then User Name
+            const reviewerName = 
+                r.company_name || reviewer.company_name || 
+                r.user_name || r.userName || reviewer.name || 
+                r.client_name || r.clientName || reviewer.full_name || 
+                r.name || (r.company_id ? "شركة شريكة" : (r.user_id ? `عميل رقم ${r.user_id}` : "عميل"));
+            
+            // ✅ Prioritize Company Logo then User Image
             const photoPath = 
-                r.user_image || r.user_avatar || r.company_logo || 
+                r.company_logo || reviewer.company_logo || 
+                r.user_image || r.user_avatar || reviewer.avatar || 
                 r.client_image || reviewer.profile_image_url || 
-                reviewer.profile_photo || reviewer.company_logo || 
-                reviewer.logo || reviewer.avatar || r.image;
+                reviewer.profile_photo || reviewer.logo || r.image;
 
             return {
               id: r.id,

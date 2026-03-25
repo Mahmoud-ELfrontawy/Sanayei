@@ -83,7 +83,7 @@ const ProfileUser = () => {
                     latitude: data.latitude ? Number(data.latitude) : 30.0444,
                     longitude: data.longitude ? Number(data.longitude) : 31.2357,
                     avatar: data.profile_image_url
-                        ? `${data.profile_image_url}?t = ${Date.now()} `
+                        ? `${data.profile_image_url}?t=${Date.now()}`
                         : undefined,
                 });
             } catch (error) {
@@ -117,30 +117,44 @@ const ProfileUser = () => {
         try {
             setLoading(true);
 
-            await updateProfile({
+            const response = await updateProfile({
                 name: user.name.trim(),
                 phone: user.phone.trim(),
-
                 birth_date: user.birth_date || undefined,
-
                 gender: user.gender || "male",
-
                 latitude: user.latitude || undefined,
                 longitude: user.longitude || undefined,
-
                 profile_image: imageFile,
             });
 
-            await refreshUser();
-            await refreshUser();
+            // 1. Update local state with the new data from response (if provided by API)
+            // This ensures the local component sees the new image right away.
+            const data = response.data;
+            if (data) {
+                const birthDate = data.birth_date ? toUiDate(data.birth_date) : user.birth_date;
+                setUser({
+                    name: data.name ?? user.name,
+                    email: data.email ?? user.email,
+                    phone: data.phone ?? user.phone,
+                    birth_date: birthDate,
+                    gender: data.gender ?? user.gender,
+                    latitude: data.latitude ? Number(data.latitude) : user.latitude,
+                    longitude: data.longitude ? Number(data.longitude) : user.longitude,
+                    avatar: data.profile_image_url
+                        ? `${data.profile_image_url.split("?")[0]}?t=${Date.now()}`
+                        : user.avatar,
+                });
+            }
+
+            // 2. Clear the pending image file (the UI will now switch from local preview to the new server URL)
             setImageFile(null);
 
-            // 🔄 Set flag and Force refresh to update header image
-            localStorage.setItem("profileUpdated", "true");
-            window.location.reload();
+            // 3. Update global auth context (Header, Sidebar)
+            await refreshUser();
+
+            toast.success("تم حفظ البيانات بنجاح ✅");
         } catch (error: unknown) {
             const axiosError = error as AxiosError<ApiErrorResponse>;
-
             toast.error(axiosError.response?.data?.message || "فشل حفظ التعديلات ❌");
         } finally {
             setLoading(false);
@@ -180,9 +194,16 @@ const ProfileUser = () => {
             <ProfileCompletionMeter type="user" data={user} />
 
             {isBlocked && (
-                <div className="approval-warning-banner blocked" style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <FiAlertCircle />
-                    <span>حسابك محظور من قبل الإدارة. يرجى التواصل مع <Link to="/contact" style={{ textDecoration: 'underline' }}>الدعم الفني</Link> لحل المشكلة.</span>
+                <div className="status-display-card blocked">
+                    <div className="status-icon-box">
+                        <FiAlertCircle />
+                    </div>
+                    <div className="status-text-content">
+                        <h3>حساب محظور</h3>
+                        <p>
+                            حسابك محظور من قبل الإدارة حالياً. يرجى التواصل مع <Link to="/contact" style={{ textDecoration: 'underline', color: 'inherit' }}>الدعم الفني</Link> لمعرفة التفاصيل وحل المشكلة.
+                        </p>
+                    </div>
                 </div>
             )}
 

@@ -143,7 +143,7 @@ const ProfileWorker = () => {
                     latitude: Number(d.latitude) || DEFAULT_LOCATION.latitude,
                     longitude: Number(d.longitude) || DEFAULT_LOCATION.longitude,
 
-                    avatar: getAvatarUrl(d.profile_photo, d.name),
+                    avatar: getAvatarUrl(d.profile_photo, d.name) + `?t=${Date.now()}`,
                     governorate_id: d.governorate_id,
                     description: d.description ?? undefined,
                     experience_years: d.experience_years ? Number(d.experience_years) : undefined,
@@ -179,7 +179,7 @@ const ProfileWorker = () => {
         try {
             setLoading(true);
 
-            await updateCraftsmanProfile(craftsman.id, {
+            const res = await updateCraftsmanProfile(craftsman.id!, {
                 name: craftsman.name,
                 phone: craftsman.phone,
                 birth_date: craftsman.birth_date,
@@ -207,10 +207,30 @@ const ProfileWorker = () => {
                 );
             }
 
+            // 1. Update local state with the new data from response
+            // This ensures the local component sees the new image right away.
+            const updatedData = res.craftsman ?? res.data ?? res;
+            if (updatedData && typeof updatedData === 'object' && !Array.isArray(updatedData)) {
+                const d = updatedData as CraftsmanApiResponse;
+                setCraftsman(prev => {
+                    const rawAvatar = d.profile_photo || prev.avatar?.split('?')[0];
+                    return {
+                        ...prev,
+                        avatar: getAvatarUrl(rawAvatar, d.name) + `?t=${Date.now()}`,
+                        work_photos: d.work_photos ?? prev.work_photos,
+                        new_work_photos: [],
+                        delete_work_photos: []
+                    };
+                });
+            }
+
+            // 2. Clear the pending image file (the UI will now switch from local preview to the new server URL)
             setImageFile(null);
-            // ✅ تحديث auth context فقط (لتحديث الـ status) بدون إعادة جلب بيانات الملف الشخصي
+
+            // 3. Update global auth context (Header, Sidebar)
             await refreshUser();
-            toast.info("تم إرسال طلب التحديث بنجاح ✅\nستبقى بياناتك الحالية كما هي حتى تتم مراجعتها من قبل الإدارة.");
+
+            toast.success("تم حفظ البيانات بنجاح ✅");
         } catch (error: unknown) {
             const err = error as { response?: { data?: { message?: string } } };
             toast.error(err.response?.data?.message || "فشل حفظ البيانات ❌");

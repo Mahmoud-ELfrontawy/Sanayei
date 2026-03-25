@@ -87,11 +87,13 @@ class AuthService {
     const id = u.id || u.user_id;
     if (!id) return null;
 
+    const avatarUrl = getFullImageUrl(u.profile_photo || u.company_logo || u.profile_image_url || u.avatar);
+
     return {
       id,
       name: u.name || u.company_name || "",
       email: u.email || u.company_email || "",
-      avatar: getFullImageUrl(u.profile_photo || u.company_logo || u.profile_image_url || u.avatar),
+      avatar: avatarUrl ? `${avatarUrl}?t=${Date.now()}` : undefined,
       status: u.status,
       service_id: u.service_id || u.service?.id
     };

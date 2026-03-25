@@ -61,16 +61,20 @@ const ProfileCompletionMeter: React.FC<Props> = ({ type, data }) => {
     if (percentage === 100) {
         return (
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
                 className="profile-completion-wrapper celebrate"
             >
                 <div className="completion-celebration">
-                    <div className="celebration-icon">🎉</div>
-                    <div className="celebration-text">يا بطل! ملفك الشخصي مكتمل 100%</div>
-                    <div className="celebration-sub">هذا يساعدك في كسب ثقة العملاء وزيادة طلباتك.</div>
+                    <div className="celebration-icon-wrapper">
+                        <div className="celebration-icon">🎉</div>
+                    </div>
+                    <div className="celebration-text">ملف شخصي مكتمل بنسبة 100%</div>
+                    <div className="celebration-sub">
+                        عمل رائع! ملفك الشخصي الآن جاهز تماماً لجذب العملاء وزيادة فرصك في المنصة.
+                    </div>
                 </div>
-                <div className="progress-bar-track" style={{ marginTop: '15px', marginBottom: 0 }}>
+                <div className="progress-bar-track" style={{ marginTop: '20px', marginBottom: 0 }}>
                     <div className="progress-bar-fill complete" style={{ width: '100%' }}></div>
                 </div>
             </motion.div>
@@ -81,10 +85,12 @@ const ProfileCompletionMeter: React.FC<Props> = ({ type, data }) => {
         <div className="profile-completion-wrapper">
             <div className="completion-header">
                 <div className="completion-title">
-                    <FiCheckCircle color="var(--color-primary)" />
-                    <span>نسبة اكتمال ملفك الشخصي</span>
+                    <h4>اكتمال الملف الشخصي</h4>
+                    <p>أكمل بياناتك لتحصل على فرصة أكبر في الظهور</p>
                 </div>
-                <div className="completion-percentage">{percentage}%</div>
+                <div className="completion-percentage-box">
+                    <div className="completion-percentage">{percentage}<span>%</span></div>
+                </div>
             </div>
 
             <div className="progress-bar-track">
@@ -98,20 +104,15 @@ const ProfileCompletionMeter: React.FC<Props> = ({ type, data }) => {
                 <div className="completion-tips">
                     <div className="tips-header">
                         <FiInfo />
-                        <span>نصائح لزيادة النسبة:</span>
+                        <span>بيانات متبقية:</span>
                     </div>
                     <div className="tips-list">
-                        {missingFields.slice(0, 2).map(field => (
+                        {missingFields.slice(0, 3).map(field => (
                             <div key={field.id} className="tip-item">
-                                <span className="tip-dot"></span>
-                                <span>أضف {field.label} الخاص بك</span>
+                                <div className="tip-icon"><FiCheckCircle size={10} /></div>
+                                <span>{field.label}</span>
                             </div>
                         ))}
-                        {missingFields.length > 2 && (
-                            <div className="tip-item" style={{ opacity: 0.7, paddingRight: '14px' }}>
-                                <span>+ {missingFields.length - 2} بيانات أخرى</span>
-                            </div>
-                        )}
                     </div>
                 </div>
             )}

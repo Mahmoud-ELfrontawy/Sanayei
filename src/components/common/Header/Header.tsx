@@ -8,8 +8,8 @@ import { formatTimeAgo } from "../../../utils/timeAgo";
 import { getAvatarUrl } from "../../../utils/imageUrl";
 
 import { NAV_LINKS, type NavLinkItem } from "../../../constants/header";
-import logo from "../../../assets/images/final logo.png";
-import logoDark from "../../../assets/images/logo image dark 1.png";
+import logo from "../../../assets/images/light.png";
+import logoDark from "../../../assets/images/dark.png";
 import "./Header.css";
 import "./Header_Notifications.css";
 

@@ -48,19 +48,25 @@ const RequestServiceForm: React.FC<Props> = ({
 
     const autoSelectedRef = useRef(false);
 
-    // Auto-fill from route state if coming from Map
+    // Auto-fill from route state
     useEffect(() => {
-        if (routerState?.serviceId && !serviceId) {
-            setValue("service_type", String(routerState.serviceId));
+        const sId = routerState?.serviceId || (location.state as any)?.service_type;
+        const wId = routerState?.workerId || (location.state as any)?.industrial_type;
+        
+        if (sId && !serviceId) {
+            setValue("service_type", String(sId));
         }
-        if (routerState?.workerId && !workerId) {
+        
+        if (wId && !workerId) {
+            // ✅ Set this early to prevent the reset-on-service-change effect
+            autoSelectedRef.current = true;
+
             // Need a slight delay to ensure services/sanaei are loaded and filtered
             setTimeout(() => {
-                setValue("industrial_type", String(routerState.workerId));
-                autoSelectedRef.current = true;
-            }, 100);
+                setValue("industrial_type", String(wId));
+            }, 300);
         }
-    }, [routerState, serviceId, workerId, setValue]);
+    }, [routerState, location.state, serviceId, workerId, setValue]);
 
     // Fetch craftsman details on selection
     useEffect(() => {
