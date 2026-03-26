@@ -6,13 +6,31 @@
     overflow-x: hidden;
     direction: rtl;
     line-height: 1.6;
+    position: relative;
+    z-index: 1;
 }
+
+/* Background Blobs for Premium Feel */
+.blob-bg {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(var(--primary-rgb), 0.08) 0%, transparent 70%);
+    filter: blur(80px);
+    z-index: -1;
+    pointer-events: none;
+    border-radius: 50%;
+}
+
+.blob-1 { top: -100px; left: -200px; }
+.blob-2 { top: 40%; right: -300px; background: radial-gradient(circle, rgba(126, 196, 237, 0.1) 0%, transparent 70%); }
+.blob-3 { bottom: 10%; left: -100px; }
 
 /* Hero Section */
 .hiw-hero-section {
     position: relative;
-    padding: 120px 0 80px;
-    background: linear-gradient(180deg, var(--blue-50) 0%, var(--color-bg-main) 100%);
+    padding: 140px 0 100px;
+    background: transparent;
     overflow: hidden;
     text-align: center;
 }
@@ -30,7 +48,7 @@
 }
 
 .hiw-content-container {
-    width: min(1200px, 90%);
+    width: min(1300px, 92%); /* Expanded Container */
     margin: 0 auto;
     position: relative;
     z-index: 1;
@@ -117,7 +135,22 @@
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 35px;
     padding: 40px 0 100px;
-    min-height: 600px; /* Stabilize height during transitions */
+    min-height: 600px;
+    position: relative;
+}
+
+@media (min-width: 1025px) {
+    .hiw-steps-display-grid::before {
+        content: '';
+        position: absolute;
+        top: 250px;
+        left: 50px;
+        right: 50px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--color-primary) 0%, rgba(95, 168, 211, 0.1) 100%);
+        opacity: 0.2;
+        z-index: 0;
+    }
 }
 
 .hiw-individual-step-card {
@@ -200,34 +233,128 @@
     opacity: 0.85;
 }
 
-/* Responsive */
+/* Responsive Refresh */
+@media (max-width: 1024px) {
+    .hiw-hero-title {
+        font-size: 3.2rem;
+    }
+
+    .hiw-steps-display-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+    }
+}
+
 @media (max-width: 768px) {
+    .hiw-hero-section {
+        padding: 80px 0 50px;
+    }
+
+    .hiw-hero-badge {
+        padding: 8px 20px;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .hiw-hero-title {
+        font-size: 2.2rem;
+        margin-bottom: 15px;
+    }
+
+    .hiw-hero-subtitle {
+        font-size: 1.15rem;
+        padding: 0 15px;
+    }
+
     .hiw-tabs-outer-wrapper {
-        padding: 0 20px;
+        padding: 0 15px;
+        margin-bottom: 40px;
     }
 
     .hiw-tabs-inner-container {
         width: 100%;
         flex-direction: column;
-        border-radius: 25px;
+        border-radius: 20px;
+        padding: 4px;
+        gap: 4px;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .hiw-tab-trigger-btn {
         width: 100%;
-        padding: 12px;
-        border-radius: 20px;
+        padding: 14px;
+        border-radius: 16px;
+        font-size: 1.1rem;
     }
 
-    .hiw-hero-title {
-        font-size: 2.8rem;
+    .hiw-steps-display-grid {
+        padding: 20px 0 60px;
+        min-height: auto;
+        gap: 25px;
+        position: relative;
+    }
+
+    .hiw-steps-display-grid::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 2px;
+        background: linear-gradient(to bottom, var(--color-primary) 0%, rgba(95, 168, 211, 0.1) 80%, transparent 100%);
+        opacity: 0.2;
+        z-index: 0;
     }
 
     .hiw-individual-step-card {
-        padding: 50px 35px;
+        padding: 45px 30px;
+        border-radius: 35px;
     }
 
-    .hiw-hero-section {
-        padding: 80px 0 50px;
+    .hiw-step-bg-number {
+        font-size: 4rem;
+        top: 20px;
+        right: 25px;
+        opacity: 0.04;
+    }
+
+    .hiw-step-visual-icon {
+        width: 80px;
+        height: 80px;
+        font-size: 32px;
+        margin-bottom: 25px;
+    }
+
+    .hiw-individual-step-card h3 {
+        font-size: 1.6rem;
+        margin-bottom: 15px;
+    }
+
+    .hiw-individual-step-card p {
+        font-size: 1.1rem;
+        line-height: 1.7;
+    }
+}
+
+@media (max-width: 480px) {
+    .hiw-hero-title {
+        font-size: 1.9rem;
+    }
+
+    .hiw-tab-trigger-btn {
+        font-size: 1rem;
+        padding: 12px;
+    }
+
+    .hiw-individual-step-card {
+        padding: 40px 25px;
+    }
+
+    .hiw-step-bg-number {
+        font-size: 3.5rem;
     }
 }
 

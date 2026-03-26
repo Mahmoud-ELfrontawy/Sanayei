@@ -100,7 +100,7 @@ const HeroSection: React.FC = () => {
                             <h1>{slides[currentIndex].title}</h1>
                             <div className="hero-text-container mt-4">
                                 <p>{slides[currentIndex].desc1}</p>
-                                <p className="text-white">{slides[currentIndex].desc2}</p>
+                                <p>{slides[currentIndex].desc2}</p>
                             </div>
                         </motion.div>
                     </AnimatePresence>

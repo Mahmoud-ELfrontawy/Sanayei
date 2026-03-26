@@ -1,5 +1,5 @@
 // footer.data.ts
-import { FiPhone, FiFacebook, FiMail } from "react-icons/fi";
+import { FiPhone, FiFacebook, FiMail, FiInstagram, FiLinkedin, FiYoutube, FiGlobe } from "react-icons/fi";
 
 export const FOOTER_LINKS = [
     {
@@ -23,24 +23,41 @@ export const FOOTER_LINKS = [
 
 export const SOCIAL_LINKS = [
     {
-        icon: FiPhone,
-        href: "tel:+2010202098765",
-        label: "اتصل بنا",
-    },
-    {
         icon: FiFacebook,
         href: "https://facebook.com",
         label: "فيسبوك",
     },
     {
-        icon: FiMail,
-        href: "mailto:info@sanayee.com",
-        label: "إيميل",
+        icon: FiInstagram,
+        href: "https://instagram.com",
+        label: "إنستجرام",
+    },
+    {
+        icon: FiLinkedin,
+        href: "https://linkedin.com",
+        label: "لينكد إن",
+    },
+    {
+        icon: FiYoutube,
+        href: "https://youtube.com",
+        label: "يوتيوب",
     },
 ];
 
-export const CONTACT_NUMBERS = [
-    "+2010202098765",
-    "+206543234567",
-    "+212345678",
+export const CONTACT_INFO = [
+    {
+        icon: FiPhone,
+        label: "+2010202098765",
+        href: "tel:+2010202098765",
+    },
+    {
+        icon: FiMail,
+        label: "info@sanayee.com",
+        href: "mailto:info@sanayee.com",
+    },
+    {
+        icon: FiGlobe,
+        label: "www.sanayee.com",
+        href: "https://www.sanayee.com",
+    },
 ];

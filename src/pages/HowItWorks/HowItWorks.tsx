@@ -79,6 +79,11 @@ const HowItWorks: React.FC = () => {
 
     return (
         <div className="hiw-page-wrapper">
+            {/* Background Blobs */}
+            <div className="blob-bg blob-1"></div>
+            <div className="blob-bg blob-2"></div>
+            <div className="blob-bg blob-3"></div>
+
             {/* Hero Section */}
             <header className="hiw-hero-section">
                 <motion.div
@@ -119,19 +124,29 @@ const HowItWorks: React.FC = () => {
                     <motion.div
                         key={activeTab}
                         className="hiw-steps-display-grid"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
+                        variants={{
+                            hidden: { opacity: 0 },
+                            show: {
+                                opacity: 1,
+                                transition: {
+                                    staggerChildren: 0.15
+                                }
+                            }
+                        }}
+                        initial="hidden"
+                        animate="show"
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
                     >
                         {currentSteps.map((step, index) => (
                             <motion.div
                                 className="hiw-individual-step-card"
                                 key={index}
-                                initial={{ opacity: 0, y: 40 }}
-                                whileInView={{ opacity: 1, y: 0 }}
+                                variants={{
+                                    hidden: { opacity: 0, y: 30, scale: 0.95 },
+                                    show: { opacity: 1, y: 0, scale: 1 }
+                                }}
                                 viewport={{ once: true, amount: 0.2 }}
-                                transition={{ duration: 0.7, delay: index * 0.1 }}
+                                transition={{ duration: 0.6, ease: "easeOut" }}
                             >
                                 <div className="hiw-step-bg-number">{index + 1}</div>
                                 <div className="hiw-step-visual-icon">{step.icon}</div>

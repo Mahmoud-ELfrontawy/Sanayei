@@ -6,10 +6,28 @@
     overflow-x: hidden;
     direction: rtl;
     line-height: 1.6;
+    position: relative;
+    z-index: 1;
 }
 
+/* Background Blobs for Premium Feel */
+.blob-bg {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(var(--primary-rgb), 0.08) 0%, transparent 70%);
+    filter: blur(80px);
+    z-index: -1;
+    pointer-events: none;
+    border-radius: 50%;
+}
+
+.blob-1 { top: -100px; left: -200px; }
+.blob-2 { top: 40%; right: -300px; background: radial-gradient(circle, rgba(126, 196, 237, 0.1) 0%, transparent 70%); }
+.blob-3 { bottom: 10%; left: -100px; }
+
 .ju-content-container {
-    width: min(1200px, 90%);
+    width: min(1300px, 92%); /* Expanded Container */
     margin: 0 auto;
     position: relative;
     z-index: 1;
@@ -17,8 +35,8 @@
 
 /* Hero Section */
 .ju-hero-section {
-    padding: 120px 0 80px;
-    background: linear-gradient(180deg, var(--color-bg-section) 0%, var(--color-bg-main) 100%);
+    padding: 140px 0 100px;
+    background: transparent;
     text-align: center;
     position: relative;
 }
@@ -143,7 +161,55 @@
 /* Final CTA Section */
 .ju-register-cta {
     padding: 100px 0;
-    background: var(--color-bg-main);
+    background: transparent;
+}
+
+/* FAQ Section Styles */
+.ju-faq-section {
+    padding: 100px 0;
+    background: transparent;
+}
+
+.faq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 30px;
+    margin-top: 50px;
+}
+
+.faq-item {
+    background: var(--color-bg-section);
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid var(--color-border);
+    transition: var(--transition-main);
+    position: relative;
+    z-index: 2;
+}
+
+.faq-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-primary);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.faq-item h4 {
+    color: var(--color-primary);
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    font-weight: 800;
+}
+
+.faq-item p {
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+    .faq-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .ju-cta-box {
@@ -210,27 +276,110 @@
 
 @media (max-width: 768px) {
     .ju-hero-section {
-        padding: 80px 0;
+        padding: 70px 0 50px;
     }
     
+    .ju-hero-badge {
+        padding: 8px 20px;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
     .ju-hero-title {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
+        margin-bottom: 20px;
+    }
+
+    .ju-hero-subtitle {
+        font-size: 1.2rem;
+        margin-bottom: 35px;
+        padding: 0 10px;
+    }
+
+    .ju-main-cta-btn {
+        padding: 18px 45px;
+        font-size: 1.2rem;
     }
     
     .ju-section-header h2 {
         font-size: 2.2rem;
     }
+
+    .ju-section-header p {
+        font-size: 1.15rem;
+    }
+
+    .ju-benefits-section {
+        padding: 60px 0;
+    }
+
+    .ju-benefits-grid {
+        gap: 20px;
+    }
+
+    .ju-benefit-card {
+        padding: 40px 25px;
+        border-radius: 30px;
+    }
+
+    .ju-benefit-icon {
+        width: 75px;
+        height: 75px;
+        font-size: 30px;
+        margin-bottom: 25px;
+    }
+
+    .ju-benefit-card h3 {
+        font-size: 1.55rem;
+    }
+
+    .ju-benefit-card p {
+        font-size: 1.1rem;
+    }
     
     .ju-cta-box {
-        padding: 60px 25px;
+        padding: 55px 20px;
+        border-radius: 40px;
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
     }
     
     .ju-cta-box h2 {
-        font-size: 2rem;
+        font-size: 2.1rem;
+    }
+
+    .ju-cta-box p {
+        font-size: 1.2rem;
     }
     
     .ju-cta-buttons {
         flex-direction: column;
+        gap: 15px;
+    }
+
+    .ju-cta-buttons button {
+        width: 100%;
+        padding: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ju-hero-title {
+        font-size: 1.9rem;
+    }
+
+    .ju-main-cta-btn {
+        width: 100%;
+        padding: 16px;
+    }
+
+    .ju-section-header h2 {
+        font-size: 1.8rem;
+    }
+
+    .ju-cta-box h2 {
+        font-size: 1.7rem;
     }
 }
 

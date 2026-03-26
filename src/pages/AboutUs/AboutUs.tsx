@@ -12,8 +12,20 @@ const AboutUs: React.FC = () => {
         window.scrollTo(0, 0);
     }, []);
 
+    const stats = [
+        { label: "صنايعي شاطر", value: "2,000+" },
+        { label: "عميل راضي", value: "50,000+" },
+        { label: "خدمة منفذة", value: "120,000+" },
+        { label: "محافظة مصرية", value: "27" }
+    ];
+
     return (
         <div className="about-page">
+            {/* Background Blobs */}
+            <div className="blob-bg blob-1"></div>
+            <div className="blob-bg blob-2"></div>
+            <div className="blob-bg blob-3"></div>
+
             {/* Hero Section */}
             <header className="about-hero">
                 <motion.div
@@ -32,14 +44,29 @@ const AboutUs: React.FC = () => {
 
             {/* Mission & Vision Section */}
             <section className="section-container">
-                <div className="mission-vision-grid">
+                <motion.div
+                    className="mission-vision-grid"
+                    variants={{
+                        hidden: { opacity: 0 },
+                        show: {
+                            opacity: 1,
+                            transition: {
+                                staggerChildren: 0.2
+                            }
+                        }
+                    }}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true, amount: 0.2 }}
+                >
                     <motion.div
                         className="feature-card"
                         whileHover={{ y: -10 }}
-                        initial={{ opacity: 0, y: 50 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, amount: 0.3 }}
-                        transition={{ duration: 0.8, delay: 0.1 }}
+                        variants={{
+                            hidden: { opacity: 0, y: 50 },
+                            show: { opacity: 1, y: 0 }
+                        }}
+                        transition={{ duration: 0.8 }}
                     >
                         <div className="feature-icon"><FiTarget /></div>
                         <h3>رؤيتنا</h3>
@@ -49,15 +76,35 @@ const AboutUs: React.FC = () => {
                     <motion.div
                         className="feature-card"
                         whileHover={{ y: -10 }}
-                        initial={{ opacity: 0, y: 50 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, amount: 0.3 }}
-                        transition={{ duration: 0.8, delay: 0.3 }}
+                        variants={{
+                            hidden: { opacity: 0, y: 50 },
+                            show: { opacity: 1, y: 0 }
+                        }}
+                        transition={{ duration: 0.8 }}
                     >
                         <div className="feature-icon"><FiCheckCircle /></div>
                         <h3>رسالتنا</h3>
                         <p>تسهيل حياة الناس من خلال توفير أفضل الصنايعية المعتمدين والموثوقين، وضمان حق العميل والصنايعي في تجربة عمل عادلة.</p>
                     </motion.div>
+                </motion.div>
+            </section>
+
+            {/* Stats Section */}
+            <section className="stats-section">
+                <div className="stats-container">
+                    {stats.map((stat, index) => (
+                        <motion.div 
+                            key={index}
+                            className="stat-item"
+                            initial={{ opacity: 0, scale: 0.5 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5, delay: index * 0.1 }}
+                        >
+                            <span className="stat-value">{stat.value}</span>
+                            <span className="stat-label">{stat.label}</span>
+                        </motion.div>
+                    ))}
                 </div>
             </section>
 
@@ -127,7 +174,7 @@ const AboutUs: React.FC = () => {
             {/* How we Differ Section */}
             <section className="section-container" style={{ textAlign: 'center' }}>
                 <motion.h2
-                    style={{ marginBottom: '60px', fontSize: '3rem', color: 'var(--color-text-accent)', fontWeight: '800' }}
+                    className="different-heading"
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.5 }}
@@ -135,13 +182,28 @@ const AboutUs: React.FC = () => {
                 >
                     ما الذي يميزنا؟
                 </motion.h2>
-                <div className="mission-vision-grid">
+                <motion.div
+                    className="mission-vision-grid"
+                    variants={{
+                        hidden: { opacity: 0 },
+                        show: {
+                            opacity: 1,
+                            transition: {
+                                staggerChildren: 0.2
+                            }
+                        }
+                    }}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true, amount: 0.2 }}
+                >
                     <motion.div
                         className="feature-card"
-                        initial={{ opacity: 0, y: 40 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, amount: 0.3 }}
-                        transition={{ duration: 0.7, delay: 0.1 }}
+                        variants={{
+                            hidden: { opacity: 0, y: 40 },
+                            show: { opacity: 1, y: 0 }
+                        }}
+                        transition={{ duration: 0.7 }}
                     >
                         <div className="feature-icon"><FiUsers /></div>
                         <h3>حرفيين معتمدين</h3>
@@ -149,10 +211,11 @@ const AboutUs: React.FC = () => {
                     </motion.div>
                     <motion.div
                         className="feature-card"
-                        initial={{ opacity: 0, y: 40 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, amount: 0.3 }}
-                        transition={{ duration: 0.7, delay: 0.3 }}
+                        variants={{
+                            hidden: { opacity: 0, y: 40 },
+                            show: { opacity: 1, y: 0 }
+                        }}
+                        transition={{ duration: 0.7 }}
                     >
                         <div className="feature-icon"><FiTool /></div>
                         <h3>دعم فني مستمر</h3>
@@ -160,16 +223,17 @@ const AboutUs: React.FC = () => {
                     </motion.div>
                     <motion.div
                         className="feature-card"
-                        initial={{ opacity: 0, y: 40 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, amount: 0.3 }}
-                        transition={{ duration: 0.7, delay: 0.5 }}
+                        variants={{
+                            hidden: { opacity: 0, y: 40 },
+                            show: { opacity: 1, y: 0 }
+                        }}
+                        transition={{ duration: 0.7 }}
                     >
                         <div className="feature-icon"><FiStar /></div>
                         <h3>جودة مضمونة</h3>
                         <p>بنضمن لك حقك في إعادة الشغل أو حل أي ملاحظة لو مكنتش راضي 100% عن النتيجة.</p>
                     </motion.div>
-                </div>
+                </motion.div>
             </section>
         </div>
     );

@@ -6,7 +6,7 @@ import logo from "../../../assets/images/logo image dark 1.png";
 import {
     FOOTER_LINKS,
     SOCIAL_LINKS,
-    CONTACT_NUMBERS,
+    CONTACT_INFO,
 } from "./Footer.data";
 import "./Footer.css";
 
@@ -58,10 +58,13 @@ const Footer: React.FC = () => {
                     {/* Contact */}
                     <div className="footer-contact">
                         <h4>تواصل معنا</h4>
-                        <ul>
-                            {CONTACT_NUMBERS.map((num) => (
-                                <li key={num} className="contact-item-footer">
-                                    {num}
+                        <ul className="contact-list-footer">
+                            {CONTACT_INFO.map(({ icon: Icon, label, href }) => (
+                                <li key={label} className="contact-item-footer">
+                                    <a href={href}>
+                                        <Icon className="contact-icon-footer" />
+                                        <span>{label}</span>
+                                    </a>
                                 </li>
                             ))}
                         </ul>

@@ -31,8 +31,20 @@ const JoinUs: React.FC = () => {
         }
     ];
 
+    const faqs = [
+        { q: "إزاي أسجل كصنايعي؟", a: "ببساطة اضغط على زر 'سجل الآن' وكمل بياناتك الشخصية وصور شغلك." },
+        { q: "هل في مصاريف تسجيل؟", a: "لا، التسجيل على منصة صنايعي مجاني تماماً." },
+        { q: "إزاي بضمن حقي المادي؟", a: "المنصة بتضمن لك حقك من خلال نظام تقييمات دقيق وتوثيق لكل العمليات." },
+        { q: "هل لازم أكون عندي شركة؟", a: "لا، بنقبل الأفراد المحترفين والشركات على حد سواء." }
+    ];
+
     return (
         <div className="ju-page-wrapper">
+            {/* Background Blobs */}
+            <div className="blob-bg blob-1"></div>
+            <div className="blob-bg blob-2"></div>
+            <div className="blob-bg blob-3"></div>
+
             {/* Hero Section */}
             <header className="ju-hero-section">
                 <motion.div
@@ -63,22 +75,37 @@ const JoinUs: React.FC = () => {
                     <p>بنقدم لك الأدوات والبيئة اللي تساعدك تنجح وتكبر في سوق العمل.</p>
                 </div>
 
-                <div className="ju-benefits-grid">
+                <motion.div
+                    className="ju-benefits-grid"
+                    variants={{
+                        hidden: { opacity: 0 },
+                        show: {
+                            opacity: 1,
+                            transition: {
+                                staggerChildren: 0.15
+                            }
+                        }
+                    }}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true, amount: 0.1 }}
+                >
                     {benefits.map((benefit, index) => (
                         <motion.div
                             className="ju-benefit-card"
                             key={index}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, delay: index * 0.1 }}
+                            variants={{
+                                hidden: { opacity: 0, y: 30, scale: 0.95 },
+                                show: { opacity: 1, y: 0, scale: 1 }
+                            }}
+                            transition={{ duration: 0.5, ease: "easeOut" }}
                         >
                             <div className="ju-benefit-icon">{benefit.icon}</div>
                             <h3>{benefit.title}</h3>
                             <p>{benefit.desc}</p>
                         </motion.div>
                     ))}
-                </div>
+                </motion.div>
             </section>
 
             {/* Final CTA Section */}
@@ -99,6 +126,31 @@ const JoinUs: React.FC = () => {
                             <button className="btn-outline">اقرأ الشروط والأحكام</button>
                         </div>
                     </motion.div>
+                </div>
+            </section>
+
+            {/* FAQ Section */}
+            <section className="ju-faq-section">
+                <div className="ju-content-container">
+                    <div className="ju-section-header">
+                        <h2>الأسئلة الشائعة</h2>
+                        <p>كل اللي محتاج تعرفه عن الانضمام لأسرة صنايعي.</p>
+                    </div>
+                    <div className="faq-grid">
+                        {faqs.map((faq, index) => (
+                            <motion.div 
+                                className="faq-item" 
+                                key={index}
+                                initial={{ opacity: 0, x: index % 2 === 0 ? 50 : -50 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.6 }}
+                            >
+                                <h4>{faq.q}</h4>
+                                <p>{faq.a}</p>
+                            </motion.div>
+                        ))}
+                    </div>
                 </div>
             </section>
         </div>
