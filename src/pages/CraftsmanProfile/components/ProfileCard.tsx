@@ -7,6 +7,7 @@ import { useAuth } from "../../../hooks/useAuth";
 import type { CraftsmanProfileData } from "../../../types/craftsman";
 import { getAvatarUrl } from "../../../utils/imageUrl";
 import Button from "../../../components/ui/Button/Button";
+import PointsBadge from "../../Community/PointsBadge";
 
 interface Props {
   craftsman: CraftsmanProfileData;
@@ -62,6 +63,15 @@ const ProfileCard: React.FC<Props> = ({ craftsman, isOwnProfile }) => {
           </span>
         )}
       </p>
+
+      {/* 🏆 Points & Badge */}
+      <div className="craftsman-points-row">
+        <PointsBadge 
+          points={craftsman.points || 0} 
+          size="md"
+          variant="detailed"
+        />
+      </div>
 
       <div className="craftsman-rating">
         {Array.from({ length: 5 }).map((_, i) => (

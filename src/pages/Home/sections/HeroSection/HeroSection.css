@@ -56,7 +56,7 @@
 
 .image-home__content p:nth-of-type(1),
 .image-home__content p:nth-of-type(2) {
-    color: var(--white-90);
+    color: var(--white);
     font-size: 27px;
     margin: 0 0 0 0;
     line-height: 1.4;
@@ -250,7 +250,7 @@ html[data-theme="dark"] .image-home__overlay {
     background: linear-gradient(to right,
             rgba(15, 17, 23, 0) 0%,
             var(--color-bg-dark) 70%,
-            var(--color-bg-main) 100%);
+            var(--color-bg-main) 100%)
 }
 
 @media (max-width: 992px) {

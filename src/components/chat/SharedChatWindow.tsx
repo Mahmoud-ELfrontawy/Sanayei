@@ -335,7 +335,7 @@ const SharedChatWindow: React.FC<Props> = ({
                 {!canSendMessage && (
                     <div className="chat-locked-banner">
                         <FaLock />
-                        <span>المحادثة متاحة فقط عند قبول طلب الخدمة، وتُغلق بعد اكتمالها.</span>
+                        <span>المحادثة مغلقة حالياً — تفتح فقط عند بدء العمل وتغلق عند الانتهاء.</span>
                     </div>
                 )}
 

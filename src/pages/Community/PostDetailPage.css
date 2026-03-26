@@ -1,4 +1,4 @@
-﻿/* ═══════════════════════════════════════════════
+/* ═══════════════════════════════════════════════
    Marketplace – Service Request Detail Page
    ═══════════════════════════════════════════════ */
 
@@ -1009,168 +1009,329 @@ html[data-theme="dark"] .offer-description {
     }
 }
 
-<<<<<<< HEAD
-/* ═══════════════════════════════════════════════
-   NEW: Locked Banner, Verified, Urgency, After-Images
-   ═══════════════════════════════════════════════ */
+/* ── Status Card (Redesigned) ────────────────── */
+.detail-status-card {
+    border-radius: 20px;
+    margin-bottom: 30px;
+    overflow: hidden;
+    border: 1px solid var(--border-light);
+    background: var(--bg-app);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
 
-/* ── Locked Banner ───────────────────────────── */
-.detail-locked-banner {
+.status-card-inner {
     display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    background: linear-gradient(135deg, rgba(234, 179, 8, 0.08), rgba(234, 179, 8, 0.04));
-    border: 1px solid rgba(234, 179, 8, 0.3);
+    gap: 20px;
+    padding: 24px;
+}
+
+.status-icon-wrap {
+    width: 60px;
+    height: 60px;
     border-radius: 16px;
-    padding: 20px 24px;
-    margin-bottom: 24px;
-    color: #ca8a04;
-}
-
-.detail-locked-banner svg {
-    font-size: 20px;
-    margin-top: 2px;
-    flex-shrink: 0;
-}
-
-.detail-locked-banner strong {
-    display: block;
-    font-size: 15px;
-    font-weight: 700;
-    margin-bottom: 4px;
-}
-
-.detail-locked-banner p {
-    margin: 0;
-    font-size: 13px;
-    opacity: 0.8;
-    line-height: 1.5;
-}
-
-.detail-locked-banner.verified {
-    background: linear-gradient(135deg, rgba(22, 163, 74, 0.08), rgba(22, 163, 74, 0.04));
-    border-color: rgba(22, 163, 74, 0.3);
-    color: #16a34a;
-}
-
-html[data-theme="dark"] .detail-locked-banner {
-    background: rgba(234, 179, 8, 0.06);
-    border-color: rgba(234, 179, 8, 0.2);
-}
-
-html[data-theme="dark"] .detail-locked-banner.verified {
-    background: rgba(22, 163, 74, 0.08);
-    border-color: rgba(22, 163, 74, 0.2);
-}
-
-/* ── Verified Status Badge ───────────────────── */
-.detail-status.status-verified {
-    background: linear-gradient(135deg, rgba(22, 163, 74, 0.15), rgba(34, 197, 94, 0.1));
-    color: #16a34a;
-    border: 1px solid rgba(22, 163, 74, 0.3);
-}
-
-/* ── Detail Badges Row ───────────────────────── */
-.detail-badges {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-/* ── Urgency Badge ───────────────────────────── */
-.detail-urgent-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 12px;
-    font-weight: 700;
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(251, 146, 60, 0.08));
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.25);
-    padding: 5px 12px;
-    border-radius: 20px;
-}
-
-/* ── After-Images Section ────────────────────── */
-.detail-images-section {
-    margin-bottom: 16px;
-}
-
-.detail-images-section.after {
-    margin-top: 24px;
-}
-
-.detail-images-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text-secondary, #64748b);
-    margin: 0 0 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.detail-images-title.after {
-    color: #16a34a;
-}
-
-html[data-theme="dark"] .detail-images-title {
-    color: #64748b;
-}
-
-.detail-img-wrap.after {
-    border: 2px solid rgba(22, 163, 74, 0.3);
-}
-
-/* ── Rejected Offer ──────────────────────────── */
-.offer-item.rejected {
-    opacity: 0.5;
-    filter: grayscale(0.3);
-}
-
-.offer-rejected-badge {
-    font-size: 11px;
-    font-weight: 700;
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
-    padding: 4px 12px;
-    border-radius: 20px;
-}
-
-/* ── Offer Time ──────────────────────────────── */
-.offer-time {
-    margin-right: auto;
-    font-size: 11px;
-    color: var(--text-secondary, #94a3b8);
-}
-
-/* ── Comments Locked ─────────────────────────── */
-.detail-comments-locked {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 12px;
-    padding: 10px 14px;
-    background: rgba(234, 179, 8, 0.06);
-    border: 1px dashed rgba(234, 179, 8, 0.3);
-    border-radius: 10px;
-    font-size: 13px;
-    color: #ca8a04;
-    font-weight: 500;
-}
-
-/* ── Points Info Item ────────────────────────── */
-.detail-info-item.points span:first-child {
-    font-size: 16px;
-    width: 36px;
-    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(234, 179, 8, 0.1);
-    border-radius: 50%;
+    font-size: 24px;
     flex-shrink: 0;
+    background: var(--gray-100);
+    color: var(--text-muted);
 }
 
-=======
->>>>>>> acbf1a6d72aea948d916438e13936e87e8a8f4ae
+.status-content {
+    flex: 1;
+}
+
+.status-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    gap: 12px;
+}
+
+.status-title {
+    font-size: 18px;
+    font-weight: 800;
+    margin: 0;
+    color: var(--text-heading);
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--gray-200);
+    color: var(--text-muted);
+}
+
+.status-message {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-description);
+    margin: 0 0 20px;
+}
+
+/* ── Status Specific Variations ── */
+
+/* 1. In Progress (Active) */
+.detail-status-card.in_progress {
+    border-color: rgba(95, 168, 211, 0.3);
+    background: linear-gradient(135deg, rgba(95, 168, 211, 0.05) 0%, var(--bg-app) 100%);
+}
+.detail-status-card.in_progress .status-icon-wrap {
+    background: rgba(95, 168, 211, 0.1);
+    color: var(--primary);
+}
+.detail-status-card.in_progress .status-badge {
+    background: var(--primary);
+    color: #fff;
+}
+
+/* 2. Completed (Waiting for Verify) */
+.detail-status-card.completed {
+    border-color: rgba(255, 193, 7, 0.4);
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.05) 0%, var(--bg-app) 100%);
+}
+.detail-status-card.completed .status-icon-wrap {
+    background: rgba(255, 193, 7, 0.1);
+    color: var(--warning);
+}
+.detail-status-card.completed .status-badge {
+    background: var(--warning);
+    color: #000;
+}
+
+/* 3. Verified (Success - Redesigned for Premium look) */
+.detail-status-card.verified {
+    border-color: #059669;
+    background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+    box-shadow: 0 10px 40px rgba(16, 185, 129, 0.25);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+.detail-status-card.verified::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+        90deg, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.05) 50%, 
+        transparent 100%
+    );
+    animation: success-shimmer 3s infinite;
+    pointer-events: none;
+}
+
+@keyframes success-shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.detail-status-card.verified .status-icon-wrap {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+.detail-status-card.verified .status-title,
+.detail-status-card.verified .status-message {
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.detail-status-card.verified .status-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* 4. Cancelled (Locked) */
+.detail-status-card.cancelled {
+    opacity: 0.8;
+    filter: grayscale(0.2);
+}
+.detail-status-card.cancelled .status-icon-wrap {
+    background: var(--gray-200);
+    color: var(--gray-500);
+}
+
+/* ── Actions inside status card ── */
+.status-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.status-chat-btn, .status-verify-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.status-chat-btn {
+    background: var(--navy-deep);
+    color: #fff;
+}
+.status-chat-btn:hover {
+    background: #162431;
+    transform: translateY(-2px);
+}
+
+.status-verify-btn {
+    background: var(--success);
+    color: #fff;
+    box-shadow: 0 4px 12px var(--success-rgb, 0.3);
+}
+.status-verify-btn:hover:not(:disabled) {
+    background: #43a047;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+}
+.status-verify-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ── Dark Mode Logic ── */
+html[data-theme="dark"] .detail-status-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] .status-icon-wrap {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+html[data-theme="dark"] .status-badge {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+html[data-theme="dark"] .detail-status-card.in_progress {
+    background: linear-gradient(135deg, rgba(126, 200, 240, 0.1) 0%, rgba(15, 17, 23, 0.4) 100%);
+    border-color: rgba(126, 200, 240, 0.2);
+}
+
+@media (max-width: 600px) {
+    .status-card-inner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+    }
+    .status-header {
+        flex-direction: column;
+        gap: 6px;
+    }
+    .status-actions {
+        justify-content: center;
+    }
+    .status-chat-btn, .status-verify-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Points V2 (Premium Reward display - SIDEBAR/INFO) */
+.points-v2 {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(245, 158, 11, 0.04) 100%);
+    padding: 14px 22px;
+    border-radius: 16px;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.points-v2:hover {
+    transform: translateY(-2px);
+    border-color: rgba(245, 158, 11, 0.5);
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.15);
+}
+
+.points-v2-icon {
+    font-size: 2.2rem;
+    color: #f59e0b;
+    filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.4));
+    animation: reward-bounce 2s infinite ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes reward-bounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-4px) scale(1.15); }
+}
+
+.points-v2-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.points-v2-text .detail-info-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    opacity: 0.9;
+    margin-bottom: 2px;
+}
+
+.points-v2-text .detail-info-value {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #f59e0b;
+    letter-spacing: -0.5px;
+}
+
+html[data-theme="dark"] .points-v2 {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(0, 0, 0, 0.2) 100%);
+    border-color: rgba(245, 158, 11, 0.15);
+}
+.detail-author-name-link {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.detail-author-name-link:hover {
+    color: var(--comm-blue);
+}
+
+.offer-craftsman-name-link {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.offer-craftsman-name-link:hover {
+    color: var(--comm-blue);
+}

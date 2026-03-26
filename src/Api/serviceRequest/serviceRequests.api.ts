@@ -4,7 +4,7 @@ import { authStorage } from "../../context/auth/auth.storage";
 /**
  * Base URL for the API
  */
-const BASE_URL = "/api";
+const BASE_URL = "https://sanay3i.net/api";
 
 /**
  * Error handling helper

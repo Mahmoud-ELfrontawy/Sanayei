@@ -149,14 +149,20 @@ export const verifyCommunityPost = async (postId: number) => {
 
 // ── Chat Access Check (منفصل عن نظام الخدمات) ────────────────
 /**
- * يتحقق إذا كان هناك طلب مجتمع نشط (in_progress) بين المستخدم الحالي والصنايعي
- * يُستخدم من Chat Providers بدل getActiveServiceRequest للمحادثات القادمة من المجتمع
+ * يتحقق إذا كان هناك طلب مجتمع نشط (in_progress) بين المستخدم الحالي والطرف الآخر.
+ * يُستخدم من Chat Providers بدل getActiveServiceRequest للمحادثات القادمة من المجتمع.
+ *
+ * @param otherId - ID الطرف الآخر في المحادثة
+ * @param role - دور المستخدم الحالي ('user'|'company'|'craftsman')، الافتراضي user
  */
 export const getActiveCommunityChat = async (
-    craftsmanId: number
+    otherId: number,
+    role: 'user' | 'company' | 'craftsman' = 'user'
 ): Promise<{ status: "in_progress" | "verified" | "completed" | "cancelled" | null }> => {
     try {
-        const res = await api.get(`community/active-chat/${craftsmanId}`);
+        const res = await api.get(`community/active-chat/${otherId}`, {
+            params: { role },
+        });
         return { status: res.data?.status ?? null };
     } catch {
         return { status: null };

@@ -209,7 +209,7 @@ const ServicesPage: React.FC = () => {
                                         </h2>
                                         <p className="craftsmen-section__subtitle">
                                             {displayMode === "all" && <><FaUsers /> عرض جميع المعتمدين</>}
-                                            {displayMode === "online" && <><span className="online-dot" /> عرض المتاحين الآن فقط</>}
+                                            {displayMode === "online" && <>عرض المتاحين الآن فقط</>}
                                             {displayMode === "nearest" && <><FaMapMarkerAlt /> مرتبون حسب الأقرب إليك</>}
                                         </p>
                                     </div>
@@ -226,7 +226,6 @@ const ServicesPage: React.FC = () => {
                                                 className={`display-mode-btn online-btn ${displayMode === 'online' ? 'active' : ''}`}
                                                 onClick={() => setDisplayMode('online')}
                                             >
-                                                <span className="online-dot" />
                                                 متصل الآن
                                             </button>
                                             {hasLocation && (

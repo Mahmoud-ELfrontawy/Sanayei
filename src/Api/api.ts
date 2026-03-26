@@ -51,23 +51,28 @@ api.interceptors.response.use(
                                  document.referrer.includes("accept.paymob"));
 
         if ((error.response?.status === 401 || error.response?.status === 403)) {
+            // 🔍 DEBUG: Log the full error to see why it's failing
+            console.error(' [API Auth Error]:', {
+                status: error.response?.status,
+                data: error.response?.data,
+                url: error.config?.url,
+                method: error.config?.method
+            });
+
             // Specific exception: if we are in a wallet recharge flow, don't clear session on the first 401
-            // because it might be a temporary sync issue with the server session/token after redirect.
             if (isWalletRecharge && error.config?.url?.includes("wallet")) {
                 console.warn("Transient 401 detected in Wallet Recharge flow. Preventing hard logout.");
                 return Promise.reject(error);
             }
 
-            console.warn("Auth failure or Blocked account detected. Logging out...");
+            // 🛑 TEMPORARILY DISABLED REDIRECT FOR DEBUGGING
+            // console.warn("Auth failure or Blocked account detected. Logging out...");
+            // authStorage.clearAuth();
             
-            // 🛑 Hard Logout
-            authStorage.clearAuth();
-            
-            // Redirect only if not already on login/register page to avoid loops
-            const currentPath = window.location.pathname;
-            if (!currentPath.includes("/login") && !currentPath.includes("/register")) {
-                window.location.href = "/login?blocked=true";
-            }
+            // const currentPath = window.location.pathname;
+            // if (!currentPath.includes("/login") && !currentPath.includes("/register")) {
+            //     window.location.href = "/login?blocked=true";
+            // }
         }
         return Promise.reject(error);
     }
