@@ -1,27 +1,28 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaSearch, FaFilter, FaPlus, FaSpinner, FaBriefcase, FaChevronDown } from "react-icons/fa";
+import { FaSpinner, FaChevronDown } from "react-icons/fa";
+import { FiSearch, FiFilter, FiBox, FiZap, FiDroplet, FiLayers, FiScissors, FiWind, FiPlusCircle, FiCheckCircle, FiInfo, FiPlus } from "react-icons/fi";
 import { useCommunity } from "../../context/CommunityContext";
 import { useAuth } from "../../hooks/useAuth";
 import PostCard from "./PostCard";
 import "./CommunityPage.css";
 
 const CATEGORIES = [
-    { value: "", label: "كل التخصصات" },
-    { value: "electrical", label: "⚡ كهرباء" },
-    { value: "plumbing", label: "🔧 سباكة" },
-    { value: "masonry", label: "🧱 بناء" },
-    { value: "carpentry", label: "🪚 نجارة" },
-    { value: "painting", label: "🎨 دهانات" },
-    { value: "ac", label: "❄️ تكييف" },
-    { value: "other", label: "🔨 أخرى" },
+    { value: "", label: "كل التخصصات", icon: <FiLayers /> },
+    { value: "electrical", label: "كهرباء", icon: <FiZap /> },
+    { value: "plumbing", label: "سباكة", icon: <FiDroplet /> },
+    { value: "masonry", label: "بناء", icon: <FiBox /> },
+    { value: "carpentry", label: "نجارة", icon: <FiScissors /> },
+    { value: "painting", label: "دهانات", icon: <FiPlusCircle /> },
+    { value: "ac", label: "تكييف", icon: <FiWind /> },
+    { value: "other", label: "أخرى", icon: <FiPlus /> },
 ];
 
 const STATUS_OPTIONS = [
-    { value: "", label: "كل الحالات" },
-    { value: "open", label: "مفتوح للعروض" },
-    { value: "in_progress", label: "قيد التنفيذ" },
-    { value: "completed", label: "مكتمل" },
+    { value: "", label: "كل الحالات", icon: <FiLayers /> },
+    { value: "open", label: "مفتوح للعروض", icon: <FiInfo /> },
+    { value: "in_progress", label: "قيد التنفيذ", icon: <FaSpinner /> },
+    { value: "completed", label: "مكتمل", icon: <FiCheckCircle /> },
 ];
 
 const CommunityPage: React.FC = () => {
@@ -65,34 +66,35 @@ const CommunityPage: React.FC = () => {
     const activeFiltersCount = [categoryFilter, statusFilter, searchInput].filter(Boolean).length;
 
     return (
-        <section className="mkt-page">
-            {/* Hero Header */}
-            <div className="mkt-hero">
-                <div className="mkt-hero-content">
-                    <div className="mkt-hero-text">
+        <section className="mkt-page-v2">
+            {/* 🌌 Hero Section */}
+            <div className="mkt-hero-v2">
+                <div className="mkt-hero-particles"></div>
+                <div className="mkt-hero-content-v2">
+                    <div className="mkt-hero-text-v2">
+                        <span className="mkt-subheading">استكشف الفرص المتاحة</span>
                         <h1>
-                            <FaBriefcase className="mkt-hero-icon" />
-                            سوق الطلبات
+                           مجتمع خدمات <span className="mkt-gradient-text">صنايعي</span>
                         </h1>
-                        <p>انشر طلبك واحصل على أفضل العروض من الصنايعية المحترفين</p>
+                        <p>تصفح أحدث طلبات الخدمات في مجتمعك وقدم عروضك الآن لتكسب ثقة العملاء</p>
                     </div>
                     {canCreateRequest && (
-                        <button className="mkt-create-btn" onClick={() => navigate("/community/new")}>
-                            <FaPlus />
-                            <span>انشر طلب جديد</span>
+                        <button className="mkt-btn-primary" onClick={() => navigate("/community/new")}>
+                            <FiPlusCircle />
+                            <span>نشر طلب خدمة</span>
                         </button>
                     )}
                 </div>
             </div>
 
-            {/* Filters */}
-            <div className="mkt-filters-wrapper">
-                <div className="mkt-filters-bar">
-                    <div className="mkt-search-box">
-                        <FaSearch className="mkt-search-icon" />
+            {/* 🔍 Search & Filters Bar */}
+            <div className="mkt-search-nav">
+                <div className="mkt-search-bar-v2">
+                    <div className="mkt-search-v2">
+                        <FiSearch className="mkt-search-icon-v2" />
                         <input
                             type="text"
-                            placeholder="ابحث عن طلبات..."
+                            placeholder="ابحث بتفاصيل الطلب..."
                             value={searchInput}
                             onChange={(e) => setSearchInput(e.target.value)}
                             onKeyDown={handleKeyDown}
@@ -100,58 +102,61 @@ const CommunityPage: React.FC = () => {
                     </div>
 
                     <button
-                        className={`mkt-filter-toggle ${showFilters ? "active" : ""}`}
+                        className={`mkt-filter-btn-v2 ${showFilters ? "active" : ""}`}
                         onClick={() => setShowFilters(!showFilters)}
                     >
-                        <FaFilter />
-                        <span>تصفية</span>
+                        <FiFilter />
+                        <span>الفلاتر</span>
                         {activeFiltersCount > 0 && (
-                            <span className="mkt-filter-badge">{activeFiltersCount}</span>
+                            <div className="mkt-badge-v2">{activeFiltersCount}</div>
                         )}
                         <FaChevronDown className={`mkt-chevron ${showFilters ? "rotated" : ""}`} />
+                    </button>
+                    
+                    <button className="mkt-apply-search-btn" onClick={applyFilters}>
+                        بحث
                     </button>
                 </div>
 
                 {showFilters && (
-                    <div className="mkt-filters-panel">
-                        <div className="mkt-filter-group">
-                            <label>التخصص</label>
-                            <div className="mkt-pills">
+                    <div className="mkt-filters-panel-v2">
+                        <div className="mkt-filter-section">
+                            <label><FiLayers /> حسب التخصص</label>
+                            <div className="mkt-pills-v2">
                                 {CATEGORIES.map((c) => (
                                     <button
                                         key={c.value}
-                                        className={`mkt-pill ${categoryFilter === c.value ? "active" : ""}`}
+                                        className={`mkt-pill-v2 ${categoryFilter === c.value ? "active" : ""}`}
                                         onClick={() => setCategoryFilter(c.value)}
                                     >
-                                        {c.label}
+                                        {c.icon}
+                                        <span>{c.label}</span>
                                     </button>
                                 ))}
                             </div>
                         </div>
-                        <div className="mkt-filter-group">
-                            <label>الحالة</label>
-                            <div className="mkt-pills">
+                        <div className="mkt-filter-section">
+                            <label><FiInfo /> حالة الطلب</label>
+                            <div className="mkt-pills-v2">
                                 {STATUS_OPTIONS.map((s) => (
                                     <button
                                         key={s.value}
-                                        className={`mkt-pill ${statusFilter === s.value ? "active" : ""}`}
+                                        className={`mkt-pill-v2 ${statusFilter === s.value ? "active" : ""}`}
                                         onClick={() => setStatusFilter(s.value)}
                                     >
-                                        {s.label}
+                                        {s.icon}
+                                        <span>{s.label}</span>
                                     </button>
                                 ))}
                             </div>
                         </div>
-                        <button className="mkt-apply-btn" onClick={applyFilters}>
-                            تطبيق التصفية
-                        </button>
                     </div>
                 )}
             </div>
 
-            {/* Posts Grid */}
-            <div className="mkt-content">
-                <div className="mkt-posts-grid">
+            {/* 📋 Results Grid */}
+            <div className="mkt-main-container">
+                <div className="mkt-results-grid">
                     {posts.map((post, idx) => {
                         const isLast = idx === posts.length - 1;
                         return (
@@ -173,13 +178,13 @@ const CommunityPage: React.FC = () => {
                 )}
 
                 {!isLoading && posts.length === 0 && (
-                    <div className="mkt-empty">
-                        <span className="mkt-empty-icon">📋</span>
-                        <h3>لا توجد طلبات حالياً</h3>
-                        <p>كن أول من ينشر طلب خدمة واحصل على عروض من الصنايعية!</p>
+                    <div className="mkt-empty-v2">
+                        <FiBox className="mkt-empty-icon-v2" />
+                        <h3>لا توجد طلبات متوفرة</h3>
+                        <p>لم نتمكن من العثور على أي طلبات تطابق بحثك حالياً</p>
                         {canCreateRequest && (
-                            <button className="mkt-create-btn" onClick={() => navigate("/community/new")}>
-                                <FaPlus /> انشر طلب جديد
+                            <button className="mkt-btn-primary" onClick={() => navigate("/community/new")}>
+                                <FiPlusCircle /> انشر طلبك الآن
                             </button>
                         )}
                     </div>

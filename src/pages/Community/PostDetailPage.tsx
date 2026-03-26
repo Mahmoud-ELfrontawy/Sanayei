@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import {
     FaArrowRight, FaMapMarkerAlt, FaSpinner, FaTrash,
     FaMoneyBillWave, FaClock, FaComments, FaPaperPlane,
     FaStar, FaCheckCircle, FaBriefcase, FaUserTie, FaLock, FaBolt,
-    FaCommentDots
+    FaCommentDots, FaShieldAlt, FaBan, FaCheckDouble
 } from "react-icons/fa";
+import { GiTrophy } from "react-icons/gi";
+import { FiTag } from "react-icons/fi"; // Added FiTag import
 import type { CommunityPost, ServiceOffer, CommunityComment } from "../../Api/community.api";
 import {
     getCommunityPost,
@@ -18,6 +20,7 @@ import {
     deleteCommunityPost,
     communityImageUrl,
 } from "../../Api/community.api";
+import { formatArabicDays, formatCommunityCategory } from "../../utils/arabicForamters";
 import { useCommunity } from "../../context/CommunityContext";
 import { useAuth } from "../../hooks/useAuth";
 import { getAvatarUrl } from "../../utils/imageUrl";
@@ -121,21 +124,28 @@ const PostDetailPage: React.FC = () => {
         if (!post || !window.confirm("هل أنت متأكد من قبول هذا العرض؟")) return;
         setIsActing(true);
         try {
-            await acceptOffer(Number(id), offerId);
-            // جيب بيانات البوست كاملة عشان نجيب acceptor الجديد
-            const fresh = await getCommunityPost(Number(id));
-            const updatedPost: CommunityPost = fresh.data ?? fresh;
-            setPost(updatedPost);
-            updatePost(updatedPost);
-            setOffers((prev) =>
-                prev.map((o) => o.id === offerId
-                    ? { ...o, status: "accepted" as const }
-                    : { ...o, status: "rejected" as const }
-                )
-            );
-            toast.success("تم قبول العرض! جاري التنفيذ 🎉");
+            const res = await acceptOffer(Number(id), offerId);
+
+            // ✅ التعامل مع الرد الجديد من الباكيند (success: true, data: CommunityPost)
+            if (res.success || res.data) {
+                const updatedPost: CommunityPost = res.data;
+                setPost(updatedPost);
+                updatePost(updatedPost);
+
+                // تحديث العروض محلياً
+                setOffers((prev) =>
+                    prev.map((o) => o.id === offerId
+                        ? { ...o, status: "accepted" as const }
+                        : { ...o, status: "rejected" as const }
+                    )
+                );
+                toast.success(res.message || "تم قبول العرض! جاري التنفيذ 🎉");
+            } else {
+                toast.error(res.message || "فشل قبول العرض");
+            }
         } catch (err: any) {
-            toast.error(err?.response?.data?.message || "حدث خطأ");
+            toast.error(err?.response?.data?.message || "حدث خطأ أثناء قبول العرض");
+            console.error('[Accept Error]:', err?.response?.data);
         } finally {
             setIsActing(false);
         }
@@ -177,13 +187,21 @@ const PostDetailPage: React.FC = () => {
         if (!post || !window.confirm("هل تؤكد استلام الخدمة المكتملة؟ سيتم تحويل النقاط للصنايعي.")) return;
         setIsActing(true);
         try {
-            await verifyCommunityPost(Number(id));
-            const fresh = await getCommunityPost(Number(id));
-            const updatedPost: CommunityPost = fresh.data ?? fresh;
-            setPost(updatedPost);
-            updatePost(updatedPost);
-            toast.success("تم تأكيد الإكمال وصرف المكافأة! 🎉");
+            const res = await verifyCommunityPost(Number(id));
+
+            // ✅ التعامل مع الرد الجديد
+            if (res.success) {
+                const fresh = await getCommunityPost(Number(id));
+                const updatedPost: CommunityPost = fresh.data ?? fresh;
+                setPost(updatedPost);
+                updatePost(updatedPost);
+                toast.success(res.message || "تم تأكيد الإكمال وصرف المكافأة! 🎉");
+            } else {
+                toast.error(res.message || "فشل تأكيد الإكمال");
+            }
         } catch (err: any) {
+            // طباعة الـ Debug في الـ Console لو فشلت
+            console.error('[Verify Failure]:', err?.response?.data);
             toast.error(err?.response?.data?.message || "فشل تأكيد الإكمال");
         } finally {
             setIsActing(false);
@@ -209,11 +227,14 @@ const PostDetailPage: React.FC = () => {
         );
     }
 
-    const userId = Number(user?.id);
-    const isMine = post.is_mine
-        || (post.user_id != null && Number(post.user_id) === userId)
-        || (post.company_id != null && Number(post.company_id) === userId)
-        || (post.user?.id != null && Number(post.user?.id) === userId);
+    const userId = user?.id ? Number(user.id) : null;
+
+    // 🔍 فحص دقيق للملكية لفتح الأزرار (الحذف / التأكيد / القبول)
+    const isMine = post.is_mine || (
+        userType === 'company'
+            ? (post.company_id != null && Number(post.company_id) === userId)
+            : (post.user_id != null && Number(post.user_id) === userId)
+    );
 
     const isCraftsman = userType === "craftsman";
     const isLocked = post.status === "in_progress" || post.status === "completed" || post.status === "verified" || post.status === "cancelled";
@@ -263,7 +284,7 @@ const PostDetailPage: React.FC = () => {
             case "open": return { text: "مفتوح للعروض", className: "status-open" };
             case "in_progress": return { text: "قيد التنفيذ", className: "status-progress" };
             case "completed": return { text: "مكتمل", className: "status-done" };
-            case "verified": return { text: "مُتحقق منه ✓", className: "status-verified" };
+            case "verified": return { text: " تم الانتهاء ✓", className: "status-verified" };
             case "cancelled": return { text: "ملغي", className: "status-cancelled" };
             default: return { text: post.status, className: "" };
         }
@@ -285,38 +306,54 @@ const PostDetailPage: React.FC = () => {
                     )}
                 </div>
 
-                {/* Locked Banner */}
+                {/* Status Card (Locked/Active/Verified) */}
                 {isLocked && (
-                    <div className={`detail-locked-banner ${post.status === "verified" ? "verified" : post.status === "cancelled" ? "cancelled" : ""}`}>
-                        <FaLock />
-                        <div>
-                            <strong>
-                                {post.status === "in_progress" && "هذا الطلب قيد التنفيذ حالياً"}
-                                {post.status === "completed" && "تم إكمال هذا الطلب"}
-                                {post.status === "verified" && "تم التحقق من إكمال هذا الطلب ✓"}
-                                {post.status === "cancelled" && "تم إلغاء هذا الطلب"}
-                            </strong>
-                            <p>
-                                {post.status === "in_progress" && "تم قبول عرض صنايعي وهو يعمل على تنفيذ الخدمة."}
-                                {post.status === "completed" && "انتهى الصنايعي من تنفيذ الخدمة وبانتظار تأكيد صاحب الطلب."}
-                                {post.status === "verified" && "تم التحقق من الإكمال من قِبل صاحب الطلب. أُضيفت النقاط للصنايعي."}
-                                {post.status === "cancelled" && "قام صاحب الطلب بإلغاء هذا الطلب ولم يعد متاحاً للعروض."}
-                            </p>
-                            {/* أزرار الشات والتحقق فقط لما الطلب in_progress */}
-                            {(canChat || canVerify) && (
-                                <div className="detail-locked-actions">
-                                    {canChat && (
-                                        <button className="detail-chat-btn" onClick={handleStartChat}>
-                                            <FaCommentDots /> تواصل عبر المحادثة
-                                        </button>
-                                    )}
-                                    {canVerify && (
-                                        <button className="detail-verify-btn" onClick={handleVerify} disabled={isActing}>
-                                            {isActing ? <FaSpinner className="spin" /> : <><FaCheckCircle /> تأكيد الإكمال واستلام الخدمة</>}
-                                        </button>
-                                    )}
+                    <div className={`detail-status-card ${post.status}`}>
+                        <div className="status-card-inner">
+                            <div className="status-icon-wrap">
+                                {post.status === "verified" ? <FaCheckDouble /> :
+                                    post.status === "cancelled" ? <FaBan /> :
+                                        <FaShieldAlt />}
+                            </div>
+
+                            <div className="status-content">
+                                <div className="status-header">
+                                    <h2 className="status-title">
+                                        {post.status === "in_progress" && "الطلب قيد التنفيذ حالياً"}
+                                        {post.status === "completed" && "تم إكمال تنفيذ الخدمة"}
+                                        {post.status === "verified" && "تم إغلاق الطلب بنجاح ✓"}
+                                        {post.status === "cancelled" && "هذا الطلب ملغى"}
+                                    </h2>
+                                    <span className="status-badge">
+                                        {post.status === "in_progress" && "نشط"}
+                                        {post.status === "completed" && "بانتظار التأكيد"}
+                                        {post.status === "verified" && "مكتمل"}
+                                        {post.status === "cancelled" && "مغلق"}
+                                    </span>
                                 </div>
-                            )}
+                                <p className="status-message">
+                                    {post.status === "in_progress" && "تم قبول عرض صنايعي وهو يعمل حالياً على تنفيذ طلبك. يمكنك التواصل معه عبر المحادثة."}
+                                    {post.status === "completed" && "انتهى الصنايعي من العمل وبانتظار مراجعتك وتأكيد استلام الخدمة لصرف النقاط."}
+                                    {post.status === "verified" && "لقد قمت بتأكيد استلام الخدمة. تم تحويل النقاط للصنايعي وإغلاق الطلب رسمياً."}
+                                    {post.status === "cancelled" && "قام صاحب الطلب بإلغاء هذا الطلب ولم يعد متاحاً لأي عروض أو مراسلات."}
+                                </p>
+
+                                {/* Actions Row */}
+                                {(canChat || canVerify) && (
+                                    <div className="status-actions">
+                                        {canChat && (
+                                            <button className="status-chat-btn" onClick={handleStartChat}>
+                                                <FaCommentDots /> مراسلة الصنايعي
+                                            </button>
+                                        )}
+                                        {canVerify && (
+                                            <button className="status-verify-btn" onClick={handleVerify} disabled={isActing}>
+                                                {isActing ? <FaSpinner className="spin" /> : <><FaCheckCircle /> تأكيد الإكمال والاستلام</>}
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 )}
@@ -359,7 +396,7 @@ const PostDetailPage: React.FC = () => {
 
                             {/* Category */}
                             <span className="detail-category">
-                                {post.service ? `${post.service.icon || "🔨"} ${post.service.name}` : post.category}
+                                <FiTag /> {formatCommunityCategory(post.category, post.service?.name)}
                             </span>
 
                             {/* Content */}
@@ -384,11 +421,13 @@ const PostDetailPage: React.FC = () => {
                                         <span className="detail-info-value">{offers.length} عرض</span>
                                     </div>
                                 </div>
-                                <div className="detail-info-item points">
-                                    <span>🏆</span>
-                                    <div>
+                                <div className="detail-info-item points-v2">
+                                    <div className="points-v2-icon">
+                                        <GiTrophy />
+                                    </div>
+                                    <div className="points-v2-text">
                                         <span className="detail-info-label">المكافأة</span>
-                                        <span className="detail-info-value">{post.points_reward ?? 50} نقطة</span>
+                                        <span className="detail-info-value">{post.points_reward ?? 50} نقطة تميز</span>
                                     </div>
                                 </div>
                             </div>
@@ -566,7 +605,9 @@ const PostDetailPage: React.FC = () => {
                                                         className="offer-avatar"
                                                     />
                                                     <div className="offer-craftsman-info">
-                                                        <span className="offer-craftsman-name">{offer.craftsman.name}</span>
+                                                        <Link to={`/craftsman/${offer.craftsman.id}`} className="offer-craftsman-name-link">
+                                                            {offer.craftsman.name}
+                                                        </Link>
                                                         <div className="offer-craftsman-rating">
                                                             <FaStar className="star-icon" />
                                                             <span>{offer.craftsman.rating || "جديد"}</span>
@@ -593,7 +634,7 @@ const PostDetailPage: React.FC = () => {
                                                 </div>
                                                 <div className="offer-delivery">
                                                     <FaClock />
-                                                    <span>{offer.delivery_days} يوم</span>
+                                                    <span>{formatArabicDays(offer.delivery_days)}</span>
                                                 </div>
                                                 <span className="offer-time">{formatTimeAgo(offer.created_at)}</span>
                                             </div>

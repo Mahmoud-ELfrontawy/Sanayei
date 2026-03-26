@@ -161,22 +161,40 @@ export const CraftsmanChatProvider: React.FC<{ children: React.ReactNode }> = ({
       setCanSendMessage(true);
       return;
     }
+
     const check = async () => {
-      if (activeChat.isCommunityChat) {
-        // ✔ نظام المجتمع: الشات يفتح فقط لما in_progress
-        const { status } = await getActiveCommunityChat(activeChat.id);
-        setCanSendMessage(status === 'in_progress');
-      } else {
-        // نظام الخدمات العادية
-        getActiveServiceRequest('craftsman', activeChat.id)
-          .then(({ status }) => { setCanSendMessage(status === 'accepted'); })
-          .catch(() => {});
+      try {
+        // Run both checks in parallel — whichever succeeds is enough
+        const [communityResult, serviceResult] = await Promise.allSettled([
+          getActiveCommunityChat(activeChat.id, 'craftsman'),
+          getActiveServiceRequest('craftsman', activeChat.id),
+        ]);
+
+        const communityStatus =
+          communityResult.status === 'fulfilled'
+            ? communityResult.value.status
+            : null;
+
+        const serviceStatus =
+          serviceResult.status === 'fulfilled'
+            ? serviceResult.value.status
+            : null;
+
+        // Allow chat if either system has an active state
+        const canChat =
+          communityStatus === 'in_progress' ||
+          serviceStatus === 'accepted';
+
+        setCanSendMessage(canChat);
+      } catch {
+        setCanSendMessage(false);
       }
     };
+
     check();
     const interval = setInterval(check, 10_000);
     return () => clearInterval(interval);
-  }, [activeChat?.id, activeChat?.isCommunityChat, user?.id]);
+  }, [activeChat?.id, user?.id]);
 
   useEffect(() => {
     if (!activeChat || !user?.id) return;

@@ -14,7 +14,9 @@ import { getAvatarUrl } from "../../../../utils/imageUrl";
 import { toUiDate } from "../../../../utils/dateApiHelper";
 import { getGovernorates } from "../../../../Api/serviceRequest/governorates.api";
 import FormSkeleton from "../../base/FormSkeleton";
-import { FiAlertCircle, FiCheckCircle, FiClock } from "react-icons/fi";
+import { FiAlertCircle, FiCheckCircle, FiClock, FiAward, FiTarget, FiTrendingUp } from "react-icons/fi";
+import PointsBadge from "../../../Community/PointsBadge";
+import "./ProfileWorker.css";
 import ProfileCompletionMeter from "../../../../components/ui/ProfileCompletion/ProfileCompletionMeter";
 
 
@@ -42,6 +44,7 @@ interface CraftsmanApiResponse {
     rating?: number;
     reviews_count?: number;
     is_verified?: boolean;
+    points?: number;
 }
 
 interface CraftsmanState {
@@ -78,6 +81,7 @@ interface CraftsmanState {
     rating?: number;
     reviews_count?: number;
     is_verified?: boolean;
+    points?: number;
 }
 
 /* ================= Constants ================= */
@@ -155,6 +159,7 @@ const ProfileWorker = () => {
                     rating: d.rating,
                     reviews_count: d.reviews_count,
                     is_verified: d.is_verified,
+                    points: Number(d.points) || 0,
                 });
                 setFetching(false);
             } catch {
@@ -298,6 +303,38 @@ const ProfileWorker = () => {
                                 )
                                 : 'جاري مراجعة بياناتك من قبل الإدارة، ستتمكن من قبول الطلبات والتواصل مع العملاء فور اعتماد الحساب.'}
                     </p>
+                </div>
+            </div>
+
+            {/* 🏆 Points & Excellence Status */}
+            <div className="profile-card profile-excellence-section">
+                <div className="excellence-header">
+                    <FiAward className="excellence-icon" />
+                    <div className="excellence-title">
+                        <h3>نقاط التميز والمستوى</h3>
+                        <p>تميز بزيادة نقاطك للوصول للمعادن الفضية والذهبية والبلاتينية</p>
+                    </div>
+                </div>
+                
+                <div className="excellence-badge-wrapper">
+                    <PointsBadge 
+                        points={craftsman.points || 0} 
+                        variant="detailed" 
+                        size="lg" 
+                    />
+                </div>
+
+                <div className="excellence-motivation-grid">
+                    <div className="motivation-card">
+                        <FiTarget />
+                        <span>أنقذ المجتمع</span>
+                        <p>أنهِ المهام المطلوبة من العملاء لترفع نقاطك</p>
+                    </div>
+                    <div className="motivation-card">
+                        <FiTrendingUp />
+                        <span>بروفايل احترافي</span>
+                        <p>كلما زادت نقاطك ظهرت في مقدمة البحث</p>
+                    </div>
                 </div>
             </div>
 

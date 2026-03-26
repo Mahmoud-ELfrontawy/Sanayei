@@ -445,17 +445,6 @@ html[data-theme="dark"] .craftsmen-section__title {
     box-shadow: 0 3px 12px rgba(var(--success-rgb), 0.35);
 }
 
-.display-mode-btn .online-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--color-success);
-    flex-shrink: 0;
-}
-
-.display-mode-btn.online-btn.active .online-dot {
-    background: var(--white);
-}
 
 /* =========================
     Controls Row (tabs + view toggle)

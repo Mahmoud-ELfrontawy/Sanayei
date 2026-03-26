@@ -250,7 +250,7 @@ html[data-theme="dark"] .image-home__overlay {
     background: linear-gradient(to right,
             rgba(15, 17, 23, 0) 0%,
             var(--color-bg-dark) 70%,
-            var(--color-bg-main) 100%);
+            var(--color-bg-main) 100%)
 }
 
 @media (max-width: 992px) {

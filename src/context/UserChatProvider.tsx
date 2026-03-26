@@ -152,22 +152,34 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
             setCanSendMessage(true);
             return;
         }
+
         const check = async () => {
-            if (activeChat.isCommunityChat) {
-                // ✔ نظام المجتمع: الشات يفتح فقط لما in_progress
-                const { status } = await getActiveCommunityChat(activeChat.id);
-                setCanSendMessage(status === 'in_progress');
-            } else {
-                // نظام الخدمات العادية
-                getActiveServiceRequest((userType === 'company' ? 'company' : 'user') as any, activeChat.id)
-                    .then(({ status }) => { setCanSendMessage(status === 'accepted'); })
-                    .catch(() => {});
+            try {
+                if (userType === 'company') {
+                    // الشركة: تتحقق من المجتمع فقط (لا يوجد company/service-requests في الباكيند)
+                    const communityResult = await getActiveCommunityChat(activeChat.id, 'company' as any)
+                        .catch(() => null);
+                    const communityStatus = communityResult?.status ?? null;
+                    setCanSendMessage(communityStatus === 'in_progress');
+                } else {
+                    // اليوزر: يتحقق من المجتمع + طلبات الخدمة
+                    const [communityResult, serviceResult] = await Promise.allSettled([
+                        getActiveCommunityChat(activeChat.id, 'user' as any),
+                        getActiveServiceRequest('user', activeChat.id),
+                    ]);
+                    const communityStatus = communityResult.status === 'fulfilled' ? communityResult.value.status : null;
+                    const serviceStatus = serviceResult.status === 'fulfilled' ? serviceResult.value.status : null;
+                    setCanSendMessage(communityStatus === 'in_progress' || serviceStatus === 'accepted');
+                }
+            } catch {
+                setCanSendMessage(false);
             }
         };
+
         check();
         const interval = setInterval(check, 10_000);
         return () => clearInterval(interval);
-    }, [activeChat?.id, activeChat?.isCommunityChat, user?.id, userType]);
+    }, [activeChat?.id, user?.id, userType]);
 
     /* ================= Mark As Read ================= */
 

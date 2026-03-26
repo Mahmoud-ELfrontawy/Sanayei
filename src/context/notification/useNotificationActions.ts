@@ -47,7 +47,7 @@ export function useNotificationActions({
     }, [user?.id, userType, setAllNotifications]);
 
     const markTypeAsRead = useCallback(
-        (type: "chat" | "order_status" | "order_request" | "product_review" | "store_order") => {
+        (type: Notification["type"]) => {
             if (!user || !userType) return;
             const role = normalizeRole(userType);
 

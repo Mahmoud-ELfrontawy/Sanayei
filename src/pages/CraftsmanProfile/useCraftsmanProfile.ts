@@ -181,7 +181,8 @@ export const useCraftsmanProfile = () => {
                     title: `عمل رقم ${index + 1}`,
                     imageUrl: getFullImageUrl(path)
                 })) 
-            : []
+            : [],
+          points: Number(data.points) || 0,
         };
 
         setCraftsman(mappedData);

@@ -301,6 +301,81 @@ export function useEchoNotifications({
             });
         }
 
+        // ── 8. Community: specific events ──────────
+        // Listen for actions related to the Community Marketplace
+        
+        // A. New Offer (Sent to Post Owner: user or company)
+        c.listen(".CommunityOfferCreated", (e: any) => {
+            const data = e.data || e;
+            addNotificationRef.current?.({
+                title:         "عرض جديد في المجتمع 🏷️",
+                message:       data.message || `قدم ${data.craftsman_name || "صنايعي"} عرضاً جديداً على منشورك: ${data.post_title || ""}`,
+                type:          "community_offer",
+                orderId:       data.post_id || data.id || 0,
+                recipientId:   user.id,
+                recipientType: role as any,
+                variant:       "info",
+                eventId:       `echo_comm_off_${data.id || Date.now()}`,
+            });
+        });
+
+        // B. Offer Accepted (Sent to Craftsman)
+        if (role === "craftsman") {
+            c.listen(".CommunityOfferAccepted", (e: any) => {
+                const data = e.data || e;
+                addNotificationRef.current?.({
+                    title:         "تم قبول عرضك! 🎉",
+                    message:       data.message || `وافق العميل على عرضك في المنشور: ${data.post_title || ""}. توجه للدردشة الآن!`,
+                    type:          "community_accepted",
+                    orderId:       data.post_id || 0,
+                    recipientId:   user.id,
+                    recipientType: "craftsman",
+                    variant:       "success",
+                    eventId:       `echo_comm_acc_${data.post_id || Date.now()}`,
+                });
+            });
+        }
+
+        // C. New Comment (Sent to Post Owner)
+        c.listen(".CommunityCommentAdded", (e: any) => {
+            const data = e.data || e;
+            // Don't notify if the comment is MINE
+            if (data.user_id === user.id) return;
+            
+            addNotificationRef.current?.({
+                title:         "تعليق جديد 💬",
+                message:       data.message || `هناك تعليق جديد على منشورك في المجتمع`,
+                type:          "chat",
+                orderId:       data.post_id || 0,
+                recipientId:   user.id,
+                recipientType: role as any,
+                variant:       "info",
+                eventId:       `echo_comm_com_${data.id || Date.now()}`,
+            });
+        });
+
+        // D. Post Status Updated (e.g., in_progress, completed, verified)
+        c.listen(".CommunityStatusUpdated", (e: any) => {
+            const data = e.data || e;
+            const statusMap: Record<string, string> = {
+                in_progress: "قيد التنفيذ",
+                completed:   "مكتمل",
+                verified:    "متحقق منه ✓",
+                cancelled:   "ملغي ⚠️"
+            };
+            
+            addNotificationRef.current?.({
+                title:         "تحديث حالة المنشور 🛠️",
+                message:       data.message || `تم تحديث حالة طلبك "${data.post_title || ""}" إلى ${statusMap[data.status] || data.status}`,
+                type:          "order_status",
+                orderId:       data.post_id || 0,
+                recipientId:   user.id,
+                recipientType: role as any,
+                variant:       data.status === "cancelled" ? "error" : "success",
+                eventId:       `echo_comm_st_${data.post_id}_${data.status}`,
+            });
+        });
+
         // ── Cleanup ────────────────────────────────
         return () => {
             echo.leave(primaryChannel);

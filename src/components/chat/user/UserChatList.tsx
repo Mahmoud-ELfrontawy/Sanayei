@@ -5,6 +5,18 @@ import { getAvatarUrl } from "../../../utils/imageUrl";
 const UserChatList: React.FC = () => {
     const { contacts, activeChat, setActiveChat } = useUserChat();
 
+    // ensure activeChat is in the list even if it's new (started from community)
+    const displayContacts = [...contacts];
+    if (activeChat && !contacts.some(c => Number(c.id) === Number(activeChat.id))) {
+        displayContacts.unshift({
+            id: activeChat.id,
+            name: activeChat.name,
+            type: activeChat.type,
+            avatar: activeChat.avatar,
+            unread_count: 0
+        });
+    }
+
     return (
         <aside className="chat-list">
             <div className="chat-list-header">
@@ -12,15 +24,15 @@ const UserChatList: React.FC = () => {
             </div>
 
             <div className="contacts-scroll">
-                {contacts.length === 0 ? (
+                {displayContacts.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '20px', color: '#999' }}>
                         لا توجد محادثات
                     </div>
                 ) : (
-                    contacts.map((c) => (
+                    displayContacts.map((c) => (
                         <div
                             key={`${c.type}_${c.id}`}
-                            className={`contact-item ${activeChat?.id === c.id ? "active" : ""
+                            className={`contact-item ${Number(activeChat?.id) === Number(c.id) ? "active" : ""
                                 }`}
                             onClick={() => setActiveChat(c)}
                         >

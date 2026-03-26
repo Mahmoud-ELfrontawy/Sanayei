@@ -34,4 +34,5 @@ export interface CraftsmanProfileData {
   reviews: Review[];
   portfolio: PortfolioItem[];
   walletId?: string | number;
+  points?: number;
 }

@@ -1,4 +1,4 @@
-﻿/* =========================================
+/* =========================================
    1. الهيكل العام للصفحة (Layout)
    ========================================= */
 .profile-page-wrapper {
@@ -101,12 +101,19 @@
   font-weight: 600;
 }
 
+.craftsman-points-row {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    padding: 0 10px;
+}
+
 .craftsman-rating {
   display: flex;
   justify-content: center;
   gap: 6px;
   color: var(--star-legacy);
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   font-size: 18px;
 }
 
