@@ -1,11 +1,13 @@
 .site-footer {
     position: relative;
-    background: var(--footer-bg);
+    /* Fixed dark background for professional look in both modes */
+    background: #0a0c0e; 
     overflow: hidden;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .text-footer-text {
-    color: var(--white-95);
+    color: rgba(255, 255, 255, 0.95);
 }
 
 /* ===== Layout ===== */
@@ -48,7 +50,7 @@
 .footer-desc {
     font-size: 19px;
     line-height: 1.7;
-    color: var(--white-75);
+    color: rgba(255, 255, 255, 0.7);
     margin-bottom: 30px;
     max-width: 380px;
     font-weight: 400;
@@ -70,7 +72,7 @@
     border-radius: 50%; /* Modern circular style */
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--white-90);
+    color: rgba(255, 255, 255, 0.9);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -88,7 +90,7 @@
     margin-bottom: 24px;
     font-weight: 800;
     font-size: 26px;
-    color: var(--white);
+    color: #ffffff;
     position: relative;
     padding-bottom: 12px;
 }
@@ -113,7 +115,7 @@
 .footer-links a {
     display: block;
     margin: 16px 0;
-    color: var(--white-65);
+    color: rgba(255, 255, 255, 0.65);
     font-size: 20px;
     transition: all 0.3s ease;
     text-decoration: none;
@@ -138,7 +140,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    color: var(--white-80);
+    color: rgba(255, 255, 255, 0.95); /* Fixed high contrast */
     font-size: 20px;
     transition: all 0.3s ease;
     text-decoration: none;
@@ -179,7 +181,7 @@
     justify-content: space-between;
     align-items: center;
     font-size: 20px;
-    color: var(--white-65);
+    color: rgba(255, 255, 255, 0.65);
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     font-weight: 300;
 }
@@ -191,7 +193,7 @@
 }
 
 .footer-legal a {
-    color: var(--white-55);
+    color: rgba(255, 255, 255, 0.55);
     transition: color 0.3s ease;
     text-decoration: none;
 }
@@ -342,14 +344,11 @@
 
 
 
-/* =========================================
-   🌙 Dark Mode Refinements
-   ========================================= */
-html[data-theme="dark"] .site-footer {
-    background: #05080a; /* Deep dark blue-black for elite feel */
-}
 
+
+/* Ensure social buttons don't fade in dark mode */
 html[data-theme="dark"] .social-btn-footer {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.9);
 }
 
