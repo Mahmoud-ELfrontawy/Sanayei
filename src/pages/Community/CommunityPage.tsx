@@ -74,7 +74,7 @@ const CommunityPage: React.FC = () => {
                     <div className="mkt-hero-text-v2">
                         <span className="mkt-subheading">استكشف الفرص المتاحة</span>
                         <h1>
-                           مجتمع خدمات <span className="mkt-gradient-text">صنايعي</span>
+                            مجتمع خدمات <span className="mkt-gradient-text">صنايعي</span>
                         </h1>
                         <p>تصفح أحدث طلبات الخدمات في مجتمعك وقدم عروضك الآن لتكسب ثقة العملاء</p>
                     </div>
@@ -112,7 +112,7 @@ const CommunityPage: React.FC = () => {
                         )}
                         <FaChevronDown className={`mkt-chevron ${showFilters ? "rotated" : ""}`} />
                     </button>
-                    
+
                     <button className="mkt-apply-search-btn" onClick={applyFilters}>
                         بحث
                     </button>
@@ -182,11 +182,6 @@ const CommunityPage: React.FC = () => {
                         <FiBox className="mkt-empty-icon-v2" />
                         <h3>لا توجد طلبات متوفرة</h3>
                         <p>لم نتمكن من العثور على أي طلبات تطابق بحثك حالياً</p>
-                        {canCreateRequest && (
-                            <button className="mkt-btn-primary" onClick={() => navigate("/community/new")}>
-                                <FiPlusCircle /> انشر طلبك الآن
-                            </button>
-                        )}
                     </div>
                 )}
 

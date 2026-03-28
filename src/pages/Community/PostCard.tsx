@@ -1,5 +1,5 @@
 import { FaClock, FaCheckCircle, FaMoneyBillWave } from "react-icons/fa";
-import { FiMapPin, FiTag, FiClock as FiClockIcon, FiTrendingUp } from "react-icons/fi";
+import { FiMapPin, FiTag, FiClock as FiClockIcon, FiTrendingUp, FiZap } from "react-icons/fi";
 import { GiTrophy } from "react-icons/gi";
 import { formatTimeAgo } from "../../utils/timeAgo";
 import { getAvatarUrl } from "../../utils/imageUrl";
@@ -17,6 +17,11 @@ interface PostCardProps {
 const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
     const label = formatCommunityCategory(post.category, post.service?.name);
 
+    // ── Resolve the actual post owner (user or company) ──────────
+    const ownerName = post.company?.name || post.user?.name || "ناشر الطلب";
+    const ownerAvatar = post.company?.avatar || post.user?.avatar || null;
+    const ownerRole = post.company ? "ناشر الطلب" : "ناشر الطلب";
+
     // Icon mapping using react-icons instead of emojis
     const getCategoryIcon = () => {
         const cat = post.category || post.service?.name || "";
@@ -31,7 +36,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
             case "open": return { text: "مفتوح للعروض", className: "status-open", icon: <FiTrendingUp /> };
             case "in_progress": return { text: "قيد التنفيذ", className: "status-progress", icon: <FaClock /> };
             case "completed": return { text: "مكتمل", className: "status-done", icon: <FaCheckCircle /> };
-            case "verified": return { text: "مُتحقق منه ✓", className: "status-verified", icon: <FaCheckCircle /> };
+            case "verified": return { text: "تم الانتهاء", className: "status-verified", icon: <FaCheckCircle /> };
             case "cancelled": return { text: "ملغي", className: "status-cancelled", icon: null };
             default: return { text: post.status, className: "", icon: null };
         }
@@ -41,7 +46,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
     const hasBudget = post.budget_min || post.budget_max;
 
     return (
-        <article className="req-card-v2" onClick={onClick}>
+        <article className={`req-card-v2 ${post.urgency === 'urgent' ? 'is-urgent' : ''}`} onClick={onClick}>
             {/* 📷 Image Header */}
             <div className="req-card-media">
                 {post.images && post.images.length > 0 ? (
@@ -55,6 +60,12 @@ const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
                     {statusInfo.icon}
                     <span>{statusInfo.text}</span>
                 </div>
+                {post.urgency === 'urgent' && (
+                    <div className="req-card-urgent-badge">
+                        <FiZap />
+                        <span>عاجل</span>
+                    </div>
+                )}
                 {post.images && post.images.length > 1 && (
                     <div className="req-card-img-count-v2">+{post.images.length - 1} صور</div>
                 )}
@@ -112,13 +123,13 @@ const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
             <div className="req-card-footer-v2">
                 <div className="req-user-info">
                     <img
-                        src={getAvatarUrl(post.user.avatar, post.user.name)}
-                        alt={post.user.name}
+                        src={getAvatarUrl(ownerAvatar, ownerName)}
+                        alt={ownerName}
                         className="req-user-avatar"
                     />
                     <div className="req-user-text">
-                        <span className="req-user-name">{post.user.name}</span>
-                        <span className="req-user-role">ناشر الطلب</span>
+                        <span className="req-user-name">{ownerName}</span>
+                        <span className="req-user-role">{ownerRole}</span>
                     </div>
                 </div>
                 <button className="req-view-btn">التفاصيل</button>

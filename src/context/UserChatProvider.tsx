@@ -155,22 +155,16 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
 
         const check = async () => {
             try {
-                if (userType === 'company') {
-                    // الشركة: تتحقق من المجتمع فقط (لا يوجد company/service-requests في الباكيند)
-                    const communityResult = await getActiveCommunityChat(activeChat.id, 'company' as any)
-                        .catch(() => null);
-                    const communityStatus = communityResult?.status ?? null;
-                    setCanSendMessage(communityStatus === 'in_progress');
-                } else {
-                    // اليوزر: يتحقق من المجتمع + طلبات الخدمة
-                    const [communityResult, serviceResult] = await Promise.allSettled([
-                        getActiveCommunityChat(activeChat.id, 'user' as any),
-                        getActiveServiceRequest('user', activeChat.id),
-                    ]);
-                    const communityStatus = communityResult.status === 'fulfilled' ? communityResult.value.status : null;
-                    const serviceStatus = serviceResult.status === 'fulfilled' ? serviceResult.value.status : null;
-                    setCanSendMessage(communityStatus === 'in_progress' || serviceStatus === 'accepted');
-                }
+                // التحقق الموحد لليوزر والشركة: مجتمع + طلبات خدمة
+                const [communityResult, serviceResult] = await Promise.allSettled([
+                    getActiveCommunityChat(activeChat.id, userType as any),
+                    getActiveServiceRequest(userType as any, activeChat.id),
+                ]);
+                
+                const communityStatus = communityResult.status === 'fulfilled' ? communityResult.value.status : null;
+                const serviceStatus = serviceResult.status === 'fulfilled' ? serviceResult.value.status : null;
+                
+                setCanSendMessage(communityStatus === 'in_progress' || serviceStatus === 'accepted');
             } catch {
                 setCanSendMessage(false);
             }

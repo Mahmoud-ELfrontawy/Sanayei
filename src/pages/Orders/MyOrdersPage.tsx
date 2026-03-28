@@ -104,8 +104,8 @@ function MyOrdersPage() {
                 setError(null);
             } catch (err: any) {
                 if (isMounted && showLoading) {
-                    setError(err.message || "تعذر جلب قائمة الطلبات");
-                    toast.error("فشل تحميل الطلبات");
+                    setError(err.message || "تعذر جلب قائمة الخدمات");
+                    toast.error("فشل تحميل الخدمات");
                 }
             } finally {
                 if (isMounted && showLoading) {
@@ -313,7 +313,7 @@ function MyOrdersPage() {
                     <div className="orders-service-name-wrapper">
                         <h3 className="orders-service-name">{serviceName}</h3>
                         <span className="orders-date-label">
-                            رقم الطلب: #{order.id}
+                            رقم الخدمة: #{order.id}
                         </span>
                     </div>
                     <div className={`orders-status-badge ${config.className}`}>
@@ -446,7 +446,7 @@ function MyOrdersPage() {
                                     onClick={() => handleStatusUpdate(order.id, "accepted")}
                                     className="btn-premium btn-accept"
                                 >
-                                    قبول الطلب
+                                    قبول الخدمة
                                 </button>
                                 <button
                                     onClick={() => handleStatusUpdate(order.id, "rejected")}
@@ -462,7 +462,7 @@ function MyOrdersPage() {
                                 onClick={() => handleCancelRequest(order.id)}
                                 className="btn-premium btn-cancel"
                             >
-                                إلغاء الطلب
+                                إلغاء الخدمة
                             </button>
                         )}
                     </div>
@@ -474,7 +474,7 @@ function MyOrdersPage() {
     return (
         <section className="orders-page-section">
             <div className="orders-page-container">
-                <h1 className="orders-page-title">متابعة الطلبات</h1>
+                <h1 className="orders-page-title">متابعة الخدمات</h1>
 
                 <div className="orders-tabs-container">
                     <button

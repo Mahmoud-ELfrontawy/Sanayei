@@ -7,7 +7,7 @@ import type { NewNotificationPayload } from "./notification.types";
 import { normalizeRole } from "./notification.utils";
 
 interface UseEchoNotificationsProps {
-    user:               { id: number } | null;
+    user:               { id: number; service_id?: number } | null;
     userType:           string | null;
     addNotificationRef: MutableRefObject<((n: NewNotificationPayload) => void) | null>;
     refreshUser:        () => void;
@@ -304,30 +304,35 @@ export function useEchoNotifications({
         // ── 8. Community: specific events ──────────
         // Listen for actions related to the Community Marketplace
         
-        // A. New Offer (Sent to Post Owner: user or company)
-        c.listen(".CommunityOfferCreated", (e: any) => {
-            const data = e.data || e;
-            addNotificationRef.current?.({
-                title:         "عرض جديد في المجتمع 🏷️",
-                message:       data.message || `قدم ${data.craftsman_name || "صنايعي"} عرضاً جديداً على منشورك: ${data.post_title || ""}`,
-                type:          "community_offer",
-                orderId:       data.post_id || data.id || 0,
-                recipientId:   user.id,
-                recipientType: role as any,
-                variant:       "info",
-                eventId:       `echo_comm_off_${data.id || Date.now()}`,
+                // A. New Offer (Sent to Post Owner)
+        // سنستمع للمسميين (الكلاس والاسم المنقط) لضمان الوصول
+        [".community.offer.created", "CommunityOfferCreated", ".CommunityOfferCreated"].forEach(evt => {
+            c.listen(evt, (e: any) => {
+                console.log("🎁 [Echo Community Office] Offer Event Caught:", evt, e);
+                const data = e.data || e;
+                addNotificationRef.current?.({
+                    title:         "عرض جديد في المجتمع 🏷️",
+                    message:       data.message || `قدم صنايعي عرضاً جديداً على منشورك: ${data.post_title || ""}`,
+                    type:          "community_offer",
+                    orderId:       data.post_id || data.offer?.post_id || 0,
+                    recipientId:   user.id,
+                    recipientType: role as any,
+                    variant:       "info",
+                    eventId:       `echo_comm_off_${data.id || Date.now()}`,
+                });
             });
         });
 
+
         // B. Offer Accepted (Sent to Craftsman)
         if (role === "craftsman") {
-            c.listen(".CommunityOfferAccepted", (e: any) => {
+            c.listen(".community.offer.accepted", (e: any) => {
                 const data = e.data || e;
                 addNotificationRef.current?.({
                     title:         "تم قبول عرضك! 🎉",
-                    message:       data.message || `وافق العميل على عرضك في المنشور: ${data.post_title || ""}. توجه للدردشة الآن!`,
+                    message:       data.message || `وافق العميل على عرضك في المنشور: ${data.post_title || data.offer?.post?.title || ""}. توجه للدردشة الآن!`,
                     type:          "community_accepted",
-                    orderId:       data.post_id || 0,
+                    orderId:       data.post_id || data.offer?.post_id || 0,
                     recipientId:   user.id,
                     recipientType: "craftsman",
                     variant:       "success",
@@ -355,7 +360,7 @@ export function useEchoNotifications({
         });
 
         // D. Post Status Updated (e.g., in_progress, completed, verified)
-        c.listen(".CommunityStatusUpdated", (e: any) => {
+        c.listen(".community.status.updated", (e: any) => {
             const data = e.data || e;
             const statusMap: Record<string, string> = {
                 in_progress: "قيد التنفيذ",
@@ -376,6 +381,23 @@ export function useEchoNotifications({
             });
         });
 
+        // E. Points Reward (Sent to Craftsman on Verification)
+        if (role === "craftsman") {
+            c.listen(".community.points.reward", (e: any) => {
+                const data = e.data || e;
+                addNotificationRef.current?.({
+                    title:         "تمت إضافة نقاط! 🏆",
+                    message:       data.message || `لقد حصلت على ${data.points || 0} نقطة لإتمامك منشور: ${data.post_title || ""}`,
+                    type:          "community_reward",
+                    orderId:       data.post_id || 0,
+                    recipientId:   user.id,
+                    recipientType: "craftsman",
+                    variant:       "success",
+                    eventId:       `echo_comm_pnt_${data.post_id || Date.now()}`,
+                });
+            });
+        }
+
         // ── Cleanup ────────────────────────────────
         return () => {
             echo.leave(primaryChannel);
@@ -384,5 +406,37 @@ export function useEchoNotifications({
     // addNotificationRef is intentionally accessed via ref — not a dep
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user?.id, userType, refreshUser]);
+
+    // ── 9. Category-Wide Notifications (للصنايعية فقط) ──────────────
+    // يشترك الصنايعي في قناة تخصصه ليستقبل إشعاراً فور نشر طلب جديد
+    useEffect(() => {
+        if (!user || userType !== "craftsman" || !user.service_id) return;
+
+        const echo = getEcho() as any;
+        if (!echo) return;
+
+        const categoryChannel = `community.category.${user.service_id}`;
+        console.log(`📡 [Echo Category] Subscribing craftsman to: ${categoryChannel}`);
+
+        const cc = echo.private(categoryChannel);
+
+        cc.listen(".new.community.post", (e: any) => {
+            addNotificationRef.current?.({
+                title:         e.title || "طلب خدمة جديد في تخصصك! 🛠️",
+                message:       e.body  || "تم نشر طلب جديد يتوافق مع مهنتك — قدّم عرضك الآن!",
+                type:          "community_category_alert" as any,
+                orderId:       e.id    || 0,
+                recipientId:   user.id,
+                recipientType: "craftsman",
+                variant:       "success",
+                eventId:       `comm_cat_${e.id}_${Date.now()}`,
+            });
+        });
+
+        return () => {
+            echo.leave(categoryChannel);
+        };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user?.id, user?.service_id, userType]);
 }
 

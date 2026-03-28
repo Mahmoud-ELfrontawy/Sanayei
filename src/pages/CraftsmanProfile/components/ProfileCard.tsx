@@ -66,8 +66,8 @@ const ProfileCard: React.FC<Props> = ({ craftsman, isOwnProfile }) => {
 
       {/* 🏆 Points & Badge */}
       <div className="craftsman-points-row">
-        <PointsBadge 
-          points={craftsman.points || 0} 
+        <PointsBadge
+          points={craftsman.points || 0}
           size="md"
           variant="detailed"
         />

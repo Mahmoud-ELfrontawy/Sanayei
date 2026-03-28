@@ -268,15 +268,15 @@ html[data-theme="dark"] .mkt-pill-v2 {
 
 /* 📋 Main Container & Grid */
 .mkt-main-container {
-    max-width: 1400px;
+    max-width: 1300px;
     margin: 0 auto;
     padding: 0 24px 80px;
 }
 
 .mkt-results-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-    gap: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
 /* 🎨 Empty / Loading States */

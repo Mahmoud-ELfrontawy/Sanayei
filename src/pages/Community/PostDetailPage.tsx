@@ -145,7 +145,7 @@ const PostDetailPage: React.FC = () => {
             }
         } catch (err: any) {
             toast.error(err?.response?.data?.message || "حدث خطأ أثناء قبول العرض");
-            console.error('[Accept Error]:', err?.response?.data);
+
         } finally {
             setIsActing(false);
         }
@@ -201,7 +201,7 @@ const PostDetailPage: React.FC = () => {
             }
         } catch (err: any) {
             // طباعة الـ Debug في الـ Console لو فشلت
-            console.error('[Verify Failure]:', err?.response?.data);
+
             toast.error(err?.response?.data?.message || "فشل تأكيد الإكمال");
         } finally {
             setIsActing(false);
@@ -248,28 +248,17 @@ const PostDetailPage: React.FC = () => {
     const canVerify = isMine && post.status === "in_progress";
 
     // ديبك: شوف حالة العروض والمتغيرات
-    console.log('[Community] DEBUG:', {
-        userId,
-        userType,
-        is_mine_api: post.is_mine,
-        post_user_id: post.user_id,
-        post_company_id: post.company_id,
-        post_user_obj_id: post.user?.id,
-        isMine,
-        canAcceptOffer,
-        post_status: post.status,
-        offers: offers.map(o => ({ id: o.id, status: o.status })),
-    });
+
     const handleStartChat = () => {
         if (!post.acceptor) return;
 
         const receiverType: "worker" | "company" | "user" = isMine
             ? "worker"
-            : post.user.type === "company" ? "company" : "user";
+            : (post.user?.type === "company" ? "company" : "user");
 
         const receiver = isMine
             ? { id: post.acceptor.id, name: post.acceptor.name }
-            : { id: post.user.id, name: post.user.name };
+            : { id: post.user?.id || 0, name: post.user?.name || "مستخدم" };
 
         const contact = { ...receiver, type: receiverType, avatar: undefined, unread_count: 0, isCommunityChat: true };
 
@@ -281,12 +270,12 @@ const PostDetailPage: React.FC = () => {
 
     const getStatusInfo = () => {
         switch (post.status) {
-            case "open": return { text: "مفتوح للعروض", className: "status-open" };
-            case "in_progress": return { text: "قيد التنفيذ", className: "status-progress" };
-            case "completed": return { text: "مكتمل", className: "status-done" };
-            case "verified": return { text: " تم الانتهاء ✓", className: "status-verified" };
-            case "cancelled": return { text: "ملغي", className: "status-cancelled" };
-            default: return { text: post.status, className: "" };
+            case "open": return { text: "مفتوح للعروض", className: "status-open", icon: <FaBolt /> };
+            case "in_progress": return { text: "قيد التنفيذ", className: "status-progress", icon: <FaClock /> };
+            case "completed": return { text: "مكتمل", className: "status-done", icon: <FaCheckCircle /> };
+            case "verified": return { text: " تم الانتهاء ✓", className: "status-verified", icon: <FaCheckCircle /> };
+            case "cancelled": return { text: "ملغي", className: "status-cancelled", icon: <FaBan /> };
+            default: return { text: post.status, className: "", icon: null };
         }
     };
     const statusInfo = getStatusInfo();
@@ -361,27 +350,31 @@ const PostDetailPage: React.FC = () => {
                 <div className="detail-grid">
                     {/* ── Main Content ── */}
                     <div className="detail-main">
-                        <div className="detail-card">
+                        <div className={`detail-card ${post.urgency === 'urgent' ? 'is-urgent' : ''}`}>
                             {/* Header */}
                             <div className="detail-header">
                                 <div className="detail-author">
                                     <img
-                                        src={getAvatarUrl(post.user.avatar, post.user.name)}
-                                        alt={post.user.name}
+                                        src={getAvatarUrl(post.company?.avatar || post.user?.avatar, post.company?.name || post.user?.name || "ناشر الطلب")}
+                                        alt={post.company?.name || post.user?.name}
                                         className="detail-author-avatar"
                                     />
                                     <div className="detail-author-info">
-                                        <span className="detail-author-name">
-                                            {post.user.name}
-                                            {post.user.type === "company" && (
+                                        <div className="detail-name-row">
+                                            <span className="detail-author-name">
+                                                {post.company?.name || post.user?.name || "ناشر الطلب"}
+                                            </span>
+                                            {post.company && (
                                                 <span className="detail-company-badge">
                                                     <FaBriefcase /> شركة
                                                 </span>
                                             )}
-                                        </span>
-                                        <span className="detail-time">
-                                            <FaClock /> {formatTimeAgo(post.created_at)}
-                                        </span>
+                                        </div>
+                                        <div className="detail-meta-row">
+                                            <span className="detail-time">
+                                                <FaClock /> {formatTimeAgo(post.created_at)}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="detail-badges">
@@ -389,6 +382,7 @@ const PostDetailPage: React.FC = () => {
                                         <span className="detail-urgent-badge"><FaBolt /> عاجل</span>
                                     )}
                                     <span className={`detail-status ${statusInfo.className}`}>
+                                        {statusInfo.icon}
                                         {statusInfo.text}
                                     </span>
                                 </div>
@@ -478,11 +472,11 @@ const PostDetailPage: React.FC = () => {
                                     )}
                                     {comments.map((c) => (
                                         <div key={c.id} className="detail-comment">
-                                            <img src={getAvatarUrl(c.user.avatar, c.user.name)} alt="" className="detail-comment-avatar" />
+                                            <img src={getAvatarUrl(c.user?.avatar, c.user?.name || "مستخدم")} alt="" className="detail-comment-avatar" />
                                             <div className="detail-comment-body">
                                                 <div className="detail-comment-header">
-                                                    <span className="detail-comment-name">{c.user.name}</span>
-                                                    {c.user.type === "craftsman" && (
+                                                    <span className="detail-comment-name">{c.user?.name || "مستخدم"}</span>
+                                                    {c.user?.type === "craftsman" && (
                                                         <span className="detail-craftsman-tag">صنايعي</span>
                                                     )}
                                                     <span className="detail-comment-time">{formatTimeAgo(c.created_at)}</span>

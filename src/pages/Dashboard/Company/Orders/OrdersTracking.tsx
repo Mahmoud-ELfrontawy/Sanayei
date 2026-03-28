@@ -189,13 +189,13 @@ const OrdersTracking: React.FC = () => {
     return (
         <div className="orders-tracking-page">
             <div className="tracking-header">
-                <h1>متابعة الطلبات</h1>
+                <h1>متابعة الخدمات</h1>
                 <p>تتبع طلبات العملاء وقم بتحديث حالة الشحن والتسليم</p>
             </div>
 
             <div className="tracking-table-card">
                 {loading ? (
-                    <div className="loading-state" style={{ padding: '3rem', textAlign: 'center' }}>جاري تحميل الطلبات...</div>
+                    <div className="loading-state" style={{ padding: '3rem', textAlign: 'center' }}>جاري تحميل الخدمات...</div>
                 ) : orders.length > 0 ? (
                     <table className="tracking-table">
                         <thead>
