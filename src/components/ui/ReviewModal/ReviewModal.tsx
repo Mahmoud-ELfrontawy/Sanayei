@@ -9,7 +9,8 @@ interface ReviewModalProps {
     onClose: () => void;
     craftsmanId: number;
     craftsmanName: string;
-    orderId: number;
+    orderId?: number;
+    communityPostId?: number;
     onSuccess?: () => void;
 }
 
@@ -19,6 +20,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
     craftsmanId,
     craftsmanName,
     orderId,
+    communityPostId,
     onSuccess
 }) => {
     const [rating, setRating] = useState(0);
@@ -44,12 +46,16 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
             return;
         }
 
-        const payload = {
+        const payload: any = {
             craftsman_id: craftsmanId,
-            service_request_id: orderId,
             rating,
             comment,
         };
+        if (communityPostId) {
+            payload.community_post_id = communityPostId;
+        } else {
+            payload.service_request_id = orderId;
+        }
 
         try {
             setSubmitting(true);

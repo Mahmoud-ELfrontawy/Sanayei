@@ -184,7 +184,12 @@ const RequestServiceSection: React.FC = () => {
             form.reset();
             navigate("/orders");
         } catch (err: any) {
-            toast.error("حدث خطأ أثناء إرسال الطلب ❌");
+            if (err?.status === 422 && err?.errors && Object.keys(err.errors).length > 0) {
+                toast.error("يرجى التأكد من إدخال وتعبئة جميع الحقول المطلوبة بشكل صحيح ❌");
+            } else {
+                const msg = err?.message || "حدث خطأ أثناء إرسال الطلب ❌";
+                toast.error(msg);
+            }
         }
     };
 

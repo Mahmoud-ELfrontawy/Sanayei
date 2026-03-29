@@ -43,7 +43,7 @@ const RegisterCompanyPage: React.FC = () => {
     const nextStep = async () => {
         let fieldsToValidate: any[] = [];
         if (currentStep === 1) fieldsToValidate = ["company_name", "company_email", "company_password", "company_password_confirmation"];
-        else if (currentStep === 2) fieldsToValidate = []; // Add file fields if they become required
+        else if (currentStep === 2) fieldsToValidate = ["company_logo", "tax_card", "commercial_register"];
         else if (currentStep === 3) {
             fieldsToValidate = ["company_phone_number", "company_whatsapp_number", "company_category"];
             if (selectedCategory === "other") {
@@ -168,9 +168,10 @@ const RegisterCompanyPage: React.FC = () => {
                                             type="file"
                                             hidden
                                             accept="image/*"
-                                            {...register("company_logo")}
+                                            {...register("company_logo", { required: "الشعار مطلوب" })}
                                         />
                                     </label>
+                                    {(errors as any).company_logo && <span className="form-error">{(errors as any).company_logo.message}</span>}
                                 </div>
                                 <div className="auth-row">
                                     <div className="input-group flex-1">
@@ -181,9 +182,10 @@ const RegisterCompanyPage: React.FC = () => {
                                                 type="file"
                                                 hidden
                                                 accept="image/*,.pdf"
-                                                {...register("tax_card")}
+                                                {...register("tax_card", { required: "البطاقة الضريبية مطلوبة" })}
                                             />
                                         </label>
+                                        {(errors as any).tax_card && <span className="form-error">{(errors as any).tax_card.message}</span>}
                                     </div>
                                     <div className="input-group flex-1">
                                         <label className={`worker-file-label ${commFile?.length ? "has-file" : ""}`}>
@@ -193,9 +195,10 @@ const RegisterCompanyPage: React.FC = () => {
                                                 type="file"
                                                 hidden
                                                 accept="image/*,.pdf"
-                                                {...register("commercial_register")}
+                                                {...register("commercial_register", { required: "السجل التجاري مطلوب" })}
                                             />
                                         </label>
+                                        {(errors as any).commercial_register && <span className="form-error">{(errors as any).commercial_register.message}</span>}
                                     </div>
                                 </div>
                             </div>
@@ -270,7 +273,10 @@ const RegisterCompanyPage: React.FC = () => {
                                                 className={`auth-input ${errors.custom_category ? 'error' : ''}`}
                                                 placeholder="مثال: مستلزمات سباكة، أدوات نجارة..."
                                                 {...register("custom_category", {
-                                                    required: selectedCategory === "other" ? "يرجى كتابة التصنيف" : false
+                                                    validate: (value) => {
+                                                        if (selectedCategory !== "other") return true;
+                                                        return (value && value.trim().length > 0) ? true : "يرجى كتابة التصنيف بشكل صحيح ولا تتركه فارغاً";
+                                                    }
                                                 })}
                                             />
                                             {errors.custom_category && <span className="form-error">{errors.custom_category.message}</span>}

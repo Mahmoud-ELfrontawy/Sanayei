@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaSpinner, FaChevronDown } from "react-icons/fa";
+import { FaSpinner, FaChevronDown, FaListAlt } from "react-icons/fa";
 import { FiSearch, FiFilter, FiBox, FiZap, FiDroplet, FiLayers, FiScissors, FiWind, FiPlusCircle, FiCheckCircle, FiInfo, FiPlus } from "react-icons/fi";
 import { useCommunity } from "../../context/CommunityContext";
 import { useAuth } from "../../hooks/useAuth";
@@ -79,10 +79,16 @@ const CommunityPage: React.FC = () => {
                         <p>تصفح أحدث طلبات الخدمات في مجتمعك وقدم عروضك الآن لتكسب ثقة العملاء</p>
                     </div>
                     {canCreateRequest && (
-                        <button className="mkt-btn-primary" onClick={() => navigate("/community/new")}>
-                            <FiPlusCircle />
-                            <span>نشر طلب خدمة</span>
-                        </button>
+                        <div className="mkt-hero-btns">
+                            <button className="mkt-btn-primary" onClick={() => navigate("/community/new")}>
+                                <FiPlusCircle />
+                                <span>نشر طلب خدمة</span>
+                            </button>
+                            <button className="mkt-btn-my-posts" onClick={() => navigate("/community/my-posts")}>
+                                <FaListAlt />
+                                <span>طلباتي</span>
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>

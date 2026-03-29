@@ -8,7 +8,7 @@ export interface Notification {
     id: string;
     title: string;
     message: string;
-    type: "order_request" | "order_status" | "chat" | "store_order" | "admin_message" | "product_review" | "community_accepted" | "community_offer" | "community_reward";
+    type: "order_request" | "order_status" | "chat" | "store_order" | "admin_message" | "product_review" | "service_review" | "community_accepted" | "community_offer" | "community_reward";
     status: "unread" | "read";
     timestamp: string;
     orderId: number;
@@ -19,7 +19,9 @@ export interface Notification {
 }
 
 export type NewNotificationPayload = Omit<Notification, "id" | "status" | "timestamp"> & {
+    id?: string | number;
     eventId?: string;
+    status?: "unread" | "read";
 };
 
 export interface NotificationContextType {
@@ -29,7 +31,7 @@ export interface NotificationContextType {
     addNotification: (notification: NewNotificationPayload) => void;
     markAsRead: (id: string) => void;
     markAllAsRead: () => void;
-    markTypeAsRead: (type: "chat" | "order_status" | "order_request" | "product_review" | "store_order" | "community_accepted" | "community_offer" | "community_reward") => void;
+    markTypeAsRead: (type: "chat" | "order_status" | "order_request" | "product_review" | "service_review" | "store_order" | "community_accepted" | "community_offer" | "community_reward") => void;
 }
 
 // ── Constants ──────────────────────────────────

@@ -270,6 +270,8 @@ export function useNotificationPolling({
                 const dataBlock = n.data || n;
                 
                 addNotificationRef.current?.({
+                    id:            n.id,
+                    status:        n.status || "unread",
                     title:         dataBlock.title || (isAdminMsg ? "📢 رسالة من الإدارة" : "تنبيه"),
                     message:       dataBlock.message || dataBlock.body || dataBlock.notification_text || "لديك إشعار",
                     type:          dataBlock.type || n.type || "admin_message",
@@ -278,8 +280,7 @@ export function useNotificationPolling({
                     recipientType: role,
                     variant:       isAdminMsg ? "info" : "success",
                     eventId:       `db_notif_${n.id || Date.now()}`,
-                    // Don't unread historic ones unless marked 'unread' from DB (optional)
-                    // You'll rely on the existing deduping logic based on eventId
+                    // Don't unread historic ones unless marked 'unread' from DB
                 });
             });
 
@@ -298,10 +299,8 @@ export function useNotificationPolling({
             if (role === "user")      fetchUserStoreOrders();
             if (role === "craftsman") fetchCraftsmanStoreOrders();
 
-            if (isFirstBackendFetch.current) {
-                fetchBackendNotifications();
-                isFirstBackendFetch.current = false;
-            }
+            // Fetch DB notifications periodically to catch those missed while offline
+            fetchBackendNotifications();
         };
 
         runAll(); // immediate first run

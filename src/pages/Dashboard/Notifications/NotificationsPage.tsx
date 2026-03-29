@@ -19,6 +19,11 @@ const NotificationsPage: React.FC = () => {
             case 'order_status': return <FaCheckCircle size={20} color="var(--success)" />;
             case 'store_order': return <FaShoppingCart size={20} color="var(--color-primary)" />;
             case 'order_request': return <FaTools size={20} color="var(--amber-500)" />;
+            case 'community_accepted':
+            case 'community_accepted_notif': return <FaTools size={20} color="var(--indigo-500)" />;
+            case 'points_reward': return <FaCheckCircle size={20} color="var(--color-primary)" />;
+            case 'service_review':
+            case 'product_review': return <FaCheckCircle size={20} color="var(--amber-400)" />;
             default: return <FaBell size={20} color="var(--slate-500)" />;
         }
     };

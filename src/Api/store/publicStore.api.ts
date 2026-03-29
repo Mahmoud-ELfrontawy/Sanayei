@@ -1,6 +1,24 @@
 import api from "../api";
 
 /**
+ * جلب جميع الأقسام العامة الخاصة بالتسجيل
+ */
+export const getCompanyRegistrationCategories = async () => {
+    try {
+        const res = await api.get(`/companies/registration-categories`);
+        console.log("Categories loaded successfully:", res.data);
+        return res.data;
+    } catch (error: any) {
+        if (error.response?.status === 404) {
+            console.error("❌ THE ROUTE IS MISSING (404 Error!): You didn't upload `routes/api.php` to your live server. The backend doesn't know about this URL.");
+        } else {
+            console.error("Store API Error (Registration Categories):", error.response?.data || error.message);
+        }
+        return [];
+    }
+};
+
+/**
  * جلب جميع الأقسام العامة التي تحتوي على منتجات
  */
 export const getPublicCategories = async () => {

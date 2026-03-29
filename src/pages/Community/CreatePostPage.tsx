@@ -80,7 +80,7 @@ const CreatePostPage: React.FC = () => {
             toast.success("تم نشر طلب الخدمة بنجاح! 🎉");
             navigate("/community");
         } catch (err: any) {
-            const msg = err?.response?.data?.message || "حدث خطأ أثناء النشر، حاول مجدداً";
+            const msg = err?.response?.data?.message || err?.message || "حدث خطأ أثناء النشر، حاول مجدداً";
             toast.error(msg);
         } finally {
             setIsSubmitting(false);

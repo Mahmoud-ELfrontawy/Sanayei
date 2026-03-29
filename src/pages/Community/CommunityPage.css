@@ -95,6 +95,38 @@
     box-shadow: 0 15px 30px rgba(var(--primary-rgb), 0.4);
 }
 
+/* Button group in hero */
+.mkt-hero-btns {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.mkt-btn-my-posts {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 28px;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-radius: var(--radius-btn);
+    font-size: 1.2rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+}
+
+.mkt-btn-my-posts:hover {
+    background: rgba(255,255,255,0.28);
+    transform: translateY(-4px);
+    border-color: rgba(255,255,255,0.7);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+
 /* 🔍 Search & Filters Navigation */
 .mkt-search-nav {
     max-width: 1100px;

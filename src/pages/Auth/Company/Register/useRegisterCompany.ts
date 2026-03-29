@@ -5,16 +5,15 @@ import { toast } from "react-toastify";
 import type { StoreRegisterPayload } from "../../../../Api/auth/registerCompany.api";
 import { registerCompany } from "../../../../Api/auth/registerCompany.api";
 import { useQuery } from "@tanstack/react-query";
-import { getPublicCategories } from "../../../../Api/store/publicStore.api";
-
+import { getCompanyRegistrationCategories } from "../../../../Api/store/publicStore.api";
 
 export const useRegisterCompany = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   
   const { data: categoriesData, isLoading: isLoadingCategories } = useQuery({
-    queryKey: ["public-categories"],
-    queryFn: getPublicCategories,
+    queryKey: ["registration-categories"],
+    queryFn: getCompanyRegistrationCategories,
     staleTime: 0, // Ensure we get fresh data from admin
   });
 
@@ -35,7 +34,7 @@ export const useRegisterCompany = () => {
       
       // If 'other' is selected, use the custom_category value
       if (payload.company_category === "other") {
-        payload.company_category = payload.custom_category || "عام";
+        payload.company_category = payload.custom_category || "";
       }
       
       const res = await registerCompany(payload);

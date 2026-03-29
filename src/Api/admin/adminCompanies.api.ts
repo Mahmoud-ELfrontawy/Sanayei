@@ -44,6 +44,12 @@ export const adminCompaniesApi = {
         });
     },
 
+    updateCategory: async (id: number, company_category: string) => {
+        return axios.put(`${BASE_URL}/admin/companies/${id}/update-category`, { company_category }, {
+            headers: getAuthHeader(),
+        });
+    },
+
     toggleBlockCompany: async (id: number) => {
         return axios.post(`${BASE_URL}/admin/companies/${id}/toggle-block`, {}, {
             headers: getAuthHeader(),

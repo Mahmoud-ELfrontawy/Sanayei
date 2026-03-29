@@ -8,6 +8,7 @@ import React, { useCallback, type MutableRefObject } from "react";
 import { toast } from "react-toastify";
 import type { Notification } from "./notification.types";
 import { normalizeRole } from "./notification.utils";
+import { markNotificationAsRead, markAllNotificationsAsRead } from "../../Api/notifications/notifications.api";
 
 interface UseNotificationActionsProps {
     user: { id: number } | null;
@@ -24,9 +25,14 @@ export function useNotificationActions({
 }: UseNotificationActionsProps) {
     const markAsRead = useCallback(
         (id: string) => {
+            // Optimistic update
             setAllNotifications((prev) =>
                 prev.map((n) => (n.id === id ? { ...n, status: "read" } : n))
             );
+            
+            // Only strike the API if it looks like a DB-persisted notification (numeric ID)
+            // Or if it starts with strings, let's try calling it anyway
+            markNotificationAsRead(id).catch(err => console.error(err));
         },
         [setAllNotifications]
     );
@@ -44,6 +50,8 @@ export function useNotificationActions({
                     : n
             )
         );
+
+        markAllNotificationsAsRead().catch(err => console.error(err));
     }, [user?.id, userType, setAllNotifications]);
 
     const markTypeAsRead = useCallback(

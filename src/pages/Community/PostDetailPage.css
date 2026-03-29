@@ -1396,3 +1396,211 @@ html[data-theme="dark"] .detail-card.is-urgent {
     50% { transform: scale(1.05); box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4); }
     100% { transform: scale(1); box-shadow: 0 8px 20px rgba(239, 68, 68, 0.25); }
 }
+/* 🌟 Review Modal 🌟 */
+.review-modal-overlay {
+    background: rgba(15, 23, 42, 0.8) !important;
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.review-modal-card {
+    background: var(--white, #fff);
+    width: 90%;
+    max-width: 480px;
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    animation: modalSlideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html[data-theme="dark"] .review-modal-card {
+    background: #1e2028;
+    border: 1px solid #2d3040;
+}
+
+@keyframes modalSlideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.review-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.review-modal-header h3 {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.review-modal-header .close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--slate-400);
+    cursor: pointer;
+    padding: 4px;
+}
+
+.review-modal-body {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.review-modal-body p {
+    font-size: 16px;
+    color: var(--slate-600);
+    margin-bottom: 20px;
+}
+
+.star-rating-input {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.star-rating-input .star {
+    font-size: 36px;
+    color: var(--slate-200);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+html[data-theme="dark"] .star-rating-input .star {
+    color: #2d3040;
+}
+
+.star-rating-input .star.active {
+    color: #fbbf24;
+    filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.4));
+    transform: scale(1.1);
+}
+
+.review-modal-body textarea {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid var(--slate-200);
+    background: var(--slate-50);
+    font-family: inherit;
+    font-size: 14px;
+    resize: none;
+    outline: none;
+    transition: all 0.2s;
+}
+
+html[data-theme="dark"] .review-modal-body textarea {
+    background: #171920;
+    border-color: #363a4d;
+    color: var(--slate-200);
+}
+
+.review-modal-body textarea:focus {
+    border-color: var(--comm-blue);
+    background: var(--white);
+}
+
+.review-modal-footer {
+    display: flex;
+    gap: 12px;
+}
+
+.review-modal-footer .cancel-btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid var(--slate-200);
+    background: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.review-modal-footer .submit-btn {
+    flex: 2;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, var(--comm-blue), var(--comm-blue-hover));
+    color: var(--white);
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(26, 111, 181, 0.25);
+}
+
+.review-modal-footer .submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ── Inline Offer Review Button ── */
+.offer-inline-review-wrap {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed var(--slate-200);
+}
+
+html[data-theme="dark"] .offer-inline-review-wrap {
+    border-top-color: #363a4d;
+}
+
+.offer-inline-review-btn {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, #FFD700, #FDB931);
+    color: #1a1a1a;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 6px 16px rgba(255, 215, 0, 0.25);
+}
+
+.offer-inline-review-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255, 215, 0, 0.4);
+    background: linear-gradient(135deg, #FDB931, #FFD700);
+}
+
+.offer-inline-review-btn .bounce-icon {
+    animation: inline-star-bounce 1.5s infinite;
+}
+
+@keyframes inline-star-bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2) rotate(10deg); }
+}
+
+.offer-inline-reviewed {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: rgba(34, 197, 94, 0.1);
+    color: #16a34a;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+html[data-theme="dark"] .offer-inline-reviewed {
+    background: rgba(34, 197, 94, 0.05);
+    color: #4ade80;
+    border-color: rgba(74, 222, 128, 0.2);
+}

@@ -4,7 +4,7 @@ import {
     FaArrowRight, FaMapMarkerAlt, FaSpinner, FaTrash,
     FaMoneyBillWave, FaClock, FaComments, FaPaperPlane,
     FaStar, FaCheckCircle, FaBriefcase, FaUserTie, FaLock, FaBolt,
-    FaCommentDots, FaShieldAlt, FaBan, FaCheckDouble
+    FaCommentDots, FaShieldAlt, FaBan, FaCheckDouble, FaTimes
 } from "react-icons/fa";
 import { GiTrophy } from "react-icons/gi";
 import { FiTag } from "react-icons/fi"; // Added FiTag import
@@ -28,6 +28,7 @@ import { formatTimeAgo } from "../../utils/timeAgo";
 import { toast } from "react-toastify";
 import { useUserChat } from "../../context/UserChatProvider";
 import { useCraftsmanChat } from "../../context/CraftsmanChatProvider";
+import api from "../../Api/api";
 import "./PostDetailPage.css";
 
 
@@ -58,6 +59,12 @@ const PostDetailPage: React.FC = () => {
     const [commentBody, setCommentBody] = useState("");
     const [showComments, setShowComments] = useState(false);
     const [commentsLoaded, setCommentsLoaded] = useState(false);
+
+    // 🌟 Review State
+    const [showReviewModal, setShowReviewModal] = useState(false);
+    const [reviewRating, setReviewRating] = useState(5);
+    const [reviewComment, setReviewComment] = useState("");
+    const [isReviewing, setIsReviewing] = useState(false);
 
     /* ── Load post + offers ── */
     useEffect(() => {
@@ -183,25 +190,43 @@ const PostDetailPage: React.FC = () => {
     };
 
     /* ── Verify/Complete Post ── */
+    const handleReviewSubmit = async () => {
+        if (!post || !post.acceptor) return;
+        setIsReviewing(true);
+        try {
+            await api.post("/reviews", {
+                craftsman_id: post.acceptor.id,
+                community_post_id: post.id,
+                rating: reviewRating,
+                comment: reviewComment,
+            });
+            toast.success("شكراً لتقييمك! تم إغلاق الطلب بنجاح 🌟");
+            setShowReviewModal(false);
+            setPost(prev => prev ? { ...prev, status: "verified" as const, is_reviewed: true } : prev);
+        } catch (err: any) {
+            toast.error(err?.response?.data?.message || "فشل إرسال التقييم");
+        } finally {
+            setIsReviewing(false);
+        }
+    };
+
     const handleVerify = async () => {
         if (!post || !window.confirm("هل تؤكد استلام الخدمة المكتملة؟ سيتم تحويل النقاط للصنايعي.")) return;
         setIsActing(true);
         try {
             const res = await verifyCommunityPost(Number(id));
 
-            // ✅ التعامل مع الرد الجديد
             if (res.success) {
                 const fresh = await getCommunityPost(Number(id));
                 const updatedPost: CommunityPost = fresh.data ?? fresh;
                 setPost(updatedPost);
                 updatePost(updatedPost);
                 toast.success(res.message || "تم تأكيد الإكمال وصرف المكافأة! 🎉");
+                setShowReviewModal(true); // Open modal automatically
             } else {
                 toast.error(res.message || "فشل تأكيد الإكمال");
             }
         } catch (err: any) {
-            // طباعة الـ Debug في الـ Console لو فشلت
-
             toast.error(err?.response?.data?.message || "فشل تأكيد الإكمال");
         } finally {
             setIsActing(false);
@@ -246,6 +271,7 @@ const PostDetailPage: React.FC = () => {
     const isAcceptor = isCraftsman && post.acceptor?.id === Number(user?.id);
     const canChat = (isMine || isAcceptor) && post.status === "in_progress";
     const canVerify = isMine && post.status === "in_progress";
+    const canReview = isMine && post.status === "verified" && !post.is_reviewed;
 
     // ديبك: شوف حالة العروض والمتغيرات
 
@@ -338,6 +364,11 @@ const PostDetailPage: React.FC = () => {
                                         {canVerify && (
                                             <button className="status-verify-btn" onClick={handleVerify} disabled={isActing}>
                                                 {isActing ? <FaSpinner className="spin" /> : <><FaCheckCircle /> تأكيد الإكمال والاستلام</>}
+                                            </button>
+                                        )}
+                                        {canReview && (
+                                            <button className="status-verify-btn" onClick={() => setShowReviewModal(true)}>
+                                                <FaStar /> تقييم الصنايعي الآن
                                             </button>
                                         )}
                                     </div>
@@ -633,6 +664,27 @@ const PostDetailPage: React.FC = () => {
                                                 <span className="offer-time">{formatTimeAgo(offer.created_at)}</span>
                                             </div>
 
+                                            {/* 🌟 زر تقييم العرض المقبول */}
+                                            {offer.status === "accepted" && isMine && post.status === "verified" && (
+                                                <div className="offer-inline-review-wrap">
+                                                    {!post.is_reviewed ? (
+                                                        <button 
+                                                            className="offer-inline-review-btn"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setShowReviewModal(true);
+                                                            }}
+                                                        >
+                                                            <FaStar className="bounce-icon" /> قيّم هذا العرض
+                                                        </button>
+                                                    ) : (
+                                                        <div className="offer-inline-reviewed">
+                                                            <FaCheckCircle /> تم التقييم مسبقاً
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+
                                             {canAcceptOffer && offer.status === "pending" && (
                                                 <button
                                                     className="offer-accept-btn"
@@ -655,6 +707,46 @@ const PostDetailPage: React.FC = () => {
             {lightboxImg && (
                 <div className="detail-lightbox" onClick={() => setLightboxImg(null)}>
                     <img src={lightboxImg} alt="full" />
+                </div>
+            )}
+
+            {/* 🌟 Review Modal */}
+            {showReviewModal && post?.acceptor && (
+                <div className="detail-lightbox review-modal-overlay" onClick={() => setShowReviewModal(false)}>
+                    <div className="review-modal-card" onClick={(e) => e.stopPropagation()}>
+                        <div className="review-modal-header">
+                            <h3>🌟 تقييم الصنايعي</h3>
+                            <button className="close-btn" onClick={() => setShowReviewModal(false)}><FaTimes /></button>
+                        </div>
+                        <div className="review-modal-body">
+                            <p>كيف كانت تجربتك مع <strong>{post.acceptor.name}</strong>؟</p>
+                            <div className="star-rating-input">
+                                {[1, 2, 3, 4, 5].map((s) => (
+                                    <FaStar
+                                        key={s}
+                                        className={reviewRating >= s ? "star active" : "star"}
+                                        onClick={() => setReviewRating(s)}
+                                    />
+                                ))}
+                            </div>
+                            <textarea
+                                placeholder="اكتب رأيك هنا (اختياري)..."
+                                value={reviewComment}
+                                onChange={(e) => setReviewComment(e.target.value)}
+                                rows={4}
+                            />
+                        </div>
+                        <div className="review-modal-footer">
+                            <button className="cancel-btn" onClick={() => setShowReviewModal(false)}>تخطى الآن</button>
+                            <button 
+                                className="submit-btn" 
+                                onClick={handleReviewSubmit}
+                                disabled={isReviewing}
+                            >
+                                {isReviewing ? <FaSpinner className="spin" /> : "إرسال التقييم"}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
         </section>

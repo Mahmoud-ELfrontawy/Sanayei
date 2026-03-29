@@ -14,8 +14,9 @@ const getHeaders = () => {
 
 export interface ReviewPayload {
     craftsman_id: number;
-    service_request_id: number;
-    rating: number; 
+    service_request_id?: number;
+    community_post_id?: number;
+    rating: number;
     comment: string;
 }
 

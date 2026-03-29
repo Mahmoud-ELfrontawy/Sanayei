@@ -83,8 +83,13 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
     useEffect(() => {
         if (!contactsQuery.data) return;
         const currentTotal = contactsQuery.data.reduce((sum, c) => sum + c.unread_count, 0);
+        
         if (currentTotal > prevTotalUnreadRef.current) {
             const diffContact = contactsQuery.data.find(c => c.unread_count > 0);
+            
+            // Update ref before triggering notification
+            prevTotalUnreadRef.current = currentTotal;
+
             addNotification({
                 title: "رسالة جديدة",
                 message: diffContact ? `رسالة جديدة من ${diffContact.name}` : "لديك رسائل جديدة",
@@ -92,10 +97,12 @@ export const UserChatProvider = ({ children }: { children: React.ReactNode }) =>
                 orderId: diffContact?.id || 0,
                 recipientId: user!.id,
                 recipientType: userType as any,
+                eventId: `chat_total_${user!.id}_${currentTotal}`,
             });
+        } else {
+            prevTotalUnreadRef.current = currentTotal;
         }
-        prevTotalUnreadRef.current = currentTotal;
-    }, [contactsQuery.data, addNotification, user?.id]);
+    }, [contactsQuery.data, user?.id]);
 
     const messagesQuery = useQuery({
         queryKey: ["user-messages", activeChat?.id, user?.id],

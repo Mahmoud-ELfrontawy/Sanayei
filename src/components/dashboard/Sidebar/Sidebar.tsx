@@ -153,6 +153,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             path: "/orders",
             icon: <FaBoxOpen size={20} />
         },
+        // My Community Posts (User & Company)
+        ...(userType === "user" || userType === "company" ? [
+            {
+                title: "طلباتي في المجتمع",
+                path: "/community/my-posts",
+                icon: <FaStar size={20} />
+            }
+        ] : []),
     ];
 
     return (

@@ -243,14 +243,14 @@ export function useEchoNotifications({
                 const data = e.data || e;
                 console.log("⭐ [Echo] .ServiceReviewReceived received:", data);
                 addNotificationRef.current?.({
-                    title:         "تقييم جديد للخدمة ⭐",
+                    title:         "🌟 تقييم جديد استلمته",
                     message:       data.message || `قام ${data.user_name || 'عميل'} بتقييم خدمتك بـ ${data.rating || 5} نجوم - "${data.comment || 'بدون تعليق'}"`,
-                    type:          "product_review", // Uses the review UI style
+                    type:          "service_review",
                     orderId:       data.request_id || 0,
                     recipientId:   user.id,
                     recipientType: "craftsman",
                     variant:       "success",
-                    eventId:       `echo_service_rev_${data.request_id || Date.now()}`,
+                    eventId:       `db_notif_${data.notification_id || Date.now()}`,
                 });
             });
         }

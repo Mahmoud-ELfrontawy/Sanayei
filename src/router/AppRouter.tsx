@@ -77,6 +77,8 @@ const AdminLiveMap = lazy(() => import("../pages/Admin/sections/AdminLiveMap/Adm
 const CommunityPage = lazy(() => import("../pages/Community/CommunityPage"));
 const CreatePostPage = lazy(() => import("../pages/Community/CreatePostPage"));
 const PostDetailPage = lazy(() => import("../pages/Community/PostDetailPage"));
+const MyCommunityPosts = lazy(() => import("../pages/Community/MyCommunityPosts"));
+
 
 const AppRouter: React.FC = () => {
   return (
@@ -160,7 +162,9 @@ const AppRouter: React.FC = () => {
             {/* ===== Community Pages ===== */}
             <Route path="/community" element={<CommunityProvider><CommunityPage /></CommunityProvider>} />
             <Route path="/community/new" element={<CommunityProvider><CreatePostPage /></CommunityProvider>} />
+            <Route path="/community/my-posts" element={<CommunityProvider><MyCommunityPosts /></CommunityProvider>} />
             <Route path="/community/:id" element={<CommunityProvider><PostDetailPage /></CommunityProvider>} />
+
             
             {/* ===== Auth Pages ===== */}
             <Route path="/login" element={<LoginPage />} />

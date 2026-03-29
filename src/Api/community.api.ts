@@ -79,6 +79,7 @@ export interface CommunityPost {
     updated_at: string;
     is_mine: boolean;
     has_offered: boolean;
+    is_reviewed?: boolean;
 }
 
 export interface CommunityComment {
@@ -100,6 +101,7 @@ export const getCommunityPosts = async (params?: {
     status?: string;
     search?: string;
     urgency?: string;
+    my_posts?: number;
 }) => {
     const res = await api.get("community/posts", { params });
     return res.data;

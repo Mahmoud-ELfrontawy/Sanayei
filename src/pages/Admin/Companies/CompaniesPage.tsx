@@ -6,8 +6,10 @@ import {
     FaSyncAlt, FaStar, FaBriefcase, FaClock, FaWrench,
     FaExternalLinkAlt, FaTimes, FaMapMarkerAlt, FaEnvelope, FaWhatsapp, FaPhone
 } from 'react-icons/fa';
-import { FiFileText } from 'react-icons/fi';
+import { FiFileText, FiEdit2, FiCheck, FiX } from 'react-icons/fi';
 import { getFullImageUrl } from '../../../utils/imageUrl';
+import { authStorage } from '../../../context/auth/auth.storage';
+import axios from 'axios';
 import './CompaniesPage.css';
 
 const CompaniesPage: React.FC = () => {
@@ -19,6 +21,12 @@ const CompaniesPage: React.FC = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [selectedCompany, setSelectedCompany] = useState<CompanyData | null>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    // Edit Category States
+    const [categoriesList, setCategoriesList] = useState<{id: number, name: string}[]>([]);
+    const [isEditingCategory, setIsEditingCategory] = useState(false);
+    const [editCategoryValue, setEditCategoryValue] = useState("");
+    const [isSavingCategory, setIsSavingCategory] = useState(false);
 
     const fetchCompanies = async () => {
         setLoading(true);
@@ -35,8 +43,24 @@ const CompaniesPage: React.FC = () => {
         }
     };
 
+    const fetchCategories = async () => {
+        try {
+            const res = await axios.get('/api/admin/categories', {
+                headers: {
+                    Authorization: `Bearer ${authStorage.getToken()}`,
+                    Accept: "application/json",
+                }
+            });
+            const data = res.data?.data || res.data || [];
+            setCategoriesList(data);
+        } catch (error) {
+            console.error("Failed to load categories for admin.");
+        }
+    };
+
     useEffect(() => {
         fetchCompanies();
+        fetchCategories();
     }, [page, statusFilter]);
 
 
@@ -92,6 +116,33 @@ const CompaniesPage: React.FC = () => {
             }
         } catch (error) {
             toast.error("فشل في حذف الشركة");
+        }
+    };
+
+    const handleSaveCategory = async () => {
+        if (!selectedCompany) return;
+        if (!editCategoryValue.trim()) {
+            toast.warning("يرجى إدخال أو اختيار تصنيف");
+            return;
+        }
+        setIsSavingCategory(true);
+        try {
+            const { data } = await adminCompaniesApi.updateCategory(selectedCompany.id, editCategoryValue);
+            if (data.status === 'success') {
+                toast.success(data.message);
+                const updatedCategory = data.data.company_category;
+                
+                // Update specific company in the list
+                setCompanies(prev => prev.map(c => c.id === selectedCompany.id ? { ...c, company_category: updatedCategory } : c));
+                
+                // Update selectedCompany details
+                setSelectedCompany({ ...selectedCompany, company_category: updatedCategory });
+                setIsEditingCategory(false);
+            }
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "فشل تحديث التصنيف");
+        } finally {
+            setIsSavingCategory(false);
         }
     };
 
@@ -294,9 +345,56 @@ const CompaniesPage: React.FC = () => {
                                     </div>
                                     <div className="info-modern-item">
                                         <FaWrench size={18} />
-                                        <div className="content">
-                                            <label>التصنيف</label>
-                                            <span>{selectedCompany.company_category || 'غير مصنف'}</span>
+                                        <div className="content" style={{ width: '100%' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <label>التصنيف المقترح من المتجر</label>
+                                                {!isEditingCategory && (
+                                                    <button 
+                                                        onClick={() => {
+                                                            setEditCategoryValue(selectedCompany.company_category || '');
+                                                            setIsEditingCategory(true);
+                                                        }}
+                                                        style={{ background: 'none', border: 'none', color: '#3b82f6', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem' }}
+                                                    >
+                                                        <FiEdit2 size={12} /> تعديل
+                                                    </button>
+                                                )}
+                                            </div>
+                                            {isEditingCategory ? (
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '5px' }}>
+                                                    <input 
+                                                        type="text" 
+                                                        list="categories-datalist"
+                                                        value={editCategoryValue} 
+                                                        onChange={(e) => setEditCategoryValue(e.target.value)}
+                                                        style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '6px', width: '100%' }}
+                                                        placeholder="اختر أو اكتب تصنيفاً..."
+                                                    />
+                                                    <datalist id="categories-datalist">
+                                                        {categoriesList.map(cat => (
+                                                            <option key={cat.id} value={cat.name} />
+                                                        ))}
+                                                    </datalist>
+                                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                                        <button 
+                                                            onClick={handleSaveCategory} 
+                                                            disabled={isSavingCategory}
+                                                            style={{ flex: 1, padding: '6px', background: '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '4px' }}
+                                                        >
+                                                            {isSavingCategory ? 'جاري الحفظ...' : <><FiCheck /> حفظ</>}
+                                                        </button>
+                                                        <button 
+                                                            onClick={() => setIsEditingCategory(false)} 
+                                                            disabled={isSavingCategory}
+                                                            style={{ flex: 1, padding: '6px', background: '#f3f4f6', color: '#374151', border: '1px solid #ddd', borderRadius: '4px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '4px' }}
+                                                        >
+                                                            <FiX /> إلغاء
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <span>{selectedCompany.company_category || 'غير مصنف'}</span>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="info-modern-item">

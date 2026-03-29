@@ -18,6 +18,7 @@ import {
     normalizeRole,
     playNotificationSound,
 } from "./notification.utils";
+import { sendNotification } from "../../Api/notifications/notifications.api";
 
 interface UseAddNotificationProps {
     user: { id: number } | null;
@@ -50,6 +51,22 @@ export function useAddNotification({
                 currentRole !== targetRole ||
                 String(notif.recipientId) !== String(user.id)
             ) {
+                // This is an OUTGOING notification intended for another user.
+                // We must send it to the DB so it is persisted and broadcasted via Echo.
+                if (notif.eventId?.startsWith("echo_")) {
+                    // Do not echo back if it's already from Echo, though usually Echo won't send other users' data.
+                    return;
+                }
+                
+                sendNotification({
+                    title: notif.title,
+                    message: notif.message,
+                    recipientId: notif.recipientId,
+                    recipientType: notif.recipientType,
+                    type: notif.type || "info",
+                    orderId: notif.orderId,
+                }).catch((err) => console.error("Failed to send DB notification:", err));
+
                 return;
             }
 
@@ -58,23 +75,24 @@ export function useAddNotification({
                 `loc_${Date.now()}_${notif.orderId || Math.random()}`;
 
             setAllNotifications((prev) => {
-                // ── Deduplication ──
+                // ── Deduplication ── (STOPS THE LOOP)
                 if (prev.some((n) => n.eventId === eventId)) return prev;
+
+                // ── Side Effects ──
+                // Firing sound and toast inside the updater is usually safe for toastify,
+                // but to be 100% compliant with React concurrent mode and avoid warnings,
+                // we wrap them in a microtask or a simple check.
+                playNotificationSound(NOTIF_SOUND_URL);
+                _showToast(notif, eventId, targetRole, unreadChatCountRef, handleActionRef);
 
                 const newNotif: Notification = {
                     ...notif,
-                    id:            Math.random().toString(36).substring(2, 9),
+                    id:            notif.id ? String(notif.id) : Math.random().toString(36).substring(2, 9),
                     eventId,
-                    status:        "unread",
+                    status:        notif.status || "unread",
                     timestamp:     new Date().toISOString(),
                     recipientType: targetRole,
                 };
-
-                // ── Sound ──
-                playNotificationSound(NOTIF_SOUND_URL);
-
-                // ── Toast ──
-                _showToast(notif, eventId, targetRole, unreadChatCountRef, handleActionRef);
 
                 return [newNotif, ...prev].slice(0, MAX_NOTIFICATIONS);
             });
